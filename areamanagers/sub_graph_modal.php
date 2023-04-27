@@ -1,0 +1,50 @@
+<!-- Sub-Piegraph modal -->
+<div class="modal fade" id="piegraphModal" tabindex="-1" role="dialog" aria-labelledby="piegraphModal" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">SUB CATEGORY</h5>
+        <button type="button" class="close" id="subpie_clsbtn" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+       <div id="chartdiv9"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Sub-Storegraph modal -->
+<div class="modal fade" id="store_graph_modal" tabindex="-1" role="dialog" aria-labelledby="store_graph_modal" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Per Store</h5>
+        <button type="button" class="close" id="substr_clsbtn" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+       <div id="store_graph"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- I.T Bar modal -->
+<div class="modal fade" id="tech_bar_modal" tabindex="-1" role="dialog" aria-labelledby="tech_bar_modal" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">IT</h5>
+        <button type="button" class="close" id="substr_clsbtn" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+       <div id=""></div>
+      </div>
+    </div>
+  </div>
+</div>

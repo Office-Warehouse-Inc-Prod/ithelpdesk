@@ -1,0 +1,99 @@
+body{
+	margin:0px;
+	padding:0px;
+	font-family: 'Comfortaa', cursive;
+	text-align:center;
+}
+
+
+.modal-backdrop {
+   background-color: #111111;
+}
+
+
+input[type="text"], input[type="password"]{
+	outline:none;
+	padding:10px;
+	display:block;
+	width:300px;
+	border-radius: 3px;
+	border:1px solid #eee;
+	margin:20px auto;
+}
+
+input[type="submit"]{
+	padding:10px;
+	color:#fff;
+	background:#0098cb;
+	width:320px;
+	margin:20px auto;
+	margin-top:0px;
+	border:0px;
+	border-radius: 3px;
+	cursor:pointer;
+}
+
+input[type="submit"]:hover{
+	background:#00b8eb;
+}
+
+.header{
+	border-bottom:1px solid #eee;
+	padding:10px 0px;
+	width:100%;
+	text-align:center;
+}
+
+.header a{
+	color:#333;
+	text-decoration: none;
+}
+
+
+.form-control{
+      -webkit-border-radius: 4px !important;
+         -moz-border-radius: 4px !important;
+              border-radius: 4px !important;
+      -webkit-border-top: 4px !important;
+         -moz-border-top: 4px !important;
+              border-top: 4px !important;
+      -webkit-border-bottom: 4px !important;
+         -moz-border-bottom: 4px !important;
+              border-bottom: 4px !important;
+    
+}
+
+
+  /* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+
+input[type=number] {
+  -moz-appearance: textfield;
+}
+  .login-form {
+    width: 340px;
+      margin: 50px auto;
+  }
+    .login-form form {
+      margin-bottom: 15px;
+        background: #f7f7f7;
+        box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+        padding: 20px;
+    }
+    .login-form h2 {
+        margin: 0 0 15px;
+    }
+    .form-control, .btn {
+        min-height: 38px;
+        border-radius: 2px;
+    }
+    .btn {        
+        font-size: 15px;
+        font-weight: bold;
+      }
