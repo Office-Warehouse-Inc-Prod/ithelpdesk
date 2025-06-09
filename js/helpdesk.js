@@ -13,7 +13,6 @@ function pager(pg) {
   });
 }
 
-
 function admin_hideshowforms() {
   let datetime = null,
     date = null;
@@ -40,12 +39,27 @@ function admin_hideshowforms() {
       $(".hide_cl").show();
       document.getElementById("dateclabel").className = "";
       document.getElementById("clby_label").className = "";
+    } else if ($(this).val() == "SUBJECT FOR CLOSING") {
+      $("#date_closed").show();
+      $("#date_closed").val(rd);
+      $("#close_by").show();
+      $("#ico_cal").show();
+      $("#cl_desc").show();
+      $(".hide_cl").show();
+      document.getElementById("dateclabel").className = "";
+      document.getElementById("clby_label").className = "";
     } else if ($(this).val() == "PARTIALLY CLOSED") {
       $("#date_closed").show();
       $("#close_by").show();
       $("#ico_cal").show();
       document.getElementById("dateclabel").className = "";
       document.getElementById("clby_label").className = "";
+    } else if ($(this).val() == "FOR PICKUP") {
+      $("#tripticket1lbl").show();
+      $("#tripticket1").show();
+    } else if ($(this).val() == "FOR DELIVERY TO STORE") {
+      $("#tripticket2lbl").show();
+      $("#tripticket2").show();
     } else {
       $("#date_closed").hide();
       $("#date_closed").val("");
@@ -90,7 +104,6 @@ function wfithsforms() {
 //   });
 // }
 
-
 function slct_isp() {
   $("#isp").on("change", function () {
     var ispval = this.value;
@@ -98,7 +111,6 @@ function slct_isp() {
     $("#isp_num").val(ispval);
   });
 }
-
 
 function gtsub_id() {
   $("#sub").on("change", function () {
@@ -110,10 +122,16 @@ function gtsub_id() {
 
 function slct_sub() {
   $("#sub").change(function () {
-    if ($(this).val() == "75" || $(this).val() == "76" || $(this).val() == "77" || $(this).val() == "78" ||
-    $(this).val() == "79" || $(this).val() == "80" || $(this).val() == "81" ) 
-    {
-       $(".hide_isp").show();
+    if (
+      $(this).val() == "75" ||
+      $(this).val() == "76" ||
+      $(this).val() == "77" ||
+      $(this).val() == "78" ||
+      $(this).val() == "79" ||
+      $(this).val() == "80" ||
+      $(this).val() == "81"
+    ) {
+      $(".hide_isp").show();
       $("#isp").attr("required", "true");
       document.getElementById("lbl_isp").className = "";
       document.getElementById("lbl_refNo").className = "";
@@ -134,23 +152,28 @@ function slct_sub() {
   $("#sub").trigger("change");
 }
 
-function unilayout_netshowmodalform(){
-  if ($('#sub_num').val() == "75" || $('#sub_num').val() == "76" || $('#sub_num').val() == "77" || $('#sub_num').val() == "78" ||
-    $('#sub_num').val() == "79" || $('#sub_num').val() == "80" || $('#sub_num').val() == "81" ) 
-  {
-      $(".hide_isp").show();
-      $("#isp").attr("required", "true");
-      document.getElementById("lbl_isp").className = "";
-      document.getElementById("lbl_refNo").className = "";
-      document.getElementById("lbl_DtRefNo").className = "";
-  }
-  else{
-     $(".hide_isp").hide();
-      $("#date_closed").removeAttr("required");
-      $("#date_closed").removeAttr("data-error");
-      document.getElementById("lbl_isp").className = "hidden";
-      document.getElementById("lbl_refNo").className = "hidden";
-      document.getElementById("lbl_DtRefNo").className = "hidden";
+function unilayout_netshowmodalform() {
+  if (
+    $("#sub_num").val() == "75" ||
+    $("#sub_num").val() == "76" ||
+    $("#sub_num").val() == "77" ||
+    $("#sub_num").val() == "78" ||
+    $("#sub_num").val() == "79" ||
+    $("#sub_num").val() == "80" ||
+    $("#sub_num").val() == "81"
+  ) {
+    $(".hide_isp").show();
+    $("#isp").attr("required", "true");
+    document.getElementById("lbl_isp").className = "";
+    document.getElementById("lbl_refNo").className = "";
+    document.getElementById("lbl_DtRefNo").className = "";
+  } else {
+    $(".hide_isp").hide();
+    $("#date_closed").removeAttr("required");
+    $("#date_closed").removeAttr("data-error");
+    document.getElementById("lbl_isp").className = "hidden";
+    document.getElementById("lbl_refNo").className = "hidden";
+    document.getElementById("lbl_DtRefNo").className = "hidden";
   }
 }
 
@@ -317,7 +340,7 @@ function crd_btm() {
 //           $("#userModal").modal("hide");
 //       //     setTimeout(function(){// wait for 5 secs(2)
 //       //      location.reload(); // then reload the page.(3)
-//       // }, 2000); 
+//       // }, 2000);
 //         },
 //       });
 //     } else {
@@ -325,5 +348,3 @@ function crd_btm() {
 //     }
 //   });
 // }
-
-

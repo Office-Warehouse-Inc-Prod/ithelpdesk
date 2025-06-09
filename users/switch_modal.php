@@ -1,3 +1,8 @@
+<?php
+include 'switch_attach_modal.php';
+
+?>
+
 <style>
 
 
@@ -138,7 +143,14 @@
             <div class="input-group-prepend">
             <label class="input-group-text" for="ModalTOS"><strong> Types of Service</strong></label>
             </div>
-            <input type="text" class="form-control form-control-sm" name="ModalTOS" id="ModalTOS" required="" readonly="" style="background-color: #fff;">
+            <input type="text" class="form-control " name="ModalTOS" id="ModalTOS" required="" readonly="" style="background-color: #fff;">
+            </div>
+
+            <div class="input-group mb-3 col-md-12">
+            <div class="input-group-prepend">
+            <label class="input-group-text" for="ModalTOS"><strong> Status</strong></label>
+            </div>
+            <input type="text" class="form-control " name="ModalStatus" id="ModalStatus" required="" readonly="" style="background-color: #fff;">
             </div>
 
 <!--             <div class="input-group mb-3 col-md-12">
@@ -152,9 +164,10 @@
 
   <div id="alrtmsg" class="mt-2 col-lg-12"></div>
                 <div class=" col-lg-12">
-            <label class="" for="Modal_reply"><strong> Comment</strong></label>
+            <label class="d-flex justify-content-between" for="Modal_reply"><strong> Comment</strong>
+            <a href="#" name="vwfile" id="vwfile" class="text-decoration-none">View Attached File</a></label>
            
-                  <textarea class="uModaltxtarea" id="Modal_reply" name="Modal_reply" minlength="5" maxlength="100" placeholder="Leave a comment to follow up your report..."></textarea>
+                  <textarea class="uModaltxtarea" id="Modal_reply" name="Modal_reply" minlength="5" maxlength="1000" placeholder="Leave a comment to follow up your report..."></textarea>
              
                     
                     
@@ -224,6 +237,33 @@
           </div>
           </div>
 		  </div>
+ <script type="text/javascript">
+
+$('#vwfile').click(function (e) { 
+    e.preventDefault();
+
+var val = $('#ModalTicket_no').val();
 
 
+    $.ajax({
+      type: 'POST',
+      url: 'sesticket.php',
+      data: {tktval: val},
+      success: function(response) {
+        $('#images').html(response);
+        $('#ViewFile #ticketxxx').val(val);
+        $('#ViewFile #file-input').val('');
+        $('#save_file').attr('disabled', 'true');
+        $('#ViewFile').modal('show');
+        $('#ticket_modal').modal('hide');
+
+
+
+      }
+    });
+});
+
+
+
+</script>
 

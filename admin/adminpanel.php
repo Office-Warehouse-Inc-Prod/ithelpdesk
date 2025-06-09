@@ -36,8 +36,10 @@ include 'sub_graph_modal.php';
           <div class="input-group-text">LOGS IN YEAR OF:</div>
         </div>
                  <select class="form-contro"  name="yearpicker" id="yearpicker" required>
-                 <option value="2019,2020,2021,2022,2023" >OVERALL</option>
-                 <option value="2023" selected >2023</option>
+                 <option value="2019,2020,2021,2022,2023,2024,2025" >OVERALL</option>
+                 <option value="2025" selected >2025</option>
+                 <option value="2024" >2024</option>
+                 <option value="2023" >2023</option>
                  <option value="2022" >2022</option>
                  <option value="2021" >2021</option>
                  <option value="2020">2020</option>
@@ -95,20 +97,7 @@ include 'sub_graph_modal.php';
 </div> -->
 </div>
 <div class="card-footer d-flex align-items-center justify-content-between">
-                       <!-- <div class="row">
-                        <div class="col-md-4">
-                        <a class="text-white stretched-link" id="card_openval" href="#bottom" value="OPEN" >  <span class="small text-white">HARDWARE & SOFTWARE:</span></a>
 
-                        </div>
-                        <div class="col-md-4">
-                        <a class="text-white stretched-link" id="card_openval" href="#bottom" value="OPEN" >  <span class="small text-white">NETWORK:</span></a>
-
-                        </div>
-                        <div class="col-md-4">
-                        <a class="text-white stretched-link" id="card_openval" href="#bottom" value="OPEN" >  <span class="small text-white">OTHERS:</span></a>
-
-                        </div>
-                       </div> -->
                        <a class=" text-white stretched-link" id="card_openval" href="#bottom" value="OPEN" ><span class="small text-white">Click here for more info.</span></a>
                    
 
@@ -119,7 +108,7 @@ include 'sub_graph_modal.php';
 <div class="dashcard card text-white mb-4 bg-warning" style="width: 18rem; height: 9rem;">
 <div class="card-body">
 
-<div class="card-title" style="font-size: 15px;">ATTENDED WITH FIX ASSET: <span class="float-right" id="count_owfa" style="font-size: 32px;"></span></div>
+<div class="card-title" style="font-size: 15px;">ATTENDED WITH FIX ASSET:<span class="float-right" id="count_owfa" style="font-size: 32px;"></span></div>
 
 </div>
 <div class="card-footer d-flex align-items-center justify-content-between">
@@ -157,7 +146,7 @@ include 'sub_graph_modal.php';
 </div>
 
 <div class="card card2 col-12 col-md-12 col-lg-6">
-<h5 class="card-header text-white">I.T Support Logs</h5>
+<h5 class="card-header text-white">Support Logs</h5>
 <div class="card-body">
 <div id="chartdiv8"></div>
 </div>
@@ -307,12 +296,13 @@ style="text-transform:uppercase" onkeyup="this.value = this.value;"></textarea>
 </select>
 </div>
 <div class="form-group col-9 col-md-9 col-lg-9">
-<label>I.T SUPPORT</label>
+<label id="suplabel" >SUPPORT</label>
 <input type="hidden" name="it_num" id="it_num" readonly="">
+<input type="hidden" name="it_numres" id="it_numres" readonly="">
 <select class="form-control form-control-sm" name="itsup" id="itsup" required>
 <option value="">Assign support...</option>  
      <?php
-              $query="select * from it_tech WHERE itsup NOT IN ('4','7','8',12)";
+              $query="select * from it_tech WHERE deptsel = '2' AND itsup NOT IN ('4','7','8',12)";
               $run=$conn->prepare($query);
               $run->execute();
               $rs=$run->get_result();
@@ -333,7 +323,7 @@ style="text-transform:uppercase" onkeyup="this.value = this.value;"></textarea>
 <select class="form-control form-control-sm" name="cat" id="cat" required >
 <option value=""> &larr; CATEGORY &rarr;</option>  
      <?php
-              $query="select * from category";
+              $query="select * from category WHERE deptsel = '2'";
               $run=$conn->prepare($query);
               $run->execute();
               $rs=$run->get_result();
@@ -399,7 +389,7 @@ style="text-transform:uppercase" onkeyup="this.value = this.value;"></textarea>
 <select class = "form-control form-control-sm" name= "status" id="status" required>
 <option value=""> &larr; Status &rarr;</option>
 <?php
-      $query="select * from status WHERE stat_id NOT IN  ('2','5','6')";
+      $query="select * from status WHERE mktg_module_tag = 'Y' ";
       $run=$conn->prepare($query);
       $run->execute();
       $rs=$run->get_result();
@@ -489,7 +479,7 @@ style="text-transform:uppercase" onkeyup="this.value = this.value;"></textarea>
 </div>
 
 <div class="modal-footer">
-<input type="text" name="operation" id="operation" value="Add" />
+<input type="hidden" name="operation" id="operation" value="Add" />
 <input type="hidden" name="u_id" value="<?php echo $_SESSION['user_id'];  ?>">
 
 </div>
@@ -507,14 +497,34 @@ style="text-transform:uppercase" onkeyup="this.value = this.value;"></textarea>
   
 $( document ).ready(function() {
 
+  
 
 //for debug purposes enable here
-console.log($('#date_created').val())
+// console.log($('#date_created').val())
 
 
 if(/Android|webOS|iPhone|iPad|Mac|Macintosh|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) { $("#ovrall").hide(); }
 
-var user_id = <?= $_SESSION['user_id']; ?>
+var user_id = <?= $_SESSION['user_id']; ?>;
+var supvalres = $('#itsup').val();
+console.log(user_id)
+
+// create arry with non admin users
+
+
+if (user_id != '239') {
+  // alert('working');
+}
+else{
+  // alert('not working');
+  // console.log(supvalres)
+  
+  $('#it_numres').show();
+  $('#itsup').attr('readonly', 'readonly');
+  $('#status').attr('readonly', 'readonly');
+  // $('#suplabel').html('TEST');
+}
+
 
 let val = '';
 $('#card_totalval').click(function(e) {
@@ -542,7 +552,7 @@ $('#myInput').on( 'input', function () {
 
 function getdata(yr){
 $.post('fetchdata/fetch_data.php',{yr:yr, mode:'dtb'},function(data){
-// console.log(data);
+console.log(data);
 admin_datatable(data);
 },'json');
 }
@@ -621,11 +631,12 @@ table =  $("#report_data").DataTable({
 },
 "pageLength":10,
 "data": dataset,
-"order": [[ 1, "Desc" ]],
+"order": [[ 2, "Desc" ]],
 
 "columns": [
 
 {title:"Update", data:null,"defaultContent": "<Button class='btn btn-danger' name='update' id='dtbsecond'><i class='fas fa-edit'></i></Button>"},
+{title:".", data:"msg_cnt","defaultContent": ""},
 {title:"TicketNo", data:"ticket_no","defaultContent": ""},
 {title:"  Store", data:"str_code","defaultContent": ""},
 {title:"Date Created", data:"date_created","defaultContent": ""},
@@ -645,10 +656,20 @@ table =  $("#report_data").DataTable({
 
 ],
 
+// columnDefs: [ {
+//             targets: -1,
+//             data: null,
+//             defaultContent: "<div style='text-align:center'><a class='btn btn-default'><i class='fa fa-search'></i></a> <a class='btn btn-default'><i class='fa fa-pencil'></i></a> <a class='btn btn-default'><i class='fa fa-times'></i></a></div>"
+//         },
+//         {
+//             targets: 4,
+//             orderable: false
+//         } ]
+
 "columnDefs": [
 { 
 
-  targets: [6,10,11],
+  targets: [7,11,12],
   "width": "2%",
   render: function ( data, type, row) {
       if(type === 'display'){
@@ -670,16 +691,40 @@ table =  $("#report_data").DataTable({
           else if(data == '0 Days Unresolved'){
             data = ''
           }
+          // else if(data == '1'){
+          //   data = '<i class="fas fa-envelope fa-lg bg-warning"></i>'
+          // }
   }
   return data;
 }
+
+
+},
+{
+
+  targets: [1],
+  "width": "2%",
+  render: function ( data, type, row) {
+      if(type === 'display'){
+        if(data == '1'){
+            data = '<i class="fas fa-envelope fa-lg bg-warning"></i>'
+          }
+          else if (data == '0'){
+            data = ''
+
+          }
+  }
+  return data;
+}
+
 }
 ],
 
 rowCallback: function(row, data, index){
-if(data['status'] == 'OPEN'){
-$(row).find('td:eq(0)').css('color', 'red');
+if(data['status'] == 'OPEN' && data['msg_cnt'] == '1'){
+  // console.log (data['msg_cnt'])
 $(row).find('td:eq(1)').css('color', 'red');
+// .addClass('fas fa-envelope');
 $(row).find('td:eq(2)').css('color', 'red');
 $(row).find('td:eq(3)').css('color', 'red');
 $(row).find('td:eq(4)').css('color', 'red');
@@ -691,6 +736,23 @@ $(row).find('td:eq(9)').css('color', 'red');
 $(row).find('td:eq(10)').css('color', 'red');
 $(row).find('td:eq(11)').css('color', 'red');
 $(row).find('td:eq(12)').css('color', 'red');
+$(row).find('td:eq(13)').css('color', 'red');
+}
+if(data['status'] == 'OPEN' && data['msg_cnt'] == '0'){
+  // console.log (data['msg_cnt'])
+$(row).find('td:eq(1)').css('color', 'red');
+// .addClass('fas fa-envelope');
+$(row).find('td:eq(2)').css('color', 'red');
+$(row).find('td:eq(3)').css('color', 'red');
+$(row).find('td:eq(4)').css('color', 'red');
+$(row).find('td:eq(5)').css('color', 'red');
+$(row).find('td:eq(6)').css('color', 'red');
+$(row).find('td:eq(7)').css('color', 'red');
+$(row).find('td:eq(8)').css('color', 'red');
+$(row).find('td:eq(9)').css('color', 'red');
+$(row).find('td:eq(10)').css('color', 'red');
+$(row).find('td:eq(11)').css('color', 'red');
+$(row).find('td:eq(13)').css('color', 'red');
 }
 else if (data['status'] == 'ATTENDED WITH FIX ASSET'){
 $(row).find('td:eq(0)').css('color', 'red');
@@ -732,7 +794,7 @@ $(row).find('td:eq(13)').css('color', 'green');
 $('#report_data tbody').on( 'click', 'button', function () {
 var data = table.row( $(this).parents('tr') ).data();
 $('#subjct').attr('readonly', true);
-var tid=$(this).parent().siblings(':first').html();
+var tid=$(this).parent().siblings('td:eq(1)').html(); 
 $('#ticket_no').val(data['ticket_no']);
 $('#str_num').val(data['store']);
 $('#store').val(data['store']);
@@ -743,6 +805,7 @@ $('#via').val(data['via']);
 $('#status').val(data['status']);
 $('#it_num').val(data['itsup']);
 $('#itsup').val(data['itsup']);
+$('#it_numres').val(data['itsup']);
 $('#cat_num').val(data['cat_id']);
 $('#cat').val(data['cat_id']);
 $('#sub_num').val(data['sub_id']);
@@ -820,7 +883,7 @@ getinfo(tid, 'remarks', user_id);
 
 gtsub_id();
 
-$('.modal-title').text("Ticker Number: "+tid+"");
+$('.modal-title').text("Ticket Number: "+tid+"");
 $('#action').val("Save and Reply");
 $('#operation').val("Save and Reply"); 
 $('#userModal').modal({"show": true, "backdrop": 'static'});
@@ -838,7 +901,7 @@ $('#card_totalval').on('click', function () {
 var val =  $(this).attr("value");
 // alert(val);
 table
-.columns( 6 )
+.columns( 7 )
 .search(val)
 .draw();
 } );
@@ -848,7 +911,7 @@ $('#card_openval').on('click', function () {
 var val =  $(this).attr("value");
 // alert(val);
 table
-.columns( 6 )
+.columns( 7 )
 .search(val)
 .draw();
 } );
@@ -857,7 +920,7 @@ $('#card_openwfaval').on('click', function () {
 var val =  $(this).attr("value");
 // alert(val);
 table
-.columns( 6 )
+.columns( 7 )
 .search(val)
 .draw();
 } );
@@ -866,7 +929,7 @@ $('#card_closedval').on('click', function () {
 var val =  $(this).attr("value");
 // alert(val);
 table
-.columns( 6 )
+.columns( 7 )
 .search(val)
 .draw();
 } );

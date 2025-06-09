@@ -146,7 +146,7 @@ h1{
               <!-- <p class="mb-4">Login</p> -->
             </div>
               <div class=" col-md-8 mb-4">
-              <h1>IT HELPDESK</h>
+              <h1>OWI HELPDESK</h>
               <p class="mb-4">Login</p>
             </div>
                 </div>
@@ -167,7 +167,7 @@ h1{
                 <label>Password</label>
             </div>
             <div class="checkbox">
-                <label><input type="checkbox">Remember me</label>
+                <!-- <label><input type="checkbox">Remember me</label> -->
             </div>
               <input type="submit"  class="btn-login" value="LogIn">
             </form>

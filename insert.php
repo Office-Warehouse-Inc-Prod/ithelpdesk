@@ -13,10 +13,10 @@ date_default_timezone_set("Asia/Manila");
 
 include('db.php');
 // include('function.php');
-if(isset($_POST["operation"]))
+if(isset($_POST["sop"]))
 {
 
- if($_POST["operation"] == "Add")
+ if($_POST["sop"] == "Add")
  {
 
 $qry = $connection->prepare(" SELECT counter.ticket_no FROM counter");
@@ -56,6 +56,21 @@ $ticknum = $res['ticket_no']+1;
       ':remarks_detail' => $_POST["remarks"],
       ':remarks_date' => date('Y-m-d H:i:s'),
       ':itsup' => $tchnum
+
+    ));
+
+
+    $tickhisres = $connection->prepare("
+    INSERT INTO tbl_tickethist (ticket_no, date_updated, status, userID) 
+   VALUES (:ticket_no, :date_updated, :status, :userID )
+  ");
+  $tickhisres= $restat->execute(
+    array(
+
+      ':ticket_no' => $ticknum,
+      ':date_updated' => date('Y-m-d H:i:s'),
+      ':status' => $_POST["status"],
+      ':userID' => $_SESSION['user_id']
 
     ));
 
@@ -227,6 +242,9 @@ else{
       ':remarks_date' => date('Y-m-d H:i:s'),
       ':itsup' => $tchnum
     ));
+
+    // $auditlogs = $connection->prepare("INSER INTO ")
+
 
     $makecom = $connection->prepare("
     INSERT INTO reports_comments (ticket_no, comment_details, comment_date, userId) 

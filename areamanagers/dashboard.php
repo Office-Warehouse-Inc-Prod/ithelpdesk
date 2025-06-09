@@ -114,11 +114,13 @@ $datetime->setTimezone($timezone);
                     <span class="input-group-text" id="basic-addon1">SELECT YEAR:</span>
                   </div>
                                  <select class="form-control"  name="yearpicker" id="yearpicker" required>
-                                 <option value="2019,2020,2021">OVERALL</option>
+                                 <option value="2019,2020,2021,2022,2023,2024">OVERALL</option>
                                  <option value="2019">2019</option>
                                  <option value="2020">2020</option>
-                                 <option value="2021" selected>2021</option>
-                                 <option value="2022" selected>2022</option>
+                                 <option value="2021">2021</option>
+                                 <option value="2022">2022</option>
+                                 <option value="2023">2023</option>
+                                 <option value="2024" selected>2024</option>
                                 </select>
                  </div>
 
@@ -143,8 +145,8 @@ $datetime->setTimezone($timezone);
                               <option value="<?php echo $areaid;?>"><?= $area_desc; ?></option>
                               <?php }?>
                               ?>   
-                  </select> 
-              </div>
+		  </select>  
+	    </div>
          </div>
 
                 <div  class="col-2 col-md-2 mt-4 mb-4">

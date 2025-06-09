@@ -13,7 +13,23 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 } 
 
-$sql = "SELECT * FROM tbl_notif WHERE notif_val IN ('2','3') ";
+$sql = "SELECT
+tbl_notif.ticket_no, 
+tbl_notif.store, 
+tbl_notif.itsup, 
+tbl_notif.notif_data, 
+tbl_notif.notif_date, 
+tbl_notif.notif_val, 
+tbl_notif.assigned_by
+FROM
+tbl_notif
+LEFT JOIN
+reports
+ON 
+    tbl_notif.ticket_no = reports.ticket_no
+WHERE
+notif_val IN ('2','3') AND
+reports.deptsel = 2  ";
 $result = $conn->query($sql);
 
 echo $result->num_rows;

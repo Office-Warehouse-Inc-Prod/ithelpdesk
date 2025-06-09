@@ -10,7 +10,7 @@ session_start();
 <head>
     <meta charset="utf-8">
     <!-- This file has been downloaded from Bootsnipp.com. Enjoy! -->
-    <title>I.T HELPDESK</title>
+    <title>OWI HELPDESK</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- <link href="http://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet"> -->
       <meta http-equiv='cache-control' content='no-cache'>
@@ -192,7 +192,7 @@ img{
 <body>
 
 <nav class="navbar navbar-icon-top navbar-expand-lg bg-warning navbar-dark">
-  <a class="navbar-brand logo" href="#">I.T <span class="logo">Helpdesk</span></a>
+  <a class="navbar-brand logo" href="#">OWI <span class="logo">Helpdesk</span></a>
 
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <!-- <span class="navbar-toggler-icon"></span> -->
@@ -207,6 +207,15 @@ img{
           <span class="sr-only">(current)</span>
           </a>
       </li>
+      <li class="nav-item active">
+        <a class="nav-link" href="price_verifier.php" target="_blank">
+          <!-- <i class="fa fas fa-phone text-dark"> -->
+          <i class="fa fas fa-search text-dark"></i>
+            <!-- <span class="badge badge-danger"></span> -->
+          </i>
+         <span class="text-dark">Price Verifier</span> 
+        </a>
+      </li>    
       <li class="nav-item active">
         <a class="nav-link" href="contact_us.php" target="_blank">
           <i class="fa fas fa-phone text-dark">
@@ -223,8 +232,9 @@ img{
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <!-- <i class="fa fa-envelope-o"> -->
            <img src="../images/users/<?= $_SESSION['imguser'];?>" alt="User Image" />
-           <span class="text-dark font-weight-bold"><?php echo $_SESSION['fname']. '  ' . $_SESSION['lstname'];?></span> 
-          
+           <span class="text-dark font-weight-bold"><?php  echo $_SESSION['str_code']. ' |  '  .   $_SESSION['fname']. '  ' . $_SESSION['lstname'];?></span> 
+           <input type="hidden" name="lm_tag" id="lm_tag" value="<?php echo $_SESSION['SBS_NO']; ?>">
+           <input type="hidden" name="lm_tag" id="lm_tag" value="<?php echo $_SESSION['PRICE_LVL']; ?>">
         </a>
         <div class="dropdown-menu  " aria-labelledby="navbarDropdown">
           <a class="dropdown-item" href="javascript:void(0)" onclick="pager(this.id)" id="user_profile">Profile</a>
@@ -249,7 +259,16 @@ img{
 
 <script type="text/javascript">
   $(document).ready(function(){
-// pager('userpanel');
+    var lmtag = $('#lm_tag').val();
+console.log(lmtag);
+
+if (lmtag === 'Y') {
+
+  // alert('LM 4');
+  
+} else {
+  // alert('PL 1');
+}
   });
  
 </script>

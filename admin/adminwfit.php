@@ -1,4 +1,5 @@
 <?php
+// session_start();
 include 'admin.php';
 include '../condb.php';
 
@@ -31,7 +32,9 @@ $con1=new dbconfig();
       <script src="../js/coms.js"></script> 
  
 
-  <div class="modal fade" id="newrpt_Modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal fade" id="newrpt_Modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true"
+  data-backdrop="static"
+   data-keyboard="false">
   <div class="modal-dialog modal-lg">
   <form method="post" id="newrpt_form" enctype="multipart/form-data">
    <div class="modal-content">
@@ -48,7 +51,7 @@ $con1=new dbconfig();
     <div class="form-group col-md-4">
        <label>STORE</label>
 
-
+ 
         <input type="hidden" name="store" id="store" readonly="" value="">
         <input type="text" class="form-control form-control-sm" name="str_desc" id="str_desc" readonly="" value="">
 
@@ -101,24 +104,26 @@ $con1=new dbconfig();
                     ?>   
     </select>
   </div>
-    <div class="form-group col-md-8">
-      <label>I.T SUPPORT</label>
+    <div class="form-group col-md-8 sup">
+      <!-- <input type="text" id="test" name="test"> -->
+      <label>ASSIGN SUPPORT</label>
           <input type="hidden" name="it_num" id="it_num" readonly="">
           <select class="form-control form-control-sm" name="itsup" id="itsup" required>
              <option value="">Assign support...</option>  
-                   <?php
-                            $query="select * from it_tech WHERE itsup NOT IN ('4','7','8',12)";
-                            $run=$con1->prepare($query);
-                            $run->execute();
-                            $rs=$run->get_result();
-                            while ($res=$rs->fetch_assoc()) {
-                              $tchid = $res['itsup'];
-                              $tchdesc = $res['it_desc'];
-                            ?>
-
-                            <option value="<?php echo $tchid;?>"><?= $tchdesc; ?></option>
-                            <?php }?>
-                            ?>   
+             <?php
+                          
+                          $query="select * from it_tech WHERE deptsel = '2'";
+                          $run=$con1->prepare($query);
+                          $run->execute();
+                          $rs=$run->get_result();
+                          while ($res=$rs->fetch_assoc()) {
+                            $tchid = $res['itsup'];
+                            $tchdesc = $res['it_desc'];
+                            
+                          ?>
+                             
+                          <option value="<?php echo $tchid;?>"><?= $tchdesc; ?></option>
+                          <?php } ?>
                 </select> 
    </div>
     <div class="form-group col-md-6">
@@ -128,7 +133,7 @@ $con1=new dbconfig();
           <select class="form-control form-control-sm" name="cat" id="cat" required >
              <option value=""> &larr; CATEGORY &rarr;</option>  
                    <?php
-                            $query="select * from category";
+                            $query="select * from category WHERE deptsel = '2'";
                             $run=$con1->prepare($query);
                             $run->execute();
                             $rs=$run->get_result();
@@ -189,12 +194,12 @@ $con1=new dbconfig();
   </div>
 </div>
 
-    <div class="form-group col-md-4">
+    <div class="form-group col-md-4 selected ">
         <label>STATUS</label>
     <select class = "form-control form-control-sm" name= "status" id="status" required>
     <option value=""> &larr; Status &rarr;</option>
            <?php
-                    $query="select * from status WHERE stat_id NOT IN  ('2','5','6')";
+                    $query="select * from status WHERE admin_module_tag = 'Y'";
                     $run=$con1->prepare($query);
                     $run->execute();
                     $rs=$run->get_result();
@@ -204,7 +209,19 @@ $con1=new dbconfig();
                     <?php }?>
                     ?>   
     </select>
+    
   </div>
+  <div class="form-group col-md-2 "></div>
+  <div class="form-group col-md-4 hide_size">
+  <label>SIZE</label>
+  <input type="text" name="size" id="size">
+  </div>
+
+  <div class="form-group col-md-4 hide_others">
+  <label>OTHER CONCERN</label>
+  <input type="text" name="others" id="others">
+  </div>
+
     <div class="form-group col-md-4">
       <label id="dateclabel" class="hidden">DATE CLOSED</label>
        <div class="input-group date" id="datetimepicker2" data-target-input="nearest">
@@ -218,7 +235,7 @@ $con1=new dbconfig();
     <div class="form-group col-md-4">
 
      <label id="clby_label" class="hidden">CLOSED BY</label>
-        <input type="hidden" name="close_by" id="close_by" value="<?php echo $_SESSION['tech_id'];?>"> 
+        <input type="text" name="close_by" id="close_by" value="<?php echo $_SESSION['tech_id'];?>"> 
         <input type="text" class="form-control form-control-sm" name="cl_desc" id="cl_desc" readonly="" value="<?php echo $_SESSION['fname']. '  ' . $_SESSION['lstname'];?>">
     </div>
 
@@ -251,8 +268,8 @@ $con1=new dbconfig();
     <div id="remarks_view"><ul></ul></div>
 
 
-  </div>
-      </div>
+</div>
+</div>
 
     </div>
     <div class="col-md-12">
@@ -270,7 +287,7 @@ $con1=new dbconfig();
 </div>
 
   <div class="modal-footer">
-     <input type="text" name="operation" id="operation" />
+     <input type="hidden" name="operation" id="operation" />
      <input type="hidden" name="u_id" value="<?php echo $_SESSION['user_id'];  ?>">
 
     </div>
@@ -283,6 +300,56 @@ $con1=new dbconfig();
 
 <script type="text/javascript">
   $(document).ready(function(){
+
+
+
+
+// for Status Open    
+$("div.selected select").val("OPEN");
+
+// for Others
+$('.hide_others').hide();
+$("#sub").change(function (e) { 
+//  alert(this.value);
+  var iN = $("#sub").val();  
+  
+    
+if (iN == "100" ||
+    iN == "105" ||
+    iN == "111" ||
+    iN == "112" 
+) {
+  $('.hide_others').show();
+}
+else{
+  $('.hide_others').hide();
+}
+
+
+});
+
+
+// for SubCat Trade
+$('.hide_size').hide();
+$("#sub").change(function (e) { 
+//  alert(this.value);
+  var iN = $("#sub").val();  
+  
+    
+if (iN == "106" ||
+    iN == "107" ||
+    iN == "108" ||
+    iN == "114" ||
+    iN == "115"
+) {
+  $('.hide_size').show();
+}
+else{
+  $('.hide_size').hide();
+}
+
+
+});
 
   // $('#action').hide();
 
@@ -373,13 +440,16 @@ const dataset=t.newrptdata;
 
   $('#newrpt_Modal').modal('show');
   $('#action').val("Update");
-  $('#operation').val("Edit"); 
+  $('#operation').val("Save and Reply"); 
 
 var tid=$(this).parent().siblings(':first').html();
 $('#tick_title').text("Ticker Number: "+tid+"");
 
 getinfo(tid, 'remarks', user_id);
 // console.log(tid)
+
+
+
 
         });
 
@@ -409,6 +479,8 @@ getinfo(tid, 'remarks', user_id);
   });
 
 
+
+
 $(function () {
           $('#datetimepicker2, #datetimepicker3').datetimepicker()
       });
@@ -423,6 +495,7 @@ admin_hideshowforms();
 $(document).on('submit', '#newrpt_form', function(event)
  {
   event.preventDefault();
+  event.stopImmediatePropagation();
    $.ajax({
     url:"insert.php",
     method:'POST',
@@ -435,7 +508,7 @@ $(document).on('submit', '#newrpt_form', function(event)
      $('#newrpt_form')[0].reset();
      $('#newrpt_Modal').modal('hide');
      getdata();
-     // location.reload(); 
+     location.reload(); 
     }
    });
  });
@@ -458,7 +531,7 @@ $('#msg_thread').show('slow');
 }
 else if($('#msgbtn').val() == 'hide'){
 $('#action').val("Save");
-$('#operation').val("Edit");
+$('#operation').val("Save and Reply");
 $('#msgbtn').val("show");
 $('#msg_thread').hide('slow');
 }

@@ -49,7 +49,7 @@ hr {
                 <span class="info-box-text font-weight-bold">Monday to Friday - 8:00 AM to 8:00 PM</span>
                 <p>Tel Nos: 8567-3235, 8376-0841,8376-0887,8567-3261,8567-3545
                     <br>Local Nos: <br>8201 (Raymart manalo);
-                               <br>8202 (Vincent Reyes / Arnold Penilla)
+                               <br>8202 (Arnold Penilla)
                              <br>  8303 (Renafe Ilao)
 <br>
 <br>
@@ -87,6 +87,21 @@ hr {
                 <td>Raymart Manalo</td>
                 <td>IT Helpdesk</td>
                 <td>0917-8628024</td>
+	    </tr>
+            <tr>
+                <td>Gerald Decena</td>
+                <td>IT Technical Support</td>
+                <td>0917-8628243</td>
+	    </tr>
+            <tr>
+                <td>Gerald Balasta</td>
+                <td>IT Technical Support</td>
+                <td>0994-3300528</td>
+	    </tr>
+            <tr>
+                <td>John Lexter Domingo</td>
+                <td>IT Technical Support</td>
+                <td>0965-2961571</td>
             </tr>
             <tr>
                 <td>Reynan Del Rosario</td>
@@ -99,20 +114,16 @@ hr {
                 <td>0917-8628113</td>
             </tr>
             <tr>
-                <td>Vincent Reyes</td>
-                <td>IT Technical Support</td>
-                <td>0917-8628170</td>
-            </tr>
-            <tr>
-                <td>Crisjerando Gutana</td>
-                <td>Jr Systems Developer</td>
-                <td>0955-1445880</td>
-            </tr> 
-            <tr>
                 <td>Mark Allan B. Espinal</td>
                 <td>Jr. Systems Developer</td>
                 <td>0998-7538068</td>
             </tr> 
+            <tr>
+                <td>Crisjerando Gutana</td>
+                <td>Jr. Programmer</td>
+                <td>0955-1445880</td>
+            </tr> 
+
             <tr>
                 <td>Renafe Ilao</td>
                 <td>Systems Admin Assistant</td>

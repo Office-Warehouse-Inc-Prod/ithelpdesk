@@ -89,7 +89,7 @@ $datetime->setTimezone($timezone);
 </div>
 <div class="card-footer d-flex align-items-center justify-content-between">
                       
-                           <a class="small text-white stretched-link" id="card_openwfaval" href="#bottom" value="OPEN WITH FIX ASSET" >Click here for more info.</a>
+                           <a class="small text-white stretched-link" id="card_openwfaval" href="#bottom" value="ATTENDED WITH FIX ASSET" >Click here for more info.</a>
                           <div class="go-arrow">  </div>
                       </div>
 
@@ -221,7 +221,7 @@ style="text-transform:uppercase" onkeyup="this.value = this.value;"></textarea>
 <select class="form-control form-control-sm" name="cat" id="cat" required >
 <option value=""> &larr; CATEGORY &rarr;</option>  
      <?php
-              $query="select * from category";
+              $query="select * from category WHERE deptsel = '1'";
               $run=$conn->prepare($query);
               $run->execute();
               $rs=$run->get_result();
@@ -309,6 +309,12 @@ style="text-transform:uppercase" onkeyup="this.value = this.value;"></textarea>
 </div>
 </div>
 <hr/>
+
+<div class="card" id="img" name="img">
+
+
+</div>
+
 <div class="form-group col-lg-12">
 <p>
 <div class="row">
@@ -494,7 +500,7 @@ $(row).find('td:eq(8)').css('color', 'red');
 $(row).find('td:eq(9)').css('color', 'red');
 $(row).find('td:eq(11)').css('color', 'red');
 }
-else if (data['status'] == 'OPEN WITH FIX ASSET'){
+else if (data['status'] == 'ATTENDED WITH FIX ASSET'){
 $(row).find('td:eq(0)').css('color', 'red');
 $(row).find('td:eq(1)').css('color', 'red');
 $(row).find('td:eq(2)').css('color', 'red');
@@ -506,6 +512,19 @@ $(row).find('td:eq(7)').css('color', 'red');
 $(row).find('td:eq(8)').css('color', 'red');
 $(row).find('td:eq(9)').css('color', 'red');
 $(row).find('td:eq(11)').css('color', 'red');
+}
+else if (data['status'] == 'SUBJECT FOR CLOSING'){
+$(row).find('td:eq(0)').css('color', '#890188');
+$(row).find('td:eq(1)').css('color', '#890188');
+$(row).find('td:eq(2)').css('color', '#890188');
+$(row).find('td:eq(3)').css('color', '#890188');
+$(row).find('td:eq(4)').css('color', '#890188');
+$(row).find('td:eq(5)').css('color', '#890188');
+$(row).find('td:eq(6)').css('color', '#890188');
+$(row).find('td:eq(7)').css('color', '#890188');
+$(row).find('td:eq(8)').css('color', '#890188');
+$(row).find('td:eq(9)').css('color', '#890188');
+$(row).find('td:eq(11)').css('color', '#890188');
 }
 else if (data['status'] == 'CLOSED'){
 $(row).find('td:eq(0)').css('color', 'green');
@@ -523,6 +542,7 @@ $(row).find('td:eq(11)').css('color', 'green');
 $(row).find('td:eq(12)').css('color', 'green');
 $(row).find('td:eq(13)').css('color', 'green');
 }
+
 
 },
 
@@ -759,6 +779,26 @@ location.reload();
 });
 
 _insert_data();
+
+
+$(document).on('click', '#dtbsecond', function(){
+
+  var val = jQuery('#ticket_no').val();
+
+
+  $.ajax({
+      type: 'POST',
+      url: 'sesticket.php',
+      data: {tktval: val},
+      success: function(response) {
+        $('#img').html(response);
+      }
+    });
+
+});
+
+
+
 
 $(document).on('click', '#msgbtn', function(){
 

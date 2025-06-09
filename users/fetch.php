@@ -19,9 +19,24 @@ switch ($mode) {
         case 'Addcomment':
             $output['cmmnt'] =$fn->insertcomm();
         break;
+        case 'search_desc':
+            $output= $fn->search_desc();
+            break;
+        case 'search_tkt':
+            $output= $fn->search_tkt();
+            break;
+        case 'pditems':
+            $output['rptpd']=$fn->pditems();
+        break;
         default:
             $output['rptdata']=$fn->getstrreports();
         break;
+        case 'get_tos':
+            $output= $fn->get_tos();
+            break;
+        case 'pv_res':
+            $output= $fn->pv_res();
+            break;
 }
 echo json_encode($output);
 

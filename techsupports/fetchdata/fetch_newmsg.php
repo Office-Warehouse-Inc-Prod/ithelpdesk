@@ -13,7 +13,11 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 } 
 
-$sql = "SELECT * FROM tbl_notif WHERE itsup = $itval AND notif_val = '1' ";
+$sql = " SELECT * FROM tbl_notif WHERE itsup = $itval AND notif_val = '1'  AND tbl_notif.ticket_no NOT LIKE '%MKTG%' 
+OR '%ADMIN%' 
+OR '%PD%' 
+OR '%VISUAL%' 
+OR '%LD%' ";
 $result = $conn->query($sql);
 
 echo $result->num_rows;

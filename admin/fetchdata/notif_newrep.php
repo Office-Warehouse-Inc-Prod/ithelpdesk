@@ -20,7 +20,7 @@ FROM
 reports
 INNER JOIN reports_msgcnt ON reports_msgcnt.ticket_no = reports.ticket_no
 
-WHERE status = 'NEW REPORT' and msg_cnt = '1'";
+WHERE status = 'NEW REPORT' and msg_cnt = '1' and deptsel = '2'";
 $result = $conn->query($sql);
 
 echo $result->num_rows;

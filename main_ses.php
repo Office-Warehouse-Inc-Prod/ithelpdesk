@@ -15,7 +15,32 @@ require 'database.php';
 $dflpass= 'owi123456';
 if(!empty($_POST['email']) && !empty($_POST['password'])):
   
-  $records = $conn->prepare('SELECT id,fname,lstname,email,password,role, tech_id, dept_id, str_num, img_name, area_num FROM users WHERE email = :email');
+  $records = $conn->prepare("SELECT
+	users.id, 
+	users.fname, 
+	users.lstname, 
+	users.email, 
+	users.`password`, 
+	users.tech_id, 
+	users.role, 
+	users.dept_id, 
+	users.str_num, 
+	users.img_name, 
+	users.area_num, 
+	users.usr_stat,
+  users.deptsel, 
+	tbl_branch.str_code AS str_code,
+  tbl_branch.SBS_NO AS SBS_NO,
+  tbl_branch.PRICE_LVL AS PRICE_LVL
+FROM
+	users
+	LEFT JOIN
+	tbl_branch
+	ON 
+		users.str_num = tbl_branch.str_num
+WHERE
+	users.usr_stat = 'A' AND 
+	email = :email");
   $records->bindParam(':email', $_POST['email']);
   $records->execute();
   $results = $records->fetch(PDO::FETCH_ASSOC);
@@ -37,20 +62,103 @@ $user = NULL;
     $_SESSION['lstname'] = $results['lstname'];
     $_SESSION['imguser'] = $results['img_name'];
     $_SESSION['area_num'] = $results['area_num'];
+    $_SESSION['str_code'] = $results['str_code'];
+    $_SESSION['deptsel'] = $results['deptsel'];
+    $_SESSION['SBS_NO'] = $results['SBS_NO'];
+    $_SESSION['PRICE_LVL'] = $results['PRICE_LVL'];
   // if(count($results) > 0 && password_verify($_POST['password'], $results['password']) && $results['role'] == 'admin' )
   if(count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'admin' )
 
   {
     $_SESSION['login'] = 'true';
     $_SESSION['user_id'] = $results['id'];
-    header("Location: admin/adminpanel.php");
+    header("Location: it/adminpanel.php");
     exit();
 
   }
+  elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'admin-admin' ) {
+    $_SESSION['login'] = 'true';
+    $_SESSION['user_id'] = $results['id'];
+    $_SESSION['deptsel'] = $results['deptsel'];
+    header("Location: admin/adminpanel.php");
+    exit();
+   } 
+   elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'admin-user' ) {
+    $_SESSION['login'] = 'true';
+    $_SESSION['user_id'] = $results['id'];
+    $_SESSION['deptsel'] = $results['deptsel'];
+    header("Location: adminsupport/techdashboard.php");
+    exit();
+   } 
+  elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'mktg-admin' ) {
+    $_SESSION['login'] = 'true';
+    $_SESSION['user_id'] = $results['id'];
+    $_SESSION['deptsel'] = $results['deptsel'];
+    header("Location: mktg/adminpanel.php");
+    exit();
+   } 
+   elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'mktg-user' ) {
+    $_SESSION['login'] = 'true';
+    $_SESSION['user_id'] = $results['id'];
+    $_SESSION['deptsel'] = $results['deptsel'];
+    header("Location: mktgsupport/techdashboard.php");
+    exit();
+   } 
+  elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'ld-admin' ) {
+    $_SESSION['login'] = 'true';
+    $_SESSION['user_id'] = $results['id'];
+    header("Location: ldlocal/adminpanel.php");
+    exit();
+   } 
+   elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'ld-user' ) {
+    $_SESSION['login'] = 'true';
+    $_SESSION['user_id'] = $results['id'];
+    $_SESSION['deptsel'] = $results['deptsel'];
+    header("Location: logisticsupport/techdashboard.php");
+    exit();
+   }
+   elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'ld-import' ) {
+    $_SESSION['login'] = 'true';
+    $_SESSION['user_id'] = $results['id'];
+    header("Location: ldimport/adminpanel.php");
+    exit();
+   }  
+   elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'pd-local' ) {
+    $_SESSION['login'] = 'true';
+    $_SESSION['user_id'] = $results['id'];
+    header("Location: pdlocal/adminpanel.php");
+    exit();
+   } 
+   elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'pd-import' ) {
+    $_SESSION['login'] = 'true';
+    $_SESSION['user_id'] = $results['id'];
+    header("Location: pdimport/adminpanel.php");
+    exit();
+   }
+   elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'icg-admin' ) {
+    $_SESSION['login'] = 'true';
+    $_SESSION['user_id'] = $results['id'];
+    header("Location: icg/adminpanel.php");
+    exit();
+   }  
   elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'techsup' ) {
     $_SESSION['login'] = 'true';
     $_SESSION['user_id'] = $results['id'];
     header("Location: techsupports/techdashboard.php");
+    exit();
+   }
+   elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'visual-admin' ) {
+    $_SESSION['login'] = 'true';
+    $_SESSION['user_id'] = $results['id'];
+    $_SESSION['deptsel'] = $results['deptsel'];
+    header("Location: visual/adminpanel.php");
+    exit();
+   } 
+   elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'visual-user' ) {
+    $_SESSION['login'] = 'true';
+    $_SESSION['user_id'] = $results['id'];
+    $_SESSION['deptsel'] = $results['deptsel'];
+    header("Location: visualsupports/techdashboard.php");
     exit();
    } 
      elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'user' ) {

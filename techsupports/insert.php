@@ -27,8 +27,8 @@ $res = $qry->fetch(PDO::FETCH_ASSOC);
 $ticknum = $res['ticket_no']+1;
 
   $statement = $connection->prepare("
-   INSERT INTO reports (ticket_no, store, date_created, subject,  via, status, itsup, cat_id, sub_id, isp_id, refNo, date_refNo, date_closed, close_by, remarks) 
-   VALUES (:ticket_no, :store, :date_created, :subject, :via, :status, :itsup, :cat_id, :sub_id, :isp_id, :refNo, :date_refNo, :date_closed, :close_by, :remarks)
+   INSERT INTO reports (ticket_no, store, date_created, subject,  via, status, itsup, cat_id, sub_id, isp_id, refNo, date_refNo, date_closed, close_by, remarks, deptsel) 
+   VALUES (:ticket_no, :store, :date_created, :subject, :via, :status, :itsup, :cat_id, :sub_id, :isp_id, :refNo, :date_refNo, :date_closed, :close_by, :remarks, :deptsel)
   ");
   $result = $statement->execute(
    array(
@@ -47,7 +47,9 @@ $ticknum = $res['ticket_no']+1;
     ':date_refNo' => date('Y-m-d H:i:s',strtotime($_POST["date_refNo"])),
     ':date_closed' => date('Y-m-d H:i:s',strtotime($_POST["date_closed"])),
     ':close_by' => $_POST["close_by"],
-    ':remarks' => $_POST["remarks"]
+    ':remarks' => $_POST["remarks"],
+    ':deptsel' => '1' // it dept
+
     
    )
   );
@@ -79,7 +81,17 @@ $ticknum = $res['ticket_no']+1;
      
     ));
  
-
+    $msgcntres1 = $connection->prepare("
+    INSERT INTO reports_msgcnt (ticket_no, msg_cnt)
+    VALUES (:ticket_no, :msg_cnt)
+   ");
+   $makemsgcnt1= $msgcntres1->execute(
+     array(
+ 
+       ':ticket_no' => $ticknum,
+       ':msg_cnt' => '0'
+ 
+     ));
 
 
 

@@ -16,9 +16,10 @@ class dbconfig extends dbconn
         COUNT(reports.`status`) AS t_all,
         COUNT(CASE WHEN reports.`status` = 'OPEN' then 1 else NULL end ) as t_open,
         COUNT(CASE WHEN reports.`status` = 'ATTENDED WITH FIX ASSET' then 1 else NULL end) as t_owfa,
-        COUNT(CASE WHEN reports.`status` = 'CLOSED' then 1 else NULL end) as t_close
+        COUNT(CASE WHEN reports.`status` = 'CLOSED' then 1 else NULL end) as t_close,
+		COUNT(CASE WHEN reports.`status` = 'CLOSED' AND DATE(reports.date_closed) = CURRENT_DATE THEN 1 else NULL END) AS t_day
         FROM
-        reports WHERE sub_id NOT IN ('15','28','34','35') AND `status` NOT IN ('WAITING FOR IT HELDESK RESPONSE','NEW REPORT') AND YEAR(date_created) IN (".$_POST['yr'] .")";
+        reports WHERE sub_id NOT IN ('15','28','34','35') AND `status` NOT IN ('WAITING FOR IT HELDESK RESPONSE','NEW REPORT') AND YEAR(date_created) IN (".$_POST['yr'] .") AND reports.deptsel = '2'";
 
         $statement = $this->connection->prepare($query);
         $statement-> execute();
@@ -30,7 +31,8 @@ class dbconfig extends dbconn
         		'total_res' => $row["t_all"], 
         		'open_res' => $row["t_open"], 
         		'owfa_res' => $row["t_owfa"], 
-        		'cls_res' => $row["t_close"]
+        		'cls_res' => $row["t_close"],
+        		't_res' => $row["t_day"]
 
         	);
         }
@@ -50,8 +52,8 @@ class dbconfig extends dbconn
 			tbl_status.stat_id
 			FROM
 			reports
-			INNER JOIN tbl_status ON reports.`status` = tbl_status.stat_desc
-			where `reports`.`sub_id` NOT IN ('15','28','34','35') AND `status` NOT IN ('WAITING FOR IT HELPDESK RESPONSE','NEW REPORT') AND YEAR(date_created) IN (".$_POST['yr'] .")
+			LEFT JOIN tbl_status ON reports.`status` = tbl_status.stat_desc
+			where `reports`.`sub_id` NOT IN ('15','28','34','35') AND `status` NOT IN ('WAITING FOR IT HELPDESK RESPONSE','NEW REPORT') AND YEAR(date_created) IN (".$_POST['yr'] .") AND reports.deptsel = '2'
 			GROUP BY `status`
 			ORDER BY stat_id ASC
 
@@ -84,7 +86,7 @@ class dbconfig extends dbconn
 				users.img_name as img_name,
 				Count(reports.itsup) AS total,
 				reports.`status`,
-				Count( CASE reports.`status` when 'CLOSED' then 1 else null end) as completed,
+				Count( CASE reports.`status` when 'CLOSED' AND 'SUBJECT FOR CLOSING' then 1 else null end) as completed,
 				Count( CASE reports.`status` when 'OPEN' then 1 else null end) as openrep,
 				Count( CASE reports.`status` when 'OPEN WITH FIX ASSET' then 1 else null end) as opnwfxast
 				FROM
@@ -92,7 +94,7 @@ class dbconfig extends dbconn
 				LEFT JOIN reports ON reports.itsup = it_tech.itsup
 				INNER JOIN users ON users.tech_id = it_tech.itsup
 				WHERE
-				reports.sub_id NOT IN (15,28,34,35) AND reports.itsup NOT IN ('8')and
+				reports.sub_id NOT IN (15,28,34,35) AND reports.itsup NOT IN ('8') AND reports.deptsel = '2' and
 				YEAR(reports.date_created) IN (".$_POST['yr'].")
 				GROUP BY
 				reports.itsup
@@ -128,7 +130,7 @@ class dbconfig extends dbconn
 	public function linegraph(){
 
 		$query='';
-		if ($_POST['yr'] != '2019,2020,2021,2022') {
+		if ($_POST['yr'] != '2019,2020,2021,2022,2023') {
 		$query="
 		SELECT
 		DATE( date_created ) AS DATEPART,
@@ -137,7 +139,7 @@ class dbconfig extends dbconn
 		FROM
 		reports
 		WHERE
-		year(date_created) BETWEEN '".$_POST['yr'] ."' AND '".$_POST['yr'] ."' and reports.sub_id NOT IN ('15','28','34','35')
+		year(date_created) BETWEEN '".$_POST['yr'] ."' AND '".$_POST['yr'] ."' and reports.sub_id NOT IN ('15','28','34','35') AND reports.deptsel = '2'
 		GROUP BY
 		DATEPART";	
 		} else {
@@ -149,7 +151,7 @@ class dbconfig extends dbconn
 		FROM
 		reports
 		WHERE
-		year(date_created) BETWEEN '2019' AND '2022' and reports.sub_id NOT IN ('15','28','34','35')
+		year(date_created) BETWEEN '2019' AND '2022' and reports.sub_id NOT IN ('15','28','34','35') 
 		GROUP BY
 		DATEPART";
 		}
@@ -173,7 +175,7 @@ class dbconfig extends dbconn
 		$query= "
 		SELECT cat_desc,clr,cat_id, count(*) as ctn, date_created
 		FROM vwp 
-		WHERE date_created IN (".$_POST['yr'] .")
+		WHERE deptsel = '2' AND date_created IN (".$_POST['yr'] .")
 		GROUP BY cat_id ORDER BY cat_desc ASC";
 		$statement = $this->connection->prepare($query);
 		$statement-> execute();
@@ -195,7 +197,7 @@ class dbconfig extends dbconn
 
 	public function subs($id){
 
-		$query= "SELECT sub_cat, count(*) as sctn, date_created FROM vwp WHERE cat_id='".$id."' AND date_created IN (".$_POST['yr'] .") GROUP BY sub_cat ORDER BY cat_desc ASC";
+		$query= "SELECT sub_cat, count(*) as sctn, date_created FROM vwp WHERE cat_id='".$id."' AND deptsel = '2'  AND date_created IN (".$_POST['yr'] .")  GROUP BY sub_cat ORDER BY cat_desc ASC";
 
 		$statement = $this->connection->prepare($query);
 		$statement-> execute();
@@ -212,10 +214,22 @@ class dbconfig extends dbconn
 
 	public function area_grph(){
 
-		$query="
-				select `reports`.`store` AS `store`,`tbl_branch`.`str_code` AS `str_code`,`tbl_branch`.`area_num` AS `area_num`,`tbl_area`.`area_desc` AS `area_desc`,year(`reports`.`date_created`) AS `dc`,count(`reports`.`date_created`) AS `cntarea` from ((`reports` join `tbl_branch` on(`reports`.`store` = `tbl_branch`.`str_num`)) join `tbl_area` on(`tbl_area`.`area_num` = `tbl_branch`.`area_num`)) WHERE YEAR(`reports`.`date_created`) IN (".$_POST['yr'] .") group by `tbl_branch`.`area_num`
-
-		";
+		$query="SELECT
+		`reports`.`store` AS `store`,
+		`tbl_branch`.`str_code` AS `str_code`,
+		`tbl_branch`.`area_num` AS `area_num`,
+		`tbl_area`.`area_desc` AS `area_desc`,
+		YEAR ( `reports`.`date_created` ) AS `dc`,
+		count( `reports`.`date_created` ) AS `cntarea` 
+	FROM
+		((
+				`reports`
+				JOIN `tbl_branch` ON ( `reports`.`store` = `tbl_branch`.`str_num` ))
+		JOIN `tbl_area` ON ( `tbl_area`.`area_num` = `tbl_branch`.`area_num` )) 
+	WHERE
+		YEAR ( `reports`.`date_created` )  IN ( ".$_POST['yr'] ." ) AND deptsel = '2'
+	GROUP BY
+		`tbl_branch`.`area_num`";
 		$statement = $this->connection->prepare($query);
 		$statement-> execute();
 		$result = $statement->fetchAll();
@@ -255,7 +269,7 @@ class dbconfig extends dbconn
 		 {
 			$query="
 
-			select `reports`.`store` AS `store`,`tbl_branch`.`str_code` AS `str_dept`,`tbl_branch`.`area_num` AS `area_num`,`tbl_area`.`area_desc` AS `area_desc`,year(`reports`.`date_created`) AS `dc`,count(`reports`.`date_created`) AS `cnt_ttl` from ((`reports` join `tbl_branch` on(`reports`.`store` = `tbl_branch`.`str_num`)) join `tbl_area` on(`tbl_area`.`area_num` = `tbl_branch`.`area_num`)) WHERE YEAR(`reports`.`date_created`) IN (".$_POST['yr'] .") AND area_desc = '".$_POST['area_desc'] ."' group by reports.store, str_code, area_desc ORDER BY str_code ASC
+			select `reports`.`store` AS `store`,`tbl_branch`.`str_code` AS `str_dept`,`tbl_branch`.`area_num` AS `area_num`,`tbl_area`.`area_desc` AS `area_desc`,year(`reports`.`date_created`) AS `dc`,count(`reports`.`date_created`) AS `cnt_ttl` from ((`reports` join `tbl_branch` on(`reports`.`store` = `tbl_branch`.`str_num`)) join `tbl_area` on(`tbl_area`.`area_num` = `tbl_branch`.`area_num`)) WHERE YEAR(`reports`.`date_created`) IN (".$_POST['yr'] .") AND area_desc = '".$_POST['area_desc'] ."' AND deptsel = '2' group by reports.store, str_code, area_desc ORDER BY str_code ASC
 
 				";
 
@@ -284,8 +298,10 @@ class dbconfig extends dbconn
 	// Select * from vw6 WHERE 
 	// vw6.sub_id NOT IN ('15','28','34','35') AND status <> 'WAITING FOR IT HELPDESK RESPONSE' AND YEAR(vw6.date_created) IN (2022)";
 
+
+
 	$query="
-	Select * from vw6 WHERE 
+	Select * from vw6 WHERE vw6.deptsel = '2' AND
 	vw6.sub_id NOT IN ('15','28','34','35') AND status <> 'WAITING FOR IT HELPDESK RESPONSE' AND YEAR(vw6.date_created) IN (".$_POST['yr'] .")";
 	
 	$statement = $this->connection->prepare($query);
@@ -323,7 +339,9 @@ class dbconfig extends dbconn
 					'isp_id' => $row['isp_id'],
 					'isp_shortDesc' => $row['isp_shortDesc'],
 					'refNo' => $row['refNo'],
-					'date_refNo' => date('m/d/Y H:i',strtotime($row["date_refNo"]))
+					'date_refNo' => date('m/d/Y H:i',strtotime($row["date_refNo"])),
+					'msg_cnt' => $row['msg_cnt'],
+
 
 				);
 
@@ -335,7 +353,47 @@ class dbconfig extends dbconn
 
 public function newreporthist(){
 
-	$query="SELECT * FROM vw_wfittable";
+	$query="SELECT
+	reports.deptsel AS deptsel,
+	`reports`.`ticket_no` AS `ticket_no`,
+	`reports`.`date_created` AS `date_created`,
+	`reports`.`store` AS `store`,
+	`tbl_branch`.`str_code` AS `str_code`,
+	`reports`.`concern` AS `concern`,
+	`reports`.`service_desc` AS `service_desc`,
+	`reports`.`subject` AS `subject`,
+	`reports`.`status` AS `status`,
+	`reports`.`userId` AS `userId`,
+	`reports`.`via` AS `via`,
+	`reports`.`itsup` AS `itsup`,
+	`it_tech`.`it_desc` AS `it_desc`,
+	`reports`.`cat_id` AS `cat_id`,
+	`categories`.`cat_desc` AS `cat_desc`,
+	concat_ws( '-', `reports`.`cat_id`, `categories`.`cat_desc` ) AS `cat_x`,
+	`reports`.`sub_id` AS `sub_id`,
+	`subcat`.`sub_cat` AS `sub_cat`,
+	`reports`.`date_closed` AS `date_closed`,
+	`reports`.`remarks` AS `remarks`,
+	`reports_msgcnt`.`msg_cnt` AS `msg_cnt`,
+	`reports_newmsg`.`nmsg_stat` AS `nmsg_stat`,
+	`users`.`fname` AS `fname`,
+	`users`.`lstname` AS `lstname`,
+	concat_ws( ' ', `users`.`fname`, `users`.`lstname` ) AS `full_name` 
+FROM
+	(((((((
+								`reports`
+								JOIN `tbl_branch` ON ( `tbl_branch`.`str_num` = `reports`.`store` ))
+							LEFT JOIN `it_tech` ON ( `it_tech`.`itsup` = `reports`.`itsup` ))
+						LEFT JOIN `categories` ON ( `categories`.`cat_id` = `reports`.`cat_id` ))
+					LEFT JOIN `subcat` ON ( `subcat`.`sub_id` = `reports`.`sub_id` ))
+				LEFT JOIN `reports_msgcnt` ON ( `reports_msgcnt`.`ticket_no` = `reports`.`ticket_no` ))
+			LEFT JOIN `reports_newmsg` ON ( `reports_newmsg`.`ticket_no` = `reports`.`ticket_no` ))
+	LEFT JOIN `users` ON ( `users`.`id` = `reports`.`userId` )) 
+WHERE
+	`reports`.`status` = 'NEW REPORT' 
+	AND reports.deptsel = '2' 
+ORDER BY
+	`reports`.`date_created` DESC";
 	$statement = $this->connection->prepare($query);
 	$statement-> execute();
 	$result = $statement->fetchAll();
@@ -443,7 +501,25 @@ public function changepass(){
 
 public function notif_techsupp(){
 
-	$query="SELECT * FROM tbl_notif WHERE  notif_val IN ('2','3') ORDER BY notif_date ASC ";
+	$query="SELECT
+	tbl_notif.ticket_no, 
+	tbl_notif.store, 
+	tbl_notif.itsup, 
+	tbl_notif.notif_data, 
+	tbl_notif.notif_date, 
+	tbl_notif.notif_val, 
+	tbl_notif.assigned_by
+FROM
+	tbl_notif
+	LEFT JOIN
+	reports
+	ON 
+		tbl_notif.ticket_no = reports.ticket_no
+WHERE
+	notif_val IN ('2','3') AND
+	reports.deptsel = 2 
+ORDER BY
+	notif_date ASC ";
 	$statement = $this->connection->prepare($query);
 	$statement-> execute();
 	$result = $statement->fetchAll();

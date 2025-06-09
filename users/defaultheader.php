@@ -10,7 +10,7 @@ session_start();
 <head>
     <meta charset="utf-8">
     <!-- This file has been downloaded from Bootsnipp.com. Enjoy! -->
-    <title>I.T HELPDESK</title>
+    <title>OWI HELPDESK</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- <link href="http://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet"> -->
     <link rel="stylesheet" href="../css/header-user-dropdown.css">
@@ -181,7 +181,7 @@ img{
 <body>
 
 <nav class="navbar navbar-icon-top navbar-expand-lg bg-warning navbar-dark">
-  <a class="navbar-brand logo" href="#">I.T <span class="logo">Helpdesk</span></a>
+  <a class="navbar-brand logo" href="#">OWI <span class="logo">Helpdesk</span></a>
 
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <!-- <span class="navbar-toggler-icon"></span> -->

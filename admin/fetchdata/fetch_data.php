@@ -80,6 +80,9 @@ switch ($mode) {
     case 'count_sla':
       $records['count_slares'] = $fn->count_sla();
         break;
+    // case 'get_usr':
+    //     $records= $fn->get_usr();
+    //         break;
     default:
         break;
 

@@ -14,7 +14,7 @@ class dbconfig extends dbconn
         YEAR(date_created) as date_created,
         COUNT(reports.`status`) AS t_all,
         COUNT(CASE WHEN reports.`status` = 'OPEN' then 1 else NULL end ) as t_open,
-        COUNT(CASE WHEN reports.`status` = 'OPEN WITH FIX ASSET' then 1 else NULL end) as t_owfa,
+        COUNT(CASE WHEN reports.`status` = 'ATTENDED WITH FIX ASSET' then 1 else NULL end) as t_owfa,
         COUNT(CASE WHEN reports.`status` = 'CLOSED' then 1 else NULL end) as t_close
         FROM
         reports WHERE sub_id NOT IN ('15','28','34','35') AND `status` NOT IN ('WAITING FOR IT HELDESK RESPONSE','NEW REPORT') AND YEAR(date_created) = '".$_POST['yr'] ."' AND itsup = '{$_SESSION['tech_id']}'";
@@ -304,7 +304,8 @@ public function newreporthist(){
 
 public function notif_techsupp(){
 
-	$query="SELECT * FROM tbl_notif WHERE itsup = '{$_SESSION['tech_id']}' AND notif_val = '1' ORDER BY notif_date ASC ";
+	$query="SELECT * FROM tbl_notif WHERE itsup = '{$_SESSION['tech_id']}' AND notif_val = '1' AND
+	tbl_notif.ticket_no NOT LIKE '%MKTG%' OR '%ADMIN%' OR '%VISUAL%' OR '%PD%' OR '%LD%' ORDER BY notif_date ASC ";
 	$statement = $this->connection->prepare($query);
 	$statement-> execute();
 	$result = $statement->fetchAll();

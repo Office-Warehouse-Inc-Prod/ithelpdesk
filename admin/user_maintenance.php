@@ -33,7 +33,7 @@ $regcon=new dbconfig();
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-     <form method="post" id="reg_form">
+     <form method="post" name="reg_form" id="reg_form">
         <div class="modal-body">
           <div class="row">
           <input type="hidden" name="usrID" id="usrID">
@@ -52,7 +52,7 @@ $regcon=new dbconfig();
           <select class="form-control form-control-sm" name="select_dept" id="select_dept" >
           <option value=""> &larr; Select Department &rarr;</option>
             <?php
-                     $query="select * from tbl_dept";
+                     $query="select * from tbl_dept where dept_id != '11' ";
                      $run=$regcon->prepare($query);
                      $run->execute();
                      $rs=$run->get_result();
@@ -66,7 +66,6 @@ $regcon=new dbconfig();
          </select>   
           </div>
           <div class="col-md-12 form-group strcol">
-          <!-- <label for="select_dept">Branch</label> -->
            <select class="form-control form-control-sm" name="select_strcd" id="select_strcd">
            <option value="">Assign Branch</option>
                  <?php
@@ -97,7 +96,7 @@ $regcon=new dbconfig();
 
         </div>
         <div class="modal-footer border-top-0 d-flex justify-content-center">
-          <input type="hidden" name="operation" id="operation" value="3" /> 
+          <input type="text" name="operation" id="operation" value="3" /> 
           <button id="btn_submit" class="btn btn-success">Submit</button>
 
         </div>
@@ -238,9 +237,9 @@ $('#usermtc_table tbody').on('click', 'button', function () {
              timer: 1500
           });
           $("#rst_form").modal("hide");
-          setTimeout(function(){// wait for 5 secs(2)
-           location.reload(); // then reload the page.(3)
-      }, 2000);
+      //     setTimeout(function(){// wait for 5 secs(2)
+      //      location.reload(); // then reload the page.(3)
+      // }, 2000);
           
         }
       });
@@ -329,6 +328,7 @@ if (FName != "" && LstName != ""  && StrVal != "") {
         method: "POST",
         data: $('#reg_form').serialize(),
         success: function (data) {
+          console.log(data)
           $("#reg_form")[0].reset();
           $("#usr_crt_modal").modal("hide");
           Swal.fire({
