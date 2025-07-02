@@ -18,7 +18,7 @@ function getPhilippineHolidays($year) {
         $year . '-04-18' => 'Good Friday',
         $year . '-05-01' => 'Labor Day',
         $year . '-06-12' => 'Independence Day',
-        $year . '-08-30' => 'National Heroes\' Day',
+        $year . '-08-25' => 'National Heroes\' Day',
         $year . '-11-30' => 'Bonifacio Day',
         $year . '-12-25' => 'Christmas Day',
         $year . '-12-30' => 'Rizal Day',
