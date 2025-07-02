@@ -164,7 +164,7 @@ h1{
             <div class="input-box">
                 <span class="icon"><ion-icon name="lock-closed-outline"></ion-icon></span>
                 <input type="password" name="password" required>
-                <label>PasswordX</label>
+                <label>Password</label>
             </div>
             <div class="checkbox">
                 <!-- <label><input type="checkbox">Remember me</label> -->
