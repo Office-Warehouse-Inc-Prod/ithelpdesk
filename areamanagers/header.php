@@ -201,7 +201,7 @@ tr {
     </ul>
     <ul class="navbar-nav ">
 
-       <li class="nav-item dropdown">
+       <!-- <li class="nav-item dropdown">
         <a class="nav-link" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
            <i class="fa fa-bell">
             <span class="badge badge-info" id="notif_newmsg"></span>
@@ -215,7 +215,7 @@ tr {
         </div>
 
         </div>
-      </li>
+      </li> -->
       <li class="nav-item">
     <form class="form-inline my-2 my-lg-0">
         <ul class="navbar-nav mr-auto">
@@ -246,51 +246,51 @@ tr {
 <script type="text/javascript">
   $(document).ready(function(){
 // countnewrep();
-countNwMsg();
+// countNwMsg();
   });
 
 
 
- function countnewrep() {
+//  function countnewrep() {
   
 
-  setInterval(function(){
+//   setInterval(function(){
 
-   var xhttp = new XMLHttpRequest();
-   xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-     document.getElementById("notif_newrep").innerHTML = this.responseText;
-    }
-   };
-   xhttp.open("GET", "fetchdata/notif_newrep.php", true);
-   xhttp.send();
+//    var xhttp = new XMLHttpRequest();
+//    xhttp.onreadystatechange = function() {
+//     if (this.readyState == 4 && this.status == 200) {
+//      document.getElementById("notif_newrep").innerHTML = this.responseText;
+//     }
+//    };
+//    xhttp.open("GET", "fetchdata/notif_newrep.php", true);
+//    xhttp.send();
 
-  },1000);
-
-
- }
+//   },1000);
 
 
+//  }
 
 
-   function countNwMsg() {
+
+
+//    function countNwMsg() {
   
 
-  setInterval(function(){
+//   setInterval(function(){
 
-   var xhttp = new XMLHttpRequest();
-   xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-     document.getElementById("notif_newmsg").innerHTML = this.responseText;
-    }
-   };
-   xhttp.open("GET", "fetchdata/fetch_newmsg.php", true);
-   xhttp.send();
+//    var xhttp = new XMLHttpRequest();
+//    xhttp.onreadystatechange = function() {
+//     if (this.readyState == 4 && this.status == 200) {
+//      document.getElementById("notif_newmsg").innerHTML = this.responseText;
+//     }
+//    };
+//    xhttp.open("GET", "fetchdata/fetch_newmsg.php", true);
+//    xhttp.send();
 
-  },1000);
+//   },1000);
 
 
- }
+//  }
 
 
 

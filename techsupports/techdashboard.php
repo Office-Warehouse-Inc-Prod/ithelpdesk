@@ -15,6 +15,27 @@ $datetime->setTimezone($timezone);
 
 
 ?>
+
+<style>
+  #showCalendarBtn{
+    display: inline-block;
+    padding: 10px 20px;
+    background: #4f46e5;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    font-family: inherit;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+#showCalendarBtn:hover {
+    background: #4338ca;
+}
+</style>
+
 <head>
 <link rel="stylesheet" href="../plugins/DataTables-1.10.25/media/css/dataTables.bootstrap.min.css"/>
 <link rel="stylesheet" href="//cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css"/>

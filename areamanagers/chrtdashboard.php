@@ -1,13 +1,13 @@
 <!-- Styles -->
-<style>
+<!-- <style>
 #chartdiv1 {
   width: 100%;
   height: 300px;
 }
 
-</style>
+</style> -->
 
-<script>
+<!-- <script>
 
  const curdatea = new Date();
  const curyra = curdatea.getFullYear();
@@ -75,7 +75,7 @@ am4core.options.autoDispose = true;
 }
 
 
-</script>
+</script> -->
 
 <!-- Styles -->
 <style>
@@ -90,10 +90,10 @@ am4core.options.autoDispose = true;
 
 
 <script>
-  const curdate2 = new Date();
-  const curyr2 = g=curdate2.getFullYear();
+  // const curdate2 = new Date();
+  // const curyr2 = g=curdate2.getFullYear();
 
-  _catpie(curyr2);
+  // _catpie(curyr2);
  function _catpie(curyr2){
    var selected;
 var types = $.ajax({
@@ -148,8 +148,8 @@ pieSeries.labels.template.paddingTop = 0;
 pieSeries.labels.template.paddingBottom = 0;
 pieSeries.labels.template.fontSize = 10;
 pieSeries.integersOnly = true;
-pieSeries.labels.template.text = "{type}: {value.value} | {value.percent.formatNumber('.##')}%";
-pieSeries.slices.template.tooltipText = "{type}: {value.value} | {value.percent.formatNumber('.##')}%";
+pieSeries.labels.template.text = "{category} | {value.value} OPEN Reports";
+pieSeries.slices.template.tooltipText = "{category} | {value.value} OPEN Reports";
 pieSeries.slices.template.tooltipPosition = "pointer";
 
 
@@ -185,7 +185,7 @@ function generateChartData() {
         });
 
       }
-newgrph(d)
+// newgrph(d)
    
       // chartData.push({
       //   type: types[i].type,
@@ -222,66 +222,66 @@ am4core.options.autoDispose = true;
 } // end am4core.ready()
 
 
- function newgrph(data){
-// console.log(data)
+//  function newgrph(data){
+// // console.log(data)
 
-am4core.ready(function() {
+// am4core.ready(function() {
 
-// Themes begin
-am4core.useTheme(am4themes_animated);
-// Themes end
+// // Themes begin
+// am4core.useTheme(am4themes_animated);
+// // Themes end
 
-// Create chart instance
+// // Create chart instance
 
-var chart = am4core.create("chartdiv9", am4charts.PieChart);
+// var chart = am4core.create("chartdiv9", am4charts.PieChart);
 
-// legend
-// chart.legend = new am4charts.Legend();
-// chart.legend.scrollable = true;
-chart.innerRadius = am4core.percent(40);
-// chart.legend.labels.template.text = "[bold {color}]{name}[/]";
-// series1.legendSettings.value = "{points}";
-// Add data
-chart.data = data;
-
-
-
-
-// Add and configure Series
-var pieSeries = chart.series.push(new am4charts.PieSeries());
-pieSeries.dataFields.value = "percent";
-pieSeries.dataFields.category = "types";
-pieSeries.slices.template.stroke = am4core.color("#FFF"); //outline
-pieSeries.slices.template.strokeWidth = 2;
-pieSeries.slices.template.strokeOpacity = 1;
-pieSeries.slices.template.tooltipPosition = "pointer";
-pieSeries.labels.template.maxWidth = 130;
-pieSeries.labels.template.wrap = true;
-pieSeries.labels.template.fontSize = 10;
-
-// pieSeries.alignLabels = false;
-// pieSeries.labels.template.text = "{type}: {value}";
-// pieSeries.slices.template.tooltipText = "{type}:{value}";
-pieSeries.labels.template.text = "{type}: {value.value} | {value.percent.formatNumber('.##')}%";
-pieSeries.slices.template.tooltipText = "{type}: {value.value} | {value.percent.formatNumber('.##')}%";
-
-
-// This creates initial animation
-pieSeries.hiddenState.properties.opacity = 1;
-pieSeries.hiddenState.properties.endAngle = -90;
-pieSeries.hiddenState.properties.startAngle = -90;
-
-
-am4core.options.autoDispose = true;
-
-}); // end am4core.ready()
+// // legend
+// // chart.legend = new am4charts.Legend();
+// // chart.legend.scrollable = true;
+// chart.innerRadius = am4core.percent(40);
+// // chart.legend.labels.template.text = "[bold {color}]{name}[/]";
+// // series1.legendSettings.value = "{points}";
+// // Add data
+// chart.data = data;
 
 
 
-$('#piegraphModal').modal({"show": true, "backdrop": 'static'});
+
+// // Add and configure Series
+// var pieSeries = chart.series.push(new am4charts.PieSeries());
+// pieSeries.dataFields.value = "percent";
+// pieSeries.dataFields.category = "types";
+// pieSeries.slices.template.stroke = am4core.color("#FFF"); //outline
+// pieSeries.slices.template.strokeWidth = 2;
+// pieSeries.slices.template.strokeOpacity = 1;
+// pieSeries.slices.template.tooltipPosition = "pointer";
+// pieSeries.labels.template.maxWidth = 130;
+// pieSeries.labels.template.wrap = true;
+// pieSeries.labels.template.fontSize = 10;
+
+// // pieSeries.alignLabels = false;
+// // pieSeries.labels.template.text = "{type}: {value}";
+// // pieSeries.slices.template.tooltipText = "{type}:{value}";
+// pieSeries.labels.template.text = "{type}: {value.value} | {value.percent.formatNumber('.##')}%";
+// pieSeries.slices.template.tooltipText = "{type}: {value.value} | {value.percent.formatNumber('.##')}%";
+
+
+// // This creates initial animation
+// pieSeries.hiddenState.properties.opacity = 1;
+// pieSeries.hiddenState.properties.endAngle = -90;
+// pieSeries.hiddenState.properties.startAngle = -90;
+
+
+// am4core.options.autoDispose = true;
+
+// }); // end am4core.ready()
+
+
+
+// $('#piegraphModal').modal({"show": true, "backdrop": 'static'});
 
  
-}
+// }
 
 
 </script>
@@ -299,10 +299,10 @@ $('#piegraphModal').modal({"show": true, "backdrop": 'static'});
 
 <!-- Chart code -->
 <script>
- const curdates = new Date();
-  const curyrs = g=curdates.getFullYear();
+//  const curdates = new Date();
+//   const curyrs = g=curdates.getFullYear();
 
-  _overallpie(curyrs);
+  // _overallpie(curyrs);
   function _overallpie(curyrs){
 
  $.ajax({
@@ -354,8 +354,10 @@ pieSeries.slices.template.tooltipPosition = "pointer";
 pieSeries.labels.template.maxWidth = 130;
 pieSeries.labels.template.wrap = true;
 pieSeries.labels.template.fontSize = 12;
-pieSeries.labels.template.text = "{type} {value.value} Reports | {value.percent.formatNumber('.##')}%";
-pieSeries.slices.template.tooltipText = "{type} {value.value} Reports | {value.percent.formatNumber('.##')}%";
+pieSeries.labels.template.text = "{category} | {value.value} OPEN Reports";
+pieSeries.slices.template.tooltipText = "{category} | {value.value} OPEN Reports";
+// pieSeries.slices.template.shiftRadius = 0;
+// pieSeries.slices.template.states.hover.properties.shiftRadius = 0;
 
 
 // This creates initial animation
@@ -363,12 +365,12 @@ pieSeries.hiddenState.properties.opacity = 1;
 pieSeries.hiddenState.properties.endAngle = -90;
 pieSeries.hiddenState.properties.startAngle = -90;
 
-pieSeries.colors.list = [
-  am4core.color("#27A243"),
-  am4core.color("#D53343"),
-  am4core.color("#F7BB07"),
-  am4core.color("#169DB2"),
-];
+// pieSeries.colors.list = [
+//   am4core.color("#27A243"),
+//   am4core.color("#D53343"),
+//   am4core.color("#F7BB07"),
+//   am4core.color("#169DB2"),
+// ];
 
 am4core.options.autoDispose = true;
 
@@ -381,7 +383,7 @@ am4core.options.autoDispose = true;
 
 
 <!-- Styles -->
-<style>
+<!-- <style>
 #chartdiv9 {
    margin-top: 2px;
   margin-left: 12px;
@@ -389,7 +391,7 @@ am4core.options.autoDispose = true;
   height: 350px;
 }
 
-</style>
+</style> -->
 
 
 <!-- modal pie -->
@@ -474,16 +476,16 @@ am4core.options.autoDispose = true;
 
 
 <!-- Styles -->
-<style>
+<!-- <style>
 #chartdiv8 {
   width: 100%;
   height: 300px;
 }
 
-</style>
+</style> -->
 
 <!-- Chart code -->
-<script>
+<!-- <script>
   const curdate = new Date();
   const curyr = g=curdate.getFullYear();
 
@@ -595,7 +597,7 @@ function tech_bar_result(itVal){
 
             }
 
-</script>
+</script> -->
 
 
 
@@ -617,10 +619,10 @@ function tech_bar_result(itVal){
 
 <!-- Chart code -->
 <script>
-  const curdatez = new Date();
-  const curyrz = g=curdatez.getFullYear();
+  // const curdatez = new Date();
+  // const curyrz = g=curdatez.getFullYear();
 
-_areagraph(curyrz);
+// _areagraph(curyrz);
 
   function _areagraph(curyrz){
 
@@ -677,7 +679,7 @@ var series = chart.series.push(new am4charts.ColumnSeries());
 series.dataFields.valueY = "cntarea";
 series.dataFields.categoryX = "area_desc";
 series.name = "fyr";
-series.columns.template.tooltipText = "{categoryX}: [bold]{valueY}[/]";
+series.columns.template.tooltipText = "{categoryX}: [bold]{valueY}[/] REPORTS";
 series.columns.template.fillOpacity = .8;
 series.columns.template.events.on("hit", function(ev) {
                
@@ -706,8 +708,8 @@ function _storegraph(s_area,syr){
                   success:function(fdata)
                   {
                     var objstorearea = JSON.parse(fdata);
-                    _plot_store_graph(objstorearea);
-                    $('#store_graph_modal').modal({"show": true, "backdrop": 'static'});
+                    // _plot_store_graph(objstorearea);
+                    // $('#store_graph_modal').modal({"show": true, "backdrop": 'static'});
                   }
                  });
 }
@@ -719,16 +721,16 @@ function _storegraph(s_area,syr){
 </script>
 
 <!-- Styles -->
-<style>
+<!-- <style>
 #store_graph {
   width: 100%;
   height: 500px;
 }
 
-</style>
+</style> -->
 
 <!-- Chart code -->
-<script>
+<!-- <script>
 
 function _plot_store_graph(strdata){
 
@@ -784,6 +786,6 @@ columnTemplate.strokeOpacity = 1;
 
 
 
-</script>
+</script> -->
 
 

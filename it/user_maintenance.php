@@ -102,7 +102,7 @@ $regcon=new dbconfig();
 
         </div>
         <div class="modal-footer border-top-0 d-flex justify-content-center">
-          <input type="text" name="operation" id="operation" value="3" /> 
+          <input type="hidden" name="operation" id="operation" value="3" /> 
           <button id="btn_submit" class="btn btn-success">Submit</button>
 
         </div>
@@ -136,6 +136,7 @@ var user_id = <?= $_SESSION['user_id']; ?>
 function getdata(){
   $.post('fetchdata/fetch_data.php',{mode:'usermtc_dtable'},function(data){
     admin_datatable(data);
+    // console.log(data);
   },'json');
 }
 getdata();
@@ -164,8 +165,8 @@ const dataset=t.usermtc_data;
                {title:"Role", data:"role","width": "5%", "defaultContent": ""},
                {title:"Username", data:"username","defaultContent": ""},
                {title:"Department", data:"dept_desc","defaultContent": ""},
-{title:"Store Code", data:"str_code","defaultContent": ""},
-{title:"Status", data:"usr_stat","defaultContent": ""},
+               {title:"Store Code", data:"str_code","defaultContent": ""},
+               {title:"Status", data:"usr_stat","defaultContent": ""},
               //  {title:"Update", data:null,"defaultContent": "<Button class='GetName btn btn-info mr-2' name='BtnVw' id='BtnVw'><i class='fas fa-eye'></i></Button>"}
 	       {title:"Update", data:null,"width": "20%","defaultContent": "<Button class='GetName btn btn-info mr-2' name='BtnVw' id='BtnVw'><i class='fas fa-eye'></i></Button> <Button class=' GetPosition btn btn-success mr-2' name='BtnEdit' id='BtnEdit'><i class='fas fa-edit'></i></Button> <Button class=' GetPositions btn btn-danger' name='BtnDact' id='BtnDact'><i class='fas fa-window-close'></i></Button>"}
 	       ],
@@ -236,7 +237,7 @@ $('#usermtc_table tbody').on('click', 'button', function () {
       
       var action = this.id;
             var data = reptable.row( $(this).parents('tr') ).data();
-     const IDx = data.user_id;
+    const IDx = data.user_id;
             if (action=='BtnVw') {
 
             // var data = reptable.row( $(this).parents('tr') ).data();
@@ -277,23 +278,24 @@ $('#usermtc_table tbody').on('click', 'button', function () {
      
          if(action == 'BtnEdit'){
 
+            
           // alert( 'This is the Position: '+data[1]);
           // alert('beta phase');
             $("#usr_crt_modal").modal("show");
 
             $(".strcol").show();
-            $("#select_dept").hide();
+            $("#select_dept").show();
             $('#slct_gender').hide();
             $('#slct_gender').removeAttr('required');
-                 $('#usr_crt_modal #operation').val("stredit");
-                 $('#usrID').val(data['user_id']);
-                 $('#fname').val(data['fname']);
-                 $('#lstname').val(data['lstname']);
-                 $('#strslt_num').val(data['dept_id']);
-                 $('#select_dept').val(data['dept_desc']);
-                 $('#select_strcd').val(data['str_num']);
-                //  $('#slct_gender').val(data['gender_id']);
-              
+            $('#usr_crt_modal #operation').val("stredit");
+            $('#usrID').val(data['user_id']);
+            $('#fname').val(data['fname']);
+            $('#lstname').val(data['lstname']);
+            $('#strslt_num').val(data['dept_id']);
+            $('#select_dept').val(data['dept_desc']);
+            $('#select_strcd').val(data['str_num']);
+          //  $('#slct_gender').val(data['gender_id']);
+        
                 //  $("#exampleModalLongTitle #menu_value").val();
                 // $('#restusr_id').val(data['user_id']);
     
@@ -360,7 +362,7 @@ $('#usermtc_table tbody').on('click', 'button', function () {
 });
 
 $('#select_dept').change(function() {
-  if ($(this).val() == 10) {
+  if ($(this).val() == '10') {
       $(".strcol").show();
        $('#strslt_num').val('');
       $('#select_strcd').prop({

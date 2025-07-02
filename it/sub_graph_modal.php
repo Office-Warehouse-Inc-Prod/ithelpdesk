@@ -151,7 +151,21 @@ $datetime->setTimezone($timezone);
   </div>
 </div>
 
-
+<div class="modal fade" id="storenet_graph_modal" tabindex="-1" role="dialog" aria-labelledby="storenet_graph_modal" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Per Store</h5>
+        <button type="button" class="close" id="substr_clsbtn" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+       <div id="storenet_graph"></div>
+      </div>
+    </div>
+  </div>
+</div>
 
 
 <!-- I.T Bar modal -->

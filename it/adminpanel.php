@@ -6,6 +6,7 @@ include '../condb.php';
 include 'main_js.php';
 include 'chrtdashboard.php';
 include 'sub_graph_modal.php';
+// include 'testcalendar.php';
 
 // $conn=new dbconfig();
 
@@ -243,6 +244,24 @@ font-family: 'Poppins', Tahoma, Geneva, Verdana, sans-serif;
   border: 1px solid #890188;
 }
 
+#showCalendarBtn{
+    display: inline-block;
+    padding: 10px 20px;
+    background: #4f46e5;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    font-family: inherit;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+#showCalendarBtn:hover {
+    background: #4338ca;
+}
+
 
 </style>
 
@@ -251,53 +270,53 @@ font-family: 'Poppins', Tahoma, Geneva, Verdana, sans-serif;
 
 
 <div class="container-fluid">
+  <div id="wrapper">
+    <div id="layoutSidenav_content">
+      <div class="container-fluid">
+        <!-- Dark Mode Toggle -->
+        <div class="form-check form-switch float-right m-3">
+          <input class="form-check-input" type="checkbox" id="darkModeToggle">
+          <label class="form-check-label text-dark" for="darkModeToggle">Dark Mode</label>
+        </div>
 
-<div id="wrapper">
+        <form method="post" name="cof_form" id="cof_form" enctype="multipart/form-data">
+          <div class="row">
+            <input type="hidden" name="chcksbjcls" id="chcksbjcls" value="check">
+          </div>
+        </form>
 
-<div id="layoutSidenav_content">
-<div class="container-fluid">
-<div class="form-check form-switch float-right m-3">
-  <input class="form-check-input" type="checkbox" id="darkModeToggle">
-  <label class="form-check-label text-dark" for="darkModeToggle">Dark Mode</label>
-</div>
-
-
-<form method="post" name="cof_form" id="cof_form" enctype="multipart/form-data">
-        <div class="row">
-
-
-        <input type="hidden" name="chcksbjcls" id="chcksbjcls" value="check" >
-
+        <!-- Combined Year Picker and Calendar Button -->
+        <div class="d-flex align-items-center mb-3">
+          <!-- Year Picker -->
+          <div class="mr-3">
+            <label class="sr-only" for="inlineFormInputGroup">Start Date</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <div class="input-group-text">LOGS IN YEAR OF:</div>
+              </div>
+              <select class="form-control" name="yearpicker" id="yearpicker" required>
+                <option value="2019,2020,2021,2022,2023,2024,2025">OVERALL</option>
+                <option value="2025" selected>2025</option>
+                <option value="2024">2024</option>
+                <option value="2023">2023</option>
+                <option value="2022">2022</option>
+                <option value="2021">2021</option>
+                <option value="2020">2020</option>
+                <option value="2019">2019</option>
+              </select>
             </div>
+          </div>
+
+          <!-- Calendar Button -->
+    <form action="testcalendar.php" method="POST" style="display: inline;">
+    <input type="hidden" name="u_id" value="<?php echo $_SESSION['user_id']; ?>">
+    <button type="submit" id="showCalendarBtn" class="btn btn-primary">Show Calendar</button>
+</form>
         </div>
-      </form>
-    <div class="col-md-4 mt-4 d-inline-flex p-2">
-      <label class="sr-only" for="inlineFormInputGroup">Start Date</label>
-      <div class="input-group mb-2">
-        <div class="input-group-prepend">
-          <div class="input-group-text">LOGS IN YEAR OF:</div>
-        </div>
-                <select class="form-contro"  name="yearpicker" id="yearpicker" required>
-                 <option value="2019,2020,2021,2022,2023,2024,2025" >OVERALL</option>
-                 <option value="2025" selected >2025</option>
-		             <option value="2024" >2024</option>
-                 <option value="2023" >2023</option>
-                 <option value="2022" >2022</option>
-                 <option value="2021" >2021</option>
-                 <option value="2020">2020</option>
-                 <option value="2019">2019</option>
-  
-
-
-
-                </select>
       </div>
     </div>
-
-        </div>
- 
-    </div>
   </div>
+</div>
 
 <div class="card-deck align-items-center mb-3">
 
@@ -486,17 +505,6 @@ font-family: 'Poppins', Tahoma, Geneva, Verdana, sans-serif;
 </div>
 <input type = "hidden" class="form-control form-control-sm" name = "ticket_no" id="ticket_no">
 
-
-<div class="form-group col-6 col-md-6 col-lg-6">
-
-<label>DATE CREATED</label>
-<div class="input-group date" id="datetimepicker1" data-target-input="nearest">
-<input type="text" name="date_created" id="date_created" class="form-control form-control-sm datetimepicker-input" data-target="#datetimepicker1" value="<?php echo $datetime->format('m/d/Y g:i A');?>" />
-<div class="input-group-append" data-target="#date_created" data-toggle="datetimepicker">
-<div class="input-group-text"><i class="fa fa-calendar"></i></div>
-</div>
-</div>
-</div>
 
 <div class="form-group col-12 col-md-12 col-lg-12">
 <label>SUBJECT/CONCERN</label>
@@ -724,7 +732,7 @@ style="text-transform:uppercase" onkeyup="this.value = this.value;"></textarea>
 
 <div class="modal-footer">
 <input type="hidden" name="operation" id="operation" value="Add" />
-<input type="hidden" name="u_id" value="<?php echo $_SESSION['user_id'];  ?>">
+<input type="hidden" name="u_id" id="u_id" value="<?php echo $_SESSION['user_id'];  ?>">
 
 </div>
 </form>

@@ -105,11 +105,11 @@ $con1=new dbconfig();
   </div>
     <div class="form-group col-md-8">
       <label>ASSIGNED SUPPORT</label>
-          <input type="hidden" name="it_num" id="it_num" readonly="">
+          <input type="text" name="it_num" id="it_num" readonly="">
           <select class="form-control form-control-sm" name="itsup" id="itsup" required>
              <option value="">Assign support...</option>  
                    <?php
-                            $query="select * from it_tech WHERE itsup NOT IN ('4','7','8','12','14') AND deptsel = '1'";
+                            $query="select * from it_tech WHERE itsup NOT IN ('4','7','8','12','14','15','32','43') AND deptsel = '1'";
                             $run=$con1->prepare($query);
                             $run->execute();
                             $rs=$run->get_result();

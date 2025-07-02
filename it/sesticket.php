@@ -2,7 +2,7 @@
 include 'db.php';
 if (isset($_POST['tktval'])) {
   $tktval = $_POST['tktval'];
-  $query = "SELECT * FROM images WHERE ticket_no = '$tktval' GROUP BY files_name ";
+  $query = "SELECT * FROM images WHERE ticket_no = '$tktval' GROUP BY files_name";
   $run = $concat->prepare($query);
   $run->execute();
   $rs = $run->get_result();
@@ -17,7 +17,7 @@ if (isset($_POST['tktval'])) {
       if (file_exists($file_path)) {
         switch ($file_extension) {
           case 'jpg':
-		  case 'JPG':
+		      case 'JPG':
           case 'jpeg':
           case 'png':
           case 'gif':

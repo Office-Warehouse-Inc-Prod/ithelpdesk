@@ -10,7 +10,7 @@ session_start();
 <head>
          <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-            <title>Helpdesk</title>
+            <title>IT Helpdesk</title>
 <link rel="stylesheet" href="../css/4bootstrap.min.css" />
 <script src="../js/jquery-3.5.1.js"></script>
 <script src="../js/moment.min.js"></script>
@@ -183,10 +183,15 @@ tr {
 </head>
 <body>
 <nav class="navbar navbar-icon-top navbar-expand-lg navbar-dark bg-dark">
-  <a class="navbar-brand" href="techdashboard.php">HELPDESK</a>
+  <a class="navbar-brand" href="techdashboard.php">IT HELPDESK</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
+
+  <form action="testcalendar.php" method="POST" style="display: inline;">
+    <input type="hidden" name="u_id" value="<?php echo $_SESSION['user_id']; ?>">
+    <button type="submit" id="showCalendarBtn" class="btn btn-primary">Show Calendar</button>
+</form>
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">

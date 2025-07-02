@@ -38,6 +38,7 @@ exit();
 <link rel="stylesheet" href="../assets/Date-Time-Picker-Bootstrap-4/src/sass/bootstrap-datetimepicker-build.css" />
 <link href="https://fonts.googleapis.com/css2?family=Edu+NSW+ACT+Foundation&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+<link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css' rel='stylesheet' />
 
 <script src="../assets/Date-Time-Picker-Bootstrap-4/src/js/bootstrap-datetimepicker.js"></script>
 <!-- <link rel="stylesheet" href="styles.css" /> -->
@@ -47,6 +48,7 @@ exit();
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.js"></script>
 <script src="../js/ellipsis.js"></script>
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
 </head>
 
 
@@ -101,57 +103,55 @@ GENERATE REPORT
 </li>
 
 </ul>
-<ul class="navbar-nav ">
-<li class="nav-item dropdown">
-<a class="nav-link" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-<i class="fa fa-sliders-h">
-
-  <!-- <span class="badge badge-primary">11</span> -->
-</i>
-Maintenance
-</a>
-<div class="dropdown-menu" aria-labelledby="navbarDropdown" style="background-color: rgb(52,58,64);">
-<a class="dropdown-item text-white"  href="user_maintenance.php"><i class="fas fa-user-cog"></i>  User Maintenance</a>
-<!--           <a class="dropdown-item text-white" href="#">Categories</a>
-<div class="dropdown-divider"></div>
-<a class="dropdown-item" href="#">Something else here</a> -->
-</div>
-</li>
-<li class="nav-item dropdown">
-<a class="nav-link" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
- <i class="fa fa-bell">
-  <span class="badge badge-info" id="notif_newmsg"></span>
-</i>
-Notification
-
-</a>
-<div class="dropdown-menu"  aria-labelledby="navbarDropdown">
-<div class="col-md-12 col-xs-12">
-<table id="notif_data" class="table table-dark table-responsive table-sm" style="width: auto;"></table>
-</div>
-
-</div>
-</li>
+<ul class="navbar-nav ml-auto"> 
 <li class="nav-item">
-<form class="form-inline my-2 my-lg-0">
-<ul class="navbar-nav mr-auto">
-      <li class="nav-item dropdown">
-<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-<!-- <i class="fa fa-envelope-o"> -->
- <img class="rounded-circle" src="../images/users/<?= $_SESSION['imguser'];?>" alt="User Image" style="width: 35px;"/><br>
-  <?php echo $_SESSION['fname']. '  ' . $_SESSION['lstname'];?>
-
-</a>
-<div class="dropdown-menu " aria-labelledby="navbarDropdown">
-<!-- <a class="dropdown-item" href="javascript:void(0)" onclick="pager(this.id)" id="change_password"></a> -->
-<a class="dropdown-item" href="change_password.php">Change Password</a>
-<a class="dropdown-item" href="../logout.php">Log Out</a>
-
-</div>
+  <a class="nav-link" href="networkpanel.php" >
+    <i class="fa-solid fa-ethernet"></i>
+    <span>Network Maintenance</span>
+  </a>
 </li>
-</ul>
-</form>
-</li>
+<!-- Changed mr-auto to ml-auto for right alignment -->
+  <li class="nav-item dropdown">
+    <a class="nav-link" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <i class="fa fa-sliders-h"></i>
+      Maintenance
+    </a>
+    <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="background-color: rgb(52,58,64);">
+      <a class="dropdown-item text-white" href="user_maintenance.php">
+        <i class="fas fa-user-cog"></i> User Maintenance
+      </a>
+    </div>
+  </li>
+  
+  <li class="nav-item dropdown">
+    <a class="nav-link" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <i class="fa fa-bell">
+        <span class="badge badge-info" id="notif_newmsg"></span>
+      </i>
+      Notification
+    </a>
+    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+      <div class="col-md-12 col-xs-12">
+        <table id="notif_data" class="table table-dark table-responsive table-sm" style="width: auto;"></table>
+      </div>
+    </div>
+  </li>
+  
+  <li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <img class="rounded-circle" src="../images/users/<?= $_SESSION['imguser'];?>" alt="User Image" style="width: 35px; height: 35px; object-fit: cover;">
+      <span class="ml-2 d-none d-lg-inline"><?php echo $_SESSION['fname'].' '.$_SESSION['lstname']; ?></span>
+    </a>
+    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+      <a class="dropdown-item" href="change_password.php">
+        <i class="fas fa-key mr-2"></i>Change Password
+      </a>
+      <div class="dropdown-divider"></div>
+      <a class="dropdown-item" href="../logout.php">
+        <i class="fas fa-sign-out-alt mr-2"></i>Log Out
+      </a>
+    </div>
+  </li>
 </ul>
 </div>
 </nav>

@@ -373,6 +373,17 @@ $('#report_data tbody').on('dblclick', 'tr', function () {
   $('#operation').val("Save and Reply"); 
   $('#userModal').modal({ "show": true, "backdrop": 'static' });
 
+  var valtick = $('#ticket_no').val();
+
+  $.ajax({
+      type: 'POST',
+      url: 'sesticket.php',
+      data: {tktval: valtick},
+      success: function(response) {
+        $('#img').html(response);
+      }
+    });
+
 });
 
 
@@ -624,19 +635,12 @@ $('.dv_msg').show();
 $('#remarks_view').show();
 $('#addmsg').val("");
 
-// alert("working");
+// alert(valtick);
 
-  var val = jQuery('#ticket_no').val();
+  // var valtick = $('#ticket_no').val();
 
 
-  $.ajax({
-      type: 'POST',
-      url: 'sesticket.php',
-      data: {tktval: val},
-      success: function(response) {
-        $('#img').html(response);
-      }
-    });
+
 
 });
 

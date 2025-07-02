@@ -3,7 +3,7 @@
 // ======== db  =========
 include 'header.php';
 include '../condb.php';
-// include 'chrtdashboard.php';
+include 'chrtdashboard.php';
 // include 'sub_graph_modal.php';
 
 $conn=new dbconfig();
@@ -39,6 +39,36 @@ $datetime->setTimezone($timezone);
     </div>
   </div>
 
+  <div class="row">
+
+<div class="col-4 col-md-4 " >
+            
+           <div class="input-group mb-3">
+             <div class="input-group-prepend">
+               <span class="input-group-text" id="basic-addon1">SELECT YEAR:</span>
+             </div>
+                            <select class="form-control"  name="yearpicker" id="yearpicker" required>
+                            <option value="2019,2020,2021,2022,2023,2024,2025">OVERALL</option>
+                            <option value="2019">2019</option>
+                            <option value="2020">2020</option>
+                            <option value="2021">2021</option>
+                            <option value="2022">2022</option>
+                            <option value="2023">2023</option>
+                            <option value="2024">2024</option>
+                            <option value="2025" selected>2025</option>
+                           </select>
+            </div>
+
+</div>
+<input type="hidden" name="slct_area" id="slct_area" value="<?php echo $_SESSION['user_id'];?>">
+
+           <div  class="col-2 col-md-2 ">
+               <button class="btn btn-info btn-xs" id="flterbutton" style="display: inline-block;"><i class="fa fa-search" aria-hidden="true"></i></button>
+           </div>
+
+   </div>
+
+
 <div class=" second card-deck align-items-center mb-3">
 
 
@@ -68,10 +98,10 @@ $datetime->setTimezone($timezone);
                       </div>
 </div>
 
-<div class="dashcard card text-white mb-4 bg-warning" style="width: 18rem; height: 9rem;">
+<div class="dashcard card text-white mb-4 bg-info" style="width: 18rem; height: 9rem;">
 <div class="card-body">
 
-<div class="card-title" style="font-size: 15px;">OPEN WITH FIX ASSET: <span class="" id="count_owfa" style="font-size: 18px;"></span></div>
+<div class="card-title" style="font-size: 15px;">OVER DUE OPEN REPORTS: <span class="" id="count_owfa" style="font-size: 18px;"></span></div>
 
 </div>
 <div class="card-footer d-flex align-items-center justify-content-between">
@@ -97,6 +127,37 @@ $datetime->setTimezone($timezone);
 
 </div>
 
+
+<div class="row " id="ovrall">
+
+<div class="card card2 col-12 col-md-12 col-lg-6">
+<h5 class="card-header text-white">Overall Open Status</h5>
+<div class="card-body">
+<div id="chartdiv5"></div>
+</div>
+</div>
+
+
+<div class="card card2 col-12 col-md-12 col-lg-6">
+<h5 class="card-header text-white">Department Concern</h5>
+<div class="card-body">
+<div id="chartdiv2" name="chartdiv2"></div>
+</div>
+</div>
+
+<div class="card card2 col-12 col-lg-12">
+<h5 class="card-header text-white">Number of Escalated Reports Per Area</h5>
+<div class="card-body">
+<div class="col-xl-12 col-lg-12">
+</div>
+
+<div id="chart_area"></div>
+</div>     
+</div>
+
+</div>
+
+
 <div class="row">
 
 
@@ -105,55 +166,7 @@ $datetime->setTimezone($timezone);
 <div class="card-body">
 
 
- <div class="row">
 
-     <div class="col-4 col-md-4 mt-4 mb-4" >
-                 
-                <div class="input-group mb-3">
-                  <div class="input-group-prepend">
-                    <span class="input-group-text" id="basic-addon1">SELECT YEAR:</span>
-                  </div>
-                                 <select class="form-control"  name="yearpicker" id="yearpicker" required>
-                                 <option value="2019,2020,2021,2022,2023,2024">OVERALL</option>
-                                 <option value="2019">2019</option>
-                                 <option value="2020">2020</option>
-                                 <option value="2021">2021</option>
-                                 <option value="2022">2022</option>
-                                 <option value="2023">2023</option>
-                                 <option value="2024" selected>2024</option>
-                                </select>
-                 </div>
-
-     </div>
-
-        <div class="col-4 col-md-3 mt-4 mb-4">
-             <div class="input-group mb-3">
-                  <div class="input-group-prepend">
-                    <span class="input-group-text" id="basic-addon1">SELECT AREA:</span>
-                  </div>
-                <select class="form-control" name="slct_area" id="slct_area" required>
-                <option selected value="<?php echo $_SESSION['area_num']?>">ALL</option>  
-                     <?php
-                              $query="select DISTINCT area_num, area_desc from vw_amdtb WHERE area_num IN ({$_SESSION['area_num']}) ORDER by area_num ASC";
-                              $run=$conn->prepare($query);
-                              $run->execute();
-                              $rs=$run->get_result();
-                              while ($res=$rs->fetch_assoc()) {
-                                $areaid = $res['area_num'];
-                                $area_desc = $res['area_desc'];
-                              ?>
-                              <option value="<?php echo $areaid;?>"><?= $area_desc; ?></option>
-                              <?php }?>
-                              ?>   
-		  </select>  
-	    </div>
-         </div>
-
-                <div  class="col-2 col-md-2 mt-4 mb-4">
-                    <button class="btn btn-info btn-xs" id="flterbutton" style="display: inline-block;"><i class="fa fa-search" aria-hidden="true"></i></button>
-                </div>
-  
-        </div>
 
 
 <table id="report_data" class="table table-dark table-responsive table-condensed text-center"></table>
@@ -161,6 +174,7 @@ $datetime->setTimezone($timezone);
 </div>
 </div>
 </div>
+<input type="hidden" id="myInput">
 </div> <!--end of container-->
 
 
@@ -237,7 +251,7 @@ style="text-transform:uppercase" onkeyup="this.value = this.value;"></textarea>
       ?>
       <option><?=$res['via_desc'] ?></option>
       <?php }?>
-      ?>   
+    
 </select>
 </div>
 <div class="form-group col-md-3">
@@ -257,7 +271,7 @@ style="text-transform:uppercase" onkeyup="this.value = this.value;"></textarea>
 
               <option value="<?php echo $tchid;?>"><?= $tchdesc; ?></option>
               <?php }?>
-              ?>   
+             
   </select> 
 </div>
 <div class="form-group col-md-3">
@@ -333,7 +347,7 @@ style="text-transform:uppercase" onkeyup="this.value = this.value;"></textarea>
 <select class = "form-control form-control-sm" name= "status" id="status" required>
 <option value=""> &larr; Status &rarr;</option>
 <?php
-      $query="select * from status WHERE stat_id NOT IN  ('2','5','6')";
+      $query="select * from status ";
       $run=$conn->prepare($query);
       $run->execute();
       $rs=$run->get_result();
@@ -341,7 +355,7 @@ style="text-transform:uppercase" onkeyup="this.value = this.value;"></textarea>
       ?>
       <option><?=$res['stat_desc'] ?></option>
       <?php }?>
-      ?>   
+    
 </select>
 </div>
 <div class="form-group col-md-4 hide_cl">
@@ -357,8 +371,8 @@ style="text-transform:uppercase" onkeyup="this.value = this.value;"></textarea>
 <div class="form-group col-md-3 hide_cl">
 
 <label id="clby_label" class="hidden">CLOSED BY</label>
-<input type="hidden" name="close_by" id="close_by" value="<?php echo $_SESSION['tech_id'];?>"> 
-<input type="text" class="form-control form-control-sm" name="cl_desc" id="cl_desc" readonly="" value="<?php echo $_SESSION['fname']. '  ' . $_SESSION['lstname'];?>">
+<input type="hidden" name="close_by" id="close_by" value=""> 
+<input type="text" class="form-control form-control-sm" name="cl_desc" id="cl_desc" readonly="" value="">
 </div>
 
 <div class="form-group col-md-12">
@@ -439,6 +453,9 @@ $('#card_totalval').click(function(e) {
 e.preventDefault();
 val =  $(this).attr("value");
 
+// alert(val);
+
+
 });
 $('#card_openval').click(function(e) {
 e.preventDefault();
@@ -454,13 +471,21 @@ e.preventDefault();
 val =  $(this).attr("value");
 });
 
+$('#myInput').on( 'input', function () {
+    table.search( this.value ).draw();
+} );
+
 const yr =$("#yearpicker").val();
-const areaVal = $("#slct_area").val();
+// const areaVal = $("#slct_area").val();
 
-getdata(yr,areaVal);
+_areagraph(yr);
+_overallpie(yr);
+_catpie(yr);
+getdata(yr);
 
-function getdata(yr,area){
-$.post('fetchdata/fetch_data.php',{yr:yr,area:area,mode:'dtb'},function(data){
+
+function getdata(yr){
+$.post('fetchdata/fetch_data.php',{yr:yr,mode:'dtb'},function(data){
 admin_datatable(data);
 },'json');
 }
@@ -615,6 +640,10 @@ $('#date_refNo').val(data['date_refNo']);
 admin_hideshowforms();
 $('#date_closed').val(data['date_closed']);
 $('#remarks').val(data['remarks']);
+$('#close_by').val(data['close_by']);
+$('#cl_desc').val(data['clusers']);
+
+
 unilayout_netshowmodalform();
 
 
@@ -658,13 +687,14 @@ $('#date_refNo').attr('readonly', true);
 $('#date_closed').attr('readonly', true);
 // $('#admsg').attr('readonly', true);
 $('#store').prop("disabled", true);
-$('#via').prop("disabled", false);
-$('#status').prop("disabled", false);
+$('#via').prop("disabled", true);
+$('#status').prop("disabled", true);
 $('#itsup').prop("disabled", true);
 $('#cat').prop("disabled", true);
 $('#sub').prop("disabled", true);
 $('#isp').prop("disabled", true);
 $('#remarks').attr('readonly', true);
+
 
 }   
 
@@ -691,41 +721,86 @@ $('#userModal').modal({"show": true, "backdrop": 'static'});
 
 } );
 
-$('#card_totalval').on('click', function () {
-var val =  $(this).attr("value");
-// alert(val);
-table
-.columns( 6 )
-.search(val)
-.draw();
-} );
+$('#card_totalval').on('click', function() {
+    // 1. Clear all existing filters (same as your openval approach)
+    table.search('').columns().search('').draw();
+    
+    // 2. Remove any custom filters (like your status filter)
+    // This is the key difference - we remove instead of adding filters
+    $.fn.dataTable.ext.search = []; // Clear ALL custom filters
+    
+    // 3. Redraw the table completely unfiltered
+    table.draw();
+    
+    // 4. Your existing UI code
+    $('#myInput').slideToggle();
+    $('html, body').animate({ scrollTop: 1600 }, 1000);
+});
 
-
-$('#card_openval').on('click', function () {
-var val =  $(this).attr("value");
-// alert(val);
-table
-.columns( 6 )
-.search(val)
-.draw();
-} );
+$('#card_openval').on('click', function() {
+    // Clear existing filters
+    table.search('').columns().search('').draw();
+    
+    // Apply status filter (column 6)
+    $.fn.dataTable.ext.search.push(
+        function(settings, data, dataIndex) {
+            var status = data[6]; // Status column
+            return status !== "CLOSED" && 
+                   status !== "SUBJECT FOR CLOSING";
+        }
+    );
+    table.draw();
+    
+    // Animation code
+    $('#myInput').slideToggle();
+    $('html, body').animate({ scrollTop: 1600 }, 1000);
+});
 
 $('#card_openwfaval').on('click', function () {
-var val =  $(this).attr("value");
-// alert(val);
-table
-.columns( 6 )
-.search(val)
-.draw();
-} );
+    // Use DataTables search with a custom function to compare dates
+    $.fn.dataTable.ext.search.push(
+        function( settings, data, dataIndex ) {
+            var dateColumn = data[10] || ""; // Use data for column 10, default to empty string
+
+            // Extract the number of days using a regular expression
+            var match = dateColumn.match(/(\d+)\s+days?/i); // Matches "1 day", "5 days", etc. (case-insensitive)
+
+            var days = match ? parseInt(match[1]) : NaN; // Extract the number from the match
+
+            // Check if days is a valid number
+            if (isNaN(days)) {
+                // Handle the case where the number of days is invalid (e.g., log an error, skip the row)
+                console.error("Invalid number of days:", dateColumn);
+                return false; // Skip this row
+            }
+
+            // Compare the number of days to 3
+            if (days >= 4) {
+                return true; // Include the row if it's r days or more
+            }
+
+            return false; // Exclude the row if it's more than 4 days
+        }
+    );
+
+    table.draw();
+    $.fn.dataTable.ext.search.pop();
+
+    $('#myInput').slideToggle();
+    $('html, body').animate({
+        scrollTop: 1600
+    }, 1000);
+});
+
 
 $('#card_closedval').on('click', function () {
 var val =  $(this).attr("value");
 // alert(val);
-table
-.columns( 6 )
-.search(val)
-.draw();
+table.columns(6).search(val).draw();
+$('#myInput').slideToggle();
+    $('html, body').animate({
+        scrollTop: 1600
+    }, 1000);
 } );
 
 } // end of data table
@@ -740,10 +815,10 @@ $('#store_graph_modal').modal('hide');
 // admin_hideshowforms();  
 
 
-get_card_data(yr,areaVal)
-function get_card_data(y,area){
+get_card_data(yr)
+function get_card_data(y){
 
-$.post('fetchdata/fetch_data.php',{yr:y,area:area,mode:'yearch'}, function(data) {
+$.post('fetchdata/fetch_data.php',{yr:y,mode:'yearch'}, function(data) {
 let card_data = jQuery.parseJSON(data); 
 const a = card_data;
 // console.log(a)
@@ -756,10 +831,17 @@ $('#count_closed').html(a[0].cls_res);
 
 $("#flterbutton").click(function() {
      const yr =$("#yearpicker").val();
-     const area =$("#slct_area").val();
-     console.log(yr)
-     get_card_data(yr,area);
-     getdata(yr,area);
+    //  const area =$("#slct_area").val();
+    //  console.log(yr)
+     get_card_data(yr);
+     getdata(yr);
+  _overallpie(yr);
+  _catpie(yr);
+_areagraph(yr);
+
+  
+      
+
      // console.log(getdata(yrs))
 
 });
