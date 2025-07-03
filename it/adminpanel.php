@@ -607,7 +607,7 @@ style="text-transform:uppercase" onkeyup="this.value = this.value;"></textarea>
 
 <div class="form-group col-4 col-md-4 col-lg-4 hide_isp">
 
-<label for="date_refNo" class="hidden" id="lbl_DtRefNo">Date of RefNo</label>
+<label for="date_refNo" class="text" id="lbl_DtRefNo">Date of RefNo</label>
 <div class="input-group date" id="datetimepicker3" data-target-input="nearest">
 <input type="text" name="date_refNo" id="date_refNo" class="form-control form-control-sm datetimepicker-input" data-target="#datetimepicker3"/>
 <div class="input-group-append" data-target="#date_created" data-toggle="datetimepicker">
@@ -731,7 +731,7 @@ style="text-transform:uppercase" onkeyup="this.value = this.value;"></textarea>
 </div>
 
 <div class="modal-footer">
-<input type="hidden" name="operation" id="operation" value="Add" />
+<input type="text" name="operation" id="operation" value="Add" />
 <input type="hidden" name="u_id" id="u_id" value="<?php echo $_SESSION['user_id'];  ?>">
 
 </div>

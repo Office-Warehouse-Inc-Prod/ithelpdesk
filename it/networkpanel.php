@@ -41,7 +41,7 @@ $con1=new dbconfig();
 </div>
 
 <div class="card card2 col-12 col-lg-12">
-<h5 class="card-header text-black">Number of Escalated Reports Per Area</h5>
+<h5 class="card-header text-black">Number of Escalated Reports Per Store</h5>
 <div class="card-body">
 <div class="col-xl-12 col-lg-12">
 </div>

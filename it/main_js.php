@@ -287,7 +287,7 @@ $('#report_data tbody').on('dblclick', 'tr', function () {
   // Simulate the original `button` click by using this `tr` as parent
   var data = table.row($(this)).data();
   if (!data) return;
-
+  console.log(data);
   $('#subjct').attr('readonly', true);
   var tid = $(this).find('td:eq(2)').html(); 
   $('#ticket_no').val(data['ticket_no']);
@@ -314,6 +314,7 @@ $('#report_data tbody').on('dblclick', 'tr', function () {
   admin_hideshowforms();
   $('#date_closed').val(data['date_closed']);
   $('#remarks').val(data['remarks']);
+  // $('#remarks').val('');
   unilayout_netshowmodalform();
 
   $('#itsup').off('change').on('change', function () {
@@ -361,7 +362,7 @@ $('#report_data tbody').on('dblclick', 'tr', function () {
   option.value = 0;
   option.id = 'tmpsubid';
   option.selected = 'selected';
-  option.text = $(this).find('td:eq(11)').html();
+  option.text = $(this).find('td:eq(10)').html();
   sst.add(option);   
 
   getinfo(tid, 'remarks', user_id);
@@ -383,6 +384,12 @@ $('#report_data tbody').on('dblclick', 'tr', function () {
         $('#img').html(response);
       }
     });
+
+$('#msgbtn').show();
+$('msg_thread').show();
+$('.dv_msg').show();
+$('#remarks_view').show();
+$('#addmsg').val("");
 
 });
 
@@ -629,11 +636,11 @@ $(document).on('click', '#dtbsecond', function(){
 
 
 
-$('#msgbtn').show();
-$('msg_thread').show();
-$('.dv_msg').show();
-$('#remarks_view').show();
-$('#addmsg').val("");
+// $('#msgbtn').show();
+// $('msg_thread').show();
+// $('.dv_msg').show();
+// $('#remarks_view').show();
+// $('#addmsg').val("");
 
 // alert(valtick);
 

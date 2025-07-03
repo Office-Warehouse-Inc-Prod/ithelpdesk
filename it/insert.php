@@ -389,7 +389,7 @@ $clby="";
 $ispid="";
 $data=   array(
     ':ticket_no' => $_POST["ticket_no"],
-    ':date_created' => date('Y-m-d H:i:s',strtotime($_POST["date_created"])),
+    // ':date_created' => date('Y-m-d H:i:s',strtotime($_POST["date_created"])),
     // ':concern' => $_POST["concern"],
     ':via' => $_POST["via"],
     ':status' => $_POST["status"],
@@ -398,7 +398,7 @@ $data=   array(
     ':close_by' => $_POST["close_by"],
     ':remarks' => $_POST["remarks"],
     ':refNo' => $_POST["refNo"],
-    ':date_refNo' => date('Y-m-d H:i:s',strtotime($_POST["date_refNo"]))
+    ':date_refNo' => date('Y-m-d H:i:s',strtotime($_POST["date_created"]))
 
    ) ;
 }
@@ -414,7 +414,8 @@ else{
       $data=   array(
     ':ticket_no' => $_POST["ticket_no"],
     ':store' => $_POST["store"],
-    ':date_created' => date('Y-m-d H:i:s',strtotime($_POST["date_created"])),
+    // ':date_created' => date('Y-m-d H:i:s',strtotime($_POST["date_created"])),
+    // ':date_created' => '2025-07-03',
     // ':concern' => $_POST["concern"],
     ':via' => $_POST["via"],
     ':status' => $_POST["status"],
@@ -423,7 +424,7 @@ else{
     ':sub_id' => $_POST["sub_num"],
     ':isp_id' => '0',
     ':refNo' => $_POST["refNo"],
-    ':date_refNo' => date('Y-m-d H:i:s',strtotime($_POST["date_refNo"])),
+    ':date_refNo' => date('Y-m-d H:i:s',strtotime($_POST["date_created"])),
     ':date_closed' => date('Y-m-d H:i:s',strtotime($_POST["date_closed"])),
     ':close_by' => $_POST["close_by"],
     ':remarks' => $_POST["remarks"]
