@@ -67,7 +67,7 @@ $con1=new dbconfig();
     <div class="form-group col-md-4">
       
      <label>DATE CREATED</label>
-        <input type="text" class="form-control form-control-sm" name="date_created" id="date_created" readonly="" value="">
+        <input type="text" class="form-control form-control-sm" name="date_createdx" id="date_createdx" readonly="" value="">
         <div></div>
 </div>
 
@@ -87,29 +87,29 @@ $con1=new dbconfig();
      style="text-transform:uppercase" onkeyup="this.value = this.value;" readonly></textarea>
      </div>
 
-    <div class="form-group col-md-4">
-      <label>VIA</label>
-     <select class="form-control form-control-sm" name="via" id="via" required>
-     <option value=""> &larr; VIA &rarr;</option>
-           <?php
-                    $query="select * from via_main";
-                    $run=$con1->prepare($query);
-                    $run->execute();
-                    $rs=$run->get_result();
-                    while ($res=$rs->fetch_assoc()) {
-                    ?>
-                    <option><?=$res['via_desc'] ?></option>
-                    <?php }?>
-                    ?>   
-    </select>
-  </div>
+     <div class="form-group col-md-4">
+  <label>VIA</label>
+  <select class="form-control form-control-sm" name="via" id="via" required>
+    <option value=""> &larr; VIA &rarr;</option>
+    <?php
+    $query = "select * from via_main";
+    $run = $con1->prepare($query);
+    $run->execute();
+    $rs = $run->get_result();
+    while ($res = $rs->fetch_assoc()) {
+    ?>
+      <option value="<?=$res['via_desc']?>"><?=$res['via_desc']?></option>
+    <?php }?>
+  </select>
+</div>
+
     <div class="form-group col-md-8">
       <label>ASSIGNED SUPPORT</label>
-          <input type="text" name="it_num" id="it_num" readonly="">
-          <select class="form-control form-control-sm" name="itsup" id="itsup" required>
+          <input type="hidden" name="it_num" id="it_num" readonly="">
+          <select class="form-control form-control-sm" name="itsup" id="itsup">
              <option value="">Assign support...</option>  
                    <?php
-                            $query="select * from it_tech WHERE itsup NOT IN ('4','7','8','12','14','15','32','43') AND deptsel = '1'";
+                            $query="select * from it_tech WHERE itsup NOT IN ('4','7','8','12','14') AND deptsel = '1'";
                             $run=$con1->prepare($query);
                             $run->execute();
                             $rs=$run->get_result();
@@ -120,11 +120,11 @@ $con1=new dbconfig();
 
                             <option value="<?php echo $tchid;?>"><?= $tchdesc; ?></option>
                             <?php }?>
-                            ?>   
+                            
                 </select> 
    </div>
+   
     <div class="form-group col-md-6">
-
      <label>CATEGORY</label>
           <input type="hidden" name="cat_num" id="cat_num" readonly="">
           <select class="form-control form-control-sm" name="cat" id="cat" required >
@@ -141,7 +141,7 @@ $con1=new dbconfig();
 
                             <option value="<?php echo $supid;?>"><?= $suppdesc; ?></option>
                             <?php }?>
-                            ?>   
+                             
               </select> 
    </div>
     <div class="form-group col-md-6">
@@ -171,7 +171,7 @@ $con1=new dbconfig();
 
                             <option value="<?php echo $ispid;?>"><?= $ispdesc; ?></option>
                             <?php }?>
-                            ?>   
+                           
               </select> 
    </div>
     <div class="form-group col-md-4 hide_isp" >
@@ -185,7 +185,8 @@ $con1=new dbconfig();
      <label for="date_refNo" class="hidden" id="lbl_DtRefNo">Date of RefNo</label>
   <div class="input-group date" id="datetimepicker3" data-target-input="nearest">
           <input type="text" name="date_refNo" id="date_refNo" class="form-control form-control-sm datetimepicker-input" data-target="#datetimepicker3"/>
-          <div class="input-group-append" data-target="#date_created" data-toggle="datetimepicker">
+          <div class="input-group-append" data-target="#" data-toggle="datetimepicker">
+        <!-- <input type="text" class="form-control form-control-sm" name="date_created" id="date_created" readonly="" value=""> -->
             <div class="input-group-text" id="ico_cal3"><i class="fa fa-calendar"></i></div>
     </div>
   </div>
@@ -204,7 +205,7 @@ $con1=new dbconfig();
                     ?>
                     <option><?=$res['stat_desc'] ?></option>
                     <?php }?>
-                    ?>   
+                   
     </select>
   </div>
   
@@ -273,8 +274,8 @@ $con1=new dbconfig();
 </div>
 
   <div class="modal-footer">
-     <input type="hidden" name="operation" id="operation" />
-     <input type="hidden" name="u_id" value="<?php echo $_SESSION['user_id'];  ?>">
+     <input type="text" name="operation" id="operation" />
+     <input type="text" name="u_id" value="<?php echo $_SESSION['user_id'];  ?>">
 
     </div>
   </div>
@@ -286,6 +287,9 @@ $con1=new dbconfig();
 
 <script type="text/javascript">
   $(document).ready(function(){
+
+
+  
 
 // for Status Open    
 $("div.selected select").val("OPEN");
@@ -370,7 +374,7 @@ const dataset=t.newrptdata;
                 $('#store').val(data['store']);
                 $('#str_desc').val(data['str_code']);
                 $('#crtd_by').val(data['full_name']);
-                $('#date_created').val(data['date_created']);
+                $('#date_createdx').val(data['date_created']);
                 $('#concern').val(data['concern']);
                 $('#tos').val(data['service_desc']);
                 $('#message').val(data['subject']);
@@ -387,6 +391,12 @@ $('#tick_title').text("Ticker Number: "+tid+"");
 
 getinfo(tid, 'remarks', user_id);
 // console.log(tid)
+
+$('#itsup').change(function(e) { 
+    e.preventDefault();
+    let Dataxxx = $(this).val(); // Correct way to get value in jQuery
+    alert(Dataxxx);
+  });
 
         });
 
@@ -450,6 +460,8 @@ $(document).on('submit', '#newrpt_form', function(event)
 
 
 
+
+
 }); // end of docu.ready
 
 $(document).on('click', '#msgbtn', function(){
@@ -471,7 +483,8 @@ $('#msgbtn').val("show");
 $('#msg_thread').hide('slow');
 }
 
-
-
 });
+
+
+
 </script>

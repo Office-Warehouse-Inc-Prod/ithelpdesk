@@ -374,11 +374,11 @@ else{
 
 if($_POST["operation"] == "Save and Reply")
  { 
-     $optbrval =$_POST["store"];
-     $optval =$_POST["itsup"];
-     $optcval =$_POST["cat"];
-     $optsval =$_POST["sub_num"];
-     $opclbval=$_POST["close_by"];
+     $optbrval = $_POST["store"];
+     $optval = $_POST["itsup"];
+     $optcval = $_POST["cat"];
+     $optsval = $_POST["sub_num"];
+     $opclbval= $_POST["close_by"];
      $tmpval = '0';
 if ( ($optbrval == '0') || ($optval == '0') || ($optcval == '0') || ($optsval == '0') || ($opclbval == '0') ) {
 $brid="";
@@ -389,7 +389,7 @@ $clby="";
 $ispid="";
 $data=   array(
     ':ticket_no' => $_POST["ticket_no"],
-    // ':date_created' => date('Y-m-d H:i:s',strtotime($_POST["date_created"])),
+    ':date_created' => date('Y-m-d H:i:s',strtotime($_POST["date_createdx"])),
     // ':concern' => $_POST["concern"],
     ':via' => $_POST["via"],
     ':status' => $_POST["status"],
@@ -398,7 +398,7 @@ $data=   array(
     ':close_by' => $_POST["close_by"],
     ':remarks' => $_POST["remarks"],
     ':refNo' => $_POST["refNo"],
-    ':date_refNo' => date('Y-m-d H:i:s',strtotime($_POST["date_created"]))
+    ':date_refNo' => date('Y-m-d H:i:s',strtotime($_POST["date_refNo"]))
 
    ) ;
 }
@@ -414,21 +414,22 @@ else{
       $data=   array(
     ':ticket_no' => $_POST["ticket_no"],
     ':store' => $_POST["store"],
-    // ':date_created' => date('Y-m-d H:i:s',strtotime($_POST["date_created"])),
-    // ':date_created' => '2025-07-03',
+    ':date_created' => date('Y-m-d H:i:s',strtotime($_POST["date_createdx"])),
     // ':concern' => $_POST["concern"],
     ':via' => $_POST["via"],
     ':status' => $_POST["status"],
     ':itsup' => $_POST["itsup"],
+    // ':itsup' => 'TEST',
     ':cat_id' => $_POST["cat"],
     ':sub_id' => $_POST["sub_num"],
     ':isp_id' => '0',
     ':refNo' => $_POST["refNo"],
-    ':date_refNo' => date('Y-m-d H:i:s',strtotime($_POST["date_created"])),
+    ':date_refNo' => date('Y-m-d H:i:s',strtotime($_POST["date_refNo"])),
     ':date_closed' => date('Y-m-d H:i:s',strtotime($_POST["date_closed"])),
     ':close_by' => $_POST["close_by"],
     ':remarks' => $_POST["remarks"]
    ) ;
+
 }
 
   $statement = $connection->prepare(
@@ -440,7 +441,11 @@ else{
 
   $result = $statement->execute($data);
 
-  
+if ($result) {
+echo "Record updated successfully.";
+} else {
+echo "Error updating record: " . implode(", ", $statement->errorInfo());
+}
 
 if($_POST['it_num'] != $_POST['itsup'])
   {
@@ -451,7 +456,7 @@ if($_POST['it_num'] != $_POST['itsup'])
   $reasgnres= $reasgn->execute(
     array(
       ':ticket_no' => $_POST["ticket_no"],
-      ':date_created' => date('Y-m-d H:i:s',strtotime($_POST["date_created"])),
+      ':date_created' => date('Y-m-d H:i:s',strtotime($_POST["date_createdx"])),
       ':itsup' => $_POST["it_num"],
       ':nw_sup' => $_POST["itsup"],
       ':r_remarks' => $_POST["remarks"],
@@ -516,7 +521,7 @@ if($_POST['it_num'] != $_POST['itsup'])
      
     ));
  }
-     echo 'Data has been updated';
+    //  echo 'Data has been updated';
 
       $addmsg=   array(
     ':comment_details' => $_POST["admsg"],

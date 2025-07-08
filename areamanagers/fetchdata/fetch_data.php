@@ -27,6 +27,9 @@ switch ($mode) {
     case 'area_grph':
        $records= $fn->area_grph();
         break;
+    case 'polled_store':
+        $records= $fn->polled_store();
+            break;
     case 'str_grph':
         $records= $fn->str_grph();
         break;

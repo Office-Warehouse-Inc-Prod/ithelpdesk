@@ -92,7 +92,7 @@ $('#myInput').on( 'input', function () {
 
 function getdata(yr){
 $.post('fetchdata/fetch_data.php',{yr:yr, mode:'dtb'},function(data){
-console.log(data);
+// console.log(data);
 admin_datatable(data);
 },'json');
 }
@@ -287,13 +287,13 @@ $('#report_data tbody').on('dblclick', 'tr', function () {
   // Simulate the original `button` click by using this `tr` as parent
   var data = table.row($(this)).data();
   if (!data) return;
-  console.log(data);
+  // console.log(data);
   $('#subjct').attr('readonly', true);
   var tid = $(this).find('td:eq(2)').html(); 
   $('#ticket_no').val(data['ticket_no']);
   $('#str_num').val(data['store']);
   $('#store').val(data['store']);
-  $('#date_created').val(data['date_created']);
+  $('#date_createdx').val(data['date_created']);
   $('#subjct').val(data['subject']);
   $('#concern').val(data['concern']);
   $('#via').val(data['via']);
@@ -330,7 +330,7 @@ $('#report_data tbody').on('dblclick', 'tr', function () {
 
   if($('#status').val() == 'CLOSED') {
     $(':input[type="submit"]').prop('disabled', true); 
-    $('#date_created').attr('readonly', true);
+    $('#date_createdx').attr('readonly', true);
     $('#date_refNo').attr('readonly', true);
     $('#date_closed').attr('readonly', true);
     $('#store').prop("disabled", true);
@@ -343,7 +343,7 @@ $('#report_data tbody').on('dblclick', 'tr', function () {
     $('#remarks').attr('readonly', true);
   } else {
     $(':input[type="submit"]').prop('disabled', false); 
-    $('#date_created').attr('readonly', false);
+    $('#date_createdx').attr('readonly', false);
     $('#date_refNo').attr('readonly', false);
     $('#date_closed').attr('readonly', false);
     $('#store').prop("disabled", false);
@@ -621,7 +621,7 @@ return false;
     } else {
       alert("All Fields are Required");
     }
-     clearconsole();
+    //  clearconsole();
   });
 
 $(document).on('click', '#dtbsecond', function(){

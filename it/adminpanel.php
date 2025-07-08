@@ -611,6 +611,7 @@ style="text-transform:uppercase" onkeyup="this.value = this.value;"></textarea>
 <div class="input-group date" id="datetimepicker3" data-target-input="nearest">
 <input type="text" name="date_refNo" id="date_refNo" class="form-control form-control-sm datetimepicker-input" data-target="#datetimepicker3"/>
 <div class="input-group-append" data-target="#date_created" data-toggle="datetimepicker">
+<input type="hidden" class="form-control form-control-sm" name="date_createdx" id="date_createdx">
 <div class="input-group-text" id="ico_cal3"><i class="fa fa-calendar"></i></div>
 </div>
 </div>
