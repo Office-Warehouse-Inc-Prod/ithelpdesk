@@ -40,6 +40,21 @@ switch ($mode) {
         break;  
     case 'notif_support':
          $records['ntfsupdata']= $fn->notif_techsupp();
+        break;
+    case 'netpie':
+        $records= $fn->netpie();
+        break;
+    case 'overallnet':
+        $records= $fn->overallnet_res();
+            break;
+    case 'areanet_grph':
+        $records= $fn->areanet_grph();
+            break;
+    case 'strnet_grph':
+        $records= $fn->strnet_grph();
+        break;
+    case 'area_grph':
+        $records= $fn->area_grph();
         break; 
     default:
         break;

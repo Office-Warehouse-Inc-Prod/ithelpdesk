@@ -532,7 +532,7 @@ ORDER BY
 	$statement-> execute();
 	$result = $statement->fetchAll();
 	$data[] = array();
-	$fetchdata = array();
+	// $fetchdata = array();
 	foreach ($result as $row) {
 		$fetchdata[] = array(
 			'notif_data' => $row["notif_data"],

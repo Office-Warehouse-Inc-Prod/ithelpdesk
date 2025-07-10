@@ -624,32 +624,32 @@ return false;
     //  clearconsole();
   });
 
-$(document).on('click', '#dtbsecond', function(){
+// $(document).on('click', '#dtbsecond', function(){
 
-// // Store clicked page
-// var currentPage = $(this).attr("#userModal");
-// // Build filepath
-// var currentPagePath = "./it/" + currentPage + ".php";
+// // // Store clicked page
+// // var currentPage = $(this).attr("#userModal");
+// // // Build filepath
+// // var currentPagePath = "./it/" + currentPage + ".php";
 
-// // Find the div I want to change the include for and update it
-// $(".testtkt").load(currentPagePath);
-
-
-
-// $('#msgbtn').show();
-// $('msg_thread').show();
-// $('.dv_msg').show();
-// $('#remarks_view').show();
-// $('#addmsg').val("");
-
-// alert(valtick);
-
-  // var valtick = $('#ticket_no').val();
+// // // Find the div I want to change the include for and update it
+// // $(".testtkt").load(currentPagePath);
 
 
 
+// // $('#msgbtn').show();
+// // $('msg_thread').show();
+// // $('.dv_msg').show();
+// // $('#remarks_view').show();
+// // $('#addmsg').val("");
 
-});
+// // alert(valtick);
+
+//   // var valtick = $('#ticket_no').val();
+
+
+
+
+// });
 
 
 $(document).on('click', '#msgbtn', function(){

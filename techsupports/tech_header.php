@@ -189,7 +189,7 @@ tr {
   </button>
 
   <form action="testcalendar.php" method="POST" style="display: inline;">
-    <input type="hidden" name="u_id" value="<?php echo $_SESSION['user_id']; ?>">
+    <input type="hidden" name="u_id" id="u_id" value="<?php echo $_SESSION['user_id']; ?>">
     <button type="submit" id="showCalendarBtn" class="btn btn-primary">Show Calendar</button>
 </form>
 
@@ -217,7 +217,12 @@ tr {
           Generate Report
         </a>  
       </li> -->
- 
+      <li class="nav-item netdash">
+  <a class="nav-link" href="networkpanel.php" >
+    <i class="fa-solid fa-ethernet"></i>
+    <span>Network Maintenance</span>
+  </a>
+</li>
     </ul>
         <form class="form-inline my-2 my-lg-0">
         <ul class="navbar-nav mr-auto">
@@ -318,7 +323,11 @@ $('#notif_data tbody').on( 'click', 'tr', function () {
 
 } // end of data table
 
+var technet = $('#u_id').val();
 
+if (technet != '8') {
+  $('.nav-item.netdash').hide();
+}
 
 
 });//document ready close

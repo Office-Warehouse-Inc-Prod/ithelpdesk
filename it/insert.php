@@ -441,11 +441,11 @@ else{
 
   $result = $statement->execute($data);
 
-if ($result) {
-echo "Record updated successfully.";
-} else {
-echo "Error updating record: " . implode(", ", $statement->errorInfo());
-}
+// if ($result) {
+// echo "Record updated successfully.";
+// } else {
+// echo "Error updating record: " . implode(", ", $statement->errorInfo());
+// }
 
 if($_POST['it_num'] != $_POST['itsup'])
   {

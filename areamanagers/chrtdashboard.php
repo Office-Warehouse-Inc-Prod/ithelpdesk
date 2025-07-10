@@ -802,20 +802,20 @@ columnTemplate.strokeOpacity = 1;
   let fromPolled = $('#frompolDate').val();
   let toPolled = $('#topolDate').val();
 
-// _areagraph(curyrz);
+  // _polledraph();
 
   function _polledraph(fromPolled,toPolled){
 
  $.ajax({
     url:"fetchdata/fetch_data.php",
     method:'POST',
-     data:{fromPolled:fromPolled,mode:'polled_store'},
+     data:{toPolled:toPolled,fromPolled:fromPolled,mode:'polled_store'},
 
     success:function(data)
     {
 
       var objarea = JSON.parse(data);
-      // console.log(objarea)
+      // console.log(objarea);
        _polledstore(objarea);
       
     }
@@ -839,16 +839,10 @@ chart.data = grphdata
 // Create axes
 
 var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
-categoryAxis.dataFields.category = "area_desc";
+categoryAxis.dataFields.category = "str_code";
 categoryAxis.renderer.grid.template.location = 0;
 categoryAxis.renderer.minGridDistance = 30;
 
-categoryAxis.renderer.labels.template.adapter.add("dy", function(dy, target) {
-  if (target.dataItem && target.dataItem.index & 2 == 2) {
-    return dy + 25;
-  }
-  return dy;
-});
 
 var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
 // valueAxis.min = 0;
@@ -856,10 +850,9 @@ var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
 
 // Create series
 var series = chart.series.push(new am4charts.ColumnSeries());
-series.dataFields.valueY = "cntarea";
-series.dataFields.categoryX = "area_desc";
-series.name = "fyr";
-series.columns.template.tooltipText = "{categoryX}: [bold]{valueY}[/] REPORTS";
+series.dataFields.valueY = "cntstore";
+series.dataFields.categoryX = "str_code";
+series.columns.template.tooltipText = "{categoryX}: [bold]{valueY}[/] NOT POLLED";
 series.columns.template.fillOpacity = .8;
 
 var columnTemplate = series.columns.template;

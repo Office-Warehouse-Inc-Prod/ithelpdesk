@@ -145,8 +145,19 @@ $datetime->setTimezone($timezone);
 </div>
 </div>
 
+
 <div class="card card2 col-12 col-lg-12">
-    <h5 class="card-header text-white bg-primary">Not Polled Store</h5>
+<h5 class="card-header text-white">Number of Escalated Reports Per Store</h5>
+<div class="card-body">
+<div class="col-xl-12 col-lg-12">
+</div>
+
+<div id="chart_area"></div>
+</div>     
+</div>
+
+<div class="card card2 col-12 col-lg-12">
+    <h5 class="card-header text-white">Not Polled Store</h5>
     <div class="card-body">
         <div class="row mb-3">
             <div class="col-md-6">
@@ -169,15 +180,6 @@ $datetime->setTimezone($timezone);
     </div>     
 </div>
 
-<div class="card card2 col-12 col-lg-12">
-<h5 class="card-header text-white">Number of Escalated Reports Per Store</h5>
-<div class="card-body">
-<div class="col-xl-12 col-lg-12">
-</div>
-
-<div id="chart_area"></div>
-</div>     
-</div>
 
 </div>
 
@@ -994,6 +996,24 @@ event.preventDefault();
 $('#substr_clsbtn').empty();
 
 });
+
+
+    let endDate = new Date();
+    let startDate = new Date();
+    startDate.setDate(endDate.getDate() - 7);
+    
+    $('#frompolDate').val(startDate.toISOString().split('T')[0]);
+    $('#topolDate').val(endDate.toISOString().split('T')[0]);
+    
+    // Load initial data
+    _polledraph($('#frompolDate').val(), $('#topolDate').val());
+});
+
+// Add event listeners for date changes
+$('#frompolDate, #topolDate').change(function() {
+    _polledraph($('#frompolDate').val(), $('#topolDate').val());
+
+
 
 });//document ready close
 

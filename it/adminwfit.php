@@ -274,8 +274,8 @@ $con1=new dbconfig();
 </div>
 
   <div class="modal-footer">
-     <input type="text" name="operation" id="operation" />
-     <input type="text" name="u_id" value="<?php echo $_SESSION['user_id'];  ?>">
+     <input type="hidden" name="operation" id="operation" />
+     <input type="hidden" name="u_id" value="<?php echo $_SESSION['user_id'];  ?>">
 
     </div>
   </div>
@@ -392,11 +392,11 @@ $('#tick_title').text("Ticker Number: "+tid+"");
 getinfo(tid, 'remarks', user_id);
 // console.log(tid)
 
-$('#itsup').change(function(e) { 
-    e.preventDefault();
-    let Dataxxx = $(this).val(); // Correct way to get value in jQuery
-    alert(Dataxxx);
-  });
+// $('#itsup').change(function(e) { 
+//     e.preventDefault();
+//     let Dataxxx = $(this).val(); // Correct way to get value in jQuery
+//     alert(Dataxxx);
+//   });
 
         });
 

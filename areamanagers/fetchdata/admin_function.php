@@ -660,39 +660,39 @@ public function notif_techsupp(){
 
 
 	public function polled_store(){
-
-		$query="SELECT
-  `reports`.`store` AS `store`,
-  `tbl_branch`.`str_code` AS `str_code`,
-  `tbl_branch`.`area_num` AS `area_num`,
-  `tbl_area`.`area_desc` AS `area_desc`,
-  YEAR(`reports`.`date_created`) AS `dc`,
-  count(`reports`.`date_created`) AS `cntarea`
-FROM
-  (
-    (`reports` JOIN `tbl_branch` ON (`reports`.`store` = `tbl_branch`.`str_num`))
-    JOIN `tbl_area` ON (`tbl_area`.`area_num` = `tbl_branch`.`area_num`)
-  )
-WHERE
-  YEAR(`reports`.`date_created`) IN (".$_POST['yr'] .") AND `tbl_branch`.`AM` LIKE '%{$_SESSION['user_id']}%' AND `status` NOT IN ('NEW REPORT', 'SUBJECT FOR CLOSING', 'CLOSED')
-GROUP BY
-  str_code";
+		$start_date = $_POST['fromPolled'];
+		$end_date = $_POST['toPolled'];
+	
+		$query = "SELECT
+			tbl_branch.AM, 
+			COUNT(tbl_notpolledstr.`str_code`) AS cntstore, 
+			tbl_notpolledstr.str_no, 
+			tbl_notpolledstr.str_code, 
+			tbl_notpolledstr.polling_date, 
+			tbl_notpolledstr.generate_date
+		FROM
+			tbl_notpolledstr
+			INNER JOIN tbl_branch
+				ON tbl_notpolledstr.str_code = tbl_branch.str_code
+		WHERE
+			tbl_notpolledstr.polling_date BETWEEN ? AND ? AND tbl_branch.AM LIKE '%{$_SESSION['user_id']}%'
+		GROUP BY
+			tbl_notpolledstr.str_code";
+			
 		$statement = $this->connection->prepare($query);
-		$statement-> execute();
+		$statement->execute([$start_date, $end_date]);
 		$result = $statement->fetchAll();
-		$data[] = array();
-
-		foreach($result as $row)
-		{
-		$data[] = array(
-			'area_id' => $row['store'],
-			'area_desc' => $row['str_code'],
-			'cntarea' => $row['cntarea'],
-			'fyr' => $row['dc']
-
-		);
-
+		
+		$data = array(); // Remove the [] which creates an empty element
+		
+		foreach($result as $row) {
+			$data[] = array(
+				'str_code' => $row['str_code'],
+				'cntstore' => (int)$row['cntstore'], // Ensure numeric value
+				'AM' => $row['AM'] // Add AM if needed in tooltip
+			);
 		}
+		
 		return $data;
 	}
 

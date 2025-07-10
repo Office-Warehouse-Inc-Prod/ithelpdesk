@@ -53,7 +53,7 @@ $con1=new dbconfig();
 
 </div>
 
-<div class="card card2">
+<!-- <div class="card card2">
 <h5 class="card-header text-black">TICKETS</h5>
 <div class="card-body">
 <div class="row col-md-12 mb-3">
@@ -62,7 +62,7 @@ $con1=new dbconfig();
 <table id="report_datanet" class="table  table-striped table-responsive table-condensed text-center borderless"></table>
 
 </div>
-<!-- <button type="button" id="add_button" class=" second btn btn-xs btn-success" data-toggle="modal" data-target="#userModal"><i class="fas fa-plus"></i></button> -->
+<button type="button" id="add_button" class=" second btn btn-xs btn-success" data-toggle="modal" data-target="#userModal"><i class="fas fa-plus"></i></button>
 </div>
 
 
@@ -71,7 +71,7 @@ $con1=new dbconfig();
 
 
 </div>
-</div>
+</div> -->
 
 <script type="text/javascript">
 

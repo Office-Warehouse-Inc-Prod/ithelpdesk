@@ -732,7 +732,7 @@ style="text-transform:uppercase" onkeyup="this.value = this.value;"></textarea>
 </div>
 
 <div class="modal-footer">
-<input type="text" name="operation" id="operation" value="Add" />
+<input type="hidden" name="operation" id="operation" value="Add" />
 <input type="hidden" name="u_id" id="u_id" value="<?php echo $_SESSION['user_id'];  ?>">
 
 </div>

@@ -8,6 +8,7 @@
 </style>
 
 <script>
+var darkModeEnabled = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
 
  const curdatea = new Date();
  const curyra = curdatea.getFullYear();
@@ -41,6 +42,7 @@ am4core.useTheme(am4themes_animated);
 
 var chart = am4core.create("chartdiv1", am4charts.XYChart);
 
+
 chart.data = grphdata
 
 // Create axes
@@ -62,6 +64,10 @@ series.fillOpacity = 0.3;
 chart.cursor = new am4charts.XYCursor();
 chart.cursor.snapToSeries = series;
 chart.cursor.xAxis = dateAxis;
+
+chart.colors.list = [
+  am4core.color("#0077F7")
+];
 
 //chart.scrollbarY = new am4core.Scrollbar();
 chart.scrollbarX = new am4core.Scrollbar();
@@ -88,7 +94,6 @@ am4core.options.autoDispose = true;
 
 </style>
 
-
 <script>
   const curdate2 = new Date();
   const curyr2 = g=curdate2.getFullYear();
@@ -105,7 +110,7 @@ var types = $.ajax({
     success:function(data)
     {
       var obj = JSON.parse(data);
-      console.log(obj);
+      // console.log(obj);
       grhp(obj);
     }
    });
@@ -139,6 +144,7 @@ chart.data = generateChartData();
 var pieSeries = chart.series.push(new am4charts.PieSeries());
 pieSeries.dataFields.value = "percent";
 pieSeries.dataFields.category = "type";
+pieSeries.dataFields.subs = "subs";
 pieSeries.slices.template.propertyFields.fill = "color";
 pieSeries.slices.template.propertyFields.isActive = "pulled";
 pieSeries.slices.template.strokeWidth = 0;
@@ -250,7 +256,8 @@ chart.data = data;
 // Add and configure Series
 var pieSeries = chart.series.push(new am4charts.PieSeries());
 pieSeries.dataFields.value = "percent";
-pieSeries.dataFields.category = "types";
+pieSeries.dataFields.category = "type";
+// pieSeries.dataFields.subs = "subs";
 pieSeries.slices.template.stroke = am4core.color("#FFF"); //outline
 pieSeries.slices.template.strokeWidth = 2;
 pieSeries.slices.template.strokeOpacity = 1;
@@ -258,6 +265,21 @@ pieSeries.slices.template.tooltipPosition = "pointer";
 pieSeries.labels.template.maxWidth = 130;
 pieSeries.labels.template.wrap = true;
 pieSeries.labels.template.fontSize = 10;
+
+pieSeries.slices.template.events.on("hit", function(ev){
+  // let srchvalx = ev.target.dataItem.category;
+  let srchsubsx = ev.target.dataItem.category;
+  // alert(srchsubsx);
+  // var table = $("#table_cat").DataTable();
+  // alert(srchval);
+  tablecat.search(srchsubsx).draw()
+  $('#piegraphModal, body').animate({
+        scrollTop: $("#table_cat").offset().top
+    }, 1000);
+    
+});
+
+
 
 // pieSeries.alignLabels = false;
 // pieSeries.labels.template.text = "{type}: {value}";
@@ -280,8 +302,55 @@ am4core.options.autoDispose = true;
 
 $('#piegraphModal').modal({"show": true, "backdrop": 'static'});
 
+
+function getcategories(){
+  $.post('fetchdata/fetch_data.php',{mode:'dtbcat'},function(data){
+    console.log(data);
+    datatable_categories(data)
+  },'json');
+}
+
+
+getcategories();
+
+var tablecat
+function datatable_categories(t){
+const dataset=t.rptcat;
+
+
+tablecat = $("#table_cat").DataTable({
+
+"dom":
+'<"pull-left"lf><"pull-right">tip',
+
+"info": true,
+"pagingType": "full_numbers",
+"bDestroy": true,
+"responsive": true, "lengthChange": false, "autoWidth": false,
+"language": {
+"search": "_INPUT_",
+"searchPlaceholder": "Search..."
+},
+order: [[0, 'desc']],
+"pageLength":10,
+"data": dataset,
+
+"columns": [
+{title:"TICKET", data:"ticket","defaultContent": "",},
+{title:"BRANCH", data:"store","defaultContent": "",},
+{title:"CATEGORY", data:"category","defaultContent": "",},
+{title:"SUBCATEGORY", data:"subcat","defaultContent": "",},
+
+],
+
+
+});
+
+}
+
  
 }
+
 
 
 </script>
@@ -354,8 +423,8 @@ pieSeries.slices.template.tooltipPosition = "pointer";
 pieSeries.labels.template.maxWidth = 130;
 pieSeries.labels.template.wrap = true;
 pieSeries.labels.template.fontSize = 12;
-pieSeries.labels.template.text = "{type} {value.value} Reports | {value.percent.formatNumber('.##')}%";
-pieSeries.slices.template.tooltipText = "{type} {value.value} Reports | {value.percent.formatNumber('.##')}%";
+pieSeries.labels.template.text =  "{type}  {value.value} {category} Reports | {value.percent.formatNumber('.##')}%";
+pieSeries.slices.template.tooltipText = "{type} {value.value} {category} Reports | {value.percent.formatNumber('.##')}%";
 
 
 // This creates initial animation
@@ -363,12 +432,23 @@ pieSeries.hiddenState.properties.opacity = 1;
 pieSeries.hiddenState.properties.endAngle = -90;
 pieSeries.hiddenState.properties.startAngle = -90;
 
-pieSeries.colors.list = [
-  am4core.color("#27A243"),
-  am4core.color("#D53343"),
-  am4core.color("#F7BB07"),
-  am4core.color("#169DB2"),
-];
+pieSeries.slices.template.adapter.add("fill", function(fill, target) {
+  if (target.dataItem && (target.dataItem.category == 'OPEN')) {
+    return am4core.color("#D53343");
+  }
+  if (target.dataItem && (target.dataItem.category == 'ATTENDED WITH FIX ASSET')) {
+    return am4core.color("#F7BB07");
+  }
+  if (target.dataItem && (target.dataItem.category == 'CLOSED')) {
+    return am4core.color("#27A243");
+  }
+  if (target.dataItem && (target.dataItem.category == 'SUBJECT FOR CLOSING')) {
+    return am4core.color("#890188");
+  }
+  else {
+    return fill;
+  }
+});
 
 am4core.options.autoDispose = true;
 
@@ -394,47 +474,6 @@ am4core.options.autoDispose = true;
 
 <!-- modal pie -->
 
-
-
-
-
-<script type="text/javascript">
-  $(document).ready(function(e) {
-    $('#areapicker').on('change', function(){
-      ajax_function($(this).val());
-      // alert($(this).val());
-    });
-  });
-</script>
-
-<!-- <script type="text/javascript">
-
-    const curdate5 = new Date();
-  const curyr5 = g=curdate5.getFullYear();
-
-  ajax_function(curyr5);
-
-  function ajax_function(curyr5,areapicker) {
-    $.ajax({
-      url: "fetchdata/fetch_areax.php",
-      type: 'POST',
-      async: true,
-      DataType:'JSON',
-      data: {yr:curyr5 , areapicker : areapicker},
-      beforeSend: function() {},
-      success: function (data, textStatus, JqXHR) {
-        // console.log(objarea);
-           var objarea = JSON.parse(data);
-          show_graph(objarea);
-
-
-      },
-      error : function(JqXHR, textStatus, errorThrown) {} , 
-    });
-  }
-
-  ajax_function('AREA 1');
-</script> -->
 
 
 <style>
@@ -566,7 +605,10 @@ chart.data = grphdata
 
 chart.colors.list = [
   am4core.color("#0077F7"),
-  am4core.color("#27A243")
+  am4core.color("#27A243"),
+  am4core.color("#DC3545"),
+  am4core.color("#FFC107")
+
 ];
 
 // Create axes
@@ -576,6 +618,8 @@ categoryAxis.renderer.grid.template.location = 0;
 categoryAxis.renderer.minGridDistance = 30;
 
 var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+valueAxis.min = 0;
+// valueAxis.max = 500;
 // valueAxis.title.text = "GDP growth rate";
 // valueAxis.title.fontWeight = 800;
 
@@ -585,6 +629,29 @@ series.dataFields.valueY = "total";
 series.dataFields.categoryX = "it_name";
 series.clustered = false;
 series.tooltipText = "TOTAL REPORTS: [bold]{valueY}";
+series.columns.template.events.on("hit", function(ev) {
+              
+              let itVal= ev.target.dataItem.dataContext["itsup"] ;
+              let flItName = ev.target.dataItem.dataContext["it_name"];
+              let ItFullname = ev.target.dataItem.dataContext["it_desc"];
+              let cmp_role = ev.target.dataItem.dataContext["cmp_role"];
+              let img_name = ev.target.dataItem.dataContext["img_name"];
+              let totrep = ev.target.dataItem.dataContext["total"];
+              let cmplted = ev.target.dataItem.dataContext["completed"];
+              let opencase = ev.target.dataItem.dataContext["opncase"];
+              let openwfx = ev.target.dataItem.dataContext["opnwfxast"];
+              let resasgnsupcnt = ev.target.dataItem.dataContext["resassgncnt"];
+              let count_slares = ev.target.dataItem.dataContext["res_sla"];
+              let yrsx1 = ev.target.dataItem.dataContext["years"];
+              
+// alert(itVal);
+ // console.log(yrsx1); 
+ // console.log(itVal); 
+itsupdata(itVal,ItFullname,cmp_role,img_name,totrep,cmplted,opencase,openwfx,yrsx1);
+resgncnt(resasgnsupcnt.cnt_resassgn);
+rpt_sla(count_slares.tclosdif);
+rpt_cntsla(count_slares.tdccl)
+}, this);
 
 var series2 = chart.series.push(new am4charts.ColumnSeries());
 series2.dataFields.valueY = "completed";
@@ -592,6 +659,66 @@ series2.dataFields.categoryX = "it_name";
 series2.clustered = false;
 series2.columns.template.width = am4core.percent(50);
 series2.tooltipText = "COMPLETED REPORTS: [bold]{valueY}";
+series2.columns.template.events.on("hit", function(ev) {
+              
+              let itVal= ev.target.dataItem.dataContext["itsup"] ;
+              let flItName = ev.target.dataItem.dataContext["it_name"];
+              let ItFullname = ev.target.dataItem.dataContext["it_desc"];
+              let cmp_role = ev.target.dataItem.dataContext["cmp_role"];
+              let img_name = ev.target.dataItem.dataContext["img_name"];
+              let totrep = ev.target.dataItem.dataContext["total"];
+              let cmplted = ev.target.dataItem.dataContext["completed"];
+              let opencase = ev.target.dataItem.dataContext["opncase"];
+              let openwfx = ev.target.dataItem.dataContext["opnwfxast"];
+              let resasgnsupcnt = ev.target.dataItem.dataContext["resassgncnt"];
+              let count_slares = ev.target.dataItem.dataContext["res_sla"];
+              let yrsx1 = ev.target.dataItem.dataContext["years"];
+              
+// alert(itVal);
+ // console.log(yrsx1); 
+ // console.log(itVal); 
+itsupdata(itVal,ItFullname,cmp_role,img_name,totrep,cmplted,opencase,openwfx,yrsx1);
+resgncnt(resasgnsupcnt.cnt_resassgn);
+rpt_sla(count_slares.tclosdif);
+rpt_cntsla(count_slares.tdccl)
+}, this);
+
+var series3 = chart.series.push(new am4charts.ColumnSeries());
+series3.dataFields.valueY = "opncase";
+series3.dataFields.categoryX = "it_name";
+series3.clustered = false;
+series3.columns.template.width = am4core.percent(50);
+series3.tooltipText = "OPEN REPORTS: [bold]{valueY}";
+series3.columns.template.events.on("hit", function(ev) {
+              
+              let itVal= ev.target.dataItem.dataContext["itsup"] ;
+              let flItName = ev.target.dataItem.dataContext["it_name"];
+              let ItFullname = ev.target.dataItem.dataContext["it_desc"];
+              let cmp_role = ev.target.dataItem.dataContext["cmp_role"];
+              let img_name = ev.target.dataItem.dataContext["img_name"];
+              let totrep = ev.target.dataItem.dataContext["total"];
+              let cmplted = ev.target.dataItem.dataContext["completed"];
+              let opencase = ev.target.dataItem.dataContext["opncase"];
+              let openwfx = ev.target.dataItem.dataContext["opnwfxast"];
+              let resasgnsupcnt = ev.target.dataItem.dataContext["resassgncnt"];
+              let count_slares = ev.target.dataItem.dataContext["res_sla"];
+              let yrsx1 = ev.target.dataItem.dataContext["years"];
+              
+// alert(itVal);
+ // console.log(yrsx1); 
+ // console.log(itVal); 
+itsupdata(itVal,ItFullname,cmp_role,img_name,totrep,cmplted,opencase,openwfx,yrsx1);
+resgncnt(resasgnsupcnt.cnt_resassgn);
+rpt_sla(count_slares.tclosdif);
+rpt_cntsla(count_slares.tdccl)
+}, this);
+
+var series4 = chart.series.push(new am4charts.ColumnSeries());
+series4.dataFields.valueY = "opnwfxast";
+series4.dataFields.categoryX = "it_name";
+series4.clustered = false;
+series4.columns.template.width = am4core.percent(50);
+series4.tooltipText = "WITH FIX ASSET: [bold]{valueY}";
 
 chart.cursor = new am4charts.XYCursor();
 chart.cursor.lineX.disabled = true;
@@ -602,14 +729,194 @@ bullet.label.text = "{completed} / {total} ";
 bullet.label.verticalCenter = "bottom";
 bullet.label.dy = -10;
 bullet.label.fontSize = 15;
+bullet.label.truncate = false;
+
+chart.exporting.menu = new am4core.ExportMenu();
 
 }); // end am4core.ready()
 
   }
 
+function resgncnt(resasgnsupcnt){
+  $.post('fetchdata/fetch_data.php', {resasgnsupcnt:resasgnsupcnt,mode: 'count_reassigned'}, function(data) {
+    $('#itm_resasncnt').html(resasgnsupcnt); 
+  });
+}
+
+function rpt_sla(count_slares){
+  $.post('fetchdata/fetch_data.php', {count_slares:count_slares,mode: 'count_sla'}, function(data) {
+       $('#itm_sla').html(count_slares); 
+       $('#itm_sla').append('%');
+
+
+  });
+}
+
+function rpt_cntsla(count_slares){
+  $.post('fetchdata/fetch_data.php', {count_slares:count_slares,mode: 'count_sla'}, function(data) {
+     $('#itm_cntsla').html(count_slares); 
+
+  });
+}
+ 
+function itsupdata(itVal,ItFullname,cmp_role,img_name,totrep,cmplted,opencase,openwfx,yrsx1){
+$.post('fetchdata/fetch_data.php',{itVal:itVal,ItFullname:ItFullname,cmp_role:cmp_role, img_name:img_name,totrep:totrep,cmplted:cmplted,opencase:opencase,openwfx:openwfx,yrsx1:yrsx1,mode:'dtbl_itsup'},function(data){
+$('#tech_bar_modal').modal({"show": true, "backdrop": 'static'});
+itsup_datatables(data);
+$('#ITName').html(ItFullname); 
+$('#cmprole').html(cmp_role); 
+$('#tech_img').attr('src', '../images/users/'+img_name);
+$('#itm_total').html(totrep); 
+$('#itm_open').html(opencase); 
+$('#itm_wfa').html(openwfx); 
+$('#itm_closed').html(cmplted); 
+},'json');
+}
+
+var table
+function itsup_datatables(t){
+const dataset=t.itsuptbldata;
+table =  $("#dtbl_itsup").DataTable({
+
+"dom":
+'<"pull-left"lf><"pull-right">tip',
+// stateSave: true,
+"pagingType": "full_numbers",
+"bDestroy": true,
+"responsive": true, "lengthChange": false, "autoWidth": false,
+language: {
+search: "_INPUT_",
+searchPlaceholder: "Search..."
+},
+pageLength:10,
+data: dataset,
+"order": [[ 5, "Desc" ]],
+
+columns: [
+
+{title:"TicketNo", data:"ticket_no","defaultContent": ""},
+{title:"  Store", data:"str_code","defaultContent": ""},
+{title:"Date Created", data:"date_created","defaultContent": ""},
+{title:"Subject", data:"subject","defaultContent": ""},
+// {title:"Concern", data:"concern","defaultContent": ""},
+{title:"Via", data:"via","defaultContent": ""},
+{title:"STATUS", data:"status","defaultContent": ""},
+{title:"Assigned Support", data:"it_desc","defaultContent": ""},
+{title:"CATEGORY", data:"category","defaultContent": ""},
+{title:"SUBCATEGORY", data:"sub_category","defaultContent": ""},
+{title:"DATE CLOSED", data:"date_closed","defaultContent": ""},
+{title:"DAYS COMPLETION", data:"tdc","defaultContent": ""},
+{title:"WORKOUTPUT", data:"remarks","defaultContent": ""}
+
+
+],
+"columnDefs": [
+{ 
+
+  targets: [9,10],
+  "width": "2%",
+  render: function ( data, type, row) {
+      if(type === 'display'){
+          if(data == '1 Days Unresolved'){
+            data = '1 Day Unresolved'
+          }
+         else if(data == '01/01/1970 01:00'){
+            data = 'ATTENDED WITH FIX ASSET'
+          }
+         else if(data == '01/01/1970 08:00'){
+            data = 'ATTENDED WITH FIX ASSET'
+          }
+          else if(data<0){
+            data =   ''
+          }
+          else if(data == 0){
+            data = 'Solve Immediately'
+          }
+          else if(data == '0 Days Unresolved'){
+            data = ''
+          }
+  }
+  return data;
+}
+}
+],
+
+
+rowCallback: function(row, data, index){
+if(data['status'] == 'OPEN'){
+$(row).find('td:eq(0)').css('color', 'red');
+$(row).find('td:eq(1)').css('color', 'red');
+$(row).find('td:eq(2)').css('color', 'red');
+$(row).find('td:eq(3)').css('color', 'red');
+$(row).find('td:eq(4)').css('color', 'red');
+$(row).find('td:eq(5)').css('color', 'red');
+$(row).find('td:eq(6)').css('color', 'red');
+$(row).find('td:eq(7)').css('color', 'red');
+$(row).find('td:eq(8)').css('color', 'red');
+$(row).find('td:eq(9)').css('color', 'red');
+$(row).find('td:eq(10)').css('color', 'red');
+$(row).find('td:eq(11)').css('color', 'red');
+$(row).find('td:eq(12)').css('color', 'red');
+}
+else if (data['status'] == 'OPEN WITH FIX ASSET'){
+$(row).find('td:eq(0)').css('color', 'red');
+$(row).find('td:eq(1)').css('color', 'red');
+$(row).find('td:eq(2)').css('color', 'red');
+$(row).find('td:eq(3)').css('color', 'red');
+$(row).find('td:eq(4)').css('color', 'red');
+$(row).find('td:eq(5)').css('color', 'red');
+$(row).find('td:eq(6)').css('color', 'red');
+$(row).find('td:eq(7)').css('color', 'red');
+$(row).find('td:eq(8)').css('color', 'red');
+$(row).find('td:eq(9)').css('color', 'red');
+$(row).find('td:eq(10)').css('color', 'red');
+$(row).find('td:eq(11)').css('color', 'red');
+$(row).find('td:eq(12)').css('color', 'red');
+}
+else if (data['status'] == 'CLOSED'){
+$(row).find('td:eq(0)').css('color', 'green');
+$(row).find('td:eq(1)').css('color', 'green');
+$(row).find('td:eq(2)').css('color', 'green');
+$(row).find('td:eq(3)').css('color', 'green');
+$(row).find('td:eq(4)').css('color', 'green');
+$(row).find('td:eq(5)').css('color', 'green');
+$(row).find('td:eq(6)').css('color', 'green');
+$(row).find('td:eq(7)').css('color', 'green');
+$(row).find('td:eq(8)').css('color', 'green');
+$(row).find('td:eq(9)').css('color', 'green');
+$(row).find('td:eq(10)').css('color', 'green');
+$(row).find('td:eq(11)').css('color', 'green');
+$(row).find('td:eq(12)').css('color', 'green');
+$(row).find('td:eq(13)').css('color', 'green');
+}
+else if (data['status'] == 'SUBJECT FOR CLOSING'){
+$(row).find('td:eq(0)').css('color', '#890188');
+$(row).find('td:eq(1)').css('color', '#890188');
+$(row).find('td:eq(2)').css('color', '#890188');
+$(row).find('td:eq(3)').css('color', '#890188');
+$(row).find('td:eq(4)').css('color', '#890188');
+$(row).find('td:eq(5)').css('color', '#890188');
+$(row).find('td:eq(6)').css('color', '#890188');
+$(row).find('td:eq(7)').css('color', '#890188');
+$(row).find('td:eq(8)').css('color', '#890188');
+$(row).find('td:eq(9)').css('color', '#890188');
+$(row).find('td:eq(10)').css('color', '#890188');
+$(row).find('td:eq(11)').css('color', '#890188');
+$(row).find('td:eq(12)').css('color', '#890188');
+$(row).find('td:eq(13)').css('color', '#890188');
+}
+},
+
+});
+
+
+
+} // end of data table
+
 </script>
 
-<!-- graph for area -->
+
+
 
 
 
@@ -621,9 +928,6 @@ bullet.label.fontSize = 15;
 }
 
 </style>
-
-
-
 
 
 <!-- Chart code -->
@@ -666,6 +970,9 @@ var chart = am4core.create("chart_area", am4charts.XYChart);
 // Add data
 chart.data = grphdata
 // Create axes
+chart.colors.list = [
+  am4core.color("#0077F7")
+];
 
 var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
 categoryAxis.dataFields.category = "area_desc";
@@ -680,6 +987,8 @@ categoryAxis.renderer.labels.template.adapter.add("dy", function(dy, target) {
 });
 
 var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+// valueAxis.min = 0;
+// valueAxis.max = 300 ;
 
 // Create series
 var series = chart.series.push(new am4charts.ColumnSeries());
@@ -689,27 +998,14 @@ series.name = "fyr";
 series.columns.template.tooltipText = "{categoryX}: [bold]{valueY}[/]";
 series.columns.template.fillOpacity = .8;
 series.columns.template.events.on("hit", function(ev) {
-              
+               
               let s_area = ev.target.dataItem.dataContext["area_desc"] ;
               let syr = ev.target.dataItem.dataContext["fyr"];
 
- // alert(syr);
+ // alert(syr); 
 
- _storegraph(syr);
-          function _storegraph(){
-                                    $.ajax({
-                            url:"fetchdata/fetch_data.php",
-                            method:'POST',
-                             data:{area_desc:s_area,yr:syr,mode:'str_grph'},
+ _storegraph(s_area,syr);
 
-                            success:function(fdata)
-                            {
-                              var objstorearea = JSON.parse(fdata);
-                              _plot_store_graph(objstorearea);
-                              $('#store_graph_modal').modal({"show": true, "backdrop": 'static'});
-                            }
-                           });
-          }
 
 }, this);
 
@@ -717,7 +1013,30 @@ var columnTemplate = series.columns.template;
 columnTemplate.strokeWidth = 2;
 columnTemplate.strokeOpacity = 1;
 
+var bullet = series.bullets.push(new am4charts.LabelBullet());
+bullet.label.text = "{cntarea} Reports";
+bullet.label.verticalCenter = "bottom";
+bullet.label.dy = -10;
+bullet.label.fontSize = 15;
+bullet.label.truncate = false;
+
 }); // end am4core.ready()
+
+function _storegraph(s_area,syr){
+                          $.ajax({
+                  url:"fetchdata/fetch_data.php",
+                  method:'POST',
+                   data:{area_desc:s_area,yr:syr,mode:'str_grph'},
+
+                  success:function(fdata)
+                  {
+                    var objstorearea = JSON.parse(fdata);
+                    _plot_store_graph(objstorearea);
+                    $('#store_graph_modal').modal({"show": true, "backdrop": 'static'});
+                  }
+                 });
+}
+
 
 
 }
@@ -765,6 +1084,8 @@ categoryAxis.renderer.labels.template.adapter.add("dy", function(dy, target) {
 });
 
 var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+// valueAxis.min = 0;
+// valueAxis.max = 300;
 
 // Create series
 var series = chart.series.push(new am4charts.ColumnSeries());
@@ -780,14 +1101,570 @@ columnTemplate.strokeOpacity = 1;
 
 }); // end am4core.ready()
 
-
-
 }
-
-
-
 
 
 </script>
 
 
+
+<!-- Styles -->
+<style>
+#chartdivnet {
+    margin-top: 12px;
+  margin-left: 12px;
+  width: 100%;
+  height: 300px; 
+}
+</style>
+
+<script>
+  const curdate3 = new Date();
+  const curyr3 = g=curdate3.getFullYear();
+
+  _netpie(curyr3);
+ function _netpie(curyr3){
+   var selected;
+var types = $.ajax({
+    url:"fetchdata/fetch_data.php",
+    method:'POST',
+    data:{yr:curyr3,mode:'netpie'},
+    datatype:'JSON',
+   
+    success:function(data)
+    {
+      var obj = JSON.parse(data);
+      // console.log(obj);
+      netgrhp(obj);
+    }
+   });
+ } 
+
+
+
+ function netgrhp(types){
+am4core.ready(function() {
+
+// Themes begin
+am4core.useTheme(am4themes_material);
+am4core.useTheme(am4themes_animated);
+// Themes end
+
+// Create chart instance
+var chart = am4core.create("chartdivnet", am4charts.PieChart);
+
+// Set data
+//legend 
+// chart.legend = new am4charts.Legend();
+// chart.legend.scrollable = true;
+
+var selected;
+
+
+// Add data
+chart.data = generateChartData();
+
+// Add and configure Series
+var pieSeries = chart.series.push(new am4charts.PieSeries());
+pieSeries.dataFields.value = "percent";
+pieSeries.dataFields.category = "type";
+pieSeries.dataFields.subs = "subs";
+pieSeries.slices.template.propertyFields.fill = "color";
+pieSeries.slices.template.propertyFields.isActive = "pulled";
+pieSeries.slices.template.strokeWidth = 0;
+pieSeries.labels.template.maxWidth = 130;
+pieSeries.labels.template.wrap = true;
+pieSeries.labels.template.paddingTop = 0;
+pieSeries.labels.template.paddingBottom = 0;
+pieSeries.labels.template.fontSize = 10;
+pieSeries.integersOnly = true;
+pieSeries.labels.template.text = "{type}: {value.value} | {value.percent.formatNumber('.##')}%";
+pieSeries.slices.template.tooltipText = "{type}: {value.value} | {value.percent.formatNumber('.##')}%";
+pieSeries.slices.template.tooltipPosition = "pointer";
+
+
+
+
+
+chart.exporting.menu = new am4core.ExportMenu();
+
+
+
+
+function generateChartData() {
+ let d = Array();
+  var chartData = [];
+  for (var i = 0; i < types.length; i++) {
+    if (i == selected) {
+      for (var x = 0; x < types[i].subs.length; x++) {
+         // d= new Array('types'=>types[i].subs[x].type)
+        chartData.push({
+          type: types[i].subs[x].type,
+          percent: types[i].subs[x].percent,
+          color: types[i].color,
+          pulled:true
+        });
+
+      }
+
+      for (var y = 0; y < types[i].subs.length; y++) {
+         // d= new Array('types'=>types[i].subs[x].type)
+        d.push({
+          type: types[i].subs[y].type,
+          percent: types[i].subs[y].percent
+        });
+
+      }
+newgrph(d)
+   
+      // chartData.push({
+      //   type: types[i].type,
+      //   percent: types[i].percent,
+      //   color: types[i].color,
+      //   id: i
+      // });
+
+    } else {
+      chartData.push({
+        type: types[i].type,
+        percent: types[i].percent,
+        color: types[i].color,
+        id: i
+      });
+    }
+  }
+  return chartData;
+}
+
+pieSeries.slices.template.events.on("hit", function(event) {
+  if (event.target.dataItem.dataContext.id != undefined) {
+    selected = event.target.dataItem.dataContext.id;
+  } else {
+    selected = undefined;
+  }
+  chart.data = generateChartData();
+});
+am4core.options.autoDispose = true;
+
+
+}); // end am4core.ready()
+
+} // end am4core.ready()
+
+
+ function newgrph(data){
+// console.log(data)
+
+am4core.ready(function() {
+
+// Themes begin
+am4core.useTheme(am4themes_animated);
+// Themes end
+
+// Create chart instance
+
+var chart = am4core.create("chartdiv9", am4charts.PieChart);
+
+// legend
+// chart.legend = new am4charts.Legend();
+// chart.legend.scrollable = true;
+chart.innerRadius = am4core.percent(40);
+// chart.legend.labels.template.text = "[bold {color}]{name}[/]";
+// series1.legendSettings.value = "{points}";
+// Add data
+chart.data = data;
+
+
+
+
+// Add and configure Series
+var pieSeries = chart.series.push(new am4charts.PieSeries());
+pieSeries.dataFields.value = "percent";
+pieSeries.dataFields.category = "type";
+// pieSeries.dataFields.subs = "subs";
+pieSeries.slices.template.stroke = am4core.color("#FFF"); //outline
+pieSeries.slices.template.strokeWidth = 2;
+pieSeries.slices.template.strokeOpacity = 1;
+pieSeries.slices.template.tooltipPosition = "pointer";
+pieSeries.labels.template.maxWidth = 130;
+pieSeries.labels.template.wrap = true;
+pieSeries.labels.template.fontSize = 10;
+
+pieSeries.slices.template.events.on("hit", function(ev){
+  // let srchvalx = ev.target.dataItem.category;
+  let srchsubsx = ev.target.dataItem.category;
+  // alert(srchsubsx);
+  // var table = $("#table_cat").DataTable();
+  // alert(srchval);
+  tablecat.search(srchsubsx).draw()
+  $('#piegraphModal, body').animate({
+        scrollTop: $("#table_cat").offset().top
+    }, 1000);
+    
+});
+
+
+
+// pieSeries.alignLabels = false;
+// pieSeries.labels.template.text = "{type}: {value}";
+// pieSeries.slices.template.tooltipText = "{type}:{value}";
+pieSeries.labels.template.text = "{type}: {value.value} | {value.percent.formatNumber('.##')}%";
+pieSeries.slices.template.tooltipText = "{type}: {value.value} | {value.percent.formatNumber('.##')}%";
+
+
+// This creates initial animation
+pieSeries.hiddenState.properties.opacity = 1;
+pieSeries.hiddenState.properties.endAngle = -90;
+pieSeries.hiddenState.properties.startAngle = -90;
+
+
+am4core.options.autoDispose = true;
+
+}); // end am4core.ready()
+
+
+
+$('#piegraphModal').modal({"show": true, "backdrop": 'static'});
+
+
+function getcategories(){
+  $.post('fetchdata/fetch_data.php',{mode:'dtbcat'},function(data){
+    console.log(data);
+    datatable_categories(data)
+  },'json');
+}
+
+
+getcategories();
+
+var tablecat
+function datatable_categories(t){
+const dataset=t.rptcat;
+
+
+tablecat = $("#table_cat").DataTable({
+
+"dom":
+'<"pull-left"lf><"pull-right">tip',
+
+"info": true,
+"pagingType": "full_numbers",
+"bDestroy": true,
+"responsive": true, "lengthChange": false, "autoWidth": false,
+"language": {
+"search": "_INPUT_",
+"searchPlaceholder": "Search..."
+},
+order: [[0, 'desc']],
+"pageLength":10,
+"data": dataset,
+
+"columns": [
+{title:"TICKET", data:"ticket","defaultContent": "",},
+{title:"BRANCH", data:"store","defaultContent": "",},
+{title:"CATEGORY", data:"category","defaultContent": "",},
+{title:"SUBCATEGORY", data:"subcat","defaultContent": "",},
+
+],
+
+
+});
+
+}
+
+ 
+}
+
+
+</script>
+
+
+<!-- Styles -->
+<style>
+#chartdivnet2 {
+/*   margin-top: 2px;
+  margin-left: 18px;*/
+  width: 100%;
+  height: 300px;
+}
+
+</style>
+
+<!-- Chart code -->
+<script>
+ const curdates2 = new Date();
+  const curyrs2 = g=curdates2.getFullYear();
+
+  _overallnet(curyrs2);
+  function _overallnet(curyrs2){
+
+ $.ajax({
+    url:"fetchdata/fetch_data.php",
+    method:'POST',
+     data:{yr:curyrs,mode:'overallnet'},
+
+    success:function(data5)
+    {
+
+      var obj5 = JSON.parse(data5);
+      // console.log(obj5)
+       _plotovnet(obj5)
+      
+    }
+   });
+
+}
+ function _plotovnet(grphdata){
+
+am4core.ready(function() {
+
+// Themes begin
+am4core.useTheme(am4themes_animated);
+// Themes end
+
+// Create chart instance
+var chart = am4core.create("chartdivnet2", am4charts.PieChart);
+
+// legend
+chart.legend = new am4charts.Legend();
+chart.legend.position = "bottom";
+chart.legend.valign = "bottom";
+chart.innerRadius = am4core.percent(40);
+chart.legend.labels.template.text = "[bold {color}]{name}[/]";
+// chart.legend.labels.template.text =
+// series1.legendSettings.value = "{points}";
+// Add data
+chart.data = grphdata
+
+// Add and configure Series
+var pieSeries = chart.series.push(new am4charts.PieSeries());
+pieSeries.dataFields.value = "points";
+pieSeries.dataFields.category = "stat_name";
+pieSeries.slices.template.stroke = am4core.color("#FFF"); //outline
+pieSeries.slices.template.strokeWidth = 2;
+pieSeries.slices.template.strokeOpacity = 1;
+pieSeries.slices.template.tooltipPosition = "pointer";
+pieSeries.labels.template.maxWidth = 130;
+pieSeries.labels.template.wrap = true;
+pieSeries.labels.template.fontSize = 12;
+pieSeries.labels.template.text =  "{type}  {value.value} {category} Reports | {value.percent.formatNumber('.##')}%";
+pieSeries.slices.template.tooltipText = "{type} {value.value} {category} Reports | {value.percent.formatNumber('.##')}%";
+
+
+// This creates initial animation
+pieSeries.hiddenState.properties.opacity = 1;
+pieSeries.hiddenState.properties.endAngle = -90;
+pieSeries.hiddenState.properties.startAngle = -90;
+
+pieSeries.slices.template.adapter.add("fill", function(fill, target) {
+  if (target.dataItem && (target.dataItem.category == 'OPEN')) {
+    return am4core.color("#D53343");
+  }
+  if (target.dataItem && (target.dataItem.category == 'ATTENDED WITH FIX ASSET')) {
+    return am4core.color("#F7BB07");
+  }
+  if (target.dataItem && (target.dataItem.category == 'CLOSED')) {
+    return am4core.color("#27A243");
+  }
+  if (target.dataItem && (target.dataItem.category == 'SUBJECT FOR CLOSING')) {
+    return am4core.color("#890188");
+  }
+  else {
+    return fill;
+  }
+});
+
+am4core.options.autoDispose = true;
+
+}); // end am4core.ready()
+
+
+ }
+
+</script>
+
+<!-- Styles -->
+<style>
+#net_area {
+  width: 100%;
+  height: 350px;
+}
+
+</style>
+
+
+<!-- Chart code -->
+<script>
+  const curdatez1 = new Date();
+  const curyrz1 = g=curdatez1.getFullYear();
+
+_areagraph(curyrz1);
+
+  function _areagraph(curyrz1){
+
+ $.ajax({
+    url:"fetchdata/fetch_data.php",
+    method:'POST',
+     data:{yr:curyrz1,mode:'areanet_grph'},
+
+    success:function(data)
+    {
+
+      var objarea = JSON.parse(data);
+      // console.log(objarea)
+       _plotnetareagrph(objarea);
+      
+    }
+   });
+
+  }
+
+function _plotnetareagrph(grphdata){
+
+am4core.ready(function() {
+
+// Themes begin
+am4core.useTheme(am4themes_animated);
+// Themes end
+
+// Create chart instance
+var chart = am4core.create("net_area", am4charts.XYChart);
+
+// Add data
+chart.data = grphdata
+// Create axes
+chart.colors.list = [
+  am4core.color("#0077F7")
+];
+
+var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+categoryAxis.dataFields.category = "area_desc";
+categoryAxis.renderer.grid.template.location = 0;
+categoryAxis.renderer.minGridDistance = 30;
+
+categoryAxis.renderer.labels.template.adapter.add("dy", function(dy, target) {
+  if (target.dataItem && target.dataItem.index & 2 == 2) {
+    return dy + 25;
+  }
+  return dy;
+});
+
+var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+// valueAxis.min = 0;
+// valueAxis.max = 300 ;
+
+// Create series
+var series = chart.series.push(new am4charts.ColumnSeries());
+series.dataFields.valueY = "cntarea";
+series.dataFields.categoryX = "area_desc";
+series.name = "fyr";
+series.columns.template.tooltipText = "{categoryX}: [bold]{valueY}[/]";
+series.columns.template.fillOpacity = .8;
+series.columns.template.events.on("hit", function(ev) {
+               
+              let s_area = ev.target.dataItem.dataContext["area_desc"] ;
+              let syr = ev.target.dataItem.dataContext["fyr"];
+
+ // alert(syr); 
+
+ _storenetgraph(s_area,syr);
+
+
+}, this);
+
+var columnTemplate = series.columns.template;
+columnTemplate.strokeWidth = 2;
+columnTemplate.strokeOpacity = 1;
+
+var bullet = series.bullets.push(new am4charts.LabelBullet());
+bullet.label.text = "{cntarea} Reports";
+bullet.label.verticalCenter = "bottom";
+bullet.label.dy = -10;
+bullet.label.fontSize = 15;
+bullet.label.truncate = false;
+
+}); // end am4core.ready()
+
+function _storenetgraph(s_area,syr){
+                          $.ajax({
+                  url:"fetchdata/fetch_data.php",
+                  method:'POST',
+                   data:{area_desc:s_area,yr:syr,mode:'strnet_grph'},
+
+                  success:function(fdata)
+                  {
+                    var objstorearea = JSON.parse(fdata);
+                    _plot_netstore_graph(objstorearea);
+                    $('#storenet_graph_modal').modal({"show": true, "backdrop": 'static'});
+                  }
+                 });
+}
+
+
+
+}
+
+</script>
+
+<!-- Styles -->
+<style>
+#storenet_graph {
+  width: 100%;
+  height: 500px;
+}
+
+</style>
+
+<!-- Chart code -->
+<script>
+
+function _plot_netstore_graph(strdata){
+
+am4core.ready(function() {
+
+// Themes begin
+am4core.useTheme(am4themes_animated);
+// Themes end
+
+// Create chart instance
+var chart = am4core.create("storenet_graph", am4charts.XYChart);
+
+// Add data
+chart.data = strdata
+
+// Create axes
+
+var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+categoryAxis.dataFields.category = "str_code";
+categoryAxis.renderer.grid.template.location = 0;
+categoryAxis.renderer.minGridDistance = 30;
+
+categoryAxis.renderer.labels.template.adapter.add("dy", function(dy, target) {
+  if (target.dataItem && target.dataItem.index & 2 == 2) {
+    return dy + 25;
+  }
+  return dy;
+});
+
+var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+// valueAxis.min = 0;
+// valueAxis.max = 300;
+
+// Create series
+var series = chart.series.push(new am4charts.ColumnSeries());
+series.dataFields.valueY = "cnt_ttl";
+series.dataFields.categoryX = "str_code";
+series.name = "cnt_ttl";
+series.columns.template.tooltipText = "{categoryX}: [bold]{valueY}[/]";
+series.columns.template.fillOpacity = .8;
+
+var columnTemplate = series.columns.template;
+columnTemplate.strokeWidth = 2;
+columnTemplate.strokeOpacity = 1;
+
+}); // end am4core.ready()
+
+}
+
+
+</script>
