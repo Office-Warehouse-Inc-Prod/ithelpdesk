@@ -1109,16 +1109,16 @@ columnTemplate.strokeOpacity = 1;
 
 
 <!-- Styles -->
-<style>
+<!-- <style>
 #chartdivnet {
     margin-top: 12px;
   margin-left: 12px;
   width: 100%;
   height: 300px; 
 }
-</style>
+</style> -->
 
-<script>
+<!-- <script>
   const curdate3 = new Date();
   const curyr3 = g=curdate3.getFullYear();
 
@@ -1376,11 +1376,11 @@ order: [[0, 'desc']],
 }
 
 
-</script>
+</script> -->
 
 
 <!-- Styles -->
-<style>
+<!-- <style>
 #chartdivnet2 {
 /*   margin-top: 2px;
   margin-left: 18px;*/
@@ -1388,10 +1388,10 @@ order: [[0, 'desc']],
   height: 300px;
 }
 
-</style>
+</style> -->
 
 <!-- Chart code -->
-<script>
+<!-- <script>
  const curdates2 = new Date();
   const curyrs2 = g=curdates2.getFullYear();
 
@@ -1481,20 +1481,20 @@ am4core.options.autoDispose = true;
 
  }
 
-</script>
+</script> -->
 
 <!-- Styles -->
-<style>
+<!-- <style>
 #net_area {
   width: 100%;
   height: 350px;
 }
 
-</style>
+</style> -->
 
 
 <!-- Chart code -->
-<script>
+<!-- <script>
   const curdatez1 = new Date();
   const curyrz1 = g=curdatez1.getFullYear();
 
@@ -1604,19 +1604,19 @@ function _storenetgraph(s_area,syr){
 
 }
 
-</script>
+</script> -->
 
 <!-- Styles -->
-<style>
+<!-- <style>
 #storenet_graph {
   width: 100%;
   height: 500px;
 }
 
-</style>
+</style> -->
 
 <!-- Chart code -->
-<script>
+<!-- <script>
 
 function _plot_netstore_graph(strdata){
 
@@ -1667,4 +1667,4 @@ columnTemplate.strokeOpacity = 1;
 }
 
 
-</script>
+</script> -->

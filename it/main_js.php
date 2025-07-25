@@ -55,7 +55,7 @@ $.ajax({
 
 
 //for debug purposes enable here
-console.log($('#date_created').val())
+// console.log($('#date_created').val());
 
 
 if(/Android|webOS|iPhone|iPad|Mac|Macintosh|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) { $("#ovrall").hide(); }

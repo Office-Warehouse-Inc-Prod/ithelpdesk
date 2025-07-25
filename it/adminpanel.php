@@ -367,10 +367,10 @@ font-family: 'Poppins', Tahoma, Geneva, Verdana, sans-serif;
 <div class="card-body">
 
 <div class="card-title">CLOSED REPORTS <span class="float-right" id="count_closed" style="font-size: 32px;"></span></div>
-<div class="card-subtitle clcktxt" value="SUBJECT FOR CLOSING">SUBJECT FOR  CLOSING <span class="float-none" id="today_closed" style="font-size: 23px; margin-left: 15px;"></span></div>    
+<div class="card-subtitle clcktxt" value="SUBJECT FOR CLOSING">SUBJECT FOR  CLOSING <span class="float-none" id="today_closed" style="font-size: 23px; margin-left: 15px;"></span></div>
 </div>
 <div class="card-footer d-flex align-items-center justify-content-between">
-                        <a class="text-white stretched-link" id="card_closedval" href="#bottom" value="CLOSED" ><span class="small text-white">Click here for more info.</span></a>
+                        <a class="text-white stretched-link" id="card_closedval" href="#bottom" value="CLOSED" ><span class="small text-white">Click here for more info.</span> </a><span class="small text-white">CLOSED REPORT HISTORY</span>
                           <div class="go-arrow">  </div>
                       </div>
 

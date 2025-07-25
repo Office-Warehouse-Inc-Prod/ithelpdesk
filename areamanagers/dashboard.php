@@ -75,7 +75,7 @@ $datetime->setTimezone($timezone);
 <div class="dashcard card text-white mb-4 bg-primary border-dark" style="width: 18rem; height: 9rem;">
 <div class="card-body">
 
-<div class="card-title"><span id="card_totalrep">TOTAL REPORTS:</span> <span class="" id="count_total" style="font-size: 18px;"></span></div>
+<div class="card-title"><span id="card_totalrep">TOTAL TICKETS:</span> <span class="" id="count_total" style="font-size: 18px;"></span></div>
                           
 </div>                                  
 <div class="card-footer d-flex align-items-center justify-content-between">
@@ -89,7 +89,7 @@ $datetime->setTimezone($timezone);
 <div class="dashcard card text-white mb-4 bg-danger" style="width: 18rem; height: 9rem; ">
 <div class="card-body">
 
-<div class="card-title">OPEN REPORTS: <span class="" id="count_open" style="font-size: 18px;"></span></div>
+<div class="card-title">OPEN TICKETS: <span class="" id="count_open" style="font-size: 18px;"></span></div>
 </div>
 <div class="card-footer d-flex align-items-center justify-content-between">
                        
@@ -101,7 +101,7 @@ $datetime->setTimezone($timezone);
 <div class="dashcard card text-white mb-4 bg-info" style="width: 18rem; height: 9rem;">
 <div class="card-body">
 
-<div class="card-title" style="font-size: 15px;">OVER DUE OPEN REPORTS: <span class="" id="count_owfa" style="font-size: 18px;"></span></div>
+<div class="card-title" style="font-size: 15px;">OVER DUE OPEN TICKETS: <span class="" id="count_owfa" style="font-size: 18px;"></span></div>
 
 </div>
 <div class="card-footer d-flex align-items-center justify-content-between">
@@ -115,7 +115,7 @@ $datetime->setTimezone($timezone);
 <div class="dashcard card text-white mb-4 bg-success" style="width: 18rem; height: 9rem;">
 <div class="card-body">
 
-<div class="card-title">CLOSED REPORTS <span class="" id="count_closed" style="font-size: 18px;"></span></div>
+<div class="card-title">CLOSED TICKETS: <span class="" id="count_closed" style="font-size: 18px;"></span></div>
 </div>
 <div class="card-footer d-flex align-items-center justify-content-between">
                         <a class="small text-white stretched-link" id="card_closedval" href="#bottom" value="CLOSED" >Click here for more info.</a>
@@ -131,7 +131,7 @@ $datetime->setTimezone($timezone);
 <div class="row " id="ovrall">
 
 <div class="card card2 col-12 col-md-12 col-lg-6">
-<h5 class="card-header text-white">Overall Open Status</h5>
+<h5 class="card-header text-white">Store With Open Tickets</h5>
 <div class="card-body">
 <div id="chartdiv5"></div>
 </div>
@@ -139,7 +139,7 @@ $datetime->setTimezone($timezone);
 
 
 <div class="card card2 col-12 col-md-12 col-lg-6">
-<h5 class="card-header text-white">Department Concern</h5>
+<h5 class="card-header text-white">Open Tickets Per Deparment</h5>
 <div class="card-body">
 <div id="chartdiv2" name="chartdiv2"></div>
 </div>
@@ -147,7 +147,7 @@ $datetime->setTimezone($timezone);
 
 
 <div class="card card2 col-12 col-lg-12">
-<h5 class="card-header text-white">Number of Escalated Reports Per Store</h5>
+<h5 class="card-header text-white">Number of Escalated Tickets Per Store</h5>
 <div class="card-body">
 <div class="col-xl-12 col-lg-12">
 </div>
@@ -157,7 +157,7 @@ $datetime->setTimezone($timezone);
 </div>
 
 <div class="card card2 col-12 col-lg-12">
-    <h5 class="card-header text-white">Not Polled Store</h5>
+    <h5 class="card-header text-white">Non Compliant Stores on End of Day Process (7:AM CUT OFF)</h5>
     <div class="card-body">
         <div class="row mb-3">
             <div class="col-md-6">

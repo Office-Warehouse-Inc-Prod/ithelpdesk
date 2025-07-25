@@ -930,8 +930,7 @@ ORDER BY
 	}
 
 public function count_reassigned($itsup){
-$query="
-	SELECT *, COUNT(itsup) AS cnt_resassgn FROM tbl_reassigned WHERE itsup ='".$itsup."'";
+$query="SELECT *, COUNT(itsup) AS cnt_resassgn FROM tbl_reassigned WHERE itsup ='".$itsup."'";
 	$statement = $this->connection->prepare($query);
 	$statement-> execute();
 	$result = $statement->fetchAll();
@@ -944,8 +943,7 @@ $query="
 	}
 
 public function count_sla($itsup){
-	$query="
-	SELECT itsup, years,
+	$query="SELECT itsup, years,
 	COUNT(date_created) as dtotal,
 	COUNT(CASE WHEN tdc <= '2' then 1 else NULL end ) as tdccl,
 	ROUND(COUNT(CASE WHEN tdc <= '2' then 1 else NULL end ) * 100.0 / COUNT(date_created), 1) AS tclosdif

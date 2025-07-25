@@ -148,8 +148,8 @@ pieSeries.labels.template.paddingTop = 0;
 pieSeries.labels.template.paddingBottom = 0;
 pieSeries.labels.template.fontSize = 10;
 pieSeries.integersOnly = true;
-pieSeries.labels.template.text = "{category} | {value.value} OPEN Reports";
-pieSeries.slices.template.tooltipText = "{category} | {value.value} OPEN Reports";
+pieSeries.labels.template.text = "{category} | {value.value} OPEN Tickets";
+pieSeries.slices.template.tooltipText = "{category} | {value.value} OPEN Tickets";
 pieSeries.slices.template.tooltipPosition = "pointer";
 
 
@@ -354,8 +354,8 @@ pieSeries.slices.template.tooltipPosition = "pointer";
 pieSeries.labels.template.maxWidth = 130;
 pieSeries.labels.template.wrap = true;
 pieSeries.labels.template.fontSize = 12;
-pieSeries.labels.template.text = "{category} | {value.value} OPEN Reports";
-pieSeries.slices.template.tooltipText = "{category} | {value.value} OPEN Reports";
+pieSeries.labels.template.text = "{category} | {value.value} OPEN Tickets";
+pieSeries.slices.template.tooltipText = "{category} | {value.value} OPEN Tickets";
 // pieSeries.slices.template.shiftRadius = 0;
 // pieSeries.slices.template.states.hover.properties.shiftRadius = 0;
 
@@ -679,7 +679,7 @@ var series = chart.series.push(new am4charts.ColumnSeries());
 series.dataFields.valueY = "cntarea";
 series.dataFields.categoryX = "area_desc";
 series.name = "fyr";
-series.columns.template.tooltipText = "{categoryX}: [bold]{valueY}[/] REPORTS";
+series.columns.template.tooltipText = "{categoryX}: [bold]{valueY}[/] Tickets";
 series.columns.template.fillOpacity = .8;
 series.columns.template.events.on("hit", function(ev) {
                

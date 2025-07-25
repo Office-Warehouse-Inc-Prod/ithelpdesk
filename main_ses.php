@@ -182,7 +182,15 @@ $user = NULL;
     $_SESSION['area_num'] = $results['area_num'];
     header("Location: areamanagers/dashboard.php");   
     exit();
-   } 
+   }
+   elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'GM' ) {
+    $_SESSION['login'] = 'true';
+    $_SESSION['user_id'] = $results['id'];
+    $_SESSION['str_num'] = $results['str_num'];
+    $_SESSION['password'] = $results['password'];
+    header("Location: generalmanager/dashboard.php");   
+    exit();
+   }  
    else {
     $message = 'Invalid log in credentials.';
   }
