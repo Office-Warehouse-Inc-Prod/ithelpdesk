@@ -72,7 +72,7 @@ $holidays = getPhilippineHolidays($currentYear);
         }
         
         .calendar-wrapper {
-            max-width: 1200px;
+            max-width: auto;
             margin: 0 auto;
             background: white;
             border-radius: 12px;
@@ -421,7 +421,7 @@ $holidays = getPhilippineHolidays($currentYear);
 </head>
 <body>
 
-    <div class="calendar-wrapper">
+    <div class="calendar-wrapper col-md-12">
     <div class="calendar-header">
     <h2>IT SCHEDULE CALENDAR</h2>
     <a href="adminpanel.php" class="btn btn-secondary" id="home-btn">Home</a>
