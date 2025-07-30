@@ -10,7 +10,7 @@ ini_set('display_errors', 0);
 //   exit;
   
 // }
-
+// p 
 require 'database.php';
 $dflpass= 'owi123456';
 if(!empty($_POST['email']) && !empty($_POST['password'])):
