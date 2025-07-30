@@ -32,53 +32,74 @@ function _dbline(curyra){
    });
 }
 
-function _plotdbline(grphdata){
+function _plotdbline(grphdata) {
+  am4core.ready(function () {
+    am4core.useTheme(am4themes_animated);
 
-am4core.ready(function() {
+    var chart = am4core.create("chartdiv1", am4charts.XYChart);
+    chart.data = grphdata;
 
-// Themes begin
-am4core.useTheme(am4themes_animated);
-// Themes end
+    // ✅ Light background with subtle gradient
+    chart.background.fill = am4core.color("#f8faff");
+    chart.background.fillOpacity = 1;
 
-var chart = am4core.create("chartdiv1", am4charts.XYChart);
+    // ✅ X Axis
+    var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
+    dateAxis.renderer.minGridDistance = 60;
+    dateAxis.renderer.grid.template.stroke = am4core.color("#e0e6f5");
+    dateAxis.renderer.grid.template.strokeOpacity = 0.6;
+    dateAxis.renderer.labels.template.fill = am4core.color("#4a4a4a");
 
+    // ✅ Y Axis
+    var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+    valueAxis.renderer.grid.template.stroke = am4core.color("#e0e6f5");
+    valueAxis.renderer.grid.template.strokeOpacity = 0.6;
+    valueAxis.renderer.labels.template.fill = am4core.color("#4a4a4a");
 
-chart.data = grphdata
+    // ✅ Line series
+    var series = chart.series.push(new am4charts.LineSeries());
+    series.dataFields.valueY = "value";
+    series.dataFields.dateX = "date";
+    series.strokeWidth = 3;
+    series.tensionX = 0.8; // Smooth curves
+    series.tooltipText = "{value}";
+    series.fillOpacity = 0.15;
 
-// Create axes
-var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
-dateAxis.renderer.minGridDistance = 60;
+    // ✅ Gradient stroke (pastel neon)
+    series.stroke = new am4core.LinearGradient();
+    series.stroke.addColor(am4core.color("#6a5acd")); // pastel purple
+    series.stroke.addColor(am4core.color("#00bcd4")); // pastel cyan
 
-var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+    // ✅ Glow effect (lighter glow)
+    let shadow = series.filters.push(new am4core.DropShadowFilter());
+    shadow.color = am4core.color("#7bcfff");
+    shadow.blur = 10;
+    shadow.opacity = 0.6;
 
-// Create series
-var series = chart.series.push(new am4charts.LineSeries());
-series.dataFields.valueY = "value";
-series.dataFields.dateX = "date";
-series.tooltipText = "{value}"
+    // ✅ Add bullets
+    var bullet = series.bullets.push(new am4charts.CircleBullet());
+    bullet.circle.radius = 5;
+    bullet.circle.fill = am4core.color("#ffffff");
+    bullet.circle.strokeWidth = 2;
+    bullet.circle.stroke = am4core.color("#00bcd4");
 
+    bullet.states.create("hover").properties.scale = 1.4;
 
-series.tooltip.pointerOrientation = "vertical";
-series.strokeWidth = 1.5;
-series.fillOpacity = 0.3;
-chart.cursor = new am4charts.XYCursor();
-chart.cursor.snapToSeries = series;
-chart.cursor.xAxis = dateAxis;
+    // ✅ Cursor and scrollbar
+    chart.cursor = new am4charts.XYCursor();
+    chart.cursor.snapToSeries = series;
+    chart.cursor.xAxis = dateAxis;
 
-chart.colors.list = [
-  am4core.color("#0077F7")
-];
+    chart.scrollbarX = new am4core.Scrollbar();
+    chart.scrollbarX.background.fill = am4core.color("#e6ebf5");
+    chart.scrollbarX.thumb.background.fill = am4core.color("#6a5acd");
+    chart.scrollbarX.thumb.background.fillOpacity = 0.8;
 
-//chart.scrollbarY = new am4core.Scrollbar();
-chart.scrollbarX = new am4core.Scrollbar();
-chart.exporting.menu = new am4core.ExportMenu();
-
-am4core.options.autoDispose = true;
-
-
-}); // end am4core.ready()
-
+    chart.exporting.menu = new am4core.ExportMenu();
+    am4core.options.autoDispose = true;
+  });
 }
+
 
 
 </script>
@@ -118,114 +139,88 @@ var types = $.ajax({
 
 
 
- function grhp(types){
-am4core.ready(function() {
+ function grhp(types) {
+  am4core.ready(function () {
+    am4core.useTheme(am4themes_animated);
 
-// Themes begin
-am4core.useTheme(am4themes_material);
-am4core.useTheme(am4themes_animated);
-// Themes end
+    // ✅ Create chart
+    var chart = am4core.create("chartdiv2", am4charts.PieChart);
+    chart.innerRadius = am4core.percent(35); // Donut style for modern look
+    chart.fontFamily = "Segoe UI, Roboto, sans-serif";
+    chart.background.fill = am4core.color("#f8faff");
 
-// Create chart instance
-var chart = am4core.create("chartdiv2", am4charts.PieChart);
+    var selected;
+    chart.data = generateChartData();
 
-// Set data
-//legend 
-// chart.legend = new am4charts.Legend();
-// chart.legend.scrollable = true;
+    // ✅ Series
+    var pieSeries = chart.series.push(new am4charts.PieSeries());
+    pieSeries.dataFields.value = "percent";
+    pieSeries.dataFields.category = "type";
+    pieSeries.slices.template.propertyFields.fill = "color";
+    pieSeries.slices.template.propertyFields.isActive = "pulled";
+    pieSeries.slices.template.strokeWidth = 0;
 
-var selected;
+    // ✅ Label styling
+    pieSeries.labels.template.maxWidth = 130;
+    pieSeries.labels.template.wrap = true;
+    pieSeries.labels.template.fontSize = 12;
+    pieSeries.labels.template.fill = am4core.color("#444");
+    pieSeries.labels.template.text = "[bold]{type}[/]\n{value.value} ({value.percent.formatNumber('.##')}%)";
 
+    // ✅ Tooltip styling
+    pieSeries.slices.template.tooltipText =
+      "{type}: {value.value} | {value.percent.formatNumber('.##')}%";
 
-// Add data
-chart.data = generateChartData();
+    // ✅ Glow effect
+    let shadow = pieSeries.slices.template.filters.push(new am4core.DropShadowFilter());
+    shadow.blur = 6;
+    shadow.color = am4core.color("#999");
+    shadow.opacity = 0.4;
 
-// Add and configure Series
-var pieSeries = chart.series.push(new am4charts.PieSeries());
-pieSeries.dataFields.value = "percent";
-pieSeries.dataFields.category = "type";
-pieSeries.dataFields.subs = "subs";
-pieSeries.slices.template.propertyFields.fill = "color";
-pieSeries.slices.template.propertyFields.isActive = "pulled";
-pieSeries.slices.template.strokeWidth = 0;
-pieSeries.labels.template.maxWidth = 130;
-pieSeries.labels.template.wrap = true;
-pieSeries.labels.template.paddingTop = 0;
-pieSeries.labels.template.paddingBottom = 0;
-pieSeries.labels.template.fontSize = 10;
-pieSeries.integersOnly = true;
-pieSeries.labels.template.text = "{type}: {value.value} | {value.percent.formatNumber('.##')}%";
-pieSeries.slices.template.tooltipText = "{type}: {value.value} | {value.percent.formatNumber('.##')}%";
-pieSeries.slices.template.tooltipPosition = "pointer";
+    // ✅ Hover animation
+    let hs = pieSeries.slices.template.states.create("hover");
+    hs.properties.scale = 1.08;
+    hs.properties.shiftRadius = 0.03;
 
+    chart.exporting.menu = new am4core.ExportMenu();
 
-
-
-
-chart.exporting.menu = new am4core.ExportMenu();
-
-
-
-
-function generateChartData() {
- let d = Array();
-  var chartData = [];
-  for (var i = 0; i < types.length; i++) {
-    if (i == selected) {
-      for (var x = 0; x < types[i].subs.length; x++) {
-         // d= new Array('types'=>types[i].subs[x].type)
-        chartData.push({
-          type: types[i].subs[x].type,
-          percent: types[i].subs[x].percent,
-          color: types[i].color,
-          pulled:true
-        });
-
+    function generateChartData() {
+      let chartData = [];
+      for (var i = 0; i < types.length; i++) {
+        if (i == selected) {
+          for (var x = 0; x < types[i].subs.length; x++) {
+            chartData.push({
+              type: types[i].subs[x].type,
+              percent: types[i].subs[x].percent,
+              color: types[i].color,
+              pulled: true,
+            });
+          }
+        } else {
+          chartData.push({
+            type: types[i].type,
+            percent: types[i].percent,
+            color: types[i].color,
+            id: i,
+          });
+        }
       }
-
-      for (var y = 0; y < types[i].subs.length; y++) {
-         // d= new Array('types'=>types[i].subs[x].type)
-        d.push({
-          type: types[i].subs[y].type,
-          percent: types[i].subs[y].percent
-        });
-
-      }
-newgrph(d)
-   
-      // chartData.push({
-      //   type: types[i].type,
-      //   percent: types[i].percent,
-      //   color: types[i].color,
-      //   id: i
-      // });
-
-    } else {
-      chartData.push({
-        type: types[i].type,
-        percent: types[i].percent,
-        color: types[i].color,
-        id: i
-      });
+      return chartData;
     }
-  }
-  return chartData;
+
+    // ✅ Click event to drill down
+    pieSeries.slices.template.events.on("hit", function (event) {
+      selected =
+        event.target.dataItem.dataContext.id !== undefined
+          ? event.target.dataItem.dataContext.id
+          : undefined;
+      chart.data = generateChartData();
+    });
+
+    am4core.options.autoDispose = true;
+  });
 }
 
-pieSeries.slices.template.events.on("hit", function(event) {
-  if (event.target.dataItem.dataContext.id != undefined) {
-    selected = event.target.dataItem.dataContext.id;
-  } else {
-    selected = undefined;
-  }
-  chart.data = generateChartData();
-});
-am4core.options.autoDispose = true;
-
-
-}); // end am4core.ready()
-
-} // end am4core.ready()
 
 
  function newgrph(data){
@@ -390,72 +385,78 @@ order: [[0, 'desc']],
    });
 
 }
- function _plotovpie(grphdata){
+ function _plotovpie(grphdata) {
+  am4core.ready(function () {
+    am4core.useTheme(am4themes_animated);
 
-am4core.ready(function() {
+    // ✅ Create chart
+    var chart = am4core.create("chartdiv5", am4charts.PieChart);
+    chart.innerRadius = am4core.percent(40);
+    chart.fontFamily = "Segoe UI, Roboto, sans-serif";
+    chart.background.fill = am4core.color("#f8faff");
 
-// Themes begin
-am4core.useTheme(am4themes_animated);
-// Themes end
+    // ✅ Legend styling
+    chart.legend = new am4charts.Legend();
+    chart.legend.position = "bottom";
+    chart.legend.valign = "bottom";
+    chart.legend.labels.template.fill = am4core.color("#444");
+    chart.legend.labels.template.fontSize = 12;
+    chart.legend.labels.template.text = "[bold {color}]{name}[/]";
 
-// Create chart instance
-var chart = am4core.create("chartdiv5", am4charts.PieChart);
+    chart.data = grphdata;
 
-// legend
-chart.legend = new am4charts.Legend();
-chart.legend.position = "bottom";
-chart.legend.valign = "bottom";
-chart.innerRadius = am4core.percent(40);
-chart.legend.labels.template.text = "[bold {color}]{name}[/]";
-// chart.legend.labels.template.text =
-// series1.legendSettings.value = "{points}";
-// Add data
-chart.data = grphdata
+    // ✅ Series
+    var pieSeries = chart.series.push(new am4charts.PieSeries());
+    pieSeries.dataFields.value = "points";
+    pieSeries.dataFields.category = "stat_name";
+    pieSeries.labels.template.maxWidth = 140;
+    pieSeries.labels.template.wrap = true;
+    pieSeries.labels.template.fontSize = 12;
+    pieSeries.labels.template.fill = am4core.color("#444");
+    pieSeries.labels.template.text =
+      "[bold]{category}[/]\n{value.value} Reports ({value.percent.formatNumber('.##')}%)";
+    pieSeries.slices.template.tooltipText =
+      "{category}: {value.value} Reports ({value.percent.formatNumber('.##')}%)";
 
-// Add and configure Series
-var pieSeries = chart.series.push(new am4charts.PieSeries());
-pieSeries.dataFields.value = "points";
-pieSeries.dataFields.category = "stat_name";
-pieSeries.slices.template.stroke = am4core.color("#FFF"); //outline
-pieSeries.slices.template.strokeWidth = 2;
-pieSeries.slices.template.strokeOpacity = 1;
-pieSeries.slices.template.tooltipPosition = "pointer";
-pieSeries.labels.template.maxWidth = 130;
-pieSeries.labels.template.wrap = true;
-pieSeries.labels.template.fontSize = 12;
-pieSeries.labels.template.text =  "{type}  {value.value} {category} Reports | {value.percent.formatNumber('.##')}%";
-pieSeries.slices.template.tooltipText = "{type} {value.value} {category} Reports | {value.percent.formatNumber('.##')}%";
+    // ✅ Glow effect
+    let shadow = pieSeries.slices.template.filters.push(new am4core.DropShadowFilter());
+    shadow.blur = 6;
+    shadow.color = am4core.color("#999");
+    shadow.opacity = 0.4;
 
+    // ✅ Hover animation
+    let hs = pieSeries.slices.template.states.create("hover");
+    hs.properties.scale = 1.08;
+    hs.properties.shiftRadius = 0.03;
 
-// This creates initial animation
-pieSeries.hiddenState.properties.opacity = 1;
-pieSeries.hiddenState.properties.endAngle = -90;
-pieSeries.hiddenState.properties.startAngle = -90;
+    // ✅ Custom pastel colors based on category
+    pieSeries.slices.template.adapter.add("fill", function (fill, target) {
+      if (target.dataItem) {
+        switch (target.dataItem.category) {
+          case "OPEN":
+            return am4core.color("#FF7A7A"); // soft red
+          case "ATTENDED WITH FIX ASSET":
+            return am4core.color("#FFD966"); // soft yellow
+          case "CLOSED":
+            return am4core.color("#7DD77D"); // soft green
+          case "SUBJECT FOR CLOSING":
+            return am4core.color("#CBA6E3"); // soft purple
+          default:
+            return am4core.color("#9EC9F7"); // fallback pastel blue
+        }
+      }
+      return fill;
+    });
 
-pieSeries.slices.template.adapter.add("fill", function(fill, target) {
-  if (target.dataItem && (target.dataItem.category == 'OPEN')) {
-    return am4core.color("#D53343");
-  }
-  if (target.dataItem && (target.dataItem.category == 'ATTENDED WITH FIX ASSET')) {
-    return am4core.color("#F7BB07");
-  }
-  if (target.dataItem && (target.dataItem.category == 'CLOSED')) {
-    return am4core.color("#27A243");
-  }
-  if (target.dataItem && (target.dataItem.category == 'SUBJECT FOR CLOSING')) {
-    return am4core.color("#890188");
-  }
-  else {
-    return fill;
-  }
-});
+    // ✅ Animation on load
+    pieSeries.hiddenState.properties.opacity = 1;
+    pieSeries.hiddenState.properties.endAngle = -90;
+    pieSeries.hiddenState.properties.startAngle = -90;
 
-am4core.options.autoDispose = true;
+    am4core.options.autoDispose = true;
+  });
+}
 
-}); // end am4core.ready()
-
-
- }
 
 </script>
 

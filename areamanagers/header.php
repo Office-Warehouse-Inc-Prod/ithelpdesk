@@ -6,6 +6,8 @@ header("Location: index.php");
 exit();
 }
 
+
+
 ?>
 
 
@@ -197,6 +199,13 @@ tr {
           <span class="sr-only">(current)</span>
           </a>
       </li>
+            <li class="nav-item active">
+        <a class="nav-link a_sales_monitoring" id="" href="#">
+          <i class="fa fa-dollar"></i>
+          Sales Monitoring
+          <span class="sr-only">(current)</span>
+          </a>
+      </li>
 
     </ul>
     <ul class="navbar-nav ">
@@ -243,55 +252,4 @@ tr {
 </body>
 </html>
 
-<script type="text/javascript">
-  $(document).ready(function(){
-// countnewrep();
-// countNwMsg();
-  });
 
-
-
-//  function countnewrep() {
-  
-
-//   setInterval(function(){
-
-//    var xhttp = new XMLHttpRequest();
-//    xhttp.onreadystatechange = function() {
-//     if (this.readyState == 4 && this.status == 200) {
-//      document.getElementById("notif_newrep").innerHTML = this.responseText;
-//     }
-//    };
-//    xhttp.open("GET", "fetchdata/notif_newrep.php", true);
-//    xhttp.send();
-
-//   },1000);
-
-
-//  }
-
-
-
-
-//    function countNwMsg() {
-  
-
-//   setInterval(function(){
-
-//    var xhttp = new XMLHttpRequest();
-//    xhttp.onreadystatechange = function() {
-//     if (this.readyState == 4 && this.status == 200) {
-//      document.getElementById("notif_newmsg").innerHTML = this.responseText;
-//     }
-//    };
-//    xhttp.open("GET", "fetchdata/fetch_newmsg.php", true);
-//    xhttp.send();
-
-//   },1000);
-
-
-//  }
-
-
-
-</script>

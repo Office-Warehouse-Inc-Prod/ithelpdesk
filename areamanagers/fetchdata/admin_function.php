@@ -696,6 +696,56 @@ public function notif_techsupp(){
 		return $data;
 	}
 
+
+	//CJ UPDATE 2025 for SALES DASHBOARD STARTS HERES ======== =========
+
+
+		public function zreading_data(){
+
+	$query="SELECT
+	tbl_sales_yesterday.CREATED_DATE, 
+	tbl_sales_yesterday.STORE_NO, 
+	tbl_sales_yesterday.STORE_CODE, 
+	SUM(tbl_sales_yesterday.TENDER_TOTAL_OPEN) AS TENDER_TOTAL_OPEN, 
+	SUM(tbl_sales_yesterday.TENDER_TOTAL_CLOSE) AS TENDER_TOTAL_CLOSE, 
+	SUM(tbl_sales_yesterday.OVER_SHORT_AMT) AS OVER_SHORT_AMT, 
+	SUM(TENDER_TOTAL_CLOSE-TENDER_TOTAL_OPEN-OVER_SHORT_AMT) AS ttl,
+	AM
+FROM
+	tbl_sales_yesterday
+	INNER JOIN
+	tbl_branch
+	ON 
+		tbl_sales_yesterday.STORE_CODE = tbl_branch.str_code
+		WHERE tbl_branch.AM  LIKE '%{$_SESSION['user_id']}%'
+GROUP BY
+	tbl_sales_yesterday.STORE_CODE";
+	$statement = $this->connection->prepare($query);
+	$statement-> execute();
+	$result = $statement->fetchAll();
+	$data[] = array();
+	// $fetchdata[] = array();
+
+		foreach($result as $row)
+				{
+				$fetchdata[] = array(
+					'CREATED_DATE' => date('m/d/Y',strtotime($row["CREATED_DATE"])),
+					'STORE_NO' => $row['STORE_NO'],
+					'STORE_CODE' => $row['STORE_CODE'],
+					'TENDER_TOTAL_OPEN' => number_format($row['TENDER_TOTAL_OPEN'],2),
+					'TENDER_TOTAL_CLOSE' => number_format($row['TENDER_TOTAL_CLOSE'],2),
+					'OVER_SHORT_AMT' => number_format($row['OVER_SHORT_AMT'],2),
+					'ttl' => number_format($row['ttl'],2)
+
+				);
+
+				}
+			$data = array_filter($fetchdata);
+				return $data;
+
+	}
+	
+
 } // dbconfig end bracket
 
 // $fn = new dbconfig();	

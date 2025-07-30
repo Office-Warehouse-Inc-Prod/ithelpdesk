@@ -132,7 +132,7 @@ GENERATE REPORT
     </a>
     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
       <div class="col-md-12 col-xs-12">
-        <table id="notif_dataxx" class="table table-dark table-responsive table-sm" style="width: auto;"></table>
+        <table id="notif_dataxx" class="table text-dark table-dark table-responsive table-sm bg-dark" style="width: auto;"></table>
       </div>
     </div>
   </li>
@@ -163,12 +163,15 @@ countnewrep();
 countNwMsg();
 
 function getdata(){
-$.post('fetchdata/fetch_data.php',{mode:'notif_support'},function(data){
-console.log(data);
-notifdatas(data);
-},'json');
+    $.post('fetchdata/fetch_data.php', { mode: 'notif_support' }, function(data){
+        // console.log(data);
+        notifdatas(data);
+    }, 'json');
 }
-getdata();
+
+// Run getdata() every 1 second
+setInterval(getdata, 1000);
+
 
 var table
 function notifdatas(t){
@@ -205,16 +208,34 @@ className: 'bolded'
 
 });
 
-$('#notif_dataxx tbody').on( 'click', 'tr', function () {
-var data =  table.row( this ).data();
-var ticketVal = data.ticket_no;
-$('#myInput').val(ticketVal).trigger('input');
-$.post('change_notif.php', {ticketVal: ticketVal}, function(data, textStatus, xhr) {
-getdata();
-// $('#dtbsecond').click();
+$('#notif_dataxx tbody').on('click', 'tr', function () {
+    var data = table.row(this).data();
+    var ticketVal = data.ticket_no;
 
+    $('#myInput').val(ticketVal).trigger('input');
+
+    $.post('change_notif.php', { ticketVal: ticketVal }, function(data, textStatus, xhr) {
+        getdata();
+    });
+
+    // Scroll to bottom smoothly after click
+  $('html, body').animate(
+        { scrollTop: $(document).height() },
+        800,
+        'swing',
+        function () {
+            // Add highlight effect
+            let tableDiv = $('#report_data');
+            tableDiv.css('transition', 'background-color 0.8s');
+            tableDiv.css('background-color', '#ffff99'); // highlight yellow
+
+            setTimeout(() => {
+                tableDiv.css('background-color', '#ffffff'); // back to white
+            }, 800); // delay before returning to white
+        }
+    );
 });
-} );
+
 
 } // end of data table
 
@@ -263,6 +284,8 @@ xhttp.send();
 
 
 }
+
+
 
 
 

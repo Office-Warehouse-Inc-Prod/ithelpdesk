@@ -65,6 +65,10 @@ switch ($mode) {
     case 'genrep_strgrph':
         $records= $fn->genstr_grph();
         break;
+             case 'zreading_data':
+         $records['rptdata']= $fn->zreading_data();
+
+          break; 
     default:
         break;
 
