@@ -372,6 +372,11 @@ pieSeries.slices.template.events.on("hit", function(ev){
     
 });
 
+
+let slice = pieSeries.slices.template;
+// slice.states.getKey("hover").properties.scale = 1;
+slice.states.getKey("active").properties.shiftRadius = 0;
+
 // This creates initial animation
 pieSeries.hiddenState.properties.opacity = 1;
 pieSeries.hiddenState.properties.endAngle = -90;
@@ -418,31 +423,12 @@ pieSeries.slices.template.adapter.add("fill", function(fill, target) {
   if (target.dataItem && (target.dataItem.category == 'ITEM RECEIVED')) {
     return am4core.color("#435585");
   }
-  if (target.dataItem && (target.dataItem.category == 'APRROVED')) {
-    return am4core.color("#005B41");
-  }
-  if (target.dataItem && (target.dataItem.category == 'EVLAUATE')) {
-    return am4core.color("#183D3D");
-  }
-  if (target.dataItem && (target.dataItem.category == 'REPAIRED')) {
-    return am4core.color("#8CABFF");
-  }
-  if (target.dataItem && (target.dataItem.category == 'REQUEST FOR I.R.')) {
-    return am4core.color("#750E21");
-  }
-  if (target.dataItem && (target.dataItem.category == 'SCHEDULE FOR DISPOSAL')) {
-    return am4core.color("#A78295");
-  }
-  if (target.dataItem && (target.dataItem.category == 'SUBJECT FOR ADJUSTMENT')) {
-    return am4core.color("#3F2E3E");
-  }
-  if (target.dataItem && (target.dataItem.category == 'APPROVED SUMMARY ADJUSTMENT')) {
-    return am4core.color("#0E8388");
-  }
   else {
     return fill;
   }
 });
+
+
 
 
 
@@ -452,7 +438,7 @@ pieSeries.slices.template.adapter.add("fill", function(fill, target) {
 //   am4core.color("#17A2B8"),
 //   am4core.color("#F7BB07"),
 //   am4core.color("#D53343"),
-//   am4core.color("#27A243"), 
+//   am4core.color("#27A243"),
 // ];
 
 am4core.options.autoDispose = true;
@@ -635,6 +621,7 @@ var series = chart.series.push(new am4charts.ColumnSeries());
 series.dataFields.valueY = "total";
 series.dataFields.categoryX = "it_name";
 series.clustered = false;
+series.columns.template.width = am4core.percent(90);
 series.tooltipText = "TOTAL REPORTS: [bold]{valueY}";
 series.columns.template.events.on("hit", function(ev) {
               
@@ -694,7 +681,7 @@ var series3 = chart.series.push(new am4charts.ColumnSeries());
 series3.dataFields.valueY = "opncase";
 series3.dataFields.categoryX = "it_name";
 series3.clustered = false;
-series3.columns.template.width = am4core.percent(70);
+// series3.columns.template.width = am4core.percent(70);
 series3.tooltipText = "OPEN REPORTS: [bold]{valueY}";
 series3.columns.template.events.on("hit", function(ev) {
               
@@ -719,6 +706,9 @@ resgncnt(resasgnsupcnt.cnt_resassgn);
 rpt_sla(count_slares.tclosdif);
 rpt_cntsla(count_slares.tdccl)
 }, this);
+
+
+
 
 
 
@@ -1069,153 +1059,6 @@ $(row).find('td:eq(15)').css('color', '#435585');
 $(row).find('td:eq(16)').css('color', '#435585');
 $(row).find('td:eq(17)').css('color', '#435585');
 $(row).find('td:eq(18)').css('color', '#435585');
-}
-else if (data['status'] == 'APRROVED'){
-$(row).find('td:eq(0)').css('color', '#005B41');
-$(row).find('td:eq(1)').css('color', '#005B41');
-$(row).find('td:eq(2)').css('color', '#005B41');
-$(row).find('td:eq(3)').css('color', '#005B41');
-$(row).find('td:eq(4)').css('color', '#005B41');
-$(row).find('td:eq(5)').css('color', '#005B41');
-$(row).find('td:eq(6)').css('color', '#005B41');
-$(row).find('td:eq(7)').css('color', '#005B41');
-$(row).find('td:eq(8)').css('color', '#005B41');
-$(row).find('td:eq(9)').css('color', '#005B41');
-$(row).find('td:eq(10)').css('color', '#005B41');
-$(row).find('td:eq(11)').css('color', '#005B41');
-$(row).find('td:eq(12)').css('color', '#005B41');
-$(row).find('td:eq(13)').css('color', '#005B41');
-$(row).find('td:eq(14)').css('color', '#005B41');
-$(row).find('td:eq(15)').css('color', '#005B41');
-$(row).find('td:eq(16)').css('color', '#005B41');
-$(row).find('td:eq(17)').css('color', '#005B41');
-$(row).find('td:eq(18)').css('color', '#005B41');
-}
-else if (data['status'] == 'EVLAUATE'){
-$(row).find('td:eq(0)').css('color', '#183D3D');
-$(row).find('td:eq(1)').css('color', '#183D3D');
-$(row).find('td:eq(2)').css('color', '#183D3D');
-$(row).find('td:eq(3)').css('color', '#183D3D');
-$(row).find('td:eq(4)').css('color', '#183D3D');
-$(row).find('td:eq(5)').css('color', '#183D3D');
-$(row).find('td:eq(6)').css('color', '#183D3D');
-$(row).find('td:eq(7)').css('color', '#183D3D');
-$(row).find('td:eq(8)').css('color', '#183D3D');
-$(row).find('td:eq(9)').css('color', '#183D3D');
-$(row).find('td:eq(10)').css('color', '#183D3D');
-$(row).find('td:eq(11)').css('color', '#183D3D');
-$(row).find('td:eq(12)').css('color', '#183D3D');
-$(row).find('td:eq(13)').css('color', '#183D3D');
-$(row).find('td:eq(14)').css('color', '#183D3D');
-$(row).find('td:eq(15)').css('color', '#183D3D');
-$(row).find('td:eq(16)').css('color', '#183D3D');
-$(row).find('td:eq(17)').css('color', '#183D3D');
-$(row).find('td:eq(18)').css('color', '#183D3D');
-}
-else if (data['status'] == 'REPAIRED'){
-$(row).find('td:eq(0)').css('color', '#8CABFF');
-$(row).find('td:eq(1)').css('color', '#8CABFF');
-$(row).find('td:eq(2)').css('color', '#8CABFF');
-$(row).find('td:eq(3)').css('color', '#8CABFF');
-$(row).find('td:eq(4)').css('color', '#8CABFF');
-$(row).find('td:eq(5)').css('color', '#8CABFF');
-$(row).find('td:eq(6)').css('color', '#8CABFF');
-$(row).find('td:eq(7)').css('color', '#8CABFF');
-$(row).find('td:eq(8)').css('color', '#8CABFF');
-$(row).find('td:eq(9)').css('color', '#8CABFF');
-$(row).find('td:eq(10)').css('color', '#8CABFF');
-$(row).find('td:eq(11)').css('color', '#8CABFF');
-$(row).find('td:eq(12)').css('color', '#8CABFF');
-$(row).find('td:eq(13)').css('color', '#8CABFF');
-$(row).find('td:eq(14)').css('color', '#8CABFF');
-$(row).find('td:eq(15)').css('color', '#8CABFF');
-$(row).find('td:eq(16)').css('color', '#8CABFF');
-$(row).find('td:eq(17)').css('color', '#8CABFF');
-$(row).find('td:eq(18)').css('color', '#8CABFF');
-}
-else if (data['status'] == 'REQUEST FOR I.R.'){
-$(row).find('td:eq(0)').css('color', '#750E21');
-$(row).find('td:eq(1)').css('color', '#750E21');
-$(row).find('td:eq(2)').css('color', '#750E21');
-$(row).find('td:eq(3)').css('color', '#750E21');
-$(row).find('td:eq(4)').css('color', '#750E21');
-$(row).find('td:eq(5)').css('color', '#750E21');
-$(row).find('td:eq(6)').css('color', '#750E21');
-$(row).find('td:eq(7)').css('color', '#750E21');
-$(row).find('td:eq(8)').css('color', '#750E21');
-$(row).find('td:eq(9)').css('color', '#750E21');
-$(row).find('td:eq(10)').css('color', '#750E21');
-$(row).find('td:eq(11)').css('color', '#750E21');
-$(row).find('td:eq(12)').css('color', '#750E21');
-$(row).find('td:eq(13)').css('color', '#750E21');
-$(row).find('td:eq(14)').css('color', '#750E21');
-$(row).find('td:eq(15)').css('color', '#750E21');
-$(row).find('td:eq(16)').css('color', '#750E21');
-$(row).find('td:eq(17)').css('color', '#750E21');
-$(row).find('td:eq(18)').css('color', '#750E21');
-}
-else if (data['status'] == 'SCHEDULE FOR DISPOSAL'){
-$(row).find('td:eq(0)').css('color', '#A78295');
-$(row).find('td:eq(1)').css('color', '#A78295');
-$(row).find('td:eq(2)').css('color', '#A78295');
-$(row).find('td:eq(3)').css('color', '#A78295');
-$(row).find('td:eq(4)').css('color', '#A78295');
-$(row).find('td:eq(5)').css('color', '#A78295');
-$(row).find('td:eq(6)').css('color', '#A78295');
-$(row).find('td:eq(7)').css('color', '#A78295');
-$(row).find('td:eq(8)').css('color', '#A78295');
-$(row).find('td:eq(9)').css('color', '#A78295');
-$(row).find('td:eq(10)').css('color', '#A78295');
-$(row).find('td:eq(11)').css('color', '#A78295');
-$(row).find('td:eq(12)').css('color', '#A78295');
-$(row).find('td:eq(13)').css('color', '#A78295');
-$(row).find('td:eq(14)').css('color', '#A78295');
-$(row).find('td:eq(15)').css('color', '#A78295');
-$(row).find('td:eq(16)').css('color', '#A78295');
-$(row).find('td:eq(17)').css('color', '#A78295');
-$(row).find('td:eq(18)').css('color', '#A78295');
-}
-else if (data['status'] == 'SUBJECT FOR ADJUSTMENT'){
-$(row).find('td:eq(0)').css('color', '#3F2E3E');
-$(row).find('td:eq(1)').css('color', '#3F2E3E');
-$(row).find('td:eq(2)').css('color', '#3F2E3E');
-$(row).find('td:eq(3)').css('color', '#3F2E3E');
-$(row).find('td:eq(4)').css('color', '#3F2E3E');
-$(row).find('td:eq(5)').css('color', '#3F2E3E');
-$(row).find('td:eq(6)').css('color', '#3F2E3E');
-$(row).find('td:eq(7)').css('color', '#3F2E3E');
-$(row).find('td:eq(8)').css('color', '#3F2E3E');
-$(row).find('td:eq(9)').css('color', '#3F2E3E');
-$(row).find('td:eq(10)').css('color', '#3F2E3E');
-$(row).find('td:eq(11)').css('color', '#3F2E3E');
-$(row).find('td:eq(12)').css('color', '#3F2E3E');
-$(row).find('td:eq(13)').css('color', '#3F2E3E');
-$(row).find('td:eq(14)').css('color', '#3F2E3E');
-$(row).find('td:eq(15)').css('color', '#3F2E3E');
-$(row).find('td:eq(16)').css('color', '#3F2E3E');
-$(row).find('td:eq(17)').css('color', '#3F2E3E');
-$(row).find('td:eq(18)').css('color', '#3F2E3E');
-}
-else if (data['status'] == 'APPROVED SUMMARY ADJUSTMENT'){
-$(row).find('td:eq(0)').css('color', '#0E8388');
-$(row).find('td:eq(1)').css('color', '#0E8388');
-$(row).find('td:eq(2)').css('color', '#0E8388');
-$(row).find('td:eq(3)').css('color', '#0E8388');
-$(row).find('td:eq(4)').css('color', '#0E8388');
-$(row).find('td:eq(5)').css('color', '#0E8388');
-$(row).find('td:eq(6)').css('color', '#0E8388');
-$(row).find('td:eq(7)').css('color', '#0E8388');
-$(row).find('td:eq(8)').css('color', '#0E8388');
-$(row).find('td:eq(9)').css('color', '#0E8388');
-$(row).find('td:eq(10)').css('color', '#0E8388');
-$(row).find('td:eq(11)').css('color', '#0E8388');
-$(row).find('td:eq(12)').css('color', '#0E8388');
-$(row).find('td:eq(13)').css('color', '#0E8388');
-$(row).find('td:eq(14)').css('color', '#0E8388');
-$(row).find('td:eq(15)').css('color', '#0E8388');
-$(row).find('td:eq(16)').css('color', '#0E8388');
-$(row).find('td:eq(17)').css('color', '#0E8388');
-$(row).find('td:eq(18)').css('color', '#0E8388');
 }
 else if (data['status'] == 'SUBJECT FOR CLOSING'){
 $(row).find('td:eq(0)').css('color', '#890188');

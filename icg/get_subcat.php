@@ -1,8 +1,8 @@
  <?php
 	include 'db.php';
 	$category_id=$_POST["category_id"];
-	$alu_id=$_POST["alu_id"];
-	$result = mysqli_query($concat,"SELECT * FROM subcat where cat_id=$category_id");
+	$subnum=$_POST["sub_num"];
+	$result = mysqli_query($concat,"SELECT * FROM subcat where cat_id=$category_id and sub_id =$subnum");
 	// $result = mysqli_query($concat,"SELECT * FROM subcat where cat_id=$category_id AND sub_id NOT IN ('15','28','34','')");
 ?>
 <option value="">Select SubCategory</option>

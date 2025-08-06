@@ -11,43 +11,43 @@ class dbconfig extends dbconn
 	public function fetch_cards_result(){
 		$query = '';
 		$output = array();
-		$query = "SELECT 
-        YEAR(date_created) as date_created,
-        COUNT(reports.`status`) AS t_all,
-		COUNT(
-		CASE
-				
+		$query = "SELECT YEAR
+		( date_created ) AS date_created,
+		COUNT( reports.`status` ) AS t_all,
+		COUNT(CASE
 				WHEN reports.`status` = 'OPEN' 
-				OR reports.`status` = 'APPROVE' 
-				OR reports.`status` = 'SCHEDULE FOR DISPOSAL' 
-				OR reports.`status` = 'SUBJECT FOR ADJUSTMENT' 
-				OR reports.`status` = 'APPROVED SUMMARY ADJUSTMENT' 
-				OR reports.`status` = 'WAREHOUSE PULL OUT'
-				OR reports.`status` = 'SUPPLIER PULL OUT'
-				OR reports.`status` = 'READY FOR PULL OUT'
-				OR reports.`status` = 'CONFIRM PULL OUT'
-				OR reports.`status` = 'PULL OUT BY SUPPLIER'
+				OR reports.`status` = 'WAREHOUSE PULL OUT' 
+				OR reports.`status` = 'SUPPLIER PULL OUT' 
+				OR reports.`status` = 'READY FOR PULL OUT' 
+				OR reports.`status` = 'CONFIRM PULL OUT' 
+				OR reports.`status` = 'PULL OUT BY SUPPLIER' 
 				OR reports.`status` = 'REPAIRED'
-				OR reports.`status` = 'REPLACE SAME MODEL'
-				OR reports.`status` = 'REPLACE DIFFERENT MODEL'
+				OR reports.`status` = 'REPLACE SAME MODEL DIFFERENT SERIAL'
+				OR reports.`status` = 'REPLACE DIFFENT MODEL'
 				OR reports.`status` = 'RTV'
 				OR reports.`status` = 'RETURN TO STORE'
 				OR reports.`status` = 'ITEM RECEIVED'
-				OR reports.`status` = 'EVALUATE'
-				OR reports.`status` = 'REPAIRED'
 				OR reports.`status` = 'RETURN BY SUPPLIER'
-				OR reports.`status` = 'LIST FOR DISPOSAL'
-				OR reports.`status` = 'OKAY FOR PULL OUT'
 				OR reports.`status` = 'ITEM-RECEIVED'
-				OR reports.`status` = 'SUBJECT FOR CLOSING' 
-				THEN 1 ELSE NULL END) AS t_open,
-        COUNT(CASE WHEN reports.`status` = 'ATTENDED WITH FIX ASSET' then 1 else NULL end) as t_owfa,
-        COUNT(CASE WHEN reports.`status` = 'CLOSED' then 1 else NULL end) as t_close,
-		COUNT(CASE WHEN reports.`status` = 'FOR PICKUP' then 1 else NULL end) as t_pickup,
-		COUNT(CASE WHEN reports.`status` = 'DELIVERED TO SUPPLIER' then 1 else NULL end) as t_deliver_supplier,
-		COUNT(CASE WHEN reports.`status` = 'FOR DELIVERY TO STORE' then 1 else NULL end) as t_for_delivery
-        FROM
-        reports WHERE sub_id NOT IN ('15','28','34','35') AND `status` NOT IN ('WAITING FOR IT HELDESK RESPONSE','NEW REPORT') AND YEAR(date_created) IN (".$_POST['yr'] .") AND reports.deptsel = '4'";
+				OR reports.`status` = 'RETURN'
+				OR reports.`status` = 'SUBJECT FOR CLOSING' THEN
+					1 ELSE NULL 
+				END 
+				) AS t_open,
+				COUNT( CASE WHEN reports.`status` = 'CLOSED' THEN 1 ELSE NULL END ) AS t_close,
+				COUNT( CASE WHEN reports.`status` = 'ATTENDED WITH FIX ASSET' THEN 1 ELSE NULL END ) AS t_owfa,
+				COUNT( CASE WHEN reports.`status` = 'FOR PICKUP' THEN 1 ELSE NULL END ) AS t_pickup,
+				COUNT( CASE WHEN reports.`status` = 'DELIVERED TO SUPPLIER' THEN 1 ELSE NULL END ) AS t_deliver_supplier,
+				COUNT( CASE WHEN reports.`status` = 'FOR DELIVERY TO STORE' THEN 1 ELSE NULL END ) AS t_for_delivery 
+			FROM
+				reports 
+			WHERE
+				sub_id NOT IN ( '15', '28', '34', '35' ) 
+				AND `status` NOT IN ( 'WAITING FOR IT HELDESK RESPONSE', 'NEW REPORT' ) 
+				AND YEAR ( date_created ) IN (".$_POST['yr'] .") 
+			AND reports.deptsel = '4' 
+		AND reports.service_desc = 'LOCAL'
+		";
 
         $statement = $this->connection->prepare($query);
         $statement-> execute();
@@ -82,7 +82,7 @@ class dbconfig extends dbconn
 			FROM
 			reports
 			LEFT JOIN tbl_status ON reports.`status` = tbl_status.stat_desc
-			where `reports`.`sub_id` NOT IN ('15','28','34','35') AND `status` NOT IN ('WAITING FOR IT HELPDESK RESPONSE','NEW REPORT') AND YEAR(date_created) IN (".$_POST['yr'] .") AND reports.deptsel = '4'
+			where `reports`.`sub_id` NOT IN ('15','28','34','35') AND `status` NOT IN ('WAITING FOR IT HELPDESK RESPONSE','NEW REPORT') AND YEAR(date_created) IN (".$_POST['yr'] .") AND reports.deptsel = '4' AND reports.service_desc = 'LOCAL'
 			GROUP BY `status`
 			ORDER BY stat_id ASC
 
@@ -118,29 +118,23 @@ class dbconfig extends dbconn
 				Count( CASE reports.`status` when 'CLOSED' then 1 else null end) as completed,
 				Count(CASE
 				WHEN reports.`status` = 'OPEN' 
-				OR reports.`status` = 'APPROVE' 
-				OR reports.`status` = 'SCHEDULE FOR DISPOSAL' 
-				OR reports.`status` = 'SUBJECT FOR ADJUSTMENT' 
-				OR reports.`status` = 'APPROVED SUMMARY ADJUSTMENT' 
-				OR reports.`status` = 'WAREHOUSE PULL OUT'
-				OR reports.`status` = 'SUPPLIER PULL OUT'
-				OR reports.`status` = 'READY FOR PULL OUT'
-				OR reports.`status` = 'CONFIRM PULL OUT'
-				OR reports.`status` = 'PULL OUT BY SUPPLIER'
+				OR reports.`status` = 'WAREHOUSE PULL OUT' 
+				OR reports.`status` = 'SUPPLIER PULL OUT' 
+				OR reports.`status` = 'READY FOR PULL OUT' 
+				OR reports.`status` = 'CONFIRM PULL OUT' 
+				OR reports.`status` = 'PULL OUT BY SUPPLIER' 
 				OR reports.`status` = 'REPAIRED'
-				OR reports.`status` = 'REPLACE SAME MODEL'
-				OR reports.`status` = 'REPLACE DIFFERENT MODEL'
+				OR reports.`status` = 'REPLACE SAME MODEL DIFFERENT SERIAL'
+				OR reports.`status` = 'REPLACE DIFFENT MODEL'
 				OR reports.`status` = 'RTV'
 				OR reports.`status` = 'RETURN TO STORE'
 				OR reports.`status` = 'ITEM RECEIVED'
-				OR reports.`status` = 'EVALUATE'
-				OR reports.`status` = 'REPAIRED'
 				OR reports.`status` = 'RETURN BY SUPPLIER'
-				OR reports.`status` = 'LIST FOR DISPOSAL'
-				OR reports.`status` = 'OKAY FOR PULL OUT'
 				OR reports.`status` = 'ITEM-RECEIVED'
-				OR reports.`status` = 'SUBJECT FOR CLOSING' 
-				 THEN 1 ELSE NULL END) as openrep,
+				OR reports.`status` = 'RETURN'
+				OR reports.`status` = 'SUBJECT FOR CLOSING' THEN
+					1 ELSE NULL 
+				END) as openrep,
 				Count( CASE reports.`status` when 'OPEN WITH FIX ASSET' then 1 else null end) as opnwfxast,
 				COUNT(CASE WHEN reports.`status` = 'FOR PICKUP' then 1 else NULL end) as t_pickup,
 				COUNT(CASE WHEN reports.`status` = 'DELIVERED TO SUPPLIER' then 1 else NULL end) as t_deliver_supplier,
@@ -150,7 +144,7 @@ class dbconfig extends dbconn
 				LEFT JOIN reports ON reports.itsup = it_tech.itsup
 				INNER JOIN users ON users.tech_id = it_tech.itsup
 				WHERE
-				reports.sub_id NOT IN (15,28,34,35) AND reports.itsup NOT IN ('8') AND reports.deptsel = '4' AND 
+				reports.sub_id NOT IN (15,28,34,35) AND reports.itsup NOT IN ('8') AND reports.deptsel = '4' AND reports.service_desc = 'LOCAL' AND 
 				YEAR(reports.date_created) IN (".$_POST['yr'].")
 				GROUP BY
 				reports.itsup
@@ -190,18 +184,20 @@ class dbconfig extends dbconn
 
 		$query='';
 		if ($_POST['yr'] != '2019,2020,2021,2022,2023') {
-		$query="SELECT
+		$query="
+		SELECT
 		DATE( date_created ) AS DATEPART,
 		Count(
 		DATE( date_created )) AS total_number
 		FROM
 		reports
 		WHERE
-		year(date_created) BETWEEN '".$_POST['yr'] ."' AND '".$_POST['yr'] ."' and reports.sub_id NOT IN ('15','28','34','35') AND reports.deptsel = '4'
+		year(date_created) BETWEEN '".$_POST['yr'] ."' AND '".$_POST['yr'] ."' and reports.sub_id NOT IN ('15','28','34','35') AND reports.deptsel = '4' AND reports.service_desc = 'LOCAL'
 		GROUP BY
 		DATEPART";	
 		} else {
-		$query="SELECT
+		$query="
+		SELECT
 		DATE( date_created ) AS DATEPART,
 		Count(
 		DATE( date_created )) AS total_number
@@ -229,9 +225,10 @@ class dbconfig extends dbconn
 
 	public function pie(){
 
-		$query= "SELECT cat_desc,clr,cat_id, count(*) as ctn, date_created
+		$query= "
+		SELECT cat_desc,clr,cat_id, count(*) as ctn, date_created
 		FROM vwpd 
-		WHERE deptsel = '4' AND  date_created IN (".$_POST['yr'] .")
+		WHERE service_desc = 'LOCAL' AND date_created IN (".$_POST['yr'] .")
 		GROUP BY cat_id ORDER BY cat_desc ASC";
 		$statement = $this->connection->prepare($query);
 		$statement-> execute();
@@ -253,7 +250,7 @@ class dbconfig extends dbconn
 
 	public function subs($id){
 
-		$query= "SELECT sub_cat, count(*) as sctn, date_created FROM vwpd WHERE cat_id='".$id."' AND  date_created IN (".$_POST['yr'] .")  GROUP BY sub_cat ORDER BY cat_desc ASC";
+		$query= "SELECT sub_cat, count(*) as sctn, date_created FROM vwpd WHERE cat_id='".$id."' AND service_desc = 'LOCAL' AND  date_created IN (".$_POST['yr'] .")  GROUP BY sub_cat ORDER BY cat_desc ASC";
 
 		$statement = $this->connection->prepare($query);
 		$statement-> execute();
@@ -283,7 +280,7 @@ class dbconfig extends dbconn
 				JOIN `tbl_branch` ON ( `reports`.`store` = `tbl_branch`.`str_num` ))
 		JOIN `tbl_area` ON ( `tbl_area`.`area_num` = `tbl_branch`.`area_num` )) 
 	WHERE
-		YEAR ( `reports`.`date_created` )  IN ( ".$_POST['yr'] ." ) AND deptsel = '4'
+		YEAR ( `reports`.`date_created` )  IN ( ".$_POST['yr'] ." ) AND deptsel = '4' AND reports.service_desc = 'LOCAL'
 	GROUP BY
 		`tbl_branch`.`area_num`";
 		$statement = $this->connection->prepare($query);
@@ -325,7 +322,7 @@ class dbconfig extends dbconn
 		 {
 			$query="
 
-			select `reports`.`store` AS `store`,`tbl_branch`.`str_code` AS `str_dept`,`tbl_branch`.`area_num` AS `area_num`,`tbl_area`.`area_desc` AS `area_desc`,year(`reports`.`date_created`) AS `dc`,count(`reports`.`date_created`) AS `cnt_ttl` from ((`reports` join `tbl_branch` on(`reports`.`store` = `tbl_branch`.`str_num`)) join `tbl_area` on(`tbl_area`.`area_num` = `tbl_branch`.`area_num`)) WHERE YEAR(`reports`.`date_created`) IN (".$_POST['yr'] .") AND area_desc = '".$_POST['area_desc'] ."' AND deptsel = '4' group by reports.store, str_code, area_desc ORDER BY str_code ASC
+			select `reports`.`store` AS `store`,`tbl_branch`.`str_code` AS `str_dept`,`tbl_branch`.`area_num` AS `area_num`,`tbl_area`.`area_desc` AS `area_desc`,year(`reports`.`date_created`) AS `dc`,count(`reports`.`date_created`) AS `cnt_ttl` from ((`reports` join `tbl_branch` on(`reports`.`store` = `tbl_branch`.`str_num`)) join `tbl_area` on(`tbl_area`.`area_num` = `tbl_branch`.`area_num`)) WHERE YEAR(`reports`.`date_created`) IN (".$_POST['yr'] .") AND area_desc = '".$_POST['area_desc'] ."' AND deptsel = '4' AND reports.service_desc = 'LOCAL' group by reports.store, str_code, area_desc ORDER BY str_code ASC
 
 				";
 
@@ -354,7 +351,7 @@ class dbconfig extends dbconn
 	// Select * from vw6 WHERE 
 	// vw6.sub_id NOT IN ('15','28','34','35') AND status <> 'WAITING FOR IT HELPDESK RESPONSE' AND YEAR(vw6.date_created) IN (2022)";
 
-	$query="SELECT * from vw6pd WHERE vw6pd.deptsel = '4' AND
+	$query="SELECT * from vw6pd WHERE vw6pd.deptsel = '4' AND vw6pd.service_desc = 'LOCAL' AND
 	vw6pd.sub_id NOT IN ('15','28','34','35') AND YEAR(vw6pd.date_created) IN (".$_POST['yr'] .")";
 	
 	$statement = $this->connection->prepare($query);
@@ -408,6 +405,8 @@ class dbconfig extends dbconn
 
 
 
+
+
 				);
 
 				}
@@ -443,10 +442,12 @@ public function newreporthist(){
 	reports_newmsg.nmsg_stat AS nmsg_stat,
 	users.fname AS fname,
 	users.lstname AS lstname,
-	concat_ws( ' ', `users`.`fname`, `users`.`lstname` ) AS full_name,
+	concat_ws( '-', `users`.`fname`, `users`.`lstname` ) AS full_name,
 	item_masterfile.ALU,
 	item_masterfile.Desc1,
-	item_masterfile.Desc2 
+	item_masterfile.Desc2,
+	reports.serial_no,
+	reports.multitag
 FROM
 	(
 		(
@@ -467,12 +468,12 @@ FROM
 		)
 		LEFT JOIN users ON ( users.id = reports.userId ) 
 	)
-	INNER JOIN item_masterfile ON reports.alu = item_masterfile.ALU 
-WHERE
-	reports.`status` = 'NEW REPORT' 
-	AND reports.deptsel = '4'
+	LEFT JOIN item_masterfile ON reports.alu = item_masterfile.ALU 
+WHERE reports.status = 'NEW REPORT' 
+	AND reports.deptsel = '4' 
+	AND reports.service_desc IN ('LOCAL', 'IMPORT')
 ORDER BY
-	reports.date_created DESC";
+	reports.series_id DESC";
 	$statement = $this->connection->prepare($query);
 	$statement-> execute();
 	$result = $statement->fetchAll();
@@ -498,6 +499,9 @@ ORDER BY
 			'ALU' => $row["ALU"],
 			'Desc1' => $row["Desc1"],
 			'Desc2' => $row["Desc2"],
+			'serial_no' => $row["serial_no"],
+			'multitag' => $row["multitag"],
+
 			// 'sub_cat' => $row["sub_cat"],
 		);
 	}	
@@ -599,7 +603,7 @@ FROM
 		tbl_notif.ticket_no = reports.ticket_no
 WHERE
 	notif_val IN ('2','3') AND
-	reports.deptsel = 4
+	reports.deptsel = 4  AND reports.service_desc = 'REPAIR LOCAL'
 ORDER BY
 	notif_date ASC ";
 	$statement = $this->connection->prepare($query);
@@ -1052,7 +1056,7 @@ public function search_desc(){
   FROM
 	item_masterfile
   WHERE
-	item_masterfile.ALU LIKE '$search%'
+	item_masterfile.ALU = '$search'
 	";
 	
 	$statement = $this->connection->prepare($query);
@@ -1077,40 +1081,70 @@ public function search_desc(){
 	
 	}
 
-
-	public function pditems(){
+	public function tblitems(){
 		$TiketNo = $_POST['TiketNo'];
-		$query=" SELECT * FROM tbl_pditems WHERE ticket_no = '$TiketNo' AND save_tag = 'Y' ";
+		$query="SELECT * FROM tbl_pditems WHERE ticket_no = '$TiketNo' AND save_tag = 'Y'
+		";
 		
 		$statement = $this->connection->prepare($query);
 		$statement-> execute();
 		$result = $statement->fetchAll();
 		$data[] = array();
+		// $fetchdata[] = array();
 		
 		foreach($result as $row)
 		{
-			$fetchdata[] = array(
-				'idx' => $row['id'],
-				'alux' => $row['alu_no'],
-				'descx' => $row['description'],
-				'serialx' => $row['serial_no'],
-				'supplierx' => $row['supplier'],
-				'statusx' => $row['item_status'],			
-				'n_alu' => $row['n_alu_no'],
-				'n_desc' => $row['n_description'],
-				'n_serial' => $row['n_serial_no'],
-				'n_rtv' => $row['n_rtv'],
-				'n_cm' => $row['n_cm'],
-				'n_status' => $row['n_status'],
-			);
-		}
+		$fetchdata[] = array(
+		'id' => $row['id'],
+		'alu' => $row['alu_no'],
+		'desc' => $row['description'],
+		'serial' => $row['serial_no'],
+		'supplier' => $row['supplier']
 		
+
+
+		
+		
+		);
+		
+		}
 		$data = array_filter($fetchdata);
-		// echo json_encode($data); // Send the data back to the client-side as JSON
+		// echo json_encode($data);
 		return $data;
-	}
+		
+		}
 
-
+		public function pditems(){
+			$TiketNo = $_POST['TiketNo'];
+			$query=" SELECT * FROM tbl_pditems WHERE ticket_no = '$TiketNo' AND save_tag = 'Y' ";
+			
+			$statement = $this->connection->prepare($query);
+			$statement-> execute();
+			$result = $statement->fetchAll();
+			$data[] = array();
+			
+			foreach($result as $row)
+			{
+				$fetchdata[] = array(
+					'idx' => $row['id'],
+					'alux' => $row['alu_no'],
+					'descx' => $row['description'],
+					'serialx' => $row['serial_no'],
+					'supplierx' => $row['supplier'],
+					'statusx' => $row['item_status'],			
+					'n_alu' => $row['n_alu_no'],
+					'n_desc' => $row['n_description'],
+					'n_serial' => $row['n_serial_no'],
+					'n_rtv' => $row['n_rtv'],
+					'n_cm' => $row['n_cm'],
+					'n_status' => $row['n_status'],
+				);
+			}
+			
+			$data = array_filter($fetchdata);
+			// echo json_encode($data); // Send the data back to the client-side as JSON
+			return $data;
+		}
 
 
 } // dbconfig end bracket

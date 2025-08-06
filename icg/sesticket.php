@@ -2,7 +2,7 @@
 include 'db.php';
 if (isset($_POST['tktval'])) {
   $tktval = $_POST['tktval'];
-  $query = "SELECT * FROM images WHERE ticket_no = '$tktval' GROUP BY files_name ";
+  $query = "SELECT * FROM images WHERE ticket_no = '$tktval' GROUP BY files_name";
   $run = $concat->prepare($query);
   $run->execute();
   $rs = $run->get_result();

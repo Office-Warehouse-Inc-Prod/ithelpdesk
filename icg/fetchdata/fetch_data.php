@@ -77,6 +77,9 @@ switch ($mode) {
     case 'search_desc':
         $records= $fn->search_desc();
         break;
+    case 'tblitems':
+        $records['itemspddata'] = $fn->tblitems();
+        break;
     case 'pditems':
         $records['pddata_items'] = $fn->pditems();
         break;
