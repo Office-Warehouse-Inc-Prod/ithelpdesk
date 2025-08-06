@@ -11,18 +11,45 @@ $con1=new dbconfig();
 
 
 <head>
+  <!-- jQuery (REQUIRED: must be loaded before DataTables) -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+
+<!-- Bootstrap DateTimePicker (Optional for your datetime fields) -->
 <link rel="stylesheet" href="../css/bootstrap-datetimepicker.min.css"/>
 <script src="../js/bootstrap-datetimepicker.min.js"></script>
-<link rel="stylesheet" href="../css/jquery.dataTables.min.css" />
+
+<!-- DataTables core CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+
+<!-- DataTables Buttons CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
+
+<!-- Your custom styles -->
 <link rel="stylesheet" href="styles.css" />
-<script src="../js/jquery.dataTables.min.js"></script>
+
+<!-- DataTables core JS -->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+<!-- DataTables Extensions -->
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.colVis.min.js"></script>
+
+<!-- Support files for Excel/PDF export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.68/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.68/vfs_fonts.js"></script>
+
+<!-- Optional DataTables features -->
 <script src="../js/dataTables.select.min.js"></script>
 <script src="../js/dataTables.responsive.min.js"></script>
 <script src="../js/fnReloadAjax.js"></script>
+
  </head>
 <div class="col-md-12 mt-3">
 
-  <table class="table table-dark table-responsive table-condensed" id="new_rep_table"></table>
+  <table class="table table table-responsive table-condensed" id="new_rep_table"></table>
 
 
 </div>
@@ -96,7 +123,7 @@ $con1=new dbconfig();
    </div>
 
   <div class="col-md-12 ">
-  <table id="items_data" class="table table-dark table-responsive table-sm " style="width: auto;"></table>
+  <table id="items_data" class="table table-responsive table-sm " style="width: auto;"></table>
   </div>
 
    <div class="form-group col-md-6 shide">
@@ -343,60 +370,81 @@ function getdata(){
 getdata();
 
 function admin_datatable(t){
+
+const today = new Date().toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric'
+});
+const reportTitle = 'New Tickets as of ' + today;
+
+
+
 const dataset=t.newrptdata;
-     reptable =  $("#new_rep_table").DataTable({
-           "dom":
-          '<"pull-left"lf><"pull-right">tip',
-           // ajax: t,
-          stateSave: true,
-          "bDestroy": true,
-          "responsive": true, "lengthChange": false, "autoWidth": false,
-          language: {
-          emptyTable: "No unassinged reports",
-          search: "_INPUT_",
-          searchPlaceholder: "Search..."
-          },
-          pageLength:5,
-          data: dataset,
-          order: [ 3, 'DESC' ],
-
-          columns: [
-          {title:"TicketNo", data:"ticket_no","defaultContent": ""},
-          {title:"Department/Store", data:"str_code","defaultContent": ""},
-          {title:"Created By", data:"full_name","defaultContent": ""},
-          {title:"Date Created", data:"date_created", type: "date","defaultContent": ""},
-          {title:"SUBJECT", data:"concern","defaultContent": ""},
-          {title:"Types of Service", data:"service_desc","defaultContent": ""},
-          {title:"CONCERN", data:"subject","defaultContent": ""},
-          {title:"Description", data:"Desc1","defaultContent": ""},
-          {title:"Serial No", data:"serial_no","defaultContent": ""},
-          {title:"Update", data:null,"defaultContent": "<Button class='btn btn-danger' name='update' disabled><i class='fas fa-edit'></i></Button>"}
-
-
-          ],
-              rowCallback: function(row, data, index){
-    if(data['msg_cnt'] == '1'){
-      $(row).find('td:eq(0)').css("font-weight", "bold");
-      $(row).find('td:eq(1)').css("font-weight", "bold");
-      $(row).find('td:eq(2)').css("font-weight", "bold");
-      $(row).find('td:eq(3)').css("font-weight", "bold");
-      $(row).find('td:eq(4)').css("font-weight", "bold");
-      $(row).find('td:eq(5)').css("font-weight", "bold");
-      $(row).find('td:eq(6)').css("font-weight", "bold");
-      $(row).find('td:eq(7)').css("font-weight", "bold");
-      $(row).find('td:eq(8)').css("font-weight", "bold");
-      $(row).find('td:eq(9)').css("font-weight", "bold");
-      $(row).find('td:eq(10)').css("font-weight", "bold");
-      $(row).find('td:eq(11)').css("font-weight", "bold");
- 
+    reptable = $("#new_rep_table").DataTable({
+  dom: '<"d-flex justify-content-between align-items-center mb-2"lfB>tip',
+  buttons: [
+    {
+      extend: 'excelHtml5',
+      text: '<i class="fas fa-file-excel"></i> Excel',
+      className: 'btn btn-success btn-sm',
+            title: reportTitle
+    },
+    {
+      extend: 'pdfHtml5',
+      text: '<i class="fas fa-file-pdf"></i> PDF',
+      className: 'btn btn-danger btn-sm',
+      orientation: 'landscape',
+      pageSize: 'A4',
+      title: reportTitle
+    },
+    {
+      extend: 'print',
+      text: '<i class="fas fa-print"></i> Print',
+      className: 'btn btn-secondary btn-sm',
+      title: reportTitle,
+    },
+    {
+      extend: 'csvHtml5',
+      text: '<i class="fas fa-file-csv"></i> CSV',
+      className: 'btn btn-info btn-sm',
+      title: reportTitle
+    },
+    {
+      extend: 'copyHtml5',
+      text: '<i class="fas fa-copy"></i> Copy',
+      className: 'btn btn-warning btn-sm'
     }
+  ],
+  stateSave: true,
+  bDestroy: true,
+  responsive: true,
+  lengthChange: false,
+  autoWidth: false,
+  pageLength: 10,
+  language: {
+    emptyTable: "No unassigned reports",
+    search: "_INPUT_",
+    searchPlaceholder: "Search..."
+  },
+  data: dataset,
+  order: [[0, "desc"]],
+  columns: [
+    { title: "TicketNo", data: "ticket_no", defaultContent: "" },
+    { title: "Department/Store", data: "str_code", defaultContent: "" },
+    { title: "Created By", data: "full_name", defaultContent: "" },
+    { title: "Date Created", data: "date_created", defaultContent: "" },
+    { title: "SUBJECT", data: "concern", defaultContent: "" },
+    { title: "Types of Service", data: "service_desc", defaultContent: "" },
+    { title: "CONCERN", data: "subject", defaultContent: "" },
+    // {
+    //   title: "Update",
+    //   data: null,
+    //   defaultContent: "<button class='btn btn-danger btn-sm' name='update'><i class='fas fa-edit'></i></button>"
+    // }
+  ]
+});
 
-
-  }
-
-
-
-   }); //  end of datatable
 
 
 
