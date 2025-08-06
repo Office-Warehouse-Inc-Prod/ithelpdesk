@@ -218,7 +218,7 @@ document.getElementById("notif_newrep").innerHTML = this.responseText;
 xhttp.open("GET", "fetchdata/notif_newrep.php", true);
 xhttp.send();
 
-},1000);
+},5000);
 
 
 }
@@ -240,7 +240,7 @@ document.getElementById("notif_newmsg").innerHTML = this.responseText;
 xhttp.open("GET", "fetchdata/fetch_newmsg.php", true);
 xhttp.send();
 
-},1000);
+},5000);
 
 
 }
