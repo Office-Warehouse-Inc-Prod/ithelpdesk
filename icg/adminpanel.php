@@ -16,175 +16,143 @@ include 'sub_graph_modal.php';
 
 <style>
 
-  
+#img {
+  width: 100%;
+
+}
+
+#img img {
+  max-width: 100%; /* Set the maximum width of the image to 100% of its parent */
+  width: auto; /* Set the width of the image to auto */
+  margin: auto; /* Center the image horizontally and vertically */
+}  
+
+
   </style>
-
-
-<div class="container-fluid">
-
-<div id="wrapper">
-
-<div id="layoutSidenav_content">
-<div class="container-fluid">
-
-
-
-    <div class="col-md-4 mt-4 d-inline-flex p-2">
-      <label class="sr-only" for="inlineFormInputGroup">Start Date</label>
-      <div class="input-group mb-2">
-        <div class="input-group-prepend">
-          <div class="input-group-text">LOGS IN YEAR OF:</div>
-        </div>
-                 <select class="form-contro"  name="yearpicker" id="yearpicker" required>
-                                 <option value="2019,2020,2021,2022,2023,2024,2025" >OVERALL</option>
-                 <option value="2025" selected >2025</option>
-		             <option value="2024" >2024</option>
-                 <option value="2023" >2023</option>
-                 <option value="2022" >2022</option>
-                 <option value="2021" >2021</option>
-                 <option value="2020">2020</option>
-                 <option value="2019">2019</option>
-  
-
-
-
-                </select>
-      </div>
-    </div>
-
-        </div>
- 
+<div class="container-fluid px-4">
+  <!-- Year Picker -->
+  <div class="row my-4">
+    <div class="col-md-4">
+      <label for="yearpicker" class="form-label fw-bold">Logs in Year Of:</label>
+      <select class="form-control" name="yearpicker" id="yearpicker" required>
+        <option value="2019,2020,2021,2022,2023,2024,2025">OVERALL</option>
+        <option value="2025" selected>2025</option>
+        <option value="2024">2024</option>
+        <option value="2023">2023</option>
+        <option value="2022">2022</option>
+        <option value="2021">2021</option>
+        <option value="2020">2020</option>
+        <option value="2019">2019</option>
+      </select>
     </div>
   </div>
 
-<div class="card-deck align-items-center mb-3">
+  <!-- Dashboard Cards -->
+  <div class="row g-4 mb-4">
+    <div class="col-md-4">
+      <div class="card text-white bg-primary h-100">
+        <div class="card-body">
+          <h5 class="card-title">Total Reports</h5>
+          <h2 class="float-end" id="count_total"></h2>
+        </div>
+        <div class="card-footer d-flex justify-content-between align-items-center">
+          <a class="text-white stretched-link" id="card_totalval" href="#bottom">Click here for more info</a>
+          <div class="go-arrow"></div>
+        </div>
+      </div>
+    </div>
 
+    <div class="col-md-4">
+      <div class="card text-white bg-danger h-100">
+        <div class="card-body">
+          <h5 class="card-title">Open Reports</h5>
+          <h2 class="float-end" id="count_open"></h2>
+        </div>
+        <div class="card-footer d-flex justify-content-between align-items-center">
+          <a class="text-white stretched-link" id="card_openval" href="#bottom" value="OPEN">Click here for more info</a>
+          <div class="go-arrow"></div>
+        </div>
+      </div>
+    </div>
 
-<div class="dashcard card text-white mb-4 bg-primary border-dark" style="width: 18rem; height: 9rem;">
-<div class="card-body">
+    <div class="col-md-4">
+      <div class="card text-white bg-success h-100">
+        <div class="card-body">
+          <h5 class="card-title">Closed Reports</h5>
+          <h2 class="float-end" id="count_closed"></h2>
+        </div>
+        <div class="card-footer d-flex justify-content-between align-items-center">
+          <a class="text-white stretched-link" id="card_closedval" href="#bottom" value="CLOSED">Click here for more info</a>
+          <div class="go-arrow"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-<div class="card-title">TOTAL REPORTS: <span class="float-right" id="count_total" style="font-size: 32px;"></span></div>
-                          
-</div>                                  
-<div class="card-footer d-flex align-items-center justify-content-between">
-<a class=" text-white stretched-link" id="card_totalval" href="#bottom" value="" ><span class="small text-white">Click here for more info.</span></a>
-                          <div class="go-arrow">  </div>
-                          
-                      </div>
-</div>
+  <!-- Charts -->
+  <div class="row g-4 mb-4">
+    <div class="col-lg-6">
+      <div class="card h-100">
+        <div class="card-header fw-bold bg-dark text-white">Overall Status</div>
+        <div class="card-body">
+          <div id="chartdiv5"></div>
+        </div>
+      </div>
+    </div>
 
-<div class="dashcard card text-white mb-4 bg-danger" style="width: 18rem; height: 9rem; ">
-<div class="card-body">
+    <div class="col-lg-6">
+      <div class="card h-100">
+        <div class="card-header fw-bold bg-dark text-white">Support Logs</div>
+        <div class="card-body">
+          <div id="chartdiv8"></div>
+        </div>
+      </div>
+    </div>
 
-<div class="card-title">OPEN REPORTS: <span class="float-right" id="count_open" style="font-size: 32px;"></span></div>
-</div>
-<div class="card-footer d-flex align-items-center justify-content-between">
+    <div class="col-lg-6">
+      <div class="card h-100">
+        <div class="card-header fw-bold bg-dark text-white">Recently Enrolled Reports</div>
+        <div class="card-body">
+          <div id="chartdiv1"></div>
+        </div>
+      </div>
+    </div>
 
-                       <a class=" text-white stretched-link" id="card_openval" href="#bottom" value="OPEN" ><span class="small text-white">Click here for more info.</span></a>
-                   
+    <div class="col-lg-6">
+      <div class="card h-100">
+        <div class="card-header fw-bold bg-dark text-white">Categories</div>
+        <div class="card-body">
+          <div id="chartdiv2" name="chartdiv2"></div>
+        </div>
+      </div>
+    </div>
 
-                          <div class="go-arrow">  </div>
-                      </div>
-</div>
+    <div class="col-12">
+      <div class="card h-100">
+        <div class="card-header fw-bold bg-dark text-white">Number of Escalated Reports Per Area</div>
+        <div class="card-body">
+          <div id="chart_area"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 
+  <!-- Tickets Table -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header fw-bold bg-dark text-white">Tickets</div>
+        <div class="card-body">
+          <table id="report_data" name="report_data" class="table table-striped table-bordered table-responsive text-center w-100"></table>
+        </div>
+      </div>
+    </div>
+  </div>
 
-<div class="dashcard card text-white mb-4 bg-success" style="width: 18rem; height: 9rem;">
-<div class="card-body">
-
-<div class="card-title">CLOSED REPORTS <span class="float-right" id="count_closed" style="font-size: 32px;"></span></div>
-</div>
-<div class="card-footer d-flex align-items-center justify-content-between">
-                        <a class="text-white stretched-link" id="card_closedval" href="#bottom" value="CLOSED" ><span class="small text-white">Click here for more info.</span></a>
-                          <div class="go-arrow">  </div>
-                      </div>
-
-
-</div>
-
-</div>
-
-
-
-<div class="row " id="ovrall">
-
-<div class="card card2 col-12 col-md-12 col-lg-6">
-<h5 class="card-header text-white">Overall Status</h5>
-<div class="card-body">
-<div id="chartdiv5"></div>
-</div>
-</div>
-
-<div class="card card2 col-12 col-md-12 col-lg-6">
-<h5 class="card-header text-white">Support Logs</h5>
-<div class="card-body">
-<div id="chartdiv8"></div>
-</div>
-</div>
-
-
-
-
-
-<div class="card card2 col-12 col-md-12 col-lg-6">
-<h5 class="card-header text-white">Recently enrolled reports.</h5>
-<div class="card-body">
-<div id="chartdiv1"></div>
-</div>
-</div>
-
-
-<div class="card card2 col-12 col-md-12 col-lg-6">
-<h5 class="card-header text-white">CATEGORIES</h5>
-<div class="card-body">
-<div id="chartdiv2" name="chartdiv2"></div>
-</div>
-</div>
-
-<div class="card card2 col-12 col-lg-12">
-<h5 class="card-header text-white">Number of Escalated Reports Per Area</h5>
-<div class="card-body">
-<div class="col-xl-12 col-lg-12">
-</div>
-
-<div id="chart_area"></div>
-</div>     
-</div>
-
-</div>
-<div class="row">
-
-
-<div class="card card2">
-<h5 class="card-header text-white">TICKETS</h5>
-<div class="card-body">
-<div class="row col-md-12 mb-3">
-  
-<div class="col-md-12">
-<table id="report_data" class="table  table-striped table-responsive table-condensed text-center borderless"></table>
-
-</div>
-<!-- <button type="button" id="add_button" class=" second btn btn-xs btn-success" data-toggle="modal" data-target="#userModal"><i class="fas fa-plus"></i></button> -->
-</div>
-
-<div class="col-md-12">
-<table id="network_tb" class="table  table-striped table-responsive table-condensed text-center borderless"></table>
-
-</div>
-
-
-
-
-</div>
-</div>
-
-
-
-</div>
-
-<div class="col-lg-12">
+  <!-- Hidden Input -->
   <input type="hidden" id="myInput">
 </div>
-</div> <!--end of container-->
+
 
 
 
@@ -210,8 +178,9 @@ include 'sub_graph_modal.php';
 <div class="form-group col-6 col-md-6 col-lg-6">
 <label>STORE</label>
 <input type="hidden" name="multitag" id="multitag">
+<input type="hidden" name="cwhtag" id="cwhtag">
 <input type="hidden" name="str_num" id="str_num" readonly="" value="">
-<select class="form-control form-control-sm" name="store" id="store" required readonly>
+<select class="form-control form-control-sm" name="store" id="store" required>
 <option value="">Select Store...</option>  
      <?php
               $query="select * from tbl_branch";
@@ -251,7 +220,7 @@ style="text-transform:uppercase" onkeyup="this.value = this.value;"></textarea>
 
 <div class="form-group col-3 col-md-3 col-lg-3">
 <label>VIA</label>
-<select class="form-control form-control-sm" name="via" id="via" required readonly>
+<select class="form-control form-control-sm" name="via" id="via" required>
 <option value=""> &larr; VIA &rarr;</option>
 <?php
       $query="select * from via_main";
@@ -268,7 +237,7 @@ style="text-transform:uppercase" onkeyup="this.value = this.value;"></textarea>
 <div class="form-group col-9 col-md-9 col-lg-9">
 <label>ASSIGNED SUPPORT</label>
 <input type="hidden" name="it_num" id="it_num" readonly>
-<select class="form-control form-control-sm" name="itsup" id="itsup" required readonly>
+<select class="form-control form-control-sm" name="itsup" id="itsup">
 <option value="">Assign support...</option>  
      <?php
               $query="select * from it_tech WHERE deptsel = '4'";
@@ -288,11 +257,11 @@ style="text-transform:uppercase" onkeyup="this.value = this.value;"></textarea>
 <div class="form-group col-4 col-md-4 col-lg-4">
 
 <label>CATEGORY</label>
-<input type="hidden" name="cat_num" id="cat_num" readonly>
-<select class="form-control form-control-sm" name="cat" id="cat" required readonly>
+<input type="hidden" name="cat_num" id="cat_num" readonly="">
+<select class="form-control form-control-sm" name="cat" id="cat" required >
 <option value=""> &larr; CATEGORY &rarr;</option>  
      <?php
-              $query="select * from category where deptsel = '4'";
+              $query="select * from category where deptsel = '4' and id = '15' ";
               $run=$conn->prepare($query);
               $run->execute();
               $rs=$run->get_result();
@@ -312,7 +281,7 @@ style="text-transform:uppercase" onkeyup="this.value = this.value;"></textarea>
 <input type="hidden" name="sub_num" id="sub_num" readonly="">
 
 
-<select class="form-control form-control-sm" name="sub" id="sub" readonly>
+<select class="form-control form-control-sm" name="sub" id="sub">
 </select>
 </div>
 <div class="form-group col-4 col-md-4 col-lg-4 hide_isp">
@@ -358,7 +327,7 @@ style="text-transform:uppercase" onkeyup="this.value = this.value;"></textarea>
 <select class = "form-control form-control-sm" name= "status" id="status" required>
 <option value=""> &larr; Status &rarr;</option>
 <?php
-      $query="select * from status WHERE icg_module_tag = 'Y' ORDER BY icg_seq ASC ";
+      $query="select * from status WHERE pd_module_tag = 'Y'";
       $run=$conn->prepare($query);
       $run->execute();
       $rs=$run->get_result();
@@ -375,8 +344,7 @@ style="text-transform:uppercase" onkeyup="this.value = this.value;"></textarea>
   <table id="items_pddata" class="table table-dark table-responsive table-sm " style="width: auto;"></table>
   </div>
 
-
-  <div class="form-group col-4 col-md-4 col-lg-4 divhide" style ="display:none">
+<div class="form-group col-4 col-md-4 col-lg-4 divhide" style ="display:none">
 <label id="alulbl">ALU</label>
 <input type="text" class="form form-control" name="alu" id="alu" placeholder="ALU" readonly>
 </div>
@@ -440,6 +408,7 @@ style="text-transform:uppercase" onkeyup="this.value = this.value;"></textarea>
 <input id="file-input" type="file" name="file" Multiple>
 </p>
 </div>
+
 <hr/>
 
 <div class="row">
@@ -457,6 +426,14 @@ style="text-transform:uppercase" onkeyup="this.value = this.value;"></textarea>
 <div class="card" id="img" name="img">
 
 
+</div>
+
+<div class="form-group col-lg-12">
+<p>
+
+
+
+</p>
 </div>
 
 </div>
@@ -504,12 +481,17 @@ style="text-transform:uppercase" onkeyup="this.value = this.value;"></textarea>
 
 </div>
 </form>
+<!-- end of form -->
+
+
 </div>
 </div>
 </div>
 </div>
 
 
+
+<!-- Modal -->
 <div class="modal fade" id="Pd_Items" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="Pd_ItemsLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content">
@@ -552,7 +534,7 @@ style="text-transform:uppercase" onkeyup="this.value = this.value;"></textarea>
 <select class = "form form-control" name= "newstatus" id="newstatus">
 <option value=""> &larr; Status &rarr;</option>
 <?php
-      $query="SELECT * FROM `status` WHERE icg_module_tag = 'Y' AND `status`.stat_id IN (18,22,23,24,13) ORDER BY icg_seq ASC";
+      $query="SELECT * FROM `status` WHERE pd_module_tag = 'Y' AND `status`.stat_id IN (10,11,12,13,29)";
       $run=$conn->prepare($query);
       $run->execute();
       $rs=$run->get_result();
@@ -619,11 +601,12 @@ style="text-transform:uppercase" onkeyup="this.value = this.value;"></textarea>
   </div>
 </div>
 
-
 <!-- modal addnew button -->
 
 <script type='text/javascript'>
   
+
+
 $( document ).ready(function() {
 
 
@@ -659,8 +642,56 @@ $('#desc').val(aludesc[0].Desc1);
 });
 
 
+$("#newstatus").change(function (e) { 
+  e.preventDefault();
 
-$("#status").change(function (e) { 
+  var aLuxx = $('#Aluxx').val();
+  var dEScx = $('#Descx').val();
+  var nStatus = this.value;
+
+  if (nStatus == "REPLACE SAME MODEL") {
+  $('.divnewalux').css({'display':'block'});
+  $('#naluxlbl').text("ALU");
+  $('#newAluxx').attr('readonly', true);
+  $('#newAluxx').val(aLuxx);
+  $('.divnewdesc').css({'display':'block'});
+  $('#newDescx').val(dEScx);
+  $('.divnewserialx').css({'display':'block'});
+  $('.divnewrtv').css({'display':'none'});
+  $('.divnewcmno').css({'display':'none'});
+  }
+  else if (nStatus == "REPLACE DIFFERENT MODEL") {
+  $('.divnewalux').css({'display':'block'});
+  $('#naluxlbl').text("NEW ALU");
+  $('#newAluxx').attr('readonly', false);
+  $('#newAluxx').val("");
+  $('.divnewdesc').css({'display':'block'});
+  $('#newDescx').val("");
+  $('.divnewserialx').css({'display':'block'});
+  $('.divnewrtv').css({'display':'none'});
+  $('.divnewcmno').css({'display':'none'});
+  }
+  else if (nStatus == "RTV") {
+  $('.divnewalux').css({'display':'none'});
+  $('.divnewdesc').css({'display':'none'});
+  $('.divnewserialx').css({'display':'none'});
+  $('.divnewrtv').css({'display':'block'});
+  $('.divnewcmno').css({'display':'block'});
+  }
+  else if (nStatus == "REPAIRED" || nStatus == "RETURN ITEM") {
+  $('.divnewalux').css({'display':'none'});
+  $('.divnewdesc').css({'display':'none'});
+  $('.divnewserialx').css({'display':'none'});
+  $('.divnewrtv').css({'display':'none'});
+  $('.divnewcmno').css({'display':'none'});
+  }
+});
+
+
+
+
+
+  $("#status").change(function (e) { 
   
   var Status = $("#status").val(); 
   // console.log(iN) 
@@ -773,6 +804,7 @@ $("#rtvnolbl").hide();
 
 
 
+
 //for debug purposes enable here
 console.log($('#date_created').val())
 
@@ -834,45 +866,45 @@ table =  $("#report_data").DataTable({
 // stateSave: true,
 "buttons": [
        
-                //     {
-                //         text: '<i class="fas fa-plus"></i>',
-                //         attr:  {
-                //                     title: 'Add Report',
-                //                     id: 'add_button',
-                //                     class: 'second btn btn-danger',
+                    {
+                        text: '<i class="fas fa-plus"></i>',
+                        attr:  {
+                                    title: 'Add Report',
+                                    id: 'add_button',
+                                    class: 'second btn btn-danger',
 
-                //                     },
-                //                     action: function ( e, dt, node, config ) {
-                //                     $('#remarks_view').empty();
-                //                     $('#userModal').modal({"show": true, "backdrop": 'static'});
-                //                     $('.modal-title').text("ADD REPORT");
-                //                     $('#action').val("Add");
-                //                     $('#operation').val("Add");
-                //                     $('#report_form').trigger('reset');
-                //                     $(':input[type="submit"]').prop('disabled', false); 
-                //                     $('#date_created').attr('readonly', false);
-                //                     $('#date_refNo').attr('readonly', false);
-                //                     $('#date_closed').attr('readonly', false);
-                //                     // $('#admsg').attr('readonly', false);
-                //                     $('#store').prop("disabled", false);
-                //                     $('#via').prop("disabled", false);
-                //                     $('#status').prop("disabled", false);
-                //                     $('#itsup').prop("disabled", false);
-                //                     $('#cat').prop("disabled", false);
-                //                     $('#sub').prop("disabled", false);
-                //                     $('#isp').prop("disabled", false);
-                //                     $('#remarks').attr('readonly', false);
-                //                     admin_hideshowforms();
-                //                     unilayout_netshowmodalform();
-                //                     // $('#msgbtn').hide();
-                //                     // $('#msg_thread').hide();
-                //                     $('#addmsg').removeAttr('required');
+                                    },
+                                    action: function ( e, dt, node, config ) {
+                                    $('#remarks_view').empty();
+                                    $('#userModal').modal({"show": true, "backdrop": 'static'});
+                                    $('.modal-title').text("ADD REPORT");
+                                    $('#action').val("Add");
+                                    $('#operation').val("Add");
+                                    $('#report_form').trigger('reset');
+                                    $(':input[type="submit"]').prop('disabled', false); 
+                                    $('#date_created').attr('readonly', false);
+                                    $('#date_refNo').attr('readonly', false);
+                                    $('#date_closed').attr('readonly', false);
+                                    // $('#admsg').attr('readonly', false);
+                                    $('#store').prop("disabled", false);
+                                    $('#via').prop("disabled", false);
+                                    $('#status').prop("disabled", false);
+                                    $('#itsup').prop("disabled", false);
+                                    $('#cat').prop("disabled", false);
+                                    $('#sub').prop("disabled", false);
+                                    $('#isp').prop("disabled", false);
+                                    $('#remarks').attr('readonly', false);
+                                    admin_hideshowforms();
+                                    unilayout_netshowmodalform();
+                                    // $('#msgbtn').hide();
+                                    // $('#msg_thread').hide();
+                                    $('#addmsg').removeAttr('required');
 
 
 
-                //      }
+                     }
 
-                // },  
+                },  
                 {       
                         extend:'excelHtml5',
                         text:'<i class="fas fa-file-excel"></i>',
@@ -967,9 +999,6 @@ table =  $("#report_data").DataTable({
           else if(data == '0 Days Unresolved'){
             data = ''
           }
-          // else if(data == '1'){
-          //   data = '<i class="fas fa-envelope fa-lg bg-warning"></i>'
-          // }
   }
   return data;
 }
@@ -1016,7 +1045,7 @@ $(row).find('td:eq(13)').css('color', 'red');
 $(row).find('td:eq(14)').css('color', 'red');
 $(row).find('td:eq(15)').css('color', 'red');
 $(row).find('td:eq(16)').css('color', 'red');
-$(row).find('td:eq(17)').css('color', 'red');FF
+$(row).find('td:eq(17)').css('color', 'red');
 $(row).find('td:eq(18)').css('color', 'red');
 }
 if(data['status'] == 'OPEN' && data['msg_cnt'] == '0'){
@@ -1250,153 +1279,6 @@ $(row).find('td:eq(16)').css('color', '#435585');
 $(row).find('td:eq(17)').css('color', '#435585');
 $(row).find('td:eq(18)').css('color', '#435585');
 }
-else if (data['status'] == 'APRROVED'){
-$(row).find('td:eq(0)').css('color', '#005B41');
-$(row).find('td:eq(1)').css('color', 'red');
-$(row).find('td:eq(2)').css('color', '#005B41');
-$(row).find('td:eq(3)').css('color', '#005B41');
-$(row).find('td:eq(4)').css('color', '#005B41');
-$(row).find('td:eq(5)').css('color', '#005B41');
-$(row).find('td:eq(6)').css('color', '#005B41');
-$(row).find('td:eq(7)').css('color', '#005B41');
-$(row).find('td:eq(8)').css('color', '#005B41');
-$(row).find('td:eq(9)').css('color', '#005B41');
-$(row).find('td:eq(10)').css('color', '#005B41');
-$(row).find('td:eq(11)').css('color', '#005B41');
-$(row).find('td:eq(12)').css('color', '#005B41');
-$(row).find('td:eq(13)').css('color', '#005B41');
-$(row).find('td:eq(14)').css('color', '#005B41');
-$(row).find('td:eq(15)').css('color', '#005B41');
-$(row).find('td:eq(16)').css('color', '#005B41');
-$(row).find('td:eq(17)').css('color', '#005B41');
-$(row).find('td:eq(18)').css('color', '#005B41');
-}
-else if (data['status'] == 'EVLAUATE'){
-$(row).find('td:eq(0)').css('color', '#183D3D');
-$(row).find('td:eq(1)').css('color', 'red');
-$(row).find('td:eq(2)').css('color', '#183D3D');
-$(row).find('td:eq(3)').css('color', '#183D3D');
-$(row).find('td:eq(4)').css('color', '#183D3D');
-$(row).find('td:eq(5)').css('color', '#183D3D');
-$(row).find('td:eq(6)').css('color', '#183D3D');
-$(row).find('td:eq(7)').css('color', '#183D3D');
-$(row).find('td:eq(8)').css('color', '#183D3D');
-$(row).find('td:eq(9)').css('color', '#183D3D');
-$(row).find('td:eq(10)').css('color', '#183D3D');
-$(row).find('td:eq(11)').css('color', '#183D3D');
-$(row).find('td:eq(12)').css('color', '#183D3D');
-$(row).find('td:eq(13)').css('color', '#183D3D');
-$(row).find('td:eq(14)').css('color', '#183D3D');
-$(row).find('td:eq(15)').css('color', '#183D3D');
-$(row).find('td:eq(16)').css('color', '#183D3D');
-$(row).find('td:eq(17)').css('color', '#183D3D');
-$(row).find('td:eq(18)').css('color', '#183D3D');
-}
-else if (data['status'] == 'REPAIRED'){
-$(row).find('td:eq(0)').css('color', '#8CABFF');
-$(row).find('td:eq(1)').css('color', 'red');
-$(row).find('td:eq(2)').css('color', '#8CABFF');
-$(row).find('td:eq(3)').css('color', '#8CABFF');
-$(row).find('td:eq(4)').css('color', '#8CABFF');
-$(row).find('td:eq(5)').css('color', '#8CABFF');
-$(row).find('td:eq(6)').css('color', '#8CABFF');
-$(row).find('td:eq(7)').css('color', '#8CABFF');
-$(row).find('td:eq(8)').css('color', '#8CABFF');
-$(row).find('td:eq(9)').css('color', '#8CABFF');
-$(row).find('td:eq(10)').css('color', '#8CABFF');
-$(row).find('td:eq(11)').css('color', '#8CABFF');
-$(row).find('td:eq(12)').css('color', '#8CABFF');
-$(row).find('td:eq(13)').css('color', '#8CABFF');
-$(row).find('td:eq(14)').css('color', '#8CABFF');
-$(row).find('td:eq(15)').css('color', '#8CABFF');
-$(row).find('td:eq(16)').css('color', '#8CABFF');
-$(row).find('td:eq(17)').css('color', '#8CABFF');
-$(row).find('td:eq(18)').css('color', '#8CABFF');
-}
-else if (data['status'] == 'REQUEST FOR I.R.'){
-$(row).find('td:eq(0)').css('color', '#750E21');
-$(row).find('td:eq(1)').css('color', 'red');
-$(row).find('td:eq(2)').css('color', '#750E21');
-$(row).find('td:eq(3)').css('color', '#750E21');
-$(row).find('td:eq(4)').css('color', '#750E21');
-$(row).find('td:eq(5)').css('color', '#750E21');
-$(row).find('td:eq(6)').css('color', '#750E21');
-$(row).find('td:eq(7)').css('color', '#750E21');
-$(row).find('td:eq(8)').css('color', '#750E21');
-$(row).find('td:eq(9)').css('color', '#750E21');
-$(row).find('td:eq(10)').css('color', '#750E21');
-$(row).find('td:eq(11)').css('color', '#750E21');
-$(row).find('td:eq(12)').css('color', '#750E21');
-$(row).find('td:eq(13)').css('color', '#750E21');
-$(row).find('td:eq(14)').css('color', '#750E21');
-$(row).find('td:eq(15)').css('color', '#750E21');
-$(row).find('td:eq(16)').css('color', '#750E21');
-$(row).find('td:eq(17)').css('color', '#750E21');
-$(row).find('td:eq(18)').css('color', '#750E21');
-}
-else if (data['status'] == 'SCHEDULE FOR DISPOSAL'){
-$(row).find('td:eq(0)').css('color', '#A78295');
-$(row).find('td:eq(1)').css('color', 'red');
-$(row).find('td:eq(2)').css('color', '#A78295');
-$(row).find('td:eq(3)').css('color', '#A78295');
-$(row).find('td:eq(4)').css('color', '#A78295');
-$(row).find('td:eq(5)').css('color', '#A78295');
-$(row).find('td:eq(6)').css('color', '#A78295');
-$(row).find('td:eq(7)').css('color', '#A78295');
-$(row).find('td:eq(8)').css('color', '#A78295');
-$(row).find('td:eq(9)').css('color', '#A78295');
-$(row).find('td:eq(10)').css('color', '#A78295');
-$(row).find('td:eq(11)').css('color', '#A78295');
-$(row).find('td:eq(12)').css('color', '#A78295');
-$(row).find('td:eq(13)').css('color', '#A78295');
-$(row).find('td:eq(14)').css('color', '#A78295');
-$(row).find('td:eq(15)').css('color', '#A78295');
-$(row).find('td:eq(16)').css('color', '#A78295');
-$(row).find('td:eq(17)').css('color', '#A78295');
-$(row).find('td:eq(18)').css('color', '#A78295');
-}
-else if (data['status'] == 'SUBJECT FOR ADJUSTMENT'){
-$(row).find('td:eq(0)').css('color', '#3F2E3E');
-$(row).find('td:eq(1)').css('color', 'red');
-$(row).find('td:eq(2)').css('color', '#3F2E3E');
-$(row).find('td:eq(3)').css('color', '#3F2E3E');
-$(row).find('td:eq(4)').css('color', '#3F2E3E');
-$(row).find('td:eq(5)').css('color', '#3F2E3E');
-$(row).find('td:eq(6)').css('color', '#3F2E3E');
-$(row).find('td:eq(7)').css('color', '#3F2E3E');
-$(row).find('td:eq(8)').css('color', '#3F2E3E');
-$(row).find('td:eq(9)').css('color', '#3F2E3E');
-$(row).find('td:eq(10)').css('color', '#3F2E3E');
-$(row).find('td:eq(11)').css('color', '#3F2E3E');
-$(row).find('td:eq(12)').css('color', '#3F2E3E');
-$(row).find('td:eq(13)').css('color', '#3F2E3E');
-$(row).find('td:eq(14)').css('color', '#3F2E3E');
-$(row).find('td:eq(15)').css('color', '#3F2E3E');
-$(row).find('td:eq(16)').css('color', '#3F2E3E');
-$(row).find('td:eq(17)').css('color', '#3F2E3E');
-$(row).find('td:eq(18)').css('color', '#3F2E3E');
-}
-else if (data['status'] == 'APPROVED SUMMARY ADJUSTMENT'){
-$(row).find('td:eq(0)').css('color', '#0E8388');
-$(row).find('td:eq(1)').css('color', 'red');
-$(row).find('td:eq(2)').css('color', '#0E8388');
-$(row).find('td:eq(3)').css('color', '#0E8388');
-$(row).find('td:eq(4)').css('color', '#0E8388');
-$(row).find('td:eq(5)').css('color', '#0E8388');
-$(row).find('td:eq(6)').css('color', '#0E8388');
-$(row).find('td:eq(7)').css('color', '#0E8388');
-$(row).find('td:eq(8)').css('color', '#0E8388');
-$(row).find('td:eq(9)').css('color', '#0E8388');
-$(row).find('td:eq(10)').css('color', '#0E8388');
-$(row).find('td:eq(11)').css('color', '#0E8388');
-$(row).find('td:eq(12)').css('color', '#0E8388');
-$(row).find('td:eq(13)').css('color', '#0E8388');
-$(row).find('td:eq(14)').css('color', '#0E8388');
-$(row).find('td:eq(15)').css('color', '#0E8388');
-$(row).find('td:eq(16)').css('color', '#0E8388');
-$(row).find('td:eq(17)').css('color', '#0E8388');
-$(row).find('td:eq(18)').css('color', '#0E8388');
-}
 else if (data['status'] == 'SUBJECT FOR CLOSING'){
 $(row).find('td:eq(0)').css('color', '#890188');
 $(row).find('td:eq(1)').css('color', 'red');
@@ -1444,10 +1326,13 @@ $(row).find('td:eq(18)').css('color', 'green');
 
 });
 
+
+
 $('#report_data tbody').on( 'click', 'button', function () {
 var data = table.row( $(this).parents('tr') ).data();
+// console.log(data['sub_category']);
 $('#subjct').attr('readonly', true);
-$('#itsup, #store, #sub, #cat, #via, #date_created').val(function() {
+$('#itsup, #store, #sub, #cat, #date_created').val(function() {
   return data[$(this).attr('id')];
 }).attr('readonly', true).on('mousedown', function(event) {
   event.preventDefault();
@@ -1455,7 +1340,7 @@ $('#itsup, #store, #sub, #cat, #via, #date_created').val(function() {
 var tid=$(this).parent().siblings('td:eq(1)').html(); 
 $('#ticket_no').val(data['ticket_no']);
 $('#str_num').val(data['store']);
-$('#store').val(data['store']);
+$('#store').val(data['store']).prop('readonly', true);
 $('#date_created').val(data['date_created']);
 $('#subjct').val(data['subject']);
 $('#concern').val(data['concern']);
@@ -1465,6 +1350,7 @@ $('#it_num').val(data['itsup']);
 $('#itsup').val(data['itsup']);
 $('#cat_num').val(data['cat_id']);
 $('#cat').val(data['cat_id']);
+// $('#cat').val(null).trigger('change');
 $('#sub_num').val(data['sub_id']);
 $('#sub').val(data['sub_category']);
 $('#isp_num').val(data['isp_id']);
@@ -1477,16 +1363,19 @@ $('#serialno').val(data['serial_no']);
 $('#newalu').val(data['n_alu']);
 $('#newserialno').val(data['n_serial_no']);
 $('#rtv').val(data['rtv']);
+$('#file-input').val("");
 admin_hideshowforms();
 $('#date_closed').val(data['date_closed']);
 // $('#remarks').val(data['remarks']);
 $('#multitag').val(data['multitag']);
+$('#cwhtag').val(data['cwhtag']);
 unilayout_netshowmodalform();
 
+var Cwhtag = $('#cwhtag').val();
 var Multitag = $('#multitag').val();
 var TiketNo = $('#ticket_no').val();
 
-
+// debugger;
 if (Multitag == 'Y') {
   GetPdItems(TiketNo);
   $('.pdtbl').show();
@@ -1504,11 +1393,7 @@ else if (Multitag != 'Y') {
   $('.divserial').css({'display':'block'});
   $('.divrtv').css({'display':'none'});
   $('.divnserial').css({'display':'none'});
-
-
 }
-
-
 else if($('#status').val() == 'CLOSED') {
 $(':input[type="submit"]').prop('disabled', true); 
 $('#date_created').attr('readonly', true);
@@ -1525,7 +1410,9 @@ $('#isp').prop("disabled", true);
 $('#remarks').attr('readonly', true);
 
 
-} 
+}
+
+
 else{
 
 $(':input[type="submit"]').prop('disabled', false); 
@@ -1536,12 +1423,11 @@ $('#date_closed').attr('readonly', false);
 $('#store').prop("disabled", false);
 $('#via').prop("disabled", false);
 $('#status').prop("disabled", false);
-$('#itsup').prop("disabled", false);
+// $('#itsup').prop("disabled", false);
 $('#cat').prop("disabled", false);
 $('#sub').prop("disabled", false);
 $('#isp').prop("disabled", false);
 $('#remarks').attr('readonly', false);
-
 
 }   
 
@@ -1558,7 +1444,6 @@ if (itfrstsup != itchange ) {
 });
 
 
-
 var sst = document.querySelector("#sub");  
 var option = document.createElement("option");
 option.value=0;
@@ -1572,7 +1457,8 @@ getinfo(tid, 'remarks', user_id);
 
 gtsub_id();
 
-$('.modal-title').text("Ticker Number: "+tid+"");
+// $('.modal-title').text("Ticket Number: "+tid+"");
+$('.modal-title').text("Ticket Number: "+tid+(Cwhtag == 'Y' ? " | L.D. WAREHOUSE" : " | DIRECT SUPPLIER"));
 $('#action').val("Save and Reply");
 $('#operation').val("Save and Reply"); 
 $('#userModal').modal({"show": true, "backdrop": 'static'});
@@ -1581,10 +1467,6 @@ $('#userModal').modal({"show": true, "backdrop": 'static'});
 
 } );
 
-// table
-// .search( '' )
-// .columns().search( '' )
-// .draw();
 
 $('#card_totalval').on('click', function () {
 var val =  $(this).attr("value");
@@ -1595,31 +1477,15 @@ table
 .draw();
 } );
 
+
 $('#card_openval').on('click', function () {
-// var val =  $(this).attr("value");
-var value = "SCHEDULE FOR PULL OUT|READY TO PICK UP|RETURN TO STORE|APRROVED|EVLAUATE|REPAIRED|SCHEDULE FOR DISPOSAL|SUBJECT FOR ADJUSTMENT|APPROVED SUMMARY ADJUSTMENT|OKAY FOR PULL OUT|CONFIRM PICK UP|ITEM RECEIVED|LIST FOR DISPOSAL|SUBJECT FOR CLOSING";
-// alert(value);
+var val =  $(this).attr("value");
+// alert(val);
 table
 .columns( 7 )
-.search(value, true, false)
+.search(val)
 .draw();
-$('#network_tb').slideToggle();
-    $('html, body').animate({
-        scrollTop: 1600
-    }, 1000);
-
-
-
 } );
-
-// $('#card_openval').on('click', function () {
-// var val =  $(this).attr("value");
-// // alert(val);
-// table
-// .columns( 7 )
-// .search(val)
-// .draw();
-// } );
 
 $('#card_forpickup').on('click', function () {
 var val =  $(this).attr("value");
@@ -1658,6 +1524,9 @@ table
 } );
 
 } // end of data table
+
+
+
 
 function GetPdItems(TiketNo){
   // console.log(TiketNo);
@@ -1855,6 +1724,7 @@ order: [[0, 'desc']],
 
 
 
+
 $('#store_graph_modal').modal('hide'); 
 
 crd_btm();
@@ -1912,52 +1782,69 @@ _areagraph(yr);
 
 $('#cat').on('change', function() {
 var category_id = this.value;
+var sub_num = $('#sub_num').val();
 $.ajax({
 url: "get_subcat.php",
 type: "POST",
 data: {
-category_id: category_id
+category_id:category_id, sub_num:sub_num
 },
 cache: false,
 success: function(dataResult){
-$("#sub").html(dataResult);
+// $("#sub").html(dataResult);
 }
 }); 
 });   
 
 
-$('#add_button').click(function(){
-$('#report_form').trigger('reset');
-$('.modal-title').text("ADD REPORT");
-$('#subjct').attr('readonly', false);
-$('#action').val("Add");
-$('#operation').val("Add");
-$('#date_created').attr('readonly', false);
-$('#date_refNo').attr('readonly', false);
-$('#date_closed').attr('readonly', false);
-$('#store').prop("disabled", false);
-$('#via').prop("disabled", false);
-$('#status').prop("disabled", false);
-$('#itsup').prop("disabled", false);
-$('#cat').prop("disabled", false);
-$('#sub').prop("disabled", false);
-$('#isp').prop("disabled", false);
-$(':input[type="submit"]').prop('disabled', false); 
-$('#remarks').attr('readonly', false);
-$('#msgbtn').hide();
-$("#userModal").on('hidden.bs.modal', function(){
+// $('#add_button').click(function(){
+// $('#report_form').trigger('reset');
+// $('.modal-title').text("ADD REPORT");
+// $('#subjct').attr('readonly', false);
+// $('#action').val("Add");
+// $('#operation').val("Add");
+// $('#date_created').attr('readonly', false);
+// $('#date_refNo').attr('readonly', false);
+// $('#date_closed').attr('readonly', false);
+// $('#store').prop("disabled", false);
+// $('#via').prop("disabled", false);
+// $('#status').prop("disabled", false);
+// $('#itsup').prop("disabled", false);
+// $('#cat').prop("disabled", false);
+// $('#sub').prop("disabled", false);
+// $('#isp').prop("disabled", false);
+// $(':input[type="submit"]').prop('disabled', false); 
+// $('#remarks').attr('readonly', false);
+// $('#msgbtn').hide();
+// $("#userModal").on('hidden.bs.modal', function(){
 
-});
-$('#userModal').modal({backdrop: 'static', keyboard: false}) 
-$("#userModal").on('hidden.bs.modal', function(){
-// location.reload();
-return false;
-});
+// });
+// $('#userModal').modal({backdrop: 'static', keyboard: false}) 
+// $("#userModal").on('hidden.bs.modal', function(){
+// // location.reload();
+// return false;
+// });
 
-});
+// });
 
 
-  $(document).on("submit", "#report_form", function (e) {
+
+$(document).on('click', '#pdbtn', function(){
+
+// alert("working");
+$('#userModal').modal({"show": true, "backdrop": 'static'});
+
+
+})
+
+
+
+$(document).on('click', '#action', function(){
+
+// alert("action");
+
+
+$(document).on("submit", "#report_form", function (e) {
     e.preventDefault();
     var TicketNumber = $("#ticket_no").val();
     var Store = $("#store").val();
@@ -2034,6 +1921,10 @@ return false;
      clearconsole();
   });
 
+})
+
+
+
 $(document).on('click', '#dtbsecond', function(){
 
 // alert("working");
@@ -2042,6 +1933,7 @@ $('msg_thread').show();
 $('.dv_msg').show();
 $('#remarks_view').show();
 $('#addmsg').val("");
+
 
 var val = jQuery('#ticket_no').val();
 
@@ -2055,8 +1947,7 @@ $.ajax({
     }
   });
 
-
-});
+})
 
 
 $(document).on('click', '#msgbtn', function(){
@@ -2084,8 +1975,9 @@ $('#msg_thread').hide('slow');
 });
 
 $('#btnClose').click(function(){
+  getdata();
 // alert("working");
-$('report_form')[0].reset();
+// $('#report_form')[0].reset();
 $('.dv_msg').hide();
 $('#remarks_view').hide();
 $('#tmpsubid').remove();
@@ -2138,7 +2030,7 @@ $('#action').click(function () {
 
       for (var i = 0; i < $("#file-input").get(0).files.length; ++i) {
                 var file1=$("#file-input").get(0).files[i].name;
-        
+
                 if(file1){                        
                     var file_size=$("#file-input").get(0).files[i].size;
                     if(file_size<2097152){
@@ -2191,7 +2083,13 @@ $('#btnupdate').click(function (e) {
   
 });
 
+
+
+
 });//document ready close
+
+
+
 
 </script>
 

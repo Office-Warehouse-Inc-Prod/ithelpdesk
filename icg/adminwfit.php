@@ -11,18 +11,45 @@ $con1=new dbconfig();
 
 
 <head>
+  <!-- jQuery (REQUIRED: must be loaded before DataTables) -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+
+<!-- Bootstrap DateTimePicker (Optional for your datetime fields) -->
 <link rel="stylesheet" href="../css/bootstrap-datetimepicker.min.css"/>
 <script src="../js/bootstrap-datetimepicker.min.js"></script>
-<link rel="stylesheet" href="../css/jquery.dataTables.min.css" />
+
+<!-- DataTables core CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+
+<!-- DataTables Buttons CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
+
+<!-- Your custom styles -->
 <link rel="stylesheet" href="styles.css" />
-<script src="../js/jquery.dataTables.min.js"></script>
+
+<!-- DataTables core JS -->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+<!-- DataTables Extensions -->
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.colVis.min.js"></script>
+
+<!-- Support files for Excel/PDF export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.68/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.68/vfs_fonts.js"></script>
+
+<!-- Optional DataTables features -->
 <script src="../js/dataTables.select.min.js"></script>
 <script src="../js/dataTables.responsive.min.js"></script>
 <script src="../js/fnReloadAjax.js"></script>
- </head>
-<div class="container mt-3">
 
-  <table class="table table-dark table-responsive table-condensed" id="new_rep_table"></table>
+ </head>
+<div class="col-md-12 mt-3">
+
+  <table class="table table table-responsive table-condensed" id="new_rep_table"></table>
 
 
 </div>
@@ -39,7 +66,7 @@ $con1=new dbconfig();
    <div class="modal-content">
     <div class="modal-header">
      <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-     <h4 class="modal-title" id="tick_title" value=""></h4>
+     <h4 class="modal-title" id="tick_title" value=""></h4><button class="close" id="btntop" data-dismiss="modal"><i class="fa fa-times"></i></button>
     </div>
 
 
@@ -52,6 +79,7 @@ $con1=new dbconfig();
 
 
         <input type="hidden" name="store" id="store" readonly="" value="">
+        <input type="hidden" name="multitag" id="multitag">
         <input type="text" class="form-control form-control-sm" name="str_desc" id="str_desc" readonly="" value="">
 
     </div>
@@ -92,25 +120,40 @@ $con1=new dbconfig();
     <div class="form-group col-md-8">
           <input type="hidden" name="itsup" id="itsup" value="22">
           <input type="hidden" name="it_num" id="it_num" value="22">
-
-          <!-- maam rose default value -->
-
    </div>
 
+  <div class="col-md-12 ">
+  <table id="items_data" class="table table-responsive table-sm " style="width: auto;"></table>
+  </div>
 
-   <div class="form-group col-md-6">
+   <div class="form-group col-md-6 shide">
     
-<label>ALU:</label>
+<label>ALU</label>
      
      <input type="text" class="form form-control"  name="ALU" id="ALU" readonly="">
 
 </div>
-<div class="form-group col-md-6">
+<div class="form-group col-md-6 shide">
     
-    <label>Description:</label>
+    <label>DESCRIPTION</label>
          
          <input type="text" class="form form-control"  name="Desc1" id="Desc1" readonly="">
     
+    </div>
+    <div class="form-group col-md-6 shide">
+    
+    <label>SERIAL NO</label>
+         
+         <input type="text" class="form form-control"  name="serial_no" id="serial_no" readonly="">
+    
+    </div>
+
+    <div class="form-group col-md-6 phide">
+
+    <label>SUB CATEGORY</label>
+           <input type="text" name="sub_num" id="sub_num" >
+
+    <input type="text" class="form form-control" name="sub" id="sub" readonly>
     </div>
 
     <div class="form-group col-md-6">
@@ -125,13 +168,7 @@ $con1=new dbconfig();
 
 
    </div>
-    <div class="form-group col-md-6">
 
-    <label>SUB CATEGORY</label>
-           <input type="hidden" name="sub_num" id="sub_num" >
-
-    <input type="text" class="form form-control" name="sub" id="sub" readonly>
-    </div>
     <div class="form-group col-md-4 hide_isp">
 
          <label for="isp" id="lbl_isp">Service Provider</label>
@@ -186,6 +223,13 @@ $con1=new dbconfig();
                     ?>   
     </select>
   </div>
+
+  <div class="form-group col-md-4">
+    <!-- <label name="ctrl" id="ctrl" >CONTROL #</label> -->
+    <input  type="hidden" name="cwhtag" id="cwhtag">
+  </div>
+
+
     <div class="form-group col-md-4">
       <label id="dateclabel" class="hidden">DATE CLOSED</label>
        <div class="input-group date" id="datetimepicker2" data-target-input="nearest">
@@ -263,9 +307,48 @@ $con1=new dbconfig();
   
 
 <script type="text/javascript">
+
   $(document).ready(function(){
+  
+
+idleMax = 5;// Logout after 2 minutes of IDLE
+idleTime = 0;
+
+var idleInterval = setInterval(timerIncrement, 60000); 
+    $(this).mousemove(function (e) {idleTime = 0;});
+    $(this).keypress(function (e) {idleTime = 0;});
+
+function timerIncrement() {
+    idleTime = idleTime + 1;
+    if (idleTime > idleMax) { 
+        window.location="adminpanel.php";
+        // alert("GOOD");
+    }
+  }
 
 
+
+$('#ctrl').hide();
+$('#ctrlno').hide();
+$('.phide').hide();
+
+$("#status").change(function (e) { 
+  
+  var sts = $("#status").val();  
+  
+    
+if (sts == "WAREHOUSE PULL OUT") {
+  // $('#ctrl').hide();
+  $('#cwhtag').val("Y");
+
+}
+else{
+  // $('#ctrl').hide();
+  $('#cwhtag').val("");
+}
+
+
+});
 
 
 
@@ -280,73 +363,97 @@ var user_id = <?= $_SESSION['user_id']; ?>
 
 function getdata(){
   $.post('fetchdata/fetch_data.php',{mode:'newrpt_tbl'},function(data){
-    // console.log(data);
+    console.log(data);
     admin_datatable(data);
   },'json');
 }
 getdata();
 
 function admin_datatable(t){
+
+const today = new Date().toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric'
+});
+const reportTitle = 'New Tickets as of ' + today;
+
+
+
 const dataset=t.newrptdata;
-     reptable =  $("#new_rep_table").DataTable({
-           "dom":
-          '<"pull-left"lf><"pull-right">tip',
-           // ajax: t,
-          stateSave: true,
-          "bDestroy": true,
-          "responsive": true, "lengthChange": false, "autoWidth": false,
-          language: {
-          emptyTable: "No unassinged reports",
-          search: "_INPUT_",
-          searchPlaceholder: "Search..."
-          },
-          pageLength:5,
-          data: dataset,
-           "order": [[ 0, "Desc" ]],
-
-          columns: [
-          {title:"TicketNo", data:"ticket_no","defaultContent": ""},
-          {title:"Department/Store", data:"str_code","defaultContent": ""},
-          {title:"Created By", data:"full_name","defaultContent": ""},
-          {title:"Date Created", data:"date_created","defaultContent": ""},
-          {title:"SUBJECT", data:"concern","defaultContent": ""},
-          {title:"Types of Service", data:"service_desc","defaultContent": ""},
-          {title:"CONCERN", data:"subject","defaultContent": ""},
-          {title:"Update", data:null,"defaultContent": "<Button class='btn btn-danger' name='update'><i class='fas fa-edit'></i></Button>"}
-
-
-          ],
-              rowCallback: function(row, data, index){
-    if(data['msg_cnt'] == '1'){
-      $(row).find('td:eq(0)').css("font-weight", "bold");
-      $(row).find('td:eq(1)').css("font-weight", "bold");
-      $(row).find('td:eq(2)').css("font-weight", "bold");
-      $(row).find('td:eq(3)').css("font-weight", "bold");
-      $(row).find('td:eq(4)').css("font-weight", "bold");
-      $(row).find('td:eq(5)').css("font-weight", "bold");
-      $(row).find('td:eq(6)').css("font-weight", "bold");
-      $(row).find('td:eq(7)').css("font-weight", "bold");
-      $(row).find('td:eq(8)').css("font-weight", "bold");
-      $(row).find('td:eq(9)').css("font-weight", "bold");
-      $(row).find('td:eq(10)').css("font-weight", "bold");
-      $(row).find('td:eq(11)').css("font-weight", "bold");
- 
+    reptable = $("#new_rep_table").DataTable({
+  dom: '<"d-flex justify-content-between align-items-center mb-2"lfB>tip',
+  buttons: [
+    {
+      extend: 'excelHtml5',
+      text: '<i class="fas fa-file-excel"></i> Excel',
+      className: 'btn btn-success btn-sm',
+            title: reportTitle
+    },
+    {
+      extend: 'pdfHtml5',
+      text: '<i class="fas fa-file-pdf"></i> PDF',
+      className: 'btn btn-danger btn-sm',
+      orientation: 'landscape',
+      pageSize: 'A4',
+      title: reportTitle
+    },
+    {
+      extend: 'print',
+      text: '<i class="fas fa-print"></i> Print',
+      className: 'btn btn-secondary btn-sm',
+      title: reportTitle,
+    },
+    {
+      extend: 'csvHtml5',
+      text: '<i class="fas fa-file-csv"></i> CSV',
+      className: 'btn btn-info btn-sm',
+      title: reportTitle
+    },
+    {
+      extend: 'copyHtml5',
+      text: '<i class="fas fa-copy"></i> Copy',
+      className: 'btn btn-warning btn-sm'
     }
+  ],
+  stateSave: true,
+  bDestroy: true,
+  responsive: true,
+  lengthChange: false,
+  autoWidth: false,
+  pageLength: 10,
+  language: {
+    emptyTable: "No unassigned reports",
+    search: "_INPUT_",
+    searchPlaceholder: "Search..."
+  },
+  data: dataset,
+  order: [[0, "desc"]],
+  columns: [
+    { title: "TicketNo", data: "ticket_no", defaultContent: "" },
+    { title: "Department/Store", data: "str_code", defaultContent: "" },
+    { title: "Created By", data: "full_name", defaultContent: "" },
+    { title: "Date Created", data: "date_created", defaultContent: "" },
+    { title: "SUBJECT", data: "concern", defaultContent: "" },
+    { title: "Types of Service", data: "service_desc", defaultContent: "" },
+    { title: "CONCERN", data: "subject", defaultContent: "" },
+    // {
+    //   title: "Update",
+    //   data: null,
+    //   defaultContent: "<button class='btn btn-danger btn-sm' name='update'><i class='fas fa-edit'></i></button>"
+    // }
+  ]
+});
 
 
-  }
 
 
-
-   }); //  end of datatable
-
-   
-
-   setInterval( function () {
-    getdata();
-   // admin_datatable();
-}, 60000);
+//    setInterval( function () {
+//     getdata();
+//    // admin_datatable();
+// }, 60000);
  $('#new_rep_table tbody').on( 'click', 'button', function () {
+  // e.preventDefault();
         var data = reptable.row( $(this).parents('tr') ).data();
 
                 $('#ticket_no').val(data['ticket_no']);
@@ -360,20 +467,24 @@ const dataset=t.newrptdata;
                 // $('#sub_num').val(data['sub_id']);
                 $('#ALU').val(data['ALU']);
                 $('#Desc1').val(data['Desc1']);
+                $('#serial_no').val(data['serial_no']);
+                $('#multitag').val(data['multitag']);
 
-
+                // alert("GOOD");
+  
                 var desc1 = $("#Desc1").val();
-if(desc1.indexOf("PRINTER") != -1)
-{
-  $("#sub_num").val('126');
-$("#sub").val('PRINTER');
-
+                var Multitag = $('#multitag').val();
+                var TiketNo = $('#ticket_no').val();
+                // console.log(TiketNo);
+// debugger;
+if (Multitag == 'Y') {
+    GetItems(TiketNo);
+  $("#items_data").show();
+  $(".shide").hide();
 }
-else if(desc1.indexOf("BIOMETRIC") != -1)
-{
-  $("#sub_num").val('160');
-$("#sub").val('BIOMETRIC');
-
+else if (Multitag != 'Y'){
+  $(".shide").show();
+  $("#items_data").hide();
 }
 
 
@@ -389,9 +500,25 @@ $('#tick_title').text("Ticker Number: "+tid+"");
 getinfo(tid, 'remarks', user_id);
 // console.log(tid)
 
+
+if(desc1.indexOf("PRINTER") != -1)
+{
+  $("#sub_num").val('126');
+$("#sub").val('PRINTER');
+
+}
+else if(desc1.indexOf("INKS, TONER, RIBBON, FILM") !== -1)
+{
+  $("#sub_num").val('166');
+$("#sub").val('INKS');
+
+}
+
+
+
         });
 
-  $('#userModal').modal({"show": true, "backdrop": 'static'});
+  // $('#userModal').modal({"show": true, "backdrop": 'static'});
 
   }; //end of function 
 
@@ -435,7 +562,71 @@ $(document).on('submit', '#newrpt_form', function(event)
 
 
 
+function GetItems(TiketNo){
+  $.post('fetchdata/fetch_data.php',{mode:'tblitems', TiketNo:TiketNo},function(data){
+    // console.log(data);
+    items_datatable(data);
+  },'json');
+}
+
+var TblItem
+function items_datatable(t){
+const dataset=t.itemspddata;
+
+// console.log(dataset);
+tblitem = $("#items_data").DataTable({
+
+"info": false,
+"pagingType": "full_numbers",
+"bDestroy": true,
+"responsive": true, "lengthChange": false, "autoWidth": false,
+// "language": {
+// "search": "_INPUT_",
+// "searchPlaceholder": "Search..."
+// },
+"searching": false,
+order: [[0, 'desc']],
+"pageLength":10,
+"data": dataset,
+
+"columns": [
+{title:"ID", data:"id","defaultContent": "","visible": false},
+{title:"ALU", data:"alu","defaultContent": "",},
+{title:"DESCRIPTION", data:"desc","defaultContent": "",},
+{title:"SERIAL:", data:"serial","defaultContent": "",},
+{title:"SUPPLIER", data:"supplier","defaultContent": "",},
+// {
+//         title: "ACTION",
+//         data: null,
+//         defaultContent: "<button class='delete-btn'>Delete</button>"
+//       }
+],
+
+
+});
+
+  // assume you have an input text field with id "search-input"
+  tblitem.rows().every(function (rowIdx, tableLoop) {
+    const rowData = tblitem.row(rowIdx).data();
+    const descx = rowData.desc;
+
+    if (descx.indexOf("PRINTER") != -1) {
+      $("#sub_num").val('126');
+      $("#sub").val('PRINTER');
+    } else if (descx.indexOf("INKS, TONER, RIBBON, FILM") !== -1) {
+      $("#sub_num").val('166');
+      $("#sub").val('INKS');
+    }
+  });
+
+} 
+
+
+
+
 }); // end of docu.ready
+
+
 
 $(document).on('click', '#msgbtn', function(){
 
@@ -456,7 +647,13 @@ $('#msgbtn').val("show");
 $('#msg_thread').hide('slow');
 }
 
-
-
 });
+
+// $('#btntop').click(function (e) { 
+//   e.preventDefault();
+//   // alert("GOOD");
+//   $('#newrpt_Modal').modal('hide', { reset: true });
+  
+// });
+
 </script>

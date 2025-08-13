@@ -29,7 +29,7 @@ ON
     tbl_notif.ticket_no = reports.ticket_no
 WHERE
 notif_val IN ('2','3') AND
-reports.deptsel = 4";
+reports.deptsel = 4 AND reports.service_desc = 'REPAIR LOCAL' ";
 $result = $conn->query($sql);
 
 echo $result->num_rows;

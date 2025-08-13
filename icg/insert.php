@@ -544,14 +544,15 @@ else{
     ':date_refNo' => date('Y-m-d H:i:s',strtotime($_POST["date_refNo"])),
     ':date_closed' => date('Y-m-d H:i:s',strtotime($_POST["date_closed"])),
     ':close_by' => $_POST["close_by"],
-    ':remarks' => $_POST["remarks"]
+    ':remarks' => $_POST["remarks"],
+    ':cwhtag' => $_POST["cwhtag"]
 
    ) ;
 }
 
   $statement = $connection->prepare(
    "UPDATE reports
-   SET ticket_no = :ticket_no, $brid date_created = :date_created,  via = :via, 
+   SET ticket_no = :ticket_no, $brid date_created = :date_created,  via = :via, cwhtag = :cwhtag,
                     status = :status, $itsup $cat_id $sub_id $ispid refNo = :refNo, date_refNo = :date_refNo, date_closed = :date_closed, $clby remarks = :remarks
    WHERE ticket_no = :ticket_no"
   );
@@ -784,9 +785,7 @@ $slctrestusr= $_POST['usrID'];
 $qry = $connection->prepare(" SELECT * FROM users WHERE id = $slctrestusr ");
 $qry->execute();
 $res = $qry->fetch(PDO::FETCH_ASSOC); 
-$statement = $connection->prepare("UPDATE users
-SET `str_num` = :str_num
-WHERE id = $slctrestusr");
+$statement = $connection->prepare("UPDATE users SET `str_num` = :str_num WHERE id = $slctrestusr");
   $result = $statement->execute(
    array(
     ':str_num' => $_POST["strslt_num"]
@@ -801,6 +800,19 @@ WHERE id = $slctrestusr");
 
 } // end 
 
+// if (isset($_POST['operation2']) && $_POST['operation2'] == 'Done') 
+// {
+//   $IDx = $_POST['IDx'];
+//   $ticketx = $_POST['TiketNo'];
+//   $statement = $connection->prepare( "UPDATE tbl_pditems SET item_status = :itemstat WHERE id = '$IDx' AND ticket_no = '$ticketx' ");
+//    $result = $statement->execute(
+//     array(
+//       'itemstat' => 'Y'
+//     )
+    
+//    );
+//    echo ("UPDATED");
+// }
 
 if (isset($_POST['operation3']) && $_POST['operation3'] == 'Update') {
   $data1 = $_POST['data1'];

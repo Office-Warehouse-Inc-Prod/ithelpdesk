@@ -63,14 +63,14 @@ HOME
 <span class="sr-only">(current)</span>
 </a>
 </li>
-<!-- <li class="nav-item">
-<a class="nav-link " href="">
+<li class="nav-item">
+<a class="nav-link " href="adminwfit.php">
 <i class="fa fa-envelope-o">
   <span class="badge badge-danger" id="notif_newrep"></span>
 </i>
 NEW REPORTS
 </a>
-</li> -->
+</li>
 <li class="nav-item dropdown">
 <a class="nav-link" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 <i class="fa fa-chart-line"></i>
@@ -218,7 +218,7 @@ document.getElementById("notif_newrep").innerHTML = this.responseText;
 xhttp.open("GET", "fetchdata/notif_newrep.php", true);
 xhttp.send();
 
-},1000);
+},5000);
 
 
 }
@@ -240,7 +240,7 @@ document.getElementById("notif_newmsg").innerHTML = this.responseText;
 xhttp.open("GET", "fetchdata/fetch_newmsg.php", true);
 xhttp.send();
 
-},1000);
+},5000);
 
 
 }
