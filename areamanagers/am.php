@@ -534,15 +534,15 @@ $('#substr_clsbtn').empty();
 });
 
 
-    let endDate = new Date();
-    let startDate = new Date();
-    startDate.setDate(endDate.getDate() - 7);
-    
-    $('#frompolDate').val(startDate.toISOString().split('T')[0]);
-    $('#topolDate').val(endDate.toISOString().split('T')[0]);
-    
-    // Load initial data
-    _polledraph($('#frompolDate').val(), $('#topolDate').val());
+let endDate = new Date();
+endDate.setDate(endDate.getDate() - 1); // Set to yesterday
+let startDate = new Date(endDate); // Copy the same date (yesterday)
+
+$('#frompolDate').val(startDate.toISOString().split('T')[0]);
+$('#topolDate').val(endDate.toISOString().split('T')[0]);
+
+// Load initial data for yesterday
+_polledraph($('#frompolDate').val(), $('#topolDate').val());
 
 
 // Add event listeners for date changes *(correction: this should be inside the document ready block)*

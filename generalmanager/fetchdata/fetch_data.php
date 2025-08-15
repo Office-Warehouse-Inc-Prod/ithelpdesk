@@ -24,6 +24,10 @@ switch ($mode) {
         $records= $fn->pie();
         // $records= $fn->sub();
         break;
+        case 'dashpie2':
+            $records= $fn->pie2();
+            // $records= $fn->sub();
+            break;
     case 'area_grph':
        $records= $fn->area_grph();
         break;

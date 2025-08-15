@@ -4,7 +4,7 @@
 include 'header.php';
 include '../condb.php';
 include 'chrtdashboard.php';
-// include 'sub_graph_modal.php';
+include 'sub_graph_modal.php';
 
 $conn=new dbconfig();
 
@@ -147,7 +147,7 @@ $datetime->setTimezone($timezone);
 
 
 <div class="card card2 col-12 col-lg-12">
-<h5 class="card-header text-white">Number of Escalated Tickets Per Store</h5>
+<h5 class="card-header text-white">Number of Escalated Tickets Per Area</h5>
 <div class="card-body">
 <div class="col-xl-12 col-lg-12">
 </div>
@@ -998,16 +998,17 @@ $('#substr_clsbtn').empty();
 });
 
 
-    let endDate = new Date();
-    let startDate = new Date();
-    startDate.setDate(endDate.getDate() - 7);
-    
-    $('#frompolDate').val(startDate.toISOString().split('T')[0]);
-    $('#topolDate').val(endDate.toISOString().split('T')[0]);
-    
-    // Load initial data
-    _polledraph($('#frompolDate').val(), $('#topolDate').val());
-});
+let endDate = new Date();
+endDate.setDate(endDate.getDate() - 1); // Set to yesterday
+let startDate = new Date(endDate); // Copy the same date (yesterday)
+
+$('#frompolDate').val(startDate.toISOString().split('T')[0]);
+$('#topolDate').val(endDate.toISOString().split('T')[0]);
+
+// Load initial data for yesterday
+_polledraph($('#frompolDate').val(), $('#topolDate').val());
+
+}); //document ready close
 
 // Add event listeners for date changes
 $('#frompolDate, #topolDate').change(function() {
@@ -1015,7 +1016,10 @@ $('#frompolDate, #topolDate').change(function() {
 
 
 
-});//document ready close
+});
+
+
+
 
 </script>
 

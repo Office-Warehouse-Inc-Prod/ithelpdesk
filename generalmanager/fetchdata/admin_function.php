@@ -11,19 +11,17 @@ class dbconfig extends dbconn
 		$query = '';
 		$output = array();
 		$query = "SELECT
-    YEAR(date_created) AS date_created,
-    COUNT(CASE WHEN reports.`status` != 'NEW REPORT' THEN 1 ELSE NULL END) AS t_all,
-   	COUNT(CASE WHEN reports.`status` NOT IN ('NEW REPORT', 'SUBJECT FOR CLOSING', 'CLOSED') THEN 1 ELSE NULL END) AS t_open,
-    COUNT(CASE WHEN reports.`status` = 'OPEN' AND DATEDIFF(CURDATE(), reports.date_created) > 3 THEN 1 ELSE NULL END) AS t_owfa,
-    COUNT(CASE WHEN reports.`status` = 'CLOSED' THEN 1 ELSE NULL END) AS t_close,
-    tbl_branch.area_num
+	YEAR(date_created) AS date_created, 
+	COUNT(CASE WHEN reports.`status` != 'NEW REPORT' THEN 1 ELSE NULL END) AS t_all, 
+	COUNT(CASE WHEN reports.`status` NOT IN ('NEW REPORT', 'SUBJECT FOR CLOSING', 'CLOSED') THEN 1 ELSE NULL END) AS t_open, 
+	COUNT(CASE WHEN reports.`status` = 'OPEN' AND DATEDIFF(CURDATE(), reports.date_created) > 3 THEN 1 ELSE NULL END) AS t_owfa, 
+	COUNT(CASE WHEN reports.`status` = 'CLOSED' THEN 1 ELSE NULL END) AS t_close
 FROM
-    reports
-INNER JOIN tbl_branch ON tbl_branch.str_num = reports.store
+	reports
 WHERE
- YEAR(date_created) IN (".$_POST['yr'] .") AND tbl_branch.AM LIKE '%{$_SESSION['user_id']}%'
+	YEAR(date_created) IN (".$_POST['yr'] .") AND store != '49' AND sub_id IS NOT NULL
 GROUP BY
-    YEAR(date_created);
+	YEAR(date_created);
 ";
 
         $statement = $this->connection->prepare($query);
@@ -60,7 +58,7 @@ FROM
 		reports.store = tbl_branch.str_num
 WHERE
 	`status` NOT IN ('NEW REPORT', 'SUBJECT FOR CLOSING', 'CLOSED') AND
-	YEAR(date_created) IN (".$_POST['yr'] .") AND tbl_branch.AM LIKE '%{$_SESSION['user_id']}%'
+	YEAR(date_created) IN (".$_POST['yr'] .")
 GROUP BY
 	tbl_branch.str_code";
 
@@ -172,7 +170,7 @@ FROM
 	ON 
 		vwp.deptsel = tbl_deptsel.dept_id
 WHERE
-	vwp.date_created IN (".$_POST['yr'] .") AND vwp.AM LIKE '%{$_SESSION['user_id']}%' AND vwp.`status` NOT IN ('NEW REPORT', 'SUBJECT FOR CLOSING', 'CLOSED')
+	vwp.date_created IN (".$_POST['yr'] .") AND vwp.`status` NOT IN ('NEW REPORT', 'SUBJECT FOR CLOSING', 'CLOSED') AND vwp.store != '49' AND sub_id IS NOT NULL
 GROUP BY
   Dept
 ORDER BY
@@ -204,8 +202,7 @@ FROM
 WHERE
 	deptsel = '".$id."' AND
 	vwp.date_created IN (".$_POST['yr'] .")
-	AND vwp.AM LIKE '%{$_SESSION['user_id']}%' AND
-	vwp.`status` NOT IN ('NEW REPORT','SUBJECT FOR CLOSING','CLOSED')
+ 	AND vwp.`status` NOT IN ('NEW REPORT','SUBJECT FOR CLOSING','CLOSED')
 GROUP BY
 	cat_desc
 ORDER BY
@@ -224,24 +221,97 @@ ORDER BY
 		return $data;
 	}
 
+	public function pie2(){
+
+		$query= "SELECT
+	tbl_area.area_num AS area_id, 
+	tbl_area.area_desc AS Dept, 
+	count(*) AS ctn
+FROM
+	vwp
+	INNER JOIN
+	tbl_area
+	ON 
+		vwp.area_num = tbl_area.area_num
+WHERE
+	vwp.date_created IN (".$_POST['yr'] .") AND
+	vwp.`status` NOT IN ('NEW REPORT','SUBJECT FOR CLOSING','CLOSED') AND
+  	vwp.area_num NOT IN ('202') AND sub_id IS NOT NULL
+GROUP BY
+	Dept
+ORDER BY
+	area_id ASC";
+		$statement = $this->connection->prepare($query);
+		$statement-> execute();
+		$result = $statement->fetchAll();
+		$data[] = array();
+
+		foreach ($result as $row) {
+		$data[] = array(
+		'type' => $row["Dept"], 
+		'percent' => $row["ctn"],
+		'subs' => $this->subs2($row['area_id'])
+
+			);
+		}
+		return($data);
+
+	}
+
+	public function subs2($id){
+
+		$query= "SELECT
+	count(*) AS sctn, 
+	tbl_branch.str_code AS str_code
+FROM
+	vwp
+	LEFT JOIN
+	tbl_branch
+	ON 
+		vwp.area_num = tbl_branch.area_num AND
+		vwp.store = tbl_branch.str_num
+WHERE
+	vwp.area_num = '".$id."' AND
+	vwp.date_created IN (".$_POST['yr'] .") AND
+	vwp.`status` NOT IN ('NEW REPORT','SUBJECT FOR CLOSING','CLOSED') AND
+	vwp.area_num NOT IN ('201','202')
+GROUP BY
+	vwp.store
+";
+
+		$statement = $this->connection->prepare($query);
+		$statement-> execute();
+		$result = $statement->fetchAll();
+		$data[] = array();
+
+		foreach($result as $row)
+		{
+		$data[] = array('type' => $row['str_code'],'percent' => $row['sctn']);
+
+		}
+		return $data;
+	}
+
+
+
 	public function area_grph(){
 
 		$query="SELECT
-  `reports`.`store` AS `store`,
-  `tbl_branch`.`str_code` AS `str_code`,
-  `tbl_branch`.`area_num` AS `area_num`,
-  `tbl_area`.`area_desc` AS `area_desc`,
-  YEAR(`reports`.`date_created`) AS `dc`,
-  count(`reports`.`date_created`) AS `cntarea`
-FROM
-  (
-    (`reports` JOIN `tbl_branch` ON (`reports`.`store` = `tbl_branch`.`str_num`))
-    JOIN `tbl_area` ON (`tbl_area`.`area_num` = `tbl_branch`.`area_num`)
-  )
-WHERE
-  YEAR(`reports`.`date_created`) IN (".$_POST['yr'] .") AND `tbl_branch`.`AM` LIKE '%{$_SESSION['user_id']}%' AND `status` NOT IN ('NEW REPORT', 'SUBJECT FOR CLOSING', 'CLOSED')
-GROUP BY
-  str_code";
+		`reports`.`store` AS `store`,
+		`tbl_branch`.`str_code` AS `str_code`,
+		`tbl_branch`.`area_num` AS `area_num`,
+		`tbl_area`.`area_desc` AS `area_desc`,
+		YEAR ( `reports`.`date_created` ) AS `dc`,
+		count( `reports`.`date_created` ) AS `cntarea` 
+	FROM
+		((
+				`reports`
+				JOIN `tbl_branch` ON ( `reports`.`store` = `tbl_branch`.`str_num` ))
+		JOIN `tbl_area` ON ( `tbl_area`.`area_num` = `tbl_branch`.`area_num` )) 
+	WHERE
+		YEAR ( `reports`.`date_created` )  IN ( ".$_POST['yr'] ." ) AND tbl_branch.area_num <> '202' AND reports.`status` != 'NEW REPORT' AND sub_id IS NOT NULL
+	GROUP BY
+		`tbl_branch`.`area_num`";
 		$statement = $this->connection->prepare($query);
 		$statement-> execute();
 		$result = $statement->fetchAll();
@@ -250,8 +320,8 @@ GROUP BY
 		foreach($result as $row)
 		{
 		$data[] = array(
-			'area_id' => $row['store'],
-			'area_desc' => $row['str_code'],
+			'area_id' => $row['area_num'],
+			'area_desc' => $row['area_desc'],
 			'cntarea' => $row['cntarea'],
 			'fyr' => $row['dc']
 
@@ -311,9 +381,8 @@ FROM
   vw_amdtb
 WHERE
   vw_amdtb.sub_id NOT IN ('15', '28', '34', '35')
-  AND STATUS NOT IN ('NEW REPORT')
-  AND years IN (".$_POST['yr'] .")
-  AND AM LIKE '%{$_SESSION['user_id']}%'";
+  AND STATUS NOT IN ('NEW REPORT') AND store != '49'
+  AND years IN (".$_POST['yr'] .") ";
 	$statement = $this->connection->prepare($query);
 	$statement-> execute();
 	$result = $statement->fetchAll();
@@ -675,7 +744,7 @@ public function notif_techsupp(){
 			INNER JOIN tbl_branch
 				ON tbl_notpolledstr.str_code = tbl_branch.str_code
 		WHERE
-			tbl_notpolledstr.polling_date BETWEEN ? AND ? AND tbl_branch.AM LIKE '%{$_SESSION['user_id']}%'
+			tbl_notpolledstr.polling_date BETWEEN ? AND ?
 		GROUP BY
 			tbl_notpolledstr.str_code";
 			

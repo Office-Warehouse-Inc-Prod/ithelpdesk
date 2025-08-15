@@ -239,7 +239,7 @@ FROM
     JOIN `tbl_area` ON (`tbl_area`.`area_num` = `tbl_branch`.`area_num`)
   )
 WHERE
-  YEAR(`reports`.`date_created`) IN (".$_POST['yr'] .") AND `tbl_branch`.`AM` LIKE '%{$_SESSION['user_id']}%' AND `status` NOT IN ('NEW REPORT', 'SUBJECT FOR CLOSING', 'CLOSED')
+  YEAR(`reports`.`date_created`) IN (".$_POST['yr'] .") AND `tbl_branch`.`AM` LIKE '%{$_SESSION['user_id']}%' AND tbl_branch.area_num <> '202' AND reports.`status` != 'NEW REPORT' AND sub_id IS NOT NULL
 GROUP BY
   str_code";
 		$statement = $this->connection->prepare($query);
