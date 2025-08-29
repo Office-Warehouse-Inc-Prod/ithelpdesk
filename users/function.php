@@ -235,12 +235,12 @@ return $data;
 public function search_desc(){
   $search = $_POST['alu'];
   $query="SELECT
-  item_masterfile.ALU, 
-  item_masterfile.Desc1
+  item_masterfile_refine.ALU, 
+  item_masterfile_refine.DESCRIPTION1 AS Desc1
 FROM
-  item_masterfile
+  item_masterfile_refine
 WHERE
-  item_masterfile.ALU = '$search'
+  item_masterfile_refine.ALU = '$search'
   ";
   
   $statement = $this->connection->prepare($query);
