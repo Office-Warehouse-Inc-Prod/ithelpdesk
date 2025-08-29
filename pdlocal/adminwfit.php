@@ -341,6 +341,7 @@ function getdata(){
   },'json');
 }
 getdata();
+/// fix wfit and sync ALU in Mechandising table, Price Verifier table, tbl_itemmaster_refine
 
 function admin_datatable(t){
 const dataset=t.newrptdata;
