@@ -600,7 +600,7 @@ $deptVal = $_POST['deptval'];
   
   }
 
-
+// viewing of table for pd items
   public function pditems(){
 
     $tktnoxx = $_POST['tickt'];  

@@ -377,7 +377,7 @@ function getTkt(){
 
   
 
-
+//In  = Deptsel value
 
   $.post('fetch.php',{iN:iN, operation:'search_tkt'},function(data){
   // console.log(data);
@@ -444,7 +444,7 @@ $(function(){
         timeout = setTimeout(() => { // Set a new timeout
             if(Alu === '')
             return false;
-
+ // ALU CHECKER
             $.ajax({
                 url:"alu_validate.php",
                 method:'POST',
@@ -886,7 +886,7 @@ $('#concern').removeClass('border-danger');
 }, 5000);
 return false;
 
-}
+}onchange
 return true
 }
 $('#reports_table').on( 'click','tbody tr',function () {

@@ -473,7 +473,7 @@ WHERE reports.status = 'NEW REPORT'
 	AND reports.deptsel = '4' 
 	AND reports.service_desc = 'LOCAL'
 ORDER BY
-	reports.series_id DESC";
+	reports.date_created DESC";
 	$statement = $this->connection->prepare($query);
 	$statement-> execute();
 	$result = $statement->fetchAll();
