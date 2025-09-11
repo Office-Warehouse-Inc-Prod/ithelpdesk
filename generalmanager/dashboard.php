@@ -18,10 +18,14 @@ $datetime->setTimezone($timezone);
 <head>
 <link rel="stylesheet" href="../plugins/DataTables-1.10.25/media/css/dataTables.bootstrap.min.css"/>
 <link rel="stylesheet" href="//cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css"/>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.css"/>
 <link rel="stylesheet" href="../assets/Date-Time-Picker-Bootstrap-4/src/sass/bootstrap-datetimepicker-build.css" />
 <script src="../assets/Date-Time-Picker-Bootstrap-4/src/js/bootstrap-datetimepicker.js"></script>
 <link rel="stylesheet" href="styles.css" />
 <script src="../plugins/DataTables-1.10.25/media/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.js"></script>
 <script src="../js/ellipsis.js"></script>
   <meta http-equiv='cache-control' content='no-cache'>
   <meta http-equiv='expires' content='0'>
@@ -523,8 +527,25 @@ const dataset=t.rptdata;
 table =  $("#report_data").DataTable({
 
 "dom":
-'<"pull-left"lf><"pull-right">tip',
+'B<"pull-left"lf><"pull-right">tip',
 // stateSave: true,
+"buttons": [
+
+                {       
+                        extend:'excelHtml5',
+                        text:'<i class="fas fa-file-excel"></i>',
+                        attr:{
+                                 title:'Export to Excel',
+                                 class: 'btn btn-success'
+
+                        }
+                       
+
+
+
+                },
+            
+    ],
 "pagingType": "full_numbers",
 "bDestroy": true,
 "responsive": true, "lengthChange": false, "autoWidth": false,

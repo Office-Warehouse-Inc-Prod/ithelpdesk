@@ -25,7 +25,6 @@ exit();
 <link rel="stylesheet" href="../vendor/sweetalert/dist/sweetalert2.min.css" />
 <script src="../js/jquery-3.5.1.js"></script>
 <script src="../js/moment.min.js"></script>
-
 <link rel="stylesheet" href="../css/dashboard.css">
 <link rel="stylesheet" type="text/css" href="../dist/fontawesome/css/fontawesome.min.css" />
 
