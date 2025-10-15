@@ -486,6 +486,61 @@ public function usermtc_table(){
 
 }
 
+public function store_dtable(){
+
+	$query="SELECT
+	tbl_branch.str_id, 
+	tbl_branch.str_num, 
+	tbl_branch.str_code, 
+	tbl_branch.area_num, 
+	tbl_branch.str_name, 
+	tbl_branch.str_adrs, 
+	tbl_branch.str_contact, 
+	tbl_branch.str_add, 
+	tbl_branch.itsup, 
+	tbl_clusers.it_desc, 
+	tbl_branch.AM, 
+	users.fname, 
+	users.lstname
+FROM
+	tbl_branch
+	INNER JOIN
+	tbl_clusers
+	ON 
+		tbl_branch.itsup = tbl_clusers.itsup
+	INNER JOIN
+	users
+	ON 
+		tbl_branch.AM = users.id";
+	$statement = $this->connection->prepare($query);
+	$statement-> execute();
+	$result = $statement->fetchAll();
+	$data[] = array();
+	$fetchdata = array();
+	foreach ($result as $row) {
+		$fetchdata[] = array(
+			'str_id' => $row["str_id"],
+			'str_num' => $row["str_num"],
+			'str_code' => $row["str_code"],
+			'area_num' => $row["area_num"],
+			'str_name' => $row["str_name"],
+			'str_adrs' => $row["str_adrs"],
+			'str_contact' => $row["str_contact"],
+			'str_status' => $row["str_add"],
+			'itsup' => $row["itsup"],
+			'it_desc' => $row["it_desc"],
+			'AMsup' => $row["AM"],
+			'AMdesc' => $row["fname"].' '.$row["lstname"]
+
+		);
+	}	
+
+	$data = array_filter($fetchdata);
+		// echo json_encode($data);
+		return $data;
+
+}
+
 public function changepass(){
 		$query = "SELECT id, email, password FROM users";
 		$statement = $this->connection->prepare($query);
@@ -1229,6 +1284,43 @@ WHERE
 	
 		}
 
+
+		public function polled_store(){
+			$start_date = $_POST['fromPolled'];
+			$end_date = $_POST['toPolled'];
+		
+			$query = "SELECT
+				tbl_branch.AM, 
+				COUNT(tbl_notpolledstr.`str_code`) AS cntstore, 
+				tbl_notpolledstr.str_no, 
+				tbl_notpolledstr.str_code, 
+				tbl_notpolledstr.polling_date, 
+				tbl_notpolledstr.generate_date
+			FROM
+				tbl_notpolledstr
+				INNER JOIN tbl_branch
+					ON tbl_notpolledstr.str_code = tbl_branch.str_code
+			WHERE
+				tbl_notpolledstr.polling_date BETWEEN ? AND ?
+			GROUP BY
+				tbl_notpolledstr.str_code";
+				
+			$statement = $this->connection->prepare($query);
+			$statement->execute([$start_date, $end_date]);
+			$result = $statement->fetchAll();
+			
+			$data = array(); // Remove the [] which creates an empty element
+			
+			foreach($result as $row) {
+				$data[] = array(
+					'str_code' => $row['str_code'],
+					'cntstore' => (int)$row['cntstore'], // Ensure numeric value
+					'AM' => $row['AM'] // Add AM if needed in tooltip
+				);
+			}
+			
+			return $data;
+		}
 
 
 } // dbconfig end bracket

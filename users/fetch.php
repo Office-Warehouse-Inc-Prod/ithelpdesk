@@ -37,6 +37,9 @@ switch ($mode) {
         case 'pv_res':
             $output= $fn->pv_res();
             break;
+        case 'rars_count':
+            $output= $fn->rars_count();
+            break;
 }
 echo json_encode($output);
 

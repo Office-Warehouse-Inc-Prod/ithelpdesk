@@ -42,6 +42,9 @@ switch ($mode) {
     case 'str_grph':
         $records= $fn->str_grph();
         break;
+    case 'polled_store':
+        $records= $fn->polled_store();
+            break;
     case 'dtb':
         $records['rptdata']= $fn->admin_data_table_res();
         break;
@@ -53,7 +56,10 @@ switch ($mode) {
         break;
     case 'usermtc_dtable':
          $records['usermtc_data']= $fn->usermtc_table();
-        break;    
+        break;
+    case 'store_dtable':
+        $records['store_data']= $fn->store_dtable();
+        break;       
     case 're_assigned_supp':
        $records['re_assigned_supp'] =$fn->reassign_itsup();
        break; 

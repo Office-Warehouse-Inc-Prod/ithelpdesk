@@ -727,6 +727,101 @@ $statement = $connection->prepare("UPDATE users SET usr_stat = :usr_stat, usr_up
 
  }
 
+ if($_POST['operation'] == "str_add")
+ {
+
+  $strNo = $_POST['strNo'];
+  $strCode = $_POST['strCode'];
+  $strArea = $_POST['strArea'];
+  $strName = $_POST['strName'];
+  $strAddrs = $_POST['strAddrs'];
+  $strContact = $_POST['strContact'];
+  $slctAM = $_POST['slctAM'];
+  $slctTech = $_POST['slctTech'];
+
+$statement = $connection->prepare("INSERT INTO tbl_branch (str_num, str_code, area_num, str_name, str_adrs, str_contact, itsup, AM, SBS_NO, PRICE_LVL)
+VALUES (:str_num, :str_code, :area_num, :str_name, :str_adrs, :str_contact, :itsup, :AM, :SBS_NO, :PRICE_LVL)");
+  $result = $statement->execute(
+   array(
+    ':str_num' => $strNo,
+    ':str_code' => $strCode,
+    ':area_num' => $strArea,
+    ':str_name' => $strName,
+    ':str_adrs' => $strAddrs,
+    ':str_contact' => $strContact,
+    ':itsup' => $slctTech,
+    ':AM' => $slctAM,
+    ':SBS_NO' => '1',
+    ':PRICE_LVL' => '1',
+
+  
+   )
+  );
+    echo ("Updated!");
+
+ }
+
+ if($_POST['operation'] == "stredit")
+ {
+
+  $strId = $_POST['strId'];
+  $strNo = $_POST['strNo'];
+  $strCode = $_POST['strCode'];
+  $strArea = $_POST['strArea'];
+  $strName = $_POST['strName'];
+  $strAddrs = $_POST['strAddrs'];
+  $strContact = $_POST['strContact'];
+  $slctAM = $_POST['slctAM'];
+  $slctTech = $_POST['slctTech'];
+
+  $statement = $connection->prepare("UPDATE tbl_branch SET str_num = :str_num, str_code =:str_code, area_num = :area_num, str_name = :str_name, str_adrs = :str_adrs, str_contact = :str_contact, itsup =:itsup, AM = :AM  WHERE str_id = $strId");
+  $result = $statement->execute(
+   array(
+    ':str_num' => $strNo,
+    ':str_code' => $strCode,
+    ':area_num' => $strArea,
+    ':str_name' => $strName,
+    ':str_adrs' => $strAddrs,
+    ':str_contact' => $strContact,
+    ':itsup' => $slctTech,
+    ':AM' => $slctAM,
+  
+   )
+  );
+    echo ("Updated!");
+
+ }
+
+
+ if($_POST['operation'] == "ClosedStore")
+ {
+$strIDx = $_POST['strIDx'];
+$statement = $connection->prepare("UPDATE tbl_branch SET str_add = :str_add WHERE str_id = $strIDx");
+  $result = $statement->execute(
+   array(
+    ':str_add' => 'CLOSED'
+  
+   )
+  );
+    echo ("Updated!");
+
+ }
+
+ if($_POST['operation'] == "OpenStore")
+ {
+$strIDx = $_POST['strIDx'];
+$statement = $connection->prepare("UPDATE tbl_branch SET str_add = :str_add WHERE str_id = $strIDx");
+  $result = $statement->execute(
+   array(
+    ':str_add' => ''
+  
+   )
+  );
+    echo ("Updated!");
+
+ }
+
+
 
 } // end 
 ?>

@@ -30,6 +30,8 @@ if(!empty($_POST['email']) && !empty($_POST['password'])):
 	users.usr_stat,
   users.deptsel, 
 	tbl_branch.str_code AS str_code,
+	tbl_branch.str_adrs AS str_adrs,
+	tbl_branch.str_contact AS str_contact,
   tbl_branch.SBS_NO AS SBS_NO,
   tbl_branch.PRICE_LVL AS PRICE_LVL
 FROM
@@ -63,6 +65,8 @@ $user = NULL;
     $_SESSION['imguser'] = $results['img_name'];
     $_SESSION['area_num'] = $results['area_num'];
     $_SESSION['str_code'] = $results['str_code'];
+    $_SESSION['str_adrs'] = $results['str_adrs'];
+    $_SESSION['str_contact'] = $results['str_contact'];
     $_SESSION['deptsel'] = $results['deptsel'];
     $_SESSION['SBS_NO'] = $results['SBS_NO'];
     $_SESSION['PRICE_LVL'] = $results['PRICE_LVL'];
@@ -160,7 +164,14 @@ $user = NULL;
     $_SESSION['deptsel'] = $results['deptsel'];
     header("Location: visualsupports/techdashboard.php");
     exit();
-   } 
+   }
+   elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'sales-admin' ) {
+    $_SESSION['login'] = 'true';
+    $_SESSION['user_id'] = $results['id'];
+    $_SESSION['deptsel'] = $results['deptsel'];
+    header("Location: sales/adminpanel.php");
+    exit();
+   }  
      elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'user' ) {
     $_SESSION['login'] = 'true';
     $_SESSION['user_id'] = $results['id'];

@@ -1108,6 +1108,80 @@ columnTemplate.strokeOpacity = 1;
 </script>
 
 
+</style>
+
+
+<script>
+  // const curdatez = new Date();
+  let fromPolled = $('#frompolDate').val();
+  let toPolled = $('#topolDate').val();
+
+  // _polledraph();
+
+  function _polledraph(fromPolled,toPolled){
+
+ $.ajax({
+    url:"fetchdata/fetch_data.php",
+    method:'POST',
+     data:{toPolled:toPolled,fromPolled:fromPolled,mode:'polled_store'},
+
+    success:function(data)
+    {
+
+      var objarea = JSON.parse(data);
+      // console.log(objarea);
+       _polledstore(objarea);
+      
+    }
+   });
+
+  }
+
+function _polledstore(grphdata){
+
+am4core.ready(function() {
+
+// Themes begin
+am4core.useTheme(am4themes_animated);
+// Themes end
+
+// Create chart instance
+var chart = am4core.create("chart_polled", am4charts.XYChart);
+
+// Add data
+chart.data = grphdata
+// Create axes
+
+var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+categoryAxis.dataFields.category = "str_code";
+categoryAxis.renderer.grid.template.location = 0;
+categoryAxis.renderer.minGridDistance = 30;
+
+
+var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+// valueAxis.min = 0;
+// valueAxis.max = 300 ;
+
+// Create series
+var series = chart.series.push(new am4charts.ColumnSeries());
+series.dataFields.valueY = "cntstore";
+series.dataFields.categoryX = "str_code";
+series.columns.template.tooltipText = "{categoryX}: [bold]{valueY}[/] NOT POLLED";
+series.columns.template.fillOpacity = .8;
+
+var columnTemplate = series.columns.template;
+columnTemplate.strokeWidth = 2;
+columnTemplate.strokeOpacity = 1;
+
+}); // end am4core.ready()
+
+
+
+
+}
+
+</script>
+
 
 <!-- Styles -->
 <!-- <style>

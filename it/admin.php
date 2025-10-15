@@ -120,6 +120,9 @@ GENERATE REPORT
       <a class="dropdown-item text-white" href="user_maintenance.php">
         <i class="fas fa-user-cog"></i> User Maintenance
       </a>
+      <a class="dropdown-item text-white" href="store_maintenance.php">
+        <i class="fas fa-store"></i> Store Maintenance
+      </a>
     </div>
   </li>
   

@@ -426,6 +426,31 @@ font-family: 'Poppins', Tahoma, Geneva, Verdana, sans-serif;
 </div>     
 </div>
 
+<div class="card card2 col-12 col-lg-12">
+    <h5 class="card-header text-black">Non Compliant Stores on End of Day Process (7:AM CUT OFF)</h5>
+    <div class="card-body">
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <div class="input-group">
+                    <span class="input-group-text">FROM</span>
+                    <input type="date" id="frompolDate" class="form-control mr-3">
+                    <span class="input-group-text">TO</span>
+                    <input type="date" id="topolDate" class="form-control">
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-xl-12 col-lg-12">
+            <!-- Additional content can go here -->
+        </div>
+
+        <div id="chart_polled">
+            <!-- Chart will be rendered here -->
+        </div>
+    </div>     
+</div>
+
+
 </div>
 <div class="row">
 

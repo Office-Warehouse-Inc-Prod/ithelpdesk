@@ -257,7 +257,7 @@ style="text-transform:uppercase" onkeyup="this.value = this.value;"></textarea>
 <div class="form-group col-4 col-md-4 col-lg-4">
 
 <label>CATEGORY</label>
-<input type="hidden" name="cat_num" id="cat_num" readonly="">
+<input type="text" name="cat_num" id="cat_num" readonly="">
 <select class="form-control form-control-sm" name="cat" id="cat" required >
 <option value=""> &larr; CATEGORY &rarr;</option>  
      <?php
@@ -278,7 +278,7 @@ style="text-transform:uppercase" onkeyup="this.value = this.value;"></textarea>
 <div class="form-group col-4 col-md-4 col-lg-4">
 
 <label>SUB CATEGORY</label>
-<input type="hidden" name="sub_num" id="sub_num" readonly="">
+<input type="text" name="sub_num" id="sub_num" readonly="">
 
 
 <select class="form-control form-control-sm" name="sub" id="sub">
@@ -392,7 +392,7 @@ style="text-transform:uppercase" onkeyup="this.value = this.value;"></textarea>
 <div class="form-group col-4 col-md-4 col-lg-4 hide_cl">
 
 <label id="clby_label" class="hidden">CLOSED BY</label>
-<input type="hidden" name="close_by" id="close_by" value="<?php echo $_SESSION['tech_id'];?>"> 
+<input type="text" name="close_by" id="close_by" value="<?php echo $_SESSION['tech_id'];?>"> 
 <input type="text" class="form-control form-control-sm" name="cl_desc" id="cl_desc" readonly="" value="<?php echo $_SESSION['fname']. '  ' . $_SESSION['lstname'];?>">
 </div>
 
@@ -476,7 +476,7 @@ style="text-transform:uppercase" onkeyup="this.value = this.value;"></textarea>
 </div>
 
 <div class="modal-footer">
-<input type="hidden" name="operation" id="operation" value="Add" />
+<input type="text" name="operation" id="operation" value="Add" />
 <input type="hidden" name="u_id" value="<?php echo $_SESSION['user_id'];  ?>">
 
 </div>
@@ -1859,6 +1859,7 @@ $(document).on("submit", "#report_form", function (e) {
     var CloseBy = $("#close_by").val();
     var remarks = $("#remarks").val();
     var addmsgx = $("#addmsg").val();
+    // var optest = $("#operation").val();
     // var newserial = $("#newserialno").val();
     var today = new Date();
     DateCreated = new Date(DateCreated);
@@ -1890,6 +1891,7 @@ $(document).on("submit", "#report_form", function (e) {
       sub_id != "" 
       // newserial != ""
     ) {
+      // alert(optest);
       $.ajax({
         url: "insert.php",
         method: "POST",
@@ -1957,6 +1959,7 @@ $('#remarks_view').show();
 
 
 if($('#msgbtn').val() == 'show'){
+  // alert("GOOD");
 $('#action').val("Save and Reply");
 $('#operation').val("Save and Reply");
 $('#msgbtn').val("hide");

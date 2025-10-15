@@ -164,7 +164,8 @@ include 'switch_attach_modal.php';
 
   <div id="alrtmsg" class="mt-2 col-lg-12"></div>
                 <div class=" col-lg-12">
-            <label class="d-flex justify-content-between" for="Modal_reply"><strong> Comment</strong>
+            <label class="d-flex justify-content-between align-items-center" for="Modal_reply"><strong> Comment</strong>
+            <a href="#" name="rars" id="rars" class="text-decoration-none">RARS FORM</a>
             <a href="#" name="vwfile" id="vwfile" class="text-decoration-none">View Attached File</a></label>
            
                   <textarea class="uModaltxtarea" id="Modal_reply" name="Modal_reply" minlength="5" maxlength="1000" placeholder="Leave a comment to follow up your report..."></textarea>
@@ -263,7 +264,15 @@ var val = $('#ModalTicket_no').val();
     });
 });
 
+$('#rars').click(function (e) { 
+  e.preventDefault();
 
-
+  var PDtkt = $('#ModalTicket_no').val();
+  
+  // Since get-pdf.php is in the users folder
+  var pdfUrl = '/ithelpdesk/users/rarspdf.php?ticket=' + encodeURIComponent(PDtkt);
+  
+  window.open(pdfUrl, '_blank');
+});
 </script>
 

@@ -21,14 +21,9 @@ body{
 
 background-color: #212529;
 
-
 }
 
-
 </style>
-
-
-
 
 
 <!-- <body class="mt-5">
@@ -53,7 +48,16 @@ background-color: #212529;
 
 <input type = "hidden"  name = "ticket_no" id="ticket_no">
 
+<input type = "hidden"  name = "rars_no" id="rars_no">
+
 <input type = "hidden"  name = "sesstr_num" id="sesstr_num" value="<?php echo $_SESSION['str_num'];?>">
+
+<input type = "hidden"  name = "str_code" id="str_code" value="<?php echo $_SESSION['str_code'];?>">
+
+<input type = "hidden"  name = "str_adrs" id="str_adrs" value="<?php echo $_SESSION['str_adrs'];?>">
+
+<input type = "hidden"  name = "str_contact" id="str_contact" value="<?php echo $_SESSION['str_contact'];?>">
+
       
 <div class="col-md-12 d-inline-flex p-2">
 <!-- <label class="" style="font-weight: bold;">SELECT DEPARTMENT:</label> -->
@@ -67,7 +71,7 @@ background-color: #212529;
                             <option value="1" >IT</option>
                             <option value="2" >ADMIN</option>
                             <option value="3">MARKETING</option>
-                            <option value="4">MERCHANDISING</option>
+                            <option value="4">REPAIR/SRTF</option>
                             <option value="6">VISUAL</option>
 
 
@@ -132,6 +136,11 @@ background-color: #212529;
                         <label style="font-weight: bold;" name="SerialLbl" id="SerialLbl">Serial No:</label>
                         <div class="form-group col-md-12">
                         <input type="text" name="SerialNo" id="SerialNo" class="form form-control" >
+                        </div>
+
+                        <label style="font-weight: bold;" name="DefectLbl" id="DefectLbl">Nature of Defect:</label>
+                        <div class="form-group col-md-12">
+                        <input type="text" name="Defect" id="Defect" class="form form-control" >
                         </div>
 
                         <label style="font-weight: bold;" name="SupplierLbl" id="SupplierLbl">Supplier:</label>
@@ -296,6 +305,8 @@ $('#Qitem').hide();
 $('#QItems').hide();
 $('#SupplierLbl').hide();
 $('#Supplier').hide();
+$('#DefectLbl').hide();
+$('#Defect').hide();
 
 $('#QItems').change(function (e) { 
 
@@ -309,6 +320,7 @@ $('#QItems').change(function (e) {
     $('#Alu').attr('required', false);
     $('#SerialNo').attr('required', false);
     $('#Supplier').attr('required', false);
+    $('#Defect').attr('required', false);
     $('#TypesOfUnit').attr('required', false);
     getitems(tickt);
     
@@ -318,6 +330,7 @@ $('#QItems').change(function (e) {
     $('#Additem').hide();
     $('#Alu').attr('required', 'required');
     $('#SerialNo').attr('required', 'required');
+    $('#Defect').attr('required', 'required');
     $('#Supplier').attr('required', 'required');
     $('#TypesOfUnit').attr('required', 'required');
 
@@ -343,6 +356,8 @@ if (iN == "4") {
   $('#SerialLbl').fadeIn();
   $('#Supplier').fadeIn();
   $('#SupplierLbl').fadeIn();
+  $('#Defect').fadeIn();
+  $('#DefectLbl').fadeIn();
   $('#TypesUnit').fadeIn();
   $('#TypesOfUnit').fadeIn();
   $('#titleconcern').text("CONCERN / REASON / ISSUE:");
@@ -359,6 +374,8 @@ else{
   $('#SerialLbl').hide();
   $('#SupplierLbl').hide();
   $('#Supplier').hide();
+  $('#DefectLbl').hide();
+  $('#Defect').hide();
   $('#TypesUnit').hide();
   $('#TypesOfUnit').hide();
   $('#titleconcern').text("Concern:");
@@ -375,8 +392,6 @@ getTkt(iN);
 
 function getTkt(){
 
-  
-
 //In  = Deptsel value
 
   $.post('fetch.php',{iN:iN, operation:'search_tkt'},function(data){
@@ -389,15 +404,23 @@ const tktno = tkt;
 $('#ticket_no').val(tktno[0].dept +''+ tktno[0].ticket_no);
 
 
-
-
-
 });
-
 
 } // end of getTkt
 
+get_rarscount();
 
+function get_rarscount(){
+$.post('fetch.php',{iN:iN, operation:'rars_count'},function(data){
+let get_count = jQuery.parseJSON(data);
+const rars = get_count;
+$('#rars_no').val('RARS'+" - "+String('00000'+rars[0].rarscount).slice(-6));
+
+});
+
+}
+
+setInterval(get_rarscount, 1000);
 
 });
 
@@ -845,6 +868,17 @@ return false;
 getinfo($("#slctdtick").val(),'remarks',uid);
 
 $('#ticket_modal').modal('show')
+
+var TktNoxx = $('#ModalTicket_no').val();
+
+if (TktNoxx.includes("PD")) {
+  // alert("GOOD");
+  $('#rars').show();
+}
+else{
+  $('#rars').hide();
+}
+
 });
 
 function  noslctd(thisid){
@@ -1110,7 +1144,6 @@ $('#action').attr('disabled', 'true');
 // $('.spinner-border').show();
 $('#report_form')[0].reset();
 $('#select_tos').val('default');
-$('#select_tos').val("default");
 $('#dvtables').show();
 $('#itmcard').hide();
 $('.pd_div').hide();
@@ -1119,6 +1152,7 @@ $('.pd_div').hide();
   $("#msg").append(data.insertdata.m);
   $.LoadingOverlay("hide", true);
   setTimeout(function() {
+        
         location.reload();
       }, 700);
 },'json');
@@ -1172,30 +1206,77 @@ $('#Modal_reply').removeClass('border-danger');
 });
 
 
-$('#action').click(function () { 
-        var files = $('#file-input')[0].files;
-        var tktno = $('#ticket_no').val();
-        var formData = new FormData();
+$('#action').click(function () {
+    var concern = $('#concern').val(); 
+    var Supplierx = $('#Supplier').val(); 
+    var tktno = $('#ticket_no').val().trim().toUpperCase(); // Clean and uppercase
+    var files = $('#file-input')[0].files;
+    var formData = new FormData();
 
-        for (var i = 0; i < files.length; i++) {
-            formData.append('files[]',files[i]);
+    console.log('Ticket number:', tktno);
+    console.log('Contains "PD":', tktno.includes("PD"));
+
+    for (var i = 0; i < files.length; i++) {
+        formData.append('files[]', files[i]);
+    }
+    formData.append('ticket_no', tktno);
+
+    // First AJAX call
+    $.ajax({
+        type: "POST",
+        url: "insertimg.php",
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (data) {
+            console.log('First AJAX success');
             
-        }
-        formData.append('ticket_no',tktno);
-
-
-        $.ajax({
-            type: "POST",
-            url: "insertimg.php",
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function (data) {
-                // alert(response);
+            // Case-insensitive check
+            if (tktno.includes("PD")) {
+                console.log('PD found, making second AJAX call');
+                $.ajax({
+                    type: "POST",
+                    url: "insertpdf.php",
+                    data: {
+                        operation: 'PRINTPDF',
+                        ticket_no: tktno,
+                        reason: concern,
+                        Supplierx: Supplierx,
+                        Store : $('#str_code').val(),
+                        Adrs : $('#str_adrs').val(),
+                        Contact : $('#str_contact').val(),
+                        RarsNo : $('#rars_no').val(),
+                    },
+                    success: function (data) {
+                        console.log('Second AJAX response:', data);
+                        try {
+                            var response = JSON.parse(data);
+                            if (response.success) {
+                                window.open(response.pdfUrl, '_blank');
+                            } else {
+                                console.error('PDF generation failed:', response.error);
+                                alert('PDF generation failed: ' + response.error);
+                            }
+                        } catch (e) {
+                            console.error('Error parsing JSON:', e);
+                            alert('Error generating PDF');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Second AJAX failed:", error);
+                        alert('Error generating PDF: ' + error);
+                    }
+                });
+            } else {
+                console.log('No PD found in ticket number');
             }
-        });
-        
+        },
+        error: function (xhr, status, error) {
+            console.error("First insert failed:", error);
+            alert('Error uploading files: ' + error);
+        }
     });
+});
 
     //validition for file upload size
     var uploadField = document.getElementById("file-input");
@@ -1232,6 +1313,7 @@ $('#Additem').click(function() {
             var alu = $('#Alu').val();
             var desc = $('#Desc').val();
             var serialNo = $('#SerialNo').val();
+            var Defect = $('#Defect').val();
             var supplier = $('#Supplier').val();
 
             $.ajax({
@@ -1242,6 +1324,7 @@ $('#Additem').click(function() {
                     alu: alu,
                     desc: desc,
                     serialNo: serialNo,
+                    Defect: Defect,
                     supplier: supplier
                 },
                 success: function(data) {
@@ -1250,7 +1333,8 @@ $('#Additem').click(function() {
                     $('#Alu').val("");
                     $('#Desc').val("");
                     $('#SerialNo').val("");
-                    $('#Supplier').val("");
+                    $('#Defect').val("");
+                    // $('#Supplier').val("");
                 }
             });
         });

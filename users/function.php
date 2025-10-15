@@ -1,12 +1,15 @@
     
 <?php
 // session_start();
+// require('../fpdf/fpdf.php');
 include('../connection/db.php');
 date_default_timezone_set("Asia/Manila");
 
+
+
+
 class dbconfig extends dbconn
 {
-
 
 public function getstrreports(){
 
@@ -105,6 +108,9 @@ $qry =  $this->connection->prepare(" SELECT ticket_no FROM {$counter}");
 $service_desc =  trim($_POST["select_tos"]);
 // $Qitems = trim($_POST["QItems"]);
 
+$qry2 =  $this->connection->prepare(" SELECT count FROM rars_counter");
+
+
 
 if (($service_desc === 'LOCAL' || $service_desc === 'IMPORT') && $Qitems === 'SINGLE') {
 $qry->execute();
@@ -112,7 +118,7 @@ $res = $qry->fetch(PDO::FETCH_ASSOC);
 $ticknum = $res['ticket_no']+1;
 $userId = $_POST["uId"];
 $status = $_POST["status"];
-$statement =$this->connection->prepare("INSERT INTO reports (ticket_no, date_created, deptsel, store, concern, service_desc, status, subject, userId, sub_ticket, alu, serial_no, type_unit, pd_tag) 
+$statement = $this->connection->prepare("INSERT INTO reports (ticket_no, date_created, deptsel, store, concern, service_desc, status, subject, userId, sub_ticket, alu, serial_no, type_unit, pd_tag) 
 VALUES (:ticket_no, :date_created, :deptsel, :store, :concern, :service_desc, :status, :subject, :userId, :sub_ticket, :alu, :serial_no, :type_unit, :pd_tag)
 ");
 $result = $statement->execute(
@@ -132,8 +138,31 @@ array(
  ':serial_no' => $_POST["SerialNo"],
  ':type_unit' => $_POST["TypesOfUnit"],
  ':pd_tag' => 'Y'
-)
-);
+));
+
+$statement2 = $this->connection->prepare("INSERT INTO tbl_pditems (ticket_no, alu_no, description, serial_no, defect, supplier, save_tag) 
+VALUES (:ticket_no, :alu_no, :description, :serial_no, :defect, :supplier, :save_tag)");
+$result2 = $statement2->execute(
+array(
+':ticket_no' => $deptabr.''.$ticknum,
+':alu_no' => $_POST["Alu"],
+':description' => $_POST["Desc"],
+':serial_no' => $_POST["SerialNo"],
+':defect' => $_POST["Defect"],
+':supplier' => $_POST["Supplier"],
+':save_tag' => 'Y'
+));
+
+
+$qry2->execute();
+$res2 = $qry2->fetch(PDO::FETCH_ASSOC); 
+$rarsnum = $res2['count']+1;
+
+$statement3 = $this->connection->prepare("UPDATE rars_counter SET count = :count ");
+$result3 = $statement3->execute(
+array(
+':count' => $rarsnum
+));
 
 }
 
@@ -169,6 +198,16 @@ $statement2 = $this->connection->prepare("UPDATE tbl_pditems SET save_tag = :sav
 $result2 = $statement2->execute(
 array(
 ':save_tag' => 'Y'
+));
+
+$qry2->execute();
+$res2 = $qry2->fetch(PDO::FETCH_ASSOC); 
+$rarsnum = $res2['count']+1;
+
+$statement3 = $this->connection->prepare("UPDATE rars_counter SET count = :count ");
+$result3 = $statement3->execute(
+array(
+':count' => $rarsnum
 ));
 
 
@@ -212,6 +251,8 @@ else {
     $this->frscommt($ticknum,$deptabr,$userId);
     $this->ticket_trail($ticknum,$deptabr,$status,$userId);
    
+
+
  }
 
 
@@ -679,6 +720,32 @@ $deptVal = $_POST['deptval'];
         return $data;
         
         }
+
+        public function rars_count(){
+
+          $query="SELECT * FROM rars_counter";
+          $statement = $this->connection->prepare($query);
+          $statement-> execute();
+          $result = $statement->fetchAll();
+          $data[] = array();
+          // $fetchdata[] = array();
+          
+          foreach($result as $row)
+          {
+          
+          $fetchdata[] = array(
+          'rarscount' => $row['count']+1
+          
+          );
+          
+          }
+          $data = array_filter($fetchdata);
+          // echo json_encode($data);
+          return $data;
+          
+          }
+          
+
 
 
 }//end class
