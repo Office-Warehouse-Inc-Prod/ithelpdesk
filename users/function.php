@@ -679,7 +679,13 @@ $deptVal = $_POST['deptval'];
         $sbs_no = $_POST['sbs_no'];
         $price_lvl = $_POST['price_lvl'];
     
-        $query="SELECT SBS_NO, ALU,  LOCAL_UPC, DESCRIPTION1, Price, PRICE_LVL FROM item_masterfile_refine WHERE SBS_NO = '$sbs_no' AND PRICE_LVL = '$price_lvl' AND ALU = '$kprvr' OR Local_UPC = '$kprvr'";
+        // $query="SELECT SBS_NO, ALU,  LOCAL_UPC, DESCRIPTION1, Price, PRICE_LVL FROM item_masterfile_refine WHERE SBS_NO = '$sbs_no' AND PRICE_LVL = '$price_lvl' AND ALU = '$kprvr' OR Local_UPC = '$kprvr'";
+        //new code for price verifier
+        $query="SELECT SBS_NO, ALU, LOCAL_UPC, DESCRIPTION1, Price, PRICE_LVL
+FROM item_masterfile_refine
+WHERE (ALU = '$kprvr' OR Local_UPC = '$kprvr')
+  AND SBS_NO = '$sbs_no'
+  AND PRICE_LVL = '$price_lvl';";
         $statement = $this->connection->prepare($query);
         $statement-> execute();
         $result = $statement->fetchAll();

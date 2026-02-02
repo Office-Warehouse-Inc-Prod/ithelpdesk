@@ -232,7 +232,7 @@ img{
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <!-- <i class="fa fa-envelope-o"> -->
            <img src="../images/users/<?= $_SESSION['imguser'];?>" alt="User Image" />
-           <span class="text-dark font-weight-bold"><?php  echo $_SESSION['str_code']. ' |  '  .   $_SESSION['fname']. '  ' . $_SESSION['lstname'];?></span> 
+           <span class="text-dark font-weight-bold debug "><?php  echo $_SESSION['str_code']. ' |  '  .   $_SESSION['fname']. '  ' . $_SESSION['lstname'];?></span> 
            <input type="hidden" name="lm_tag" id="lm_tag" value="<?php echo $_SESSION['SBS_NO']; ?>">
            <input type="hidden" name="lm_tag" id="lm_tag" value="<?php echo $_SESSION['PRICE_LVL']; ?>">
         </a>
@@ -270,5 +270,10 @@ if (lmtag === 'Y') {
   // alert('PL 1');
 }
   });
- 
+ var debg = $('.debug').text();
+
+if (debg.includes('Undefined')) {
+
+  window.location="logout.php";  
+}
 </script>

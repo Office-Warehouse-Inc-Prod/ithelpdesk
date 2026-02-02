@@ -9,11 +9,12 @@ if (empty($PDtkt)) {
 }
 
 // Since this file is in /ithelpdesk/users/, the pdf folder is now adjacent
-$pdfDir = __DIR__ . '/pdf/';
+// $pdfDir = __DIR__ . '/pdf/';
 // This resolves to: C:/xampp/htdocs/ithelpdesk/users/pdf/
 
 // Alternative absolute path:
 // $pdfDir = 'C:/xampp/htdocs/ithelpdesk/users/pdf/';
+$pdfDir = '/opt/lampp/htdocs/ithelpdesk/users/pdf/';
 
 error_log("Searching for PDF with ticket: " . $PDtkt);
 error_log("Directory: " . $pdfDir);

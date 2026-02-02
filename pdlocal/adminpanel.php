@@ -47,8 +47,9 @@ include 'sub_graph_modal.php';
           <div class="input-group-text">LOGS IN YEAR OF:</div>
         </div>
                  <select class="form-contro"  name="yearpicker" id="yearpicker" required>
-                 <option value="2019,2020,2021,2022,2023,2024,2025" >OVERALL</option>
-                 <option value="2025" selected >2025</option>
+                 <option value="2019,2020,2021,2022,2023,2024,2025,2026" >OVERALL</option>
+		 <option value="2026" selected >2026</option>
+                 <option value="2025">2025</option>
                  <option value="2024" >2024</option>
                  <option value="2023" >2023</option>
                  <option value="2022" >2022</option>

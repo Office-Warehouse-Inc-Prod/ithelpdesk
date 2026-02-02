@@ -49,14 +49,15 @@ $datetime->setTimezone($timezone);
                <span class="input-group-text" id="basic-addon1">SELECT YEAR:</span>
              </div>
                             <select class="form-control"  name="yearpicker" id="yearpicker" required>
-                            <option value="2019,2020,2021,2022,2023,2024,2025">OVERALL</option>
+                            <option value="2019,2020,2021,2022,2023,2024,2025,2026">OVERALL</option>
                             <option value="2019">2019</option>
                             <option value="2020">2020</option>
                             <option value="2021">2021</option>
                             <option value="2022">2022</option>
                             <option value="2023">2023</option>
-                            <option value="2024">2024</option>
-                            <option value="2025" selected>2025</option>
+			    <option value="2024">2024</option>
+			    <option value="2025">2025</option>
+                            <option value="2026" selected>2026</option>
                            </select>
             </div>
 

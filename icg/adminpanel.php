@@ -257,7 +257,7 @@ style="text-transform:uppercase" onkeyup="this.value = this.value;"></textarea>
 <div class="form-group col-4 col-md-4 col-lg-4">
 
 <label>CATEGORY</label>
-<input type="text" name="cat_num" id="cat_num" readonly="">
+<input type="hidden" name="cat_num" id="cat_num" readonly="">
 <select class="form-control form-control-sm" name="cat" id="cat" required >
 <option value=""> &larr; CATEGORY &rarr;</option>  
      <?php
@@ -278,7 +278,7 @@ style="text-transform:uppercase" onkeyup="this.value = this.value;"></textarea>
 <div class="form-group col-4 col-md-4 col-lg-4">
 
 <label>SUB CATEGORY</label>
-<input type="text" name="sub_num" id="sub_num" readonly="">
+<input type="hidden" name="sub_num" id="sub_num" readonly="">
 
 
 <select class="form-control form-control-sm" name="sub" id="sub">

@@ -90,7 +90,7 @@ $regcon=new dbconfig();
               </select>  
           </div>
           <div class="col-md-12 form-group">
-                <select class="form-control form-control-sm" name="slct_gender" id="slct_gender">
+                <select class="form-control form-control-sm" name="slct_gender" id="slct_gender" require>
                   <option value="">Select User Gender</option>
                   <option value="1">Male</option>
                   <option value="2">Female</option>
@@ -399,41 +399,46 @@ $('#select_strcd').change(function() {
 // validation
 let FName = $('#fname').val();
 let LstName = $('#lstname').val();
-// let Gender = $('#slct_gender').val();
+let Gender = $('#slct_gender').val();
 let StrVal = $('strslt_num').val();
+let SelDept = $('#select_dept').val();
+// select_dept
 
-if (FName != "" && LstName != ""  && StrVal != "") {
-      $.ajax({
-        url: "insert.php",
-        method: "POST",
-        data: $('#reg_form').serialize(),
-        success: function (data) {
-          console.log(data)
-          $("#reg_form")[0].reset();
-          $("#usr_crt_modal").modal("hide");
-          Swal.fire({
-             icon: 'success',
-             title: 'Your work has been saved',
-             showConfirmButton: false,
-             timer: 1500
-          });
-          $("#userModal").modal("hide");
-      //     setTimeout(function(){// wait for 5 secs(2)
-      //      location.reload(); // then reload the page.(3)
-      // }, 2000);
-          
-        },
+if (FName !== "" && LstName !== "") {
+  $.ajax({
+    url: "insert.php",
+    method: "POST",
+    data: $('#reg_form').serialize(),
+    success: function (data) {
+      console.log(data);
+
+      $("#reg_form")[0].reset();
+      $("#usr_crt_modal").modal("hide");
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Saved successfully',
+        text: 'The record has been added to the system.',
+        width: 360,
+        showConfirmButton: false,
+        timer: 1800,
+        timerProgressBar: true
       });
-}
-else{
-           Swal.fire({
-             icon: 'error',
-             title: 'Please Complete',
-             showConfirmButton: false,
-             timer: 1500
-          });
+
+      $("#userModal").modal("hide");
+    }
+  });
+} else {
+  Swal.fire({
+    icon: 'warning',
+    title: 'Incomplete information',
+    text: 'Please complete all required fields.',
+    width: 360,
+    confirmButtonText: 'OK'
+  });
   return false;
 }
+
 
   });
 
