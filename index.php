@@ -107,7 +107,7 @@
     <div class="col-md-6 p-4">
       <div class="text-center">
         <img src="assets/owilogo.jpeg" class="logo" alt="Logo">
-        <h2 class="fw-bold">OWI HELPDESK</h2>
+        <h2 class="fw-bold">OWI HELPDESK Rev 3.0</h2>
         <p class="subtitle">Login to continue</p>
       </div>
 
