@@ -4,7 +4,7 @@ include('../db.php');
 // include('../function.php');
 $query = '';
 $output = array();
-$query = "SELECT * FROM vw_wfittable
+$query = "SELECT COUNT(*) FROM reports WHERE `status` = 'NEW REPORT'
  ";
 // if(isset($_POST["search"]["value"]))
 // {

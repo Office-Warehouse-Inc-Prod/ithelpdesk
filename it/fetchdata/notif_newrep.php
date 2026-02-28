@@ -23,8 +23,7 @@ reports_msgcnt
 ON 
     reports_msgcnt.ticket_no = reports.ticket_no
 WHERE
-`status` = 'NEW REPORT' AND
-msg_cnt = '1' AND
+`status` = 'ASSIGNED'  AND
 deptsel = '1' AND 
 store IS NOT NULL
 GROUP BY

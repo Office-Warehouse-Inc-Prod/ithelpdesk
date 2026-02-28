@@ -5,6 +5,12 @@ include 'rst_form.php';
 $regcon=new dbconfig();
  ?>
 
+<style>
+.swal-btn{
+  margin: 10px; /* add 10px margin between buttons */
+}
+</style>
+
 <head>
 <link rel="stylesheet" href="../css/bootstrap-datetimepicker.min.css"/>
 <script src="../js/bootstrap-datetimepicker.min.js"></script>
@@ -84,7 +90,7 @@ $regcon=new dbconfig();
               </select>  
           </div>
           <div class="col-md-12 form-group">
-                <select class="form-control form-control-sm" name="slct_gender" id="slct_gender">
+                <select class="form-control form-control-sm" name="slct_gender" id="slct_gender" require>
                   <option value="">Select User Gender</option>
                   <option value="1">Male</option>
                   <option value="2">Female</option>
@@ -96,7 +102,7 @@ $regcon=new dbconfig();
 
         </div>
         <div class="modal-footer border-top-0 d-flex justify-content-center">
-          <input type="text" name="operation" id="operation" value="3" /> 
+          <input type="hidden" name="operation" id="operation" value="3" /> 
           <button id="btn_submit" class="btn btn-success">Submit</button>
 
         </div>
@@ -130,6 +136,7 @@ var user_id = <?= $_SESSION['user_id']; ?>
 function getdata(){
   $.post('fetchdata/fetch_data.php',{mode:'usermtc_dtable'},function(data){
     admin_datatable(data);
+    // console.log(data);
   },'json');
 }
 getdata();
@@ -159,10 +166,29 @@ const dataset=t.usermtc_data;
                {title:"Username", data:"username","defaultContent": ""},
                {title:"Department", data:"dept_desc","defaultContent": ""},
                {title:"Store Code", data:"str_code","defaultContent": ""},
+               {title:"Status", data:"usr_stat","defaultContent": ""},
               //  {title:"Update", data:null,"defaultContent": "<Button class='GetName btn btn-info mr-2' name='BtnVw' id='BtnVw'><i class='fas fa-eye'></i></Button>"}
+	       {title:"Update", data:null,"width": "20%","defaultContent": "<Button class='GetName btn btn-info mr-2' name='BtnVw' id='BtnVw'><i class='fas fa-eye'></i></Button> <Button class=' GetPosition btn btn-success mr-2' name='BtnEdit' id='BtnEdit'><i class='fas fa-edit'></i></Button> <Button class=' GetPositions btn btn-danger' name='BtnDact' id='BtnDact'><i class='fas fa-window-close'></i></Button>"}
+	       ],
+	       "columnDefs": [
+                {
 
-               {title:"Update", data:null,"defaultContent": "<Button class='GetName btn btn-info mr-2' name='BtnVw' id='BtnVw'><i class='fas fa-eye'></i></Button> <Button class=' GetPosition btn btn-success' name='BtnEdit' id='BtnEdit'><i class='fas fa-edit'></i></Button>"}
- 
+targets: [6],
+"width": "2%",
+render: function ( data, type, row) {
+    if(type === 'display'){
+      if(data == 'A'){
+          data = '<i class="fas fa-user-check" style="color : green; font-size: 25px;"></i>'
+        }
+        else if (data == 'D'){
+          data = '<i class="fas fa-user-times" style="color : red; font-size: 25px;"></i>'
+
+        }
+}
+return data;
+}
+
+}
                ]
 
    }); //  end of datatable
@@ -211,7 +237,7 @@ $('#usermtc_table tbody').on('click', 'button', function () {
       
       var action = this.id;
             var data = reptable.row( $(this).parents('tr') ).data();
-     
+    const IDx = data.user_id;
             if (action=='BtnVw') {
 
             // var data = reptable.row( $(this).parents('tr') ).data();
@@ -252,26 +278,80 @@ $('#usermtc_table tbody').on('click', 'button', function () {
      
          if(action == 'BtnEdit'){
 
+            
           // alert( 'This is the Position: '+data[1]);
           // alert('beta phase');
             $("#usr_crt_modal").modal("show");
 
             $(".strcol").show();
-            $("#select_dept").hide();
+            $("#select_dept").show();
             $('#slct_gender').hide();
             $('#slct_gender').removeAttr('required');
-                 $('#usr_crt_modal #operation').val("stredit");
-                 $('#usrID').val(data['user_id']);
-                 $('#fname').val(data['fname']);
-                 $('#lstname').val(data['lstname']);
-                 $('#strslt_num').val(data['dept_id']);
-                 $('#select_dept').val(data['dept_desc']);
-                 $('#select_strcd').val(data['str_num']);
-                //  $('#slct_gender').val(data['gender_id']);
-              
+            $('#usr_crt_modal #operation').val("stredit");
+            $('#usrID').val(data['user_id']);
+            $('#fname').val(data['fname']);
+            $('#lstname').val(data['lstname']);
+            $('#strslt_num').val(data['dept_id']);
+            $('#select_dept').val(data['dept_desc']);
+            $('#select_strcd').val(data['str_num']);
+          //  $('#slct_gender').val(data['gender_id']);
+        
                 //  $("#exampleModalLongTitle #menu_value").val();
                 // $('#restusr_id').val(data['user_id']);
     
+	 }
+
+	           if (action == 'BtnDact') {
+        //  alert(IDx);
+        Swal.fire({
+  title: "Do you want to update this user account status?",
+  showDenyButton: true,
+  showCancelButton: true,
+  confirmButtonText: "Deactivate",
+  denyButtonText: "Activate",
+  buttonsStyling: false,
+  customClass: {
+    confirmButton: 'btn btn-danger swal-btn',
+    denyButton: 'btn btn-success swal-btn',
+    cancelButton: 'btn btn-secondary swal-btn'
+  }
+}).then((result) => {
+  /* Read more about isConfirmed, isDenied below */
+  if (result.isConfirmed) {
+  Swal.fire({
+    title: "Deactivated!",
+    text: "",
+    icon: "success",
+    timer: 1000, // auto-close the modal after 1.5 seconds
+    showConfirmButton: false // no button required
+  });
+  $.ajax({
+    type: 'POST',
+    url: 'insert.php', 
+    data: { operation: 'Dactivate', IDx: IDx },
+    success: function() {
+      getdata();
+    }
+  });
+} else if (result.isDenied){
+  Swal.fire({
+    title: "Activated!",
+    text: "",
+    icon: "success",
+    timer: 1000, // auto-close the modal after 1.5 seconds
+    showConfirmButton: false, // no button required
+  });
+  $.ajax({
+    type: 'POST',
+    url: 'insert.php', 
+    data: { operation: 'Activate', IDx: IDx },
+    success: function() {
+      getdata();
+    }
+  });
+}
+});
+
          }
            
     
@@ -282,7 +362,7 @@ $('#usermtc_table tbody').on('click', 'button', function () {
 });
 
 $('#select_dept').change(function() {
-  if ($(this).val() == 10) {
+  if ($(this).val() == '10') {
       $(".strcol").show();
        $('#strslt_num').val('');
       $('#select_strcd').prop({
@@ -319,41 +399,46 @@ $('#select_strcd').change(function() {
 // validation
 let FName = $('#fname').val();
 let LstName = $('#lstname').val();
-// let Gender = $('#slct_gender').val();
+let Gender = $('#slct_gender').val();
 let StrVal = $('strslt_num').val();
+let SelDept = $('#select_dept').val();
+// select_dept
 
-if (FName != "" && LstName != ""  && StrVal != "") {
-      $.ajax({
-        url: "insert.php",
-        method: "POST",
-        data: $('#reg_form').serialize(),
-        success: function (data) {
-          console.log(data)
-          $("#reg_form")[0].reset();
-          $("#usr_crt_modal").modal("hide");
-          Swal.fire({
-             icon: 'success',
-             title: 'Your work has been saved',
-             showConfirmButton: false,
-             timer: 1500
-          });
-          $("#userModal").modal("hide");
-      //     setTimeout(function(){// wait for 5 secs(2)
-      //      location.reload(); // then reload the page.(3)
-      // }, 2000);
-          
-        },
+if (FName !== "" && LstName !== "") {
+  $.ajax({
+    url: "insert.php",
+    method: "POST",
+    data: $('#reg_form').serialize(),
+    success: function (data) {
+      console.log(data);
+
+      $("#reg_form")[0].reset();
+      $("#usr_crt_modal").modal("hide");
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Saved successfully',
+        text: 'The record has been added to the system.',
+        width: 360,
+        showConfirmButton: false,
+        timer: 1800,
+        timerProgressBar: true
       });
-}
-else{
-           Swal.fire({
-             icon: 'error',
-             title: 'Please Complete',
-             showConfirmButton: false,
-             timer: 1500
-          });
+
+      $("#userModal").modal("hide");
+    }
+  });
+} else {
+  Swal.fire({
+    icon: 'warning',
+    title: 'Incomplete information',
+    text: 'Please complete all required fields.',
+    width: 360,
+    confirmButtonText: 'OK'
+  });
   return false;
 }
+
 
   });
 

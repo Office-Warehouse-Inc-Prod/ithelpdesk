@@ -14,7 +14,7 @@ class dbconfig extends dbconn
 		$query = "SELECT 
         YEAR(date_created) as date_created,
         COUNT(reports.`status`) AS t_all,
-        COUNT(CASE WHEN reports.`status` = 'OPEN' then 1 else NULL end ) as t_open,
+        COUNT(CASE WHEN reports.`status` = 'ON PROCESS' then 1 else NULL end ) as t_open,
         COUNT(CASE WHEN reports.`status` = 'ATTENDED WITH FIX ASSET' then 1 else NULL end) as t_owfa,
         COUNT(CASE WHEN reports.`status` = 'CLOSED' then 1 else NULL end) as t_close,
 		COUNT(CASE WHEN reports.`status` = 'SUBJECT FOR CLOSING' then 1 else NULL END) AS t_day
@@ -54,7 +54,7 @@ class dbconfig extends dbconn
 			FROM
 			reports
 			LEFT JOIN tbl_status ON reports.`status` = tbl_status.stat_desc
-			where `reports`.`sub_id` NOT IN ('15','28','34','35') AND `status` NOT IN ('WAITING FOR IT HELPDESK RESPONSE','NEW REPORT') AND YEAR(date_created) IN (".$_POST['yr'] .") AND reports.deptsel = '1'
+			where `reports`.`sub_id` NOT IN ('15','28','34','35') AND `status` NOT IN ('WAITING FOR IT HELPDESK RESPONSE','NEW REPORT','ASSIGNED') AND YEAR(date_created) IN (".$_POST['yr'] .") AND reports.deptsel = '1'
 			GROUP BY `status`
 			ORDER BY stat_id ASC
 
@@ -88,8 +88,8 @@ class dbconfig extends dbconn
 				Count(reports.itsup) AS total,
 				reports.`status`,
 				Count( CASE reports.`status` when 'CLOSED' then 1 else null end) as completed,
-				Count( CASE reports.`status` when 'OPEN' then 1 else null end) as openrep,
-				Count( CASE reports.`status` when 'OPEN WITH FIX ASSET' then 1 else null end) as opnwfxast
+				Count( CASE reports.`status` when 'ON PROCESS' then 1 else null end) as openrep,
+				Count( CASE reports.`status` when 'PENDING' then 1 else null end) as opnwfxast
 				FROM
 				it_tech
 				LEFT JOIN reports ON reports.itsup = it_tech.itsup
@@ -176,7 +176,7 @@ class dbconfig extends dbconn
 		$query= "
 		SELECT cat_desc,clr,cat_id, count(*) as ctn, date_created
 		FROM vwp 
-		WHERE deptsel = '1' AND date_created IN (".$_POST['yr'] .")
+		WHERE deptsel = '1' AND date_created IN (".$_POST['yr'] .")  AND cat_desc <> 'GENERAL'
 		GROUP BY cat_id ORDER BY cat_desc ASC";
 		$statement = $this->connection->prepare($query);
 		$statement-> execute();
@@ -395,7 +395,7 @@ FROM
 			LEFT JOIN `reports_newmsg` ON ( `reports_newmsg`.`ticket_no` = `reports`.`ticket_no` ))
 	LEFT JOIN `users` ON ( `users`.`id` = `reports`.`userId` )) 
 WHERE
-	`reports`.`status` = 'NEW REPORT' 
+	`reports`.`status` = 'ASSIGNED' 
 	AND reports.deptsel = '1'
 	GROUP BY
 	concern

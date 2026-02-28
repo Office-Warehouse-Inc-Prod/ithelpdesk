@@ -23,7 +23,7 @@ exit();
 <link rel="stylesheet" type="text/css" href="../dist/fontawesome/css/fontawesome.min.css" />
 <script src="https://kit.fontawesome.com/426b4bab4c.js" crossorigin="anonymous"></script> 
 <script src="../js/jquery.timeago.js"></script>
-<script src="../js/helpdesk.js"></script> 
+<script src="../js/adminhelpdesk.js"></script> 
 <script src="../js/coms.js"></script> 
 <script src="../js/amcharts/core.js"></script>
 <script src="../js/amcharts/charts.js"></script>
@@ -36,15 +36,33 @@ exit();
 <link rel="stylesheet" href="//cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css"/>
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.css"/>
 <link rel="stylesheet" href="../assets/Date-Time-Picker-Bootstrap-4/src/sass/bootstrap-datetimepicker-build.css" />
+<link href="https://fonts.googleapis.com/css2?family=Edu+NSW+ACT+Foundation&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+<link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css' rel='stylesheet' />
+
 <script src="../assets/Date-Time-Picker-Bootstrap-4/src/js/bootstrap-datetimepicker.js"></script>
-<link rel="stylesheet" href="styles.css" />
+<!-- <link rel="stylesheet" href="styles.css" /> -->
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&display=swap" rel="stylesheet">
 <script src="../plugins/DataTables-1.10.25/media/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.js"></script>
 <script src="../js/ellipsis.js"></script>
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
 </head>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
+<style>
+
+#notif_newrep{
+    margin-left:6px;
+    font-size:11px;
+    padding:4px 6px;
+}
+
+
+  </style>
 
 <body>
   
@@ -71,11 +89,20 @@ HOME
 NEW REPORTS
 </a>
 </li>
+<li class="nav-item">
+
+</li>
+<!-- <li class="nav-item">
+<a class="nav-link " href="adminwfit.php">
+<i class="fa fa-file-signature">
+  <span class="badge badge-danger" id="">2</span>
+</i>
+NEW SUPPLIES REQUEST
+</a>
+</li> -->
 <li class="nav-item dropdown">
 <a class="nav-link" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 <i class="fa fa-chart-line"></i>
-
-  <!-- <span class="badge badge-primary">11</span> -->
 </i>
 GENERATE REPORT
 </a>
@@ -88,57 +115,58 @@ GENERATE REPORT
 </li>
 
 </ul>
-<ul class="navbar-nav ">
-<li class="nav-item dropdown">
-<a class="nav-link" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-<i class="fa fa-sliders-h">
-
-  <!-- <span class="badge badge-primary">11</span> -->
-</i>
-Maintenance
-</a>
-<div class="dropdown-menu" aria-labelledby="navbarDropdown" style="background-color: rgb(52,58,64);">
-<a class="dropdown-item text-white"  href="user_maintenance.php"><i class="fas fa-user-cog"></i>  User Maintenance</a>
-<!--           <a class="dropdown-item text-white" href="#">Categories</a>
-<div class="dropdown-divider"></div>
-<a class="dropdown-item" href="#">Something else here</a> -->
-</div>
-</li>
-<li class="nav-item dropdown">
-<a class="nav-link" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
- <i class="fa fa-bell">
-  <span class="badge badge-info" id="notif_newmsg"></span>
-</i>
-Notification
-
-</a>
-<div class="dropdown-menu"  aria-labelledby="navbarDropdown">
-<div class="col-md-12 col-xs-12">
-<table id="notif_data" class="table table-dark table-responsive table-sm" style="width: auto;"></table>
-</div>
-
-</div>
-</li>
-<li class="nav-item">
-<form class="form-inline my-2 my-lg-0">
-<ul class="navbar-nav mr-auto">
-      <li class="nav-item dropdown">
-<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-<!-- <i class="fa fa-envelope-o"> -->
- <img class="rounded-circle" src="../images/users/<?= $_SESSION['imguser'];?>" alt="User Image" style="width: 35px;"/><br>
-  <?php echo $_SESSION['fname']. '  ' . $_SESSION['lstname'];?>
-
-</a>
-<div class="dropdown-menu " aria-labelledby="navbarDropdown">
-<!-- <a class="dropdown-item" href="javascript:void(0)" onclick="pager(this.id)" id="change_password"></a> -->
-<a class="dropdown-item" href="change_password.php">Change Password</a>
-<a class="dropdown-item" href="../logout.php">Log Out</a>
-
-</div>
-</li>
-</ul>
-</form>
-</li>
+<ul class="navbar-nav ml-auto"> 
+<!-- <li class="nav-item">
+  <a class="nav-link" href="networkpanel.php" >
+    <i class="fa-solid fa-ethernet"></i>
+    <span>Network Maintenance</span>
+  </a>
+</li> -->
+<!-- Changed mr-auto to ml-auto for right alignment -->
+  <li class="nav-item dropdown">
+    <a class="nav-link" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <i class="fa fa-sliders-h"></i>
+      Maintenance
+    </a>
+    <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="background-color: rgb(52,58,64);">
+      <a class="dropdown-item text-white" href="user_maintenance.php">
+        <i class="fas fa-user-cog"></i> User Maintenance
+      </a>
+      <a class="dropdown-item text-white" href="store_maintenance.php">
+        <i class="fas fa-store"></i> Store Maintenance
+      </a>
+    </div>
+  </li>
+  
+  <li class="nav-item dropdown">
+    <a class="nav-link" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <i class="fa fa-bell">
+        <span class="badge badge-info" id="notif_newmsg"></span>
+      </i>
+      Notification
+    </a>
+    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+      <div class="col-md-12 col-xs-12">
+        <table id="notif_dataxx" class="table text-dark table-dark table-responsive table-sm bg-dark" style="width: auto;"></table>
+      </div>
+    </div>
+  </li>
+  
+  <li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <img class="rounded-circle" src="../images/users/<?= $_SESSION['imguser'];?>" alt="User Image" style="width: 35px; height: 35px; object-fit: cover;">
+      <span class="ml-2 d-none d-lg-inline"><?php echo $_SESSION['fname'].' '.$_SESSION['lstname']; ?></span>
+    </a>
+    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+      <a class="dropdown-item" href="change_password.php">
+        <i class="fas fa-key mr-2"></i>Change Password
+      </a>
+      <div class="dropdown-divider"></div>
+      <a class="dropdown-item" href="../logout.php">
+        <i class="fas fa-sign-out-alt mr-2"></i>Log Out
+      </a>
+    </div>
+  </li>
 </ul>
 </div>
 </nav>
@@ -146,21 +174,24 @@ Notification
 
 <script type="text/javascript">
 $(document).ready(function(){
-countnewrep();
+// countnewrep();
 countNwMsg();
 
 function getdata(){
-$.post('fetchdata/fetch_data.php',{mode:'notif_support'},function(data){
-// console.log(data);
-notifdatas(data);
-},'json');
+    $.post('fetchdata/fetch_data.php', { mode: 'notif_support' }, function(data){
+        // console.log(data);
+        notifdatas(data);
+    }, 'json');
 }
-getdata();
+
+// Run getdata() every 1 second
+setInterval(getdata, 1000);
+
 
 var table
 function notifdatas(t){
 const dataset=t.ntfsupdata;
-table =  $("#notif_data").DataTable({
+table =  $("#notif_dataxx").DataTable({
 
 "dom":
 '<"pull-left"lf><"pull-right">tip',
@@ -192,15 +223,34 @@ className: 'bolded'
 
 });
 
-$('#notif_data tbody').on( 'click', 'tr', function () {
-var data =  table.row( this ).data();
-var ticketVal = data.ticket_no;
-$('#myInput').val(ticketVal).trigger('input');
-$.post('change_notif.php', {ticketVal: ticketVal}, function(data, textStatus, xhr) {
-getdata();
-$('#dtbsecond').click();
+$('#notif_dataxx tbody').on('click', 'tr', function () {
+    var data = table.row(this).data();
+    var ticketVal = data.ticket_no;
+
+    $('#myInput').val(ticketVal).trigger('input');
+
+    $.post('change_notif.php', { ticketVal: ticketVal }, function(data, textStatus, xhr) {
+        getdata();
+    });
+
+    // Scroll to bottom smoothly after click
+  $('html, body').animate(
+        { scrollTop: $(document).height() },
+        800,
+        'swing',
+        function () {
+            // Add highlight effect
+            let tableDiv = $('#report_data');
+            tableDiv.css('transition', 'background-color 0.8s');
+            tableDiv.css('background-color', '#ffff99'); // highlight yellow
+
+            setTimeout(() => {
+                tableDiv.css('background-color', '#ffffff'); // back to white
+            }, 800); // delay before returning to white
+        }
+    );
 });
-} );
+
 
 } // end of data table
 
@@ -209,24 +259,25 @@ $('#dtbsecond').click();
 
 
 
-function countnewrep() {
+
+// function countnewrep() {
 
 
-setInterval(function(){
+// setInterval(function(){
 
-var xhttp = new XMLHttpRequest();
-xhttp.onreadystatechange = function() {
-if (this.readyState == 4 && this.status == 200) {
-document.getElementById("notif_newrep").innerHTML = this.responseText;
-}
-};
-xhttp.open("GET", "fetchdata/notif_newrep.php", true);
-xhttp.send();
+// var xhttp = new XMLHttpRequest();
+// xhttp.onreadystatechange = function() {
+// if (this.readyState == 4 && this.status == 200) {
+// document.getElementById("notif_newrep").innerHTML = this.responseText;
+// }
+// };
+// xhttp.open("GET", "fetchdata/notif_newrep.php", true);
+// xhttp.send();
 
-},1000);
+// },1000);
 
 
-}
+// }
 
 
 
@@ -248,6 +299,40 @@ xhttp.send();
 },1000);
 
 
+}
+
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    getNewReportCount();      // run immediately
+    setInterval(getNewReportCount, 5000); // every 5 seconds (DO NOT use 1s)
+
+});
+
+
+async function getNewReportCount() {
+
+    try {
+
+        const response = await fetch("fetchdata/notif_newrep.php?_=" + Date.now());
+        const count = (await response.text()).trim();
+
+        const badge = document.getElementById("notif_newrep");
+
+        if (!badge) return;
+
+        if (count === "0" || count === "") {
+            badge.style.display = "none";
+        } else {
+            badge.style.display = "inline-block";
+            badge.innerHTML = count;
+        }
+
+    } catch (error) {
+        console.error("Notification count error:", error);
+    }
 }
 
 

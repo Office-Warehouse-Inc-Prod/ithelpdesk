@@ -433,10 +433,10 @@ order: [[0, 'desc']],
     pieSeries.slices.template.adapter.add("fill", function (fill, target) {
       if (target.dataItem) {
         switch (target.dataItem.category) {
-          case "OPEN":
+          case "PENDING":
             return am4core.color("#FF7A7A"); // soft red
-          case "ATTENDED WITH FIX ASSET":
-            return am4core.color("#FFD966"); // soft yellow
+          case "ON PROCESS":
+            return am4core.color("#FFC107"); // soft yellow
           case "CLOSED":
             return am4core.color("#7DD77D"); // soft green
           case "SUBJECT FOR CLOSING":
@@ -607,8 +607,9 @@ chart.data = grphdata
 chart.colors.list = [
   am4core.color("#0077F7"),
   am4core.color("#27A243"),
-  am4core.color("#DC3545"),
-  am4core.color("#FFC107")
+  am4core.color("#FFC107"),
+  am4core.color("#DC3545")
+
 
 ];
 
@@ -689,7 +690,7 @@ series3.dataFields.valueY = "opncase";
 series3.dataFields.categoryX = "it_name";
 series3.clustered = false;
 series3.columns.template.width = am4core.percent(50);
-series3.tooltipText = "OPEN REPORTS: [bold]{valueY}";
+series3.tooltipText = "ON PROCESS: [bold]{valueY}";
 series3.columns.template.events.on("hit", function(ev) {
               
               let itVal= ev.target.dataItem.dataContext["itsup"] ;
@@ -719,7 +720,7 @@ series4.dataFields.valueY = "opnwfxast";
 series4.dataFields.categoryX = "it_name";
 series4.clustered = false;
 series4.columns.template.width = am4core.percent(50);
-series4.tooltipText = "WITH FIX ASSET: [bold]{valueY}";
+series4.tooltipText = "PENDING (OVER SLA): [bold]{valueY}";
 
 chart.cursor = new am4charts.XYCursor();
 chart.cursor.lineX.disabled = true;

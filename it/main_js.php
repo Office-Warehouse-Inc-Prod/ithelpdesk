@@ -265,7 +265,7 @@ rowCallback: function(row, data, index) {
   // Remove previous styling classes
   $(row).removeClass('status-open status-open-msg status-closed status-subject-closing status-fixed');
 
-  if (data['status'] === 'OPEN') {
+  if (data['status'] === "ON PROCESS") {
     if (data['msg_cnt'] === '1' || data['msg_cnt'] === '0') {
       $(row).addClass('status-open');
     }
@@ -573,7 +573,7 @@ return false;
       alert("Invalid date");
       return false;
     }
-    else if (Status == 'OPEN'){
+    else if (Status == "ON PROCESS"){
         if (DateClosed < DateCreated ){
       alert("Date closed should be greater than date created!");
       return false;

@@ -1,542 +1,536 @@
-<?php
-// session_start();
-include 'admin.php';
-include '../condb.php';
+      <?php
+      include 'admin.php';
+      include '../condb.php';
+      $con1 = new dbconfig();
+      ?>
+
+      <head>
+      <link rel="stylesheet" href="../css/bootstrap-datetimepicker.min.css"/>
+      <script src="../js/bootstrap-datetimepicker.min.js"></script>
+
+      <link rel="stylesheet" href="../css/jquery.dataTables.min.css" />
+      <!-- <link rel="stylesheet" href="styles.css" /> -->
+
+      <script src="../js/jquery.dataTables.min.js"></script>
+      <script src="../js/dataTables.select.min.js"></script>
+      <script src="../js/dataTables.responsive.min.js"></script>
+      <script src="../js/fnReloadAjax.js"></script>
+
+        <style>
 
 
-$con1=new dbconfig();
+/* =========================
+   Modern Helpdesk UI Skin
+   Works with Bootstrap + DataTables
+   ========================= */
+
+:root{
+  --bg0:#0b1220;
+  --bg1:#0f172a;
+  --card:#101a33cc;
+  --card2:#0f1a33;
+  --text:#e5e7eb;
+  --muted:#9ca3af;
+  --line:rgba(255,255,255,.08);
+  --shadow: 0 20px 55px rgba(0,0,0,.45);
+  --radius:18px;
+  --radius-sm:14px;
+  --focus: 0 0 0 .2rem rgba(59,130,246,.25);
+}
+
+html, body{
+  height:100%;
+}
+
+body{
+  background:
+    radial-gradient(900px 600px at 15% 10%, rgba(56,189,248,.16), transparent 55%),
+    radial-gradient(700px 500px at 85% 20%, rgba(168,85,247,.14), transparent 55%),
+    radial-gradient(700px 500px at 50% 90%, rgba(34,197,94,.10), transparent 55%),
+    linear-gradient(180deg, var(--bg0), var(--bg1));
+  color: var(--text);
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+}
+
+/* container spacing */
+.container.mt-3{
+  padding-top: 10px;
+  padding-bottom: 24px;
+}
+
+/* ===== Card wrapper for table ===== */
+#new_rep_table{
+  width:100% !important;
+}
+
+.table-wrap{
+  background: rgba(16, 26, 51, .55);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px;
+  backdrop-filter: blur(10px);
+}
+
+/* If you can't add wrapper div, style DataTables container instead */
+.dataTables_wrapper{
+  background: rgba(16, 26, 51, .55);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px;
+  backdrop-filter: blur(10px);
+}
+
+/* DataTables header controls */
+.dataTables_wrapper .dataTables_length label,
+.dataTables_wrapper .dataTables_filter label,
+.dataTables_wrapper .dataTables_info{
+  color: var(--muted) !important;
+  font-weight: 500;
+}
+
+.dataTables_wrapper .dataTables_filter input,
+.dataTables_wrapper .dataTables_length select{
+  background: rgba(255,255,255,.06) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 12px !important;
+  color: var(--text) !important;
+  padding: 8px 10px !important;
+  outline: none !important;
+}
+
+.dataTables_wrapper .dataTables_filter input:focus,
+.dataTables_wrapper .dataTables_length select:focus{
+  box-shadow: var(--focus) !important;
+  border-color: rgba(59,130,246,.55) !important;
+}
+
+/* Pagination */
+.dataTables_wrapper .dataTables_paginate .paginate_button{
+  border-radius: 12px !important;
+  border: 1px solid transparent !important;
+  color: var(--text) !important;
+  background: transparent !important;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover{
+  border-color: var(--line) !important;
+  background: rgba(255,255,255,.06) !important;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button.current{
+  background: rgba(59,130,246,.20) !important;
+  border-color: rgba(59,130,246,.35) !important;
+}
+
+/* ===== Table modern look ===== */
+table.dataTable{
+  border-collapse: separate !important;
+  border-spacing: 0 10px !important; /* row gaps */
+}
+
+table.dataTable thead th{
+  color: rgba(229,231,235,.9) !important;
+  font-weight: 700;
+  letter-spacing: .02em;
+  border: none !important;
+  background: transparent !important;
+  padding: 14px 12px !important;
+}
+
+table.dataTable tbody tr{
+  background: rgba(15, 26, 51, .70) !important;
+  border: 1px solid var(--line);
+  box-shadow: 0 8px 18px rgba(0,0,0,.25);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+table.dataTable tbody td{
+  border-top: 1px solid transparent !important;
+  border-bottom: 1px solid transparent !important;
+  color: rgba(229,231,235,.92) !important;
+  padding: 14px 12px !important;
+}
+
+table.dataTable tbody tr:hover{
+  transform: translateY(-1px);
+  transition: .15s ease;
+  background: rgba(17, 32, 62, .78) !important;
+}
+
+/* Fix the rounded row corners */
+table.dataTable tbody tr td:first-child{
+  border-top-left-radius: 14px;
+  border-bottom-left-radius: 14px;
+}
+table.dataTable tbody tr td:last-child{
+  border-top-right-radius: 14px;
+  border-bottom-right-radius: 14px;
+}
+
+/* ===== Modal modern glass ===== */
+.modal-content{
+  border: 1px solid var(--line) !important;
+  border-radius: var(--radius) !important;
+  background: rgba(12, 18, 35, .88) !important;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(12px);
+}
+
+.modal-header{
+  border-bottom: 1px solid var(--line) !important;
+  padding: 16px 18px !important;
+}
+
+.modal-title{
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: .02em;
+  color: var(--text);
+}
+
+.modal-body{
+  padding: 18px !important;
+}
+
+.modal-footer{
+  border-top: 1px solid var(--line) !important;
+  padding: 14px 18px !important;
+}
+
+label{
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(229,231,235,.78);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+/* Inputs / Select / Textarea */
+.form-control,
+.form-control-sm,
+select.form-control,
+textarea.form-control{
+  background: rgba(255,255,255,.06) !important;
+  border: 1px solid var(--line) !important;
+  color: var(--text) !important;
+  border-radius: 14px !important;
+  padding: 10px 12px !important;
+}
+
+.form-control:focus,
+.form-control-sm:focus,
+select.form-control:focus,
+textarea.form-control:focus{
+  box-shadow: var(--focus) !important;
+  border-color: rgba(59,130,246,.55) !important;
+}
+
+.form-control[readonly],
+textarea[readonly]{
+  opacity: .95;
+}
+
+/* Spacing in grid */
+.form-group{
+  margin-bottom: 14px !important;
+}
+
+/* ===== Buttons ===== */
+.btn{
+  border-radius: 14px !important;
+  padding: 10px 14px !important;
+  font-weight: 700 !important;
+  letter-spacing: .02em;
+  border: 1px solid transparent !important;
+}
+
+.btn-primary{
+  background: rgba(59,130,246,.22) !important;
+  border-color: rgba(59,130,246,.35) !important;
+}
+.btn-primary:hover{
+  background: rgba(59,130,246,.32) !important;
+}
+
+.btn-success{
+  background: rgba(34,197,94,.22) !important;
+  border-color: rgba(34,197,94,.35) !important;
+}
+.btn-success:hover{
+  background: rgba(34,197,94,.32) !important;
+}
+
+.btn-danger{
+  background: rgba(239,68,68,.22) !important;
+  border-color: rgba(239,68,68,.35) !important;
+}
+.btn-danger:hover{
+  background: rgba(239,68,68,.32) !important;
+}
+
+/* Collapse thread card */
+#msg_thread .card.card-body{
+  background: rgba(255,255,255,.04) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: var(--radius-sm) !important;
+}
+
+/* Thread container */
+.container_remarks{
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  max-height: 280px;
+  overflow: auto;
+}
+
+#remarks_view ul{
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+#remarks_view li{
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  background: rgba(15, 26, 51, .65);
+  border-radius: 14px;
+  margin-bottom: 10px;
+}
+
+hr{
+  border-top: 1px solid var(--line) !important;
+}
+
+
+.priority-chip{
+  padding:4px 10px;
+  border-radius:999px;
+  font-weight:700;
+  font-size:11px;
+  letter-spacing:.05em;
+}
+
+.p-critical{
+  background: rgba(239,68,68,.18);
+  color:#f87171;
+  border:1px solid rgba(239,68,68,.35);
+}
+
+.p-high{
+  background: rgba(251,146,60,.18);
+  color:#fb923c;
+  border:1px solid rgba(251,146,60,.35);
+}
+
+.p-medium{
+  background: rgba(250,204,21,.18);
+  color:#facc15;
+  border:1px solid rgba(250,204,21,.35);
+}
+
+.p-low{
+  background: rgba(34,197,94,.18);
+  color:#4ade80;
+  border:1px solid rgba(34,197,94,.35);
+}
 
 
 
- ?>
+.select2-container--default .select2-selection--single {
+    background-color: #1e293b;
+    border: 1px solid #334155;
+    color: #fff;
+}
+
+.select2-dropdown {
+    background-color: #1e293b;
+    color: #fff;
+}
+
+.select2-results__option {
+    color: #fff;
+}
 
 
-<head>
-<link rel="stylesheet" href="../css/bootstrap-datetimepicker.min.css"/>
-<script src="../js/bootstrap-datetimepicker.min.js"></script>
-<link rel="stylesheet" href="../css/jquery.dataTables.min.css" />
-<link rel="stylesheet" href="styles.css" />
-<script src="../js/jquery.dataTables.min.js"></script>
-<script src="../js/dataTables.select.min.js"></script>
-<script src="../js/dataTables.responsive.min.js"></script>
-<script src="../js/fnReloadAjax.js"></script>
- </head>
-<div class="container mt-3">
-
-  <table class="table table-dark table-responsive table-condensed" id="new_rep_table"></table>
+          </style>
 
 
-</div>
+      </head>
 
- <!-- Start of Add/Edit Modal -->
-      <script src="../js/coms.js"></script> 
- 
-
-  <div class="modal fade" id="newrpt_Modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true"
-  data-backdrop="static"
-   data-keyboard="false">
-  <div class="modal-dialog modal-lg">
-  <form method="post" id="newrpt_form" enctype="multipart/form-data">
-   <div class="modal-content">
-    <div class="modal-header">
-     <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-     <h4 class="modal-title" id="tick_title" value=""></h4>
-    </div>
-
-
-<div class="modal-body">
-<!-- <form> -->
-        
-  <div class="row">
-    <div class="form-group col-md-4">
-       <label>STORE</label>
-
- 
-        <input type="hidden" name="store" id="store" readonly="" value="">
-        <input type="text" class="form-control form-control-sm" name="str_desc" id="str_desc" readonly="" value="">
-
-    </div>
-        <div class="form-group col-md-4">
-       <label>Created By:</label>
-        <input type="text" class="form-control form-control-sm" name="crtd_by" id="crtd_by" readonly="" >
-
-    </div>
-    
-    <input type = "hidden" class="form-control form-control-sm" name = "ticket_no" id="ticket_no">
-
-
-    <div class="form-group col-md-4">
-      
-     <label>DATE CREATED</label>
-        <input type="text" class="form-control form-control-sm" name="date_created" id="date_created" readonly="" value="">
-        <div></div>
-</div>
-
-    <div class="form-group col-md-12">
-    <label>SUBJECT</label>
-     <textarea name="concern" id="concern" class="form-control form-control-sm" placeholder="Input Concern" 
-     style="text-transform:uppercase" onkeyup="this.value = this.value;" readonly></textarea>
-     </div>
-    <div class="form-group col-md-4">
-       <label>Service Requested:</label>
-        <input type="text" class="form-control form-control-sm" name="tos" id="tos" readonly="" >
-
-    </div>
-      <div class="form-group col-md-12">
-    <label>CONCERN</label>
-     <textarea name="concern" id="message" class="form-control form-control-sm" placeholder="Input Concern" 
-     style="text-transform:uppercase" onkeyup="this.value = this.value;" readonly></textarea>
-     </div>
-
-    <div class="form-group col-md-4">
-      <label>VIA</label>
-     <select class="form-control form-control-sm" name="via" id="via" required>
-     <option value=""> &larr; VIA &rarr;</option>
-           <?php
-                    $query="select * from via_main";
-                    $run=$con1->prepare($query);
-                    $run->execute();
-                    $rs=$run->get_result();
-                    while ($res=$rs->fetch_assoc()) {
-                    ?>
-                    <option><?=$res['via_desc'] ?></option>
-                    <?php }?>
-                    ?>   
-    </select>
-  </div>
-    <div class="form-group col-md-8 sup">
-      <!-- <input type="text" id="test" name="test"> -->
-      <label>ASSIGN SUPPORT</label>
-          <input type="hidden" name="it_num" id="it_num" readonly="">
-          <select class="form-control form-control-sm" name="itsup" id="itsup" required>
-             <option value="">Assign support...</option>  
-             <?php
-                          
-                          $query="select * from it_tech WHERE deptsel = '2'";
-                          $run=$con1->prepare($query);
-                          $run->execute();
-                          $rs=$run->get_result();
-                          while ($res=$rs->fetch_assoc()) {
-                            $tchid = $res['itsup'];
-                            $tchdesc = $res['it_desc'];
-                            
-                          ?>
-                             
-                          <option value="<?php echo $tchid;?>"><?= $tchdesc; ?></option>
-                          <?php } ?>
-                </select> 
-   </div>
-    <div class="form-group col-md-6">
-
-     <label>CATEGORY</label>
-          <input type="hidden" name="cat_num" id="cat_num" readonly="">
-          <select class="form-control form-control-sm" name="cat" id="cat" required >
-             <option value=""> &larr; CATEGORY &rarr;</option>  
-                   <?php
-                            $query="select * from category WHERE deptsel = '2'";
-                            $run=$con1->prepare($query);
-                            $run->execute();
-                            $rs=$run->get_result();
-                            while ($res=$rs->fetch_assoc()) {
-                              $supid = $res['id'];
-                              $suppdesc = $res['category_name'];
-                            ?>
-
-                            <option value="<?php echo $supid;?>"><?= $suppdesc; ?></option>
-                            <?php }?>
-                            ?>   
-              </select> 
-   </div>
-    <div class="form-group col-md-6">
-
-    <label>SUB CATEGORY</label>
-           <input type="hidden" name="sub_num" id="sub_num" readonly="">
-
-
-              <select class="form-control form-control-sm" name="sub" id="sub">
-              </select>
-    </div>
-    <div class="form-group col-md-4 hide_isp">
-
-         <label for="isp" id="lbl_isp">Service Provider</label>
-          <input type="hidden" name="isp_num" id="isp_num" readonly="">
-          <select class="form-control form-control-sm" name="isp" id="isp">
-             <option value="">Select Network Provider</option>  
-                   <?php
-                            $query="select * from tbl_isp";
-                            $run=$con1->prepare($query);
-                            $run->execute();
-                            $rs=$run->get_result();
-                            while ($res=$rs->fetch_assoc()) {
-                              $ispid = $res['isp_id'];
-                              $ispdesc = $res['isp_shortDesc'];
-                            ?>
-
-                            <option value="<?php echo $ispid;?>"><?= $ispdesc; ?></option>
-                            <?php }?>
-                            ?>   
-              </select> 
-   </div>
-    <div class="form-group col-md-4 hide_isp" >
-      <label id="lbl_refNo" for="refNo">Reference No:</label>
-      <input type="text" class="form-control form-control-sm" name="refNo" id="refNo">
-    </div>
-
- 
-    <div class="form-group col-md-4 hide_isp">
-      
-     <label for="date_refNo" class="hidden" id="lbl_DtRefNo">Date of RefNo</label>
-  <div class="input-group date" id="datetimepicker3" data-target-input="nearest">
-          <input type="text" name="date_refNo" id="date_refNo" class="form-control form-control-sm datetimepicker-input" data-target="#datetimepicker3"/>
-          <div class="input-group-append" data-target="#date_created" data-toggle="datetimepicker">
-            <div class="input-group-text" id="ico_cal3"><i class="fa fa-calendar"></i></div>
-    </div>
-  </div>
-</div>
-
-    <div class="form-group col-md-4 selected ">
-        <label>STATUS</label>
-    <select class = "form-control form-control-sm" name= "status" id="status" required>
-    <option value=""> &larr; Status &rarr;</option>
-           <?php
-                    $query="select * from status WHERE admin_module_tag = 'Y'";
-                    $run=$con1->prepare($query);
-                    $run->execute();
-                    $rs=$run->get_result();
-                    while ($res=$rs->fetch_assoc()) {
-                    ?>
-                    <option><?=$res['stat_desc'] ?></option>
-                    <?php }?>
-                    ?>   
-    </select>
-    
-  </div>
-  <div class="form-group col-md-2 "></div>
-  <div class="form-group col-md-4 hide_size">
-  <label>SIZE</label>
-  <input type="text" name="size" id="size">
-  </div>
-
-  <div class="form-group col-md-4 hide_others">
-  <label>OTHER CONCERN</label>
-  <input type="text" name="others" id="others">
-  </div>
-
-    <div class="form-group col-md-4">
-      <label id="dateclabel" class="hidden">DATE CLOSED</label>
-       <div class="input-group date" id="datetimepicker2" data-target-input="nearest">
-          <input type="text" name="date_closed" id="date_closed" class="form-control form-control-sm datetimepicker-input" data-target="#datetimepicker2" autocomplete="off" />
-          <div class="input-group-append" data-target="#date_closed" autocomplete="off" data-toggle="datetimepicker">
-            <div class="input-group-text" id="ico_cal" name="ico_cal"><i class="fa fa-calendar"></i></div>
-    </div>
-  </div>
-     </div>
-
-    <div class="form-group col-md-4">
-
-     <label id="clby_label" class="hidden">CLOSED BY</label>
-        <input type="text" name="close_by" id="close_by" value="<?php echo $_SESSION['tech_id'];?>"> 
-        <input type="text" class="form-control form-control-sm" name="cl_desc" id="cl_desc" readonly="" value="<?php echo $_SESSION['fname']. '  ' . $_SESSION['lstname'];?>">
-    </div>
-
-    <div class="form-group col-md-12">
-    <label>Work Output:</label>
-     <textarea name="remarks" id="remarks" class="form-control form-control-sm" placeholder="Your Workoutput" 
-     style="text-transform:uppercase"></textarea>
-     </div>
-<hr/>
-    <div class="form-group col-md-12">
-<p>
-     
-  <button class="btn btn-primary float-right mr-2" type="button" name="msgbtn" id="msgbtn" value="show">
-    Show Message Thread
-  </button>
-</p>
-
-    </div>
-<div class="col-md-12 collapse" id="msg_thread">
-  <div class="card card-body">
-
-    <div class="row">
-            <div  class="col-md-12 dv_msg">
-                     <label style="font-weight: bold;">Add Message:</label>
-     <textarea name="admsg" id="" class="form-control form-control-sm" placeholder="Reply to their message or give an updates regarding on this ticket..."></textarea> 
+      <div class="container mt-3">
+      <table class="table table-dark table-responsive table-condensed" id="new_rep_table"></table>
       </div>
+
+      <!-- Start of Add/Edit Modal -->
+      <script src="../js/coms.js"></script> 
+
+      <div class="modal fade" id="newrpt_Modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true"
+      data-backdrop="static" data-keyboard="false">
+      <div class="modal-dialog modal-lg">
+      <form method="post" id="newrpt_form" enctype="multipart/form-data">
+      <div class="modal-content">
+      <div class="modal-header">
+      <h4 class="modal-title" id="tick_title" value=""></h4>
+      </div>
+
+      <div class="modal-body">
+      <div class="row">
+
+      <div class="form-group col-md-4">
+      <label>STORE</label>
+      <input type="hidden" name="store" id="store" readonly value="">
+      <input type="text" class="form-control form-control-sm" name="str_desc" id="str_desc" readonly value="">
+      </div>
+
+      <div class="form-group col-md-4">
+      <label>Created By:</label>
+      <input type="text" class="form-control form-control-sm" name="crtd_by" id="crtd_by" readonly>
+      </div>
+
+      <input type="hidden" class="form-control form-control-sm" name="ticket_no" id="ticket_no">
+
+      <div class="form-group col-md-4">
+      <label>DATE CREATED</label>
+      <input type="text" class="form-control form-control-sm" name="date_createdx" id="date_createdx" readonly value="">
+      <div></div>
+      </div>
+
+      <!-- ✅ FIX 1: SUBJECT must NOT use name="concern" (it was duplicated) -->
+      <div class="form-group col-md-12">
+      <label>SUBJECT</label>
+      <textarea name="subject" id="concern" class="form-control form-control-sm"
+      style="text-transform:uppercase" readonly></textarea>
+      </div>
+
+      <div class="form-group col-md-4">
+      <label>Service Requested:</label>
+      <input type="text" class="form-control form-control-sm" name="tos" id="tos" readonly>
+      </div>
+
+      <!-- ✅ FIX 2: CONCERN uses name="concern" (kept correct) -->
+      <div class="form-group col-md-12">
+      <label>CONCERN</label>
+      <textarea name="concern" id="message" class="form-control form-control-sm"
+      style="text-transform:uppercase" readonly></textarea>
+      </div>
+
+      <!-- <div class="form-group col-md-12"> -->
+
+
+
+      <!-- </div> -->
+
+      <!-- ✅ FIX 3: Assigned Support -> Assigned Department (itsup -> f_deptsel) -->
+      <div class="form-group col-md-8">
+      <label>ASSIGNED DEPARTMENT</label>
+
+      <!-- old value for reassignment history -->
+      <input type="hidden" name="old_dept" id="old_dept" readonly value="0">
+
+      <!-- new field name expected by updated insert.php -->
+      <select class="form-control form-control-sm" name="f_deptsel" id="f_deptsel" required>
+      <option value="">Assign department...</option>
+      <?php
+      $query="SELECT * FROM tbl_dept";
+      $run=$con1->prepare($query);
+      $run->execute();
+      $rs=$run->get_result();
+      while ($res=$rs->fetch_assoc()) {
+      $dept_id = $res['dept_id'];
+      $dept_desc = $res['dept_desc'];
+      ?>
+      <option value="<?php echo $dept_id; ?>"><?php echo $dept_desc; ?></option>
+      <?php } ?>
+      </select>
+      </div>
+
+      <input type="hidden" name="contactNumber" id="contactNumber">
+      <input type="text" name="dept_email" id="dept_email">
+
+
+
+
+
+
+
+      <div class="form-group col-md-4">
+      <label>PRIORITY LEVEL</label>
+      <select class="form-control form-control-sm" name="priority_level" id="priority_level" required>
+      <option value=""> &larr; PRIORITY &rarr;</option>
+      <option value="4">LOW</option>
+      <option value="3">MEDIUM</option>
+      <option value="2">HIGH</option>
+      <option value="1">CRITICAL</option>
+      </select>
+      </div>
+
+
+
+
+      <!-- <div class="form-group col-md-4"> -->
+      <label id="clby_label" class="hidden">CLOSED BY</label>
+      <input type="hidden" name="close_by" id="close_by" value="<?php echo $_SESSION['tech_id'];?>">
+      <input type="hidden" class="form-control form-control-sm" name="cl_desc" id="cl_desc" readonly
+      value="<?php echo $_SESSION['fname'].'  '.$_SESSION['lstname'];?>">
+      <!-- </div> -->
+
+      <div class="form-group col-md-12">
+      <label>Work Output:</label>
+      <textarea name="remarks" id="remarks" class="form-control form-control-sm"
+      placeholder="Your Workoutput" style="text-transform:uppercase"></textarea>
+      </div>
+
+      <hr/>
+
+      <div class="form-group col-md-12">
+      <p>
+      <button class="btn btn-primary float-right mr-2" type="button" name="msgbtn" id="msgbtn" value="show">
+      Show Message Thread
+      </button>
+      </p>
+      </div>
+
+      <div class="col-md-12 collapse" id="msg_thread">
+      <div class="card card-body">
+      <div class="row">
+      <div class="col-md-12 dv_msg">
+      <label style="font-weight: bold;">Add Message:</label>
+
+      <!-- keep same POST key admsg -->
+      <textarea name="admsg" id="admsg" class="form-control form-control-sm"
+        placeholder="Reply to their message or give updates regarding this ticket..."></textarea>
+      </div>
+
       <div class="col-md-12 mt-4 mb-2 dv_msg">
-            <label for="remarks_view" style="font-weight: bold;">Ticket Thread:</label>
-    <div class="container_remarks" >
-    <div id="remarks_view"><ul></ul></div>
-
-
-</div>
-</div>
-
-    </div>
-    <div class="col-md-12">
-
-    <input type="submit" name="action" id="action" class="btn btn-success" value="Add" />
-     <button type="button" name="btnClose" id="btnClose" class="btn btn-danger float-right" data-dismiss="modal">Close</button>
-    </div>
-
-  </div>
-</div>
-
-
-    </div>
-
-</div>
-
-  <div class="modal-footer">
-     <input type="hidden" name="operation" id="operation" />
-     <input type="hidden" name="u_id" value="<?php echo $_SESSION['user_id'];  ?>">
-
-    </div>
-  </div>
-  </div>
-  </div>
-  </form>
-</div>
-  
-
-<script type="text/javascript">
-  $(document).ready(function(){
-
-
-
-
-// for Status Open    
-$("div.selected select").val("OPEN");
-
-// for Others
-$('.hide_others').hide();
-$("#sub").change(function (e) { 
-//  alert(this.value);
-  var iN = $("#sub").val();  
-  
-    
-if (iN == "100" ||
-    iN == "105" ||
-    iN == "111" ||
-    iN == "112" 
-) {
-  $('.hide_others').show();
-}
-else{
-  $('.hide_others').hide();
-}
-
-
-});
-
-
-// for SubCat Trade
-$('.hide_size').hide();
-$("#sub").change(function (e) { 
-//  alert(this.value);
-  var iN = $("#sub").val();  
-  
-    
-if (iN == "106" ||
-    iN == "107" ||
-    iN == "108" ||
-    iN == "114" ||
-    iN == "115"
-) {
-  $('.hide_size').show();
-}
-else{
-  $('.hide_size').hide();
-}
-
-
-});
-
-  // $('#action').hide();
-
-var reptable;
-var user_id = <?= $_SESSION['user_id']; ?>
-
-function getdata(){
-  $.post('fetchdata/fetch_data.php',{mode:'newrpt_tbl'},function(data){
-    // console.log(data);
-    admin_datatable(data);
-  },'json');
-}
-getdata();
-
-function admin_datatable(t){
-const dataset=t.newrptdata;
-     reptable =  $("#new_rep_table").DataTable({
-           "dom":
-          '<"pull-left"lf><"pull-right">tip',
-           // ajax: t,
-          stateSave: true,
-          "bDestroy": true,
-          "responsive": true, "lengthChange": false, "autoWidth": false,
-          language: {
-          emptyTable: "No unassinged reports",
-          search: "_INPUT_",
-          searchPlaceholder: "Search..."
-          },
-          pageLength:5,
-          data: dataset,
-           "order": [[ 0, "Desc" ]],
-
-          columns: [
-          {title:"TicketNo", data:"ticket_no","defaultContent": ""},
-          {title:"Department/Store", data:"str_code","defaultContent": ""},
-          {title:"Created By", data:"full_name","defaultContent": ""},
-          {title:"Date Created", data:"date_created","defaultContent": ""},
-          {title:"SUBJECT", data:"concern","defaultContent": ""},
-          {title:"Types of Service", data:"service_desc","defaultContent": ""},
-          {title:"CONCERN", data:"subject","defaultContent": ""},
-          {title:"Update", data:null,"defaultContent": "<Button class='btn btn-danger' name='update'><i class='fas fa-edit'></i></Button>"}
-
-
-          ],
-              rowCallback: function(row, data, index){
-    if(data['msg_cnt'] == '1'){
-      $(row).find('td:eq(0)').css("font-weight", "bold");
-      $(row).find('td:eq(1)').css("font-weight", "bold");
-      $(row).find('td:eq(2)').css("font-weight", "bold");
-      $(row).find('td:eq(3)').css("font-weight", "bold");
-      $(row).find('td:eq(4)').css("font-weight", "bold");
-      $(row).find('td:eq(5)').css("font-weight", "bold");
-      $(row).find('td:eq(6)').css("font-weight", "bold");
-      $(row).find('td:eq(7)').css("font-weight", "bold");
-      $(row).find('td:eq(8)').css("font-weight", "bold");
-      $(row).find('td:eq(9)').css("font-weight", "bold");
-      $(row).find('td:eq(10)').css("font-weight", "bold");
-      $(row).find('td:eq(11)').css("font-weight", "bold");
- 
-    }
-
-
-  }
-
-
-
-   }); //  end of datatable
-
-
-   setInterval( function () {
-    getdata();
-   // admin_datatable();
-}, 60000);
- $('#new_rep_table tbody').on( 'click', 'button', function () {
-        var data = reptable.row( $(this).parents('tr') ).data();
-
-                $('#ticket_no').val(data['ticket_no']);
-                $('#store').val(data['store']);
-                $('#str_desc').val(data['str_code']);
-                $('#crtd_by').val(data['full_name']);
-                $('#date_created').val(data['date_created']);
-                $('#concern').val(data['concern']);
-                $('#tos').val(data['service_desc']);
-                $('#message').val(data['subject']);
-                $('#sub_num').val(data['sub_id']);
-
-
-
-  $('#newrpt_Modal').modal('show');
-  $('#action').val("Update");
-  $('#operation').val("Save and Reply"); 
-
-var tid=$(this).parent().siblings(':first').html();
-$('#tick_title').text("Ticker Number: "+tid+"");
-
-getinfo(tid, 'remarks', user_id);
-// console.log(tid)
-
-
-
-
-        });
-
-  $('#userModal').modal({"show": true, "backdrop": 'static'});
-
-  }; //end of function 
-
-  $('#ModalDate_close').datetimepicker();
-  $('#date_refNo').datetimepicker();
-
-
-  $('#cat').on('change', function() {
-      var category_id = this.value;
-      $.ajax({
-        url: "get_subcat.php",
-        type: "POST",
-        data: {
-          category_id: category_id
-        },
-        cache: false,
-        success: function(dataResult){
-          $("#sub").html(dataResult);
-        }
-      });
-    
-    
-  });
-
-
-
-
-$(function () {
-          $('#datetimepicker2, #datetimepicker3').datetimepicker()
-      });
-
-
-slct_isp();
-slct_sub();
-gtsub_id();
-admin_hideshowforms();
-
-
-$(document).on('submit', '#newrpt_form', function(event)
- {
-  event.preventDefault();
-  event.stopImmediatePropagation();
-   $.ajax({
-    url:"insert.php",
-    method:'POST',
-    data:new FormData(this),
-    contentType:false,
-    processData:false,
-    success:function(data)
-    {
-     alert(data);
-     $('#newrpt_form')[0].reset();
-     $('#newrpt_Modal').modal('hide');
-     getdata();
-     location.reload(); 
-    }
-   });
- });
-
-
-
-}); // end of docu.ready
-
-$(document).on('click', '#msgbtn', function(){
-
-$('.dv_msg').show();
-$('#remarks_view').show();
-
-
-if($('#msgbtn').val() == 'show'){
-$('#action').val("Save and Reply");
-$('#operation').val("Save and Reply");
-$('#msgbtn').val("hide");
-$('#msg_thread').show('slow');
-}
-else if($('#msgbtn').val() == 'hide'){
-$('#action').val("Save");
-$('#operation').val("Save and Reply");
-$('#msgbtn').val("show");
-$('#msg_thread').hide('slow');
-}
-
-
-
-});
-</script>
+      <label for="remarks_view" style="font-weight: bold;">Ticket Thread:</label>
+      <div class="container_remarks">
+      <div id="remarks_view"><ul></ul></div>
+      </div>
+      </div>
+      </div>
+
+      <div class="col-md-12">
+      <input type="submit" name="action" id="action" class="btn btn-success" value="Add" />
+      <button type="button" name="btnClose" id="btnClose" class="btn btn-danger float-right" data-dismiss="modal">Close</button>
+      </div>
+      </div>
+      </div>
+
+      </div>
+      </div>
+
+      <div class="modal-footer">
+      <input type="hidden" name="operation" id="operation" />
+      <input type="hidden" name="u_id" id="u_id" value="<?php echo $_SESSION['user_id']; ?>">
+      </div>
+
+      </div>
+      </form>
+      </div>
+      </div>
+
+<?php include 'adminwfit_obj.php'; ?>

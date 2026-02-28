@@ -26,11 +26,11 @@ if ($_SESSION['dept_id'] == "10") {
       $fltrval = "IN ('CLOSED')";
       break;
       case 'ALL':
-        $fltrval = "IN ('CLOSED','OPEN', 'NEW REPORT')";
+        $fltrval = "IN ('CLOSED','ASSIGNED', 'NEW REPORT')";
         break;
        
     default:
-    $fltrval = "IN ('OPEN', 'NEW REPORT', 'WAREHOUSE PULL OUT','SUPPLIER PULL OUT','READY FOR PULL OUT','CONFIRM PULL OUT','PULL OUT BY SUPPLIER','REPAIRED','REPLACE SAME MODEL','REPLACE DIFFERENT MODEL','RTV','RETURN TO STORE','RETURN BY SUPPLIER','ON PROCESS','SUBJECT FOR CLOSING','ITEM RECEIVED','APPROVED','EVALUATE','REPAIRED','SCHEDULE FOR DISPOSAL','SUBJECT FOR ADJUSTMENT','APPROVED SUMMARY ADJUSTMENT','RETURN BY SUPPLIER','LIST FOR DISPOSAL','OKAY FOR PULL OUT','ITEM-RECEIVED')";
+    $fltrval = "IN ('ASSIGNED', 'NEW REPORT', 'WAREHOUSE PULL OUT','SUPPLIER PULL OUT','READY FOR PULL OUT','CONFIRM PULL OUT','PULL OUT BY SUPPLIER','REPAIRED','REPLACE SAME MODEL','REPLACE DIFFERENT MODEL','RTV','RETURN TO STORE','RETURN BY SUPPLIER','ON PROCESS','SUBJECT FOR CLOSING','ITEM RECEIVED','APPROVED','EVALUATE','REPAIRED','SCHEDULE FOR DISPOSAL','SUBJECT FOR ADJUSTMENT','APPROVED SUMMARY ADJUSTMENT','RETURN BY SUPPLIER','LIST FOR DISPOSAL','OKAY FOR PULL OUT','ITEM-RECEIVED')";
       break;
   }
 $query = '';
@@ -80,7 +80,7 @@ switch ($deptselectvalue) {
     break;
     case '2':
       $counter = 'admin_counter';
-      $deptabr = 'ADMIN-';
+      $deptabr = '';
     break;
     case '3':
       $counter = 'mktg_counter';
@@ -318,7 +318,7 @@ WHERE
         break;
         case '2':
           $counter = 'admin_counter';
-          $deptabr = 'ADMIN-';
+          $deptabr = '';
         break;
         case '3':
           $counter = 'mktg_counter';
