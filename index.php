@@ -1,4 +1,6 @@
-<?php include 'main_ses.php'; ?>
+<?php include 'main_ses.php';
+ date_default_timezone_set('Asia/Manila');
+ ?>
 <!doctype html>
 <html lang="en">
 <head>

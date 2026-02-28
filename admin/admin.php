@@ -4,6 +4,7 @@ if ($_SESSION['login']!='true'){
 header("Location: index.php");
 exit();
 }
+ date_default_timezone_set('Asia/Manila');
 
 ?>
 
