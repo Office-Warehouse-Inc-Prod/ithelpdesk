@@ -26,13 +26,34 @@ $con1=new dbconfig();
     --shadow: 0 10px 24px rgba(16, 24, 40, .08);
   }
 
-  body{
-    background:
-      radial-gradient(1000px 500px at 0% -10%, rgba(37,99,235,.12), transparent 55%),
-      radial-gradient(900px 520px at 100% 0%, rgba(22,163,74,.10), transparent 55%),
-      var(--bg);
-    color: var(--text);
-  }
+body{
+  background:
+    linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.85)),
+    url('../images/bg_login.png');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  color: var(--text);
+}
+
+  /* ===== Reduce Header Height ===== */
+.navbar,
+header,
+.topbar,
+.navbar-default {
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+    min-height: 60px !important;
+}
+
+.navbar-brand {
+    font-size: 18px !important;
+    font-weight: 700;
+}
+
+.navbar img {
+    max-height: 42px !important;
+}
 
   .container-fluid.mt-4{ padding-left:16px; padding-right:16px; }
 
@@ -252,6 +273,48 @@ $con1=new dbconfig();
     #stat_picker{ width:100%; }
   }
 
+  /* ===== Header / Navbar color override ===== */
+.navbar,
+header,
+.topbar,
+.navbar-default{
+  background: #121C31 !important;
+  border-color: rgba(255,255,255,.12) !important;
+}
+
+/* Brand + links */
+.navbar .navbar-brand,
+.navbar .navbar-brand span,
+.navbar a,
+.navbar-nav > li > a{
+  color: #ffffff !important;
+}
+
+/* Hover/focus */
+.navbar a:hover,
+.navbar-nav > li > a:hover,
+.navbar a:focus,
+.navbar-nav > li > a:focus{
+  color: #E5E7EB !important;
+  opacity: .95;
+}
+
+/* Dropdown + caret (if any) */
+.navbar .dropdown-menu{
+  background: #121C31 !important;
+  border: 1px solid rgba(255,255,255,.12) !important;
+}
+.navbar .dropdown-menu a{
+  color: #ffffff !important;
+}
+.navbar .dropdown-menu a:hover{
+  background: rgba(255,255,255,.08) !important;
+}
+
+/* Icons */
+.navbar i, .navbar .fa, .navbar .fas{
+  color: #ffffff !important;
+}
 
 
 

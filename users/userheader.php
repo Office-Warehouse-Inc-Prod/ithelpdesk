@@ -260,7 +260,7 @@ body {
       <li class="nav-item active">
         <a class="nav-link" href="userpanel.php">
           <i class="fa fa-home text-dark"></i>
-         <span class="text-dark">Home</span>
+         <span class="text-white">Home</span>
           <span class="sr-only">(current)</span>
           </a>
       </li>
@@ -270,7 +270,7 @@ body {
           <i class="fa fas fa-search text-dark"></i>
             <!-- <span class="badge badge-danger"></span> -->
           </i>
-         <span class="text-dark">Price Verifier</span> 
+         <span class="text-white">Price Verifier</span> 
         </a>
       </li>    
       <li class="nav-item active">
@@ -278,7 +278,7 @@ body {
           <i class="fa fas fa-phone text-dark">
             <!-- <span class="badge badge-danger"></span> -->
           </i>
-         <span class="text-dark">Contact Us</span> 
+         <span class="text-white">Contact Us</span> 
         </a>
       </li>
     </ul>

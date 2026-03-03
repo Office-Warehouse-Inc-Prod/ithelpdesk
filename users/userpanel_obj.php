@@ -663,185 +663,273 @@ let tickres1 = tdata['TicketNum'];
 let ntickres = $('#nticknum').val(tickres1);
 let statres1 =  tdata['Status'];
 let statOpsres = $('#statOps').val(statres1);
-// console.log(statres1);
+
+
+
+let statSubmitting = false;
+
+function submitStatUpdate() {
+
+  if (statSubmitting) return;   // 🔥 Prevent duplicate request
+  statSubmitting = true;
+
+  // Disable buttons to prevent spam click
+  $("#addmsg, #action, #clsmodaltick").prop("disabled", true);
+
+  $.ajax({
+    url: "insert.php",
+    method: "POST",
+    data: new FormData(stat_form),
+    contentType: false,
+    processData: false,
+
+    success: function (data) {
+      Swal.fire({
+        icon: 'success',
+        title: 'Your work has been saved',
+        showConfirmButton: false,
+        timer: 1500
+      });
+
+      getdata();
+    },
+
+    error: function () {
+      Swal.fire({
+        icon: 'error',
+        title: 'Network error. Please try again.'
+      });
+    },
+
+    complete: function () {
+      statSubmitting = false;
+      $("#addmsg, #action, #clsmodaltick").prop("disabled", false);
+    }
+  });
+}
+
 if (statres1 == "SUBJECT FOR CLOSING") {
-  var isGood=confirm('Would you like to close this ticket:'+' '+tickres1);
-    if (isGood) {
-      // alert('true');
-      var data = statres1;
-      $.ajax({
-        url: "insert.php",
-        method: "POST",
-        data: new FormData(stat_form),
-        contentType: false,
-        processData: false,
-        success: function (data) {
-          // alert(addmsgx);
-          // $("#report_form")[0].reset();
-          Swal.fire({
-             icon: 'success',
-             title: 'Your work has been saved',
-             showConfirmButton: false,
-             timer: 1500
-          });
-          getdata();
-      //     setTimeout(function(){// wait for 5 secs(2)
-      //      location.reload(); // then reload the page.(3)
-      // }, 2000); 
-        },
-      });
 
+  var isGood = confirm('Would you like to close this ticket: ' + tickres1);
+  if (isGood) {
+    submitStatUpdate();
+  }
 
-    } else  {
-      // alert('false');
-    }
 }
-
 else if (statres1 == "READY FOR PULL OUT") {
-  var isGood=confirm('Would you like to confirm pull out this item on ticket:'+' '+tickres1);
-    if (isGood) {
-      // alert('true');
-      var data = statres1;
-      $.ajax({
-        url: "insert.php",
-        method: "POST",
-        data: new FormData(stat_form),
-        contentType: false,
-        processData: false,
-        success: function (data) {
-          // alert(addmsgx);
-          // $("#report_form")[0].reset();
-          Swal.fire({
-             icon: 'success',
-             title: 'Your work has been saved',
-             showConfirmButton: false,
-             timer: 1500
-          });
-          getdata();
-      //     setTimeout(function(){// wait for 5 secs(2)
-      //      location.reload(); // then reload the page.(3)
-      // }, 2000); 
-        },
-      });
 
-// console.log(' deptsel change event triggered ');
-// console.log(' select_tos change event triggered ');
-// console.log(' subjectimp change event triggered ');
-// console.log(' Alu keyup event triggered ');
-// console.log(' Additem click event triggered ');
-// console.log(' report_form submit event triggered ');
-// console.log(' modal_form submit event triggered ');
-// console.log(' action click event triggered ');
-// console.log(' file-input change event triggered ');
-// console.log(' Additem click event triggered ');
-// console.log(' reports_table row click event triggered ');
-// console.log(' stat_picker change event triggered ');
-// console.log(' addmsg click event triggered ');
-// console.log(' clsmodaltick click event triggered ');
+  var isGood = confirm('Would you like to confirm pull out this item on ticket: ' + tickres1);
+  if (isGood) {
+    submitStatUpdate();
+  }
 
-    } else  {
-      alert('false');
-    }
 }
-
 else if (statres1 == "SUPPLIER PULL OUT") {
-  var isGood=confirm('Would you like to confirm pull out this item on ticket:'+' '+tickres1);
-    if (isGood) {
-      // alert('true');
-      var data = statres1;
-      $.ajax({
-        url: "insert.php",
-        method: "POST",
-        data: new FormData(stat_form),
-        contentType: false,
-        processData: false,
-        success: function (data) {
-          // alert(addmsgx);
-          // $("#report_form")[0].reset();
-          Swal.fire({
-             icon: 'success',
-             title: 'Your work has been saved',
-             showConfirmButton: false,
-             timer: 1500
-          });
-          getdata();
-      //     setTimeout(function(){// wait for 5 secs(2)
-      //      location.reload(); // then reload the page.(3)
-      // }, 2000); 
-        },
-      });
 
+  var isGood = confirm('Would you like to confirm pull out this item on ticket: ' + tickres1);
+  if (isGood) {
+    submitStatUpdate();
+  }
 
-    } else  {
-      alert('false');
-    }
 }
-
 else if (statres1 == "RETURN TO STORE") {
-  var isGood=confirm('Would you like to confirm this return item on ticket:'+' '+tickres1);
-    if (isGood) {
-      // alert('true');
-      var data = statres1;
-      $.ajax({
-        url: "insert.php",
-        method: "POST",
-        data: new FormData(stat_form),
-        contentType: false,
-        processData: false,
-        success: function (data) {
-          // alert(addmsgx);
-          // $("#report_form")[0].reset();
-          Swal.fire({
-             icon: 'success',
-             title: 'Your work has been saved',
-             showConfirmButton: false,
-             timer: 1500
-          });
-          getdata();
-      //     setTimeout(function(){// wait for 5 secs(2)
-      //      location.reload(); // then reload the page.(3)
-      // }, 2000); 
-        },
-      });
 
+  var isGood = confirm('Would you like to confirm this return item on ticket: ' + tickres1);
+  if (isGood) {
+    submitStatUpdate();
+  }
 
-    } else  {
-      alert('false');
-    }
 }
-
 else if (statres1 == "RETURN BY SUPPLIER") {
-  var isGood=confirm('Would you like to confirm this return item on ticket:'+' '+tickres1);
-    if (isGood) {
-      // alert('true');
-      var data = statres1;
-      $.ajax({
-        url: "insert.php",
-        method: "POST",
-        data: new FormData(stat_form),
-        contentType: false,
-        processData: false,
-        success: function (data) {
-          // alert(addmsgx);
-          // $("#report_form")[0].reset();
-          Swal.fire({
-             icon: 'success',
-             title: 'Your work has been saved',
-             showConfirmButton: false,
-             timer: 1500
-          });
-          getdata();
-      //     setTimeout(function(){// wait for 5 secs(2)
-      //      location.reload(); // then reload the page.(3)
-      // }, 2000); 
-        },
-      });
 
+  var isGood = confirm('Would you like to confirm this return item on ticket: ' + tickres1);
+  if (isGood) {
+    submitStatUpdate();
+  }
 
-    } else  {
-      alert('false');
-    }
 }
+
+
+
+// // console.log(statres1);
+// if (statres1 == "SUBJECT FOR CLOSING") {
+//   var isGood=confirm('Would you like to close this ticket:'+' '+tickres1);
+//     if (isGood) {
+//       // alert('true');
+//       var data = statres1;
+//       $.ajax({
+//         url: "insert.php",
+//         method: "POST",
+//         data: new FormData(stat_form),
+//         contentType: false,
+//         processData: false,
+//         success: function (data) {
+//           // alert(addmsgx);
+//           // $("#report_form")[0].reset();
+//           Swal.fire({
+//              icon: 'success',
+//              title: 'Your work has been saved',
+//              showConfirmButton: false,
+//              timer: 1500
+//           });
+//           getdata();
+//       //     setTimeout(function(){// wait for 5 secs(2)
+//       //      location.reload(); // then reload the page.(3)
+//       // }, 2000); 
+//         },
+//       });
+
+
+//     } else  {
+//       // alert('false');
+//     }
+// }
+
+// else if (statres1 == "READY FOR PULL OUT") {
+//   var isGood=confirm('Would you like to confirm pull out this item on ticket:'+' '+tickres1);
+//     if (isGood) {
+//       // alert('true');
+//       var data = statres1;
+//       $.ajax({
+//         url: "insert.php",
+//         method: "POST",
+//         data: new FormData(stat_form),
+//         contentType: false,
+//         processData: false,
+//         success: function (data) {
+//           // alert(addmsgx);
+//           // $("#report_form")[0].reset();
+//           Swal.fire({
+//              icon: 'success',
+//              title: 'Your work has been saved',
+//              showConfirmButton: false,
+//              timer: 1500
+//           });
+//           getdata();
+//       //     setTimeout(function(){// wait for 5 secs(2)
+//       //      location.reload(); // then reload the page.(3)
+//       // }, 2000); 
+//         },
+//       });
+
+// // console.log(' deptsel change event triggered ');
+// // console.log(' select_tos change event triggered ');
+// // console.log(' subjectimp change event triggered ');
+// // console.log(' Alu keyup event triggered ');
+// // console.log(' Additem click event triggered ');
+// // console.log(' report_form submit event triggered ');
+// // console.log(' modal_form submit event triggered ');
+// // console.log(' action click event triggered ');
+// // console.log(' file-input change event triggered ');
+// // console.log(' Additem click event triggered ');
+// // console.log(' reports_table row click event triggered ');
+// // console.log(' stat_picker change event triggered ');
+// // console.log(' addmsg click event triggered ');
+// // console.log(' clsmodaltick click event triggered ');
+
+//     } else  {
+//       alert('false');
+//     }
+// }
+
+// else if (statres1 == "SUPPLIER PULL OUT") {
+//   var isGood=confirm('Would you like to confirm pull out this item on ticket:'+' '+tickres1);
+//     if (isGood) {
+//       // alert('true');
+//       var data = statres1;
+//       $.ajax({
+//         url: "insert.php",
+//         method: "POST",
+//         data: new FormData(stat_form),
+//         contentType: false,
+//         processData: false,
+//         success: function (data) {
+//           // alert(addmsgx);
+//           // $("#report_form")[0].reset();
+//           Swal.fire({
+//              icon: 'success',
+//              title: 'Your work has been saved',
+//              showConfirmButton: false,
+//              timer: 1500
+//           });
+//           getdata();
+//       //     setTimeout(function(){// wait for 5 secs(2)
+//       //      location.reload(); // then reload the page.(3)
+//       // }, 2000); 
+//         },
+//       });
+
+
+//     } else  {
+//       alert('false');
+//     }
+// }
+
+// else if (statres1 == "RETURN TO STORE") {
+//   var isGood=confirm('Would you like to confirm this return item on ticket:'+' '+tickres1);
+//     if (isGood) {
+//       // alert('true');
+//       var data = statres1;
+//       $.ajax({
+//         url: "insert.php",
+//         method: "POST",
+//         data: new FormData(stat_form),
+//         contentType: false,
+//         processData: false,
+//         success: function (data) {
+//           // alert(addmsgx);
+//           // $("#report_form")[0].reset();
+//           Swal.fire({
+//              icon: 'success',
+//              title: 'Your work has been saved',
+//              showConfirmButton: false,
+//              timer: 1500
+//           });
+//           getdata();
+//       //     setTimeout(function(){// wait for 5 secs(2)
+//       //      location.reload(); // then reload the page.(3)
+//       // }, 2000); 
+//         },
+//       });
+
+
+//     } else  {
+//       alert('false');
+//     }
+// }
+
+// else if (statres1 == "RETURN BY SUPPLIER") {
+//   var isGood=confirm('Would you like to confirm this return item on ticket:'+' '+tickres1);
+//     if (isGood) {
+//       // alert('true');
+//       var data = statres1;
+//       $.ajax({
+//         url: "insert.php",
+//         method: "POST",
+//         data: new FormData(stat_form),
+//         contentType: false,
+//         processData: false,
+//         success: function (data) {
+//           // alert(addmsgx);
+//           // $("#report_form")[0].reset();
+//           Swal.fire({
+//              icon: 'success',
+//              title: 'Your work has been saved',
+//              showConfirmButton: false,
+//              timer: 1500
+//           });
+//           getdata();
+//       //     setTimeout(function(){// wait for 5 secs(2)
+//       //      location.reload(); // then reload the page.(3)
+//       // }, 2000); 
+//         },
+//       });
+
+
+//     } else  {
+//       alert('false');
+//     }
+// }
 
 (tdata['Status']=='CLOSED') ? $("#addmsg").attr('disabled',true):$("#addmsg").attr('disabled',false);
 // console.log(tdata)
