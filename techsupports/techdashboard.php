@@ -90,10 +90,10 @@ $datetime->setTimezone($timezone);
                       </div>
 </div>
 
-<div class="dashcard card text-white mb-4 bg-danger" style="width: 20rem; height: 9rem; ">
+<div class="dashcard card text-white mb-4 bg-warning" style="width: 20rem; height: 9rem; ">
 <div class="card-body">
 
-<div class="card-title">OPEN REPORTS: <span class="" id="count_open" style="font-size: 18px;"></span></div>
+<div class="card-title">ASSIGNED / ON PROCESS: <span class="" id="count_open" style="font-size: 18px;"></span></div>
 </div>
 <div class="card-footer d-flex align-items-center justify-content-between">
                        
@@ -102,10 +102,10 @@ $datetime->setTimezone($timezone);
                       </div>
 </div>
 
-<div class="dashcard card text-white mb-4 bg-warning" style="width: 20rem; height: 9rem;">
+<div class="dashcard card text-white mb-4 bg-danger" style="width: 20rem; height: 9rem;">
 <div class="card-body">
 
-<div class="card-title" style="font-size: 15px;">OPEN WITH FIX ASSET: <span class="" id="count_owfa" style="font-size: 18px;"></span></div>
+<div class="card-title" style="font-size: 15px;">PENDING: <span class="" id="count_owfa" style="font-size: 18px;"></span></div>
 
 </div>
 <div class="card-footer d-flex align-items-center justify-content-between">
@@ -508,7 +508,7 @@ columns: [
 
 
 rowCallback: function(row, data, index){
-if(data['status'] == 'OPEN'){
+if(data['status'] == 'ON PROCESS'){
 $(row).find('td:eq(0)').css('color', 'red');
 $(row).find('td:eq(1)').css('color', 'red');
 $(row).find('td:eq(2)').css('color', 'red');
@@ -675,7 +675,8 @@ table
 
 
 $('#card_openval').on('click', function () {
-var val =  $(this).attr("value");
+// var val =  $(this).attr("value");
+var val =  'ON PROCESS';
 // alert(val);
 table
 .columns( 6 )
@@ -900,7 +901,7 @@ function _insert_data() {
       alert("Invalid date");
       return false;
     }
-    else if (Status == 'OPEN')
+    else if (Status == 'ON PROCESS')
     {
       if (DateClosed < DateCreated ){
       alert("Date closed should be greater than date created!");

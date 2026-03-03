@@ -56,67 +56,194 @@ session_start();
     <!-- Custom styles for this template -->
     <link href="../css/footer.css" rel="stylesheet">
 
+<style>
 
-    <style type="text/css">
-        @import url("//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css");
+:root {
+  --primary-color: #E1AD01;
+  --primary-light: #F4F0FF;
+  --bg-body: #F4F5FA;
+  --sidebar-width: 260px;
+  --topbar-height: 70px;
+  --card-shadow: 0 4px 12px 0 rgba(58, 53, 65, 0.1);
+}
 
-/* MAIN NAVBAR COLOR */
-.navbar{
-    background-color:#004A9B !important;
-    border:none;
-    box-shadow:0 4px 12px rgba(0,0,0,0.18);
+body {
+  font-family: 'Public Sans', sans-serif;
+  background-color: var(--bg-body);
+  color: #3A3541DE;
+  overflow-x: hidden;
+  background: linear-gradient(rgba(218, 219, 207, 0.3), rgba(113, 114, 136, 0.27)), 
+    url('images/bg_login.png'); 
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+}
+
+.owi-navbar {
+  background-color: #213456 !important;
+  box-shadow: 0 2px 10px 2px #66738e;
+  margin-bottom: 10px;
+}
+
+/* Make links clean + readable */
+.owi-navbar .nav-link,
+.owi-navbar .navbar-brand {
+  color: #fff !important;
+  font-weight: 600;
+  letter-spacing: .3px;
+}
+
+/* Icon spacing */
+.owi-navbar .nav-link i {
+  margin-right: 6px;
+}
+
+/* Hover states */
+.owi-navbar .nav-link:hover,
+.owi-navbar .navbar-brand:hover {
+  opacity: .92;
+}
+
+/* Dropdown */
+.owi-navbar .dropdown-menu {
+  background-color: #ffffff;
+  border: none;
+  min-width: 220px;
+  padding: .35rem;
+  box-shadow: 0 12px 24px rgba(0,0,0,0.25);
+  border-radius: 12px;
+}
+
+/* Dropdown items */
+.owi-navbar .dropdown-item {
+  color: black;
+  border-radius: 10px;
+  padding: .55rem .75rem;
+  white-space: normal; 
+}
+
+.owi-navbar .dropdown-item i {
+  margin-right: 8px;
 }
 
 
-/* REMOVE bg-warning / bg-dark automatically */
-.bg-warning,
-.bg-dark{
-    background-color:#004A9B !important;
+.owi-navbar .dropdown-item:hover {
+  background-color: #54699e;
+  color: #fff;
 }
 
-
-/* TEXT + ICONS */
-.navbar-icon-top .navbar-nav .nav-link,
-.navbar-icon-top .navbar-nav .nav-link .fa,
-.navbar-brand{
-    color:#ffffff !important;
+.owi-navbar .dropdown-divider {
+  border-top: 1px solid rgba(255,255,255,0.2);
+}
+.notif-dropdown {
+  width: 360px;
+  max-width: 92vw;
 }
 
-
-/* REMOVE text-dark automatically */
-.text-dark{
-    color:#ffffff !important;
+@media (max-width: 576px) {
+  .notif-dropdown {
+    width: 92vw;
+  }
 }
 
-
-/* HOVER (professional darker blue) */
-.navbar-icon-top .nav-link:hover{
-    background-color:#003574;
-    border-radius:8px;
+/* Badges keep visible on blue */
+.owi-navbar .badge-danger {
+  background-color: #ff4d4d;
 }
 
-
-/* ACTIVE MENU */
-.navbar-icon-top .nav-item.active .nav-link{
-    background-color:#003574;
-    border-radius:10px;
+.owi-navbar .badge-info {
+  background-color: #28c7ff;
+  color: #002a4a;
+  font-weight: 700;
 }
 
-
-/* BRAND */
-.logo{
-    color:#ffffff !important;
-    font-weight:700;
-    letter-spacing:.4px;
+/* Toggler icon visibility on blue */
+.owi-navbar .navbar-toggler {
+  border-color: rgba(255,255,255,0.35);
 }
 
-img{
-  border-radius: 50px;
-  width: 50px;
-  padding:5px;
+.owi-navbar .navbar-toggler-icon {
+  filter: brightness(0) invert(1);
 }
 
-    </style>
+/* Modern Underline Animation */
+/* Modern Underline Animation Refined */
+.owi-navbar .nav-item {
+  position: relative;
+  margin: 0 5px;
+  display: flex;
+  align-items: center;
+}
+
+.owi-navbar .nav-link {
+  position: relative;
+  padding: 0.8rem 1rem !important;
+  color: rgba(255, 255, 255, 0.8) !important;
+  transition: all 0.3s ease;
+}
+
+/* The Underline - Modernized */
+.owi-navbar .nav-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 3px;
+  bottom: 5px; /* Lifted slightly from the bottom */
+  left: 50%;
+  background-color: var(--primary-color);
+  transition: width 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), left 0.3s ease;
+  transform: translateX(-50%);
+  border-radius: 10px;
+}
+
+/* Hover State */
+.owi-navbar .nav-item:hover .nav-link {
+  color: #fff !important;
+}
+
+.owi-navbar .nav-item:hover .nav-link::after {
+  width: 70%; 
+}
+
+.owi-navbar .nav-item.active .nav-link {
+  color: var(--primary-color) !important;
+  font-weight: 700;
+}
+
+.owi-navbar .nav-item.active .nav-link::after {
+  width: 70%; 
+  background-color: var(--primary-color);
+}
+
+.owi-navbar .dropdown-menu {
+  border-top: 3px solid var(--primary-color) !important;
+  border-radius: 0 0 8px 8px !important;
+  margin-top: 0;
+}
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.4rem;
+  letter-spacing: 1px;
+}
+
+.navbar-brand img {
+  transition: transform 0.3s ease;
+}
+
+.navbar-brand:hover img {
+  transform: rotate(-10deg) scale(1.1);
+}
+
+.owi-navbar .dropdown-menu {
+  border-top: 3px solid var(--primary-color);
+  margin-top: 10px;
+}
+</style>
 
 </head>
 <body>

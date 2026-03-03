@@ -15,7 +15,7 @@ class dbconfig extends dbconn
         YEAR(date_created) as date_created,
         COUNT(reports.`status`) AS t_all,
         COUNT(CASE WHEN reports.`status` = 'ON PROCESS' then 1 else NULL end ) as t_open,
-        COUNT(CASE WHEN reports.`status` = 'ATTENDED WITH FIX ASSET' then 1 else NULL end) as t_owfa,
+        COUNT(CASE WHEN reports.`status` = 'PENDING' then 1 else NULL end) as t_owfa,
         COUNT(CASE WHEN reports.`status` = 'CLOSED' then 1 else NULL end) as t_close,
 		COUNT(CASE WHEN reports.`status` = 'SUBJECT FOR CLOSING' then 1 else NULL END) AS t_day
 		-- COUNT(CASE WHEN reports.`status` = 'CLOSED' AND DATE(reports.date_closed) = CURRENT_DATE THEN 1 else NULL END) AS t_day

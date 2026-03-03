@@ -13,11 +13,13 @@ class dbconfig extends dbconn
 		$query = "SELECT 
         YEAR(date_created) as date_created,
         COUNT(reports.`status`) AS t_all,
-        COUNT(CASE WHEN reports.`status` = 'OPEN' then 1 else NULL end ) as t_open,
-        COUNT(CASE WHEN reports.`status` = 'ATTENDED WITH FIX ASSET' then 1 else NULL end) as t_owfa,
-        COUNT(CASE WHEN reports.`status` = 'CLOSED' then 1 else NULL end) as t_close
+        COUNT(CASE WHEN reports.`status` = 'ON PROCESS' then 1 else NULL end ) as t_open,
+        COUNT(CASE WHEN reports.`status` = 'PENDING' then 1 else NULL end) as t_owfa,
+        COUNT(CASE WHEN reports.`status` = 'CLOSED' then 1 else NULL end) as t_close,
+		COUNT(CASE WHEN reports.`status` = 'SUBJECT FOR CLOSING' then 1 else NULL END) AS t_day
+		-- COUNT(CASE WHEN reports.`status` = 'CLOSED' AND DATE(reports.date_closed) = CURRENT_DATE THEN 1 else NULL END) AS t_day
         FROM
-        reports WHERE sub_id NOT IN ('15','28','34','35') AND `status` NOT IN ('WAITING FOR IT HELDESK RESPONSE','NEW REPORT') AND YEAR(date_created) = '".$_POST['yr'] ."' AND itsup = '{$_SESSION['tech_id']}'";
+        reports WHERE sub_id NOT IN ('15','28','34','35') AND `status` NOT IN ('WAITING FOR IT HELDESK RESPONSE','NEW REPORT') AND itsup = '{$_SESSION['tech_id']}'";
 
         $statement = $this->connection->prepare($query);
         $statement-> execute();
@@ -29,7 +31,8 @@ class dbconfig extends dbconn
         		'total_res' => $row["t_all"], 
         		'open_res' => $row["t_open"], 
         		'owfa_res' => $row["t_owfa"], 
-        		'cls_res' => $row["t_close"]
+        		'cls_res' => $row["t_close"],
+        		't_res' => $row["t_day"]
 
         	);
         }
@@ -216,8 +219,13 @@ class dbconfig extends dbconn
 	}
 
 	public function admin_data_table_res(){
-	$query="select * from vw6 WHERE
-vw6.sub_id NOT IN ('15','28','34','35') AND status <> 'WAITING FOR IT HELPDESK RESPONSE' AND itsup = '{$_SESSION['tech_id']}'";
+// 	$query="select * from vw6 WHERE
+// vw6.sub_id NOT IN ('15','28','34','35') AND status <> 'WAITING FOR IT HELPDESK RESPONSE' AND itsup = '{$_SESSION['tech_id']}'";
+
+$query = "Select * from vw6 WHERE vw6.deptsel = '1' AND
+	vw6.sub_id NOT IN ('15','28','34','35') AND status <> 'NEW REPORT' AND itsup = '{$_SESSION['tech_id']}'";
+
+
 	// $query="
 	// Select * from vw6 WHERE
 	// vw6.sub_id NOT IN ('15','28','34','35') AND status <> 'WAITING FOR IT HELPDESK RESPONSE'";
