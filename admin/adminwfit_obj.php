@@ -20,7 +20,7 @@
 
       reptable = $("#new_rep_table").DataTable({
 "dom": '<"pull-left"f><"pull-right">tip',
-      stateSave: true,
+      stateSave: false,
       "bDestroy": true,
       "responsive": true,
       "lengthChange": false,
