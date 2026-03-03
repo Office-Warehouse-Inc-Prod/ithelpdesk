@@ -897,13 +897,13 @@ function _insert_data() {
       alert("Invalid date");
       return false;
     }
-    else if (Status == 'ON PROCESS')
-    {
-      if (DateClosed < DateCreated ){
-      alert("Date closed should be greater than date created!");
-      return false;
-    }
-    }
+    // else if (Status == 'ON PROCESS')
+    // {
+    //   if (DateClosed < DateCreated ){
+    //   alert("Date closed should be greater than date created!");
+    //   return false;
+    // }
+    // }
 
     else if (DateClosed > today ){
       alert("Invalid Closed_Date");
