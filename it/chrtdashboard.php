@@ -436,11 +436,11 @@ order: [[0, 'desc']],
           case "PENDING":
             return am4core.color("#FF7A7A"); // soft red
           case "ON PROCESS":
-            return am4core.color("#FFC107"); // soft yellow
+            return am4core.color("#F2A65A"); // soft yellow
           case "CLOSED":
-            return am4core.color("#7DD77D"); // soft green
+            return am4core.color("#578f63"); // soft green
           case "SUBJECT FOR CLOSING":
-            return am4core.color("#CBA6E3"); // soft purple
+            return am4core.color("#b667eb"); // soft purple
           default:
             return am4core.color("#9EC9F7"); // fallback pastel blue
         }
@@ -605,10 +605,10 @@ var chart = am4core.create("chartdiv8", am4charts.XYChart);
 chart.data = grphdata
 
 chart.colors.list = [
-  am4core.color("#0077F7"),
-  am4core.color("#27A243"),
-  am4core.color("#FFC107"),
-  am4core.color("#DC3545")
+  am4core.color("#6594B1"),
+  am4core.color("#6F8F72"),
+  am4core.color("#F2A65A"),
+  am4core.color("#D25353")
 
 
 ];
@@ -973,7 +973,7 @@ var chart = am4core.create("chart_area", am4charts.XYChart);
 chart.data = grphdata
 // Create axes
 chart.colors.list = [
-  am4core.color("#0077F7")
+  am4core.color("#6594B1")
 ];
 
 var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());

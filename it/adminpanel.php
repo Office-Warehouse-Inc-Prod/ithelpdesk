@@ -10,417 +10,14 @@ include 'sub_graph_modal.php';
 
 // $conn=new dbconfig();
 
-
-
-
 ?>
+<head>
+  <link rel="stylesheet" href="adminpanel.css">
+</head>
 <style>
-
- body {
-font-family: 'Poppins', Tahoma, Geneva, Verdana, sans-serif;
-  }
-
-  body.dark-mode {
-    background: linear-gradient(145deg, #0f0f0f, #1a1a1a);
-    color: #e0e0e0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  }
-
-  body.dark-mode .card,
-  body.dark-mode .card2 {
-    background: linear-gradient(145deg, #1a1a1a, #2a2a2a);
-    color: #ffffff;
-    border: 1px solid #2a2a2a;
-    box-shadow: 0 0 10px rgba(0, 255, 255, 0.1);
-    border-radius: 15px;
-    transition: all 0.3s ease;
-  }
-
-  body.dark-mode .card-header {
-    background-color: transparent;
-    border-bottom: 1px solid #444;
-    font-weight: bold;
-    font-size: 18px;
-    text-shadow: 0 0 5px rgba(0, 255, 255, 0.4);
-  }
-
-  body.dark-mode .form-check-label,
-  body.dark-mode .input-group-text,
-  body.dark-mode label {
-    color: #00ffff;
-  }
-
-  body.dark-mode select,
-  body.dark-mode .form-control {
-    background-color: #1d1d1d;
-    color: #00ffff;
-    border: 1px solid #00ffff;
-    border-radius: 10px;
-  }
-
-  body.dark-mode .table {
-    color: #ffffff;
-    background-color: #1b1b1b;
-    border-collapse: collapse;
-  }
-
-  body.dark-mode .table th,
-  body.dark-mode .table td {
-    border: 1px solid #2c2c2c;
-  }
-
-  body.dark-mode .form-control::placeholder {
-    color: #888;
-  }
-
-  .dashcard {
-    border-radius: 15px;
-    transition: transform 0.3s ease-in-out;
-  }
-
-  .dashcard:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
-  }
-
-  .dashcard .card-body {
-    font-size: 16px;
-    font-weight: 500;
-  }
-
-  .dashcard .card-title {
-    font-size: 18px;
-    font-weight: 600;
-    text-shadow: 0 0 5px rgba(0, 255, 255, 0.6);
-  }
-
-  .dashcard .card-footer {
-    background-color: rgba(255, 255, 255, 0.05);
-    border-top: 1px solid #333;
-  }
-
-  /* body.dark-mode #chartdiv1,
-  body.dark-mode #chartdiv2,
-  body.dark-mode #chartdiv5,
-  body.dark-mode #chartdiv8,
-  body.dark-mode #chart_area {
-    background-color: #131313;
-    border-radius: 15px;
-    box-shadow: inset 0 0 10px #00ffff20;
-  } */
-
-  .form-check-input:checked {
-    background-color: #00ffff;
-    border-color: #00ffff;
-  }
-
-  ::selection {
-    background: #00ffff;
-    color: #000;
-  }
-
-  .btn-success, .btn-danger {
-    border-radius: 5px;
-    padding: 0.5em 1.5em;
-    font-weight: bold;
-    transition: 0.3s ease-in-out;
-  }
-
-  .btn-success:hover {
-    background-color: #00ffaa;
-    color: #000;
-  }
-
-  .btn-danger:hover {
-    background-color: #ff4d4d;
-    color: #fff;
-  }
-
-  /* .modal-content {
-    background: #1c1c1c;
-    border-radius: 20px;
-    border: 1px solid #2c2c2c;
-    box-shadow: 0 0 30px rgba(0, 255, 255, 0.1);
-  } */
-
-
-  @keyframes pulse-glow {
-  0% {
-    box-shadow: 0 0 10px #00ffff55;
-  }
-  50% {
-    box-shadow: 0 0 20px #00ffffaa;
-  }
-  100% {
-    box-shadow: 0 0 10px #00ffff55;
-  }
-}
-
-.dashcard:hover {
-  animation: pulse-glow 1.5s infinite;
-}
-
-#report_data {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0 6px; /* less vertical spacing */
-  background: #f9f9f9; /* very soft off-white background */
-  color: #ccc; /* lighter text but not pure white */
-  font-family: 'Poppins', Tahoma, Geneva, Verdana, sans-serif;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: none; /* remove glow */
-}
-
-#report_data thead tr {
-  background: #eaeaea; /* subtle light grey header */
-  color: #666; /* muted heading text */
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  font-weight: 700; /* bold */
-  font-size: 1.2rem; /* slightly bigger than data */
-  text-align: center;
-  border-bottom: 1px solid #ccc; /* soft divider line */
-}
-
-
-#report_data tbody tr {
-  background: transparent; /* no bright white */
-  transition: background 0.25s ease, color 0.25s ease;
-  box-shadow: none;
-}
-
-#report_data tbody tr:hover {
-  background: #999999; /* subtle highlight */
-  color: #fff; /* brighten text on hover */
-}
-
-#report_data th,
-#report_data td {
-  padding: 10px 12px;
-  border: none;
-  border-bottom: 1px solid #333; /* soft row separator */
-}
-
-#report_data th:last-child,
-#report_data td:last-child {
-  border-right: none;
-}
-
-#report_data tbody tr td {
-  font-weight: 400;
-  font-size: 0.9rem;
-}
-
-/* Scrollbar for responsive tables */
-#report_data::-webkit-scrollbar {
-  height: 6px;
-}
-
-#report_data::-webkit-scrollbar-thumb {
-  background: #666; /* muted scrollbar */
-  border-radius: 3px;
-}
-
-
-
-.status-open td {
-  color: red !important;
-  border: 1px solid red;
-}
-
-.status-fixed td {
-  color: red !important;
-  border: 1px solid red;
-}
-
-.status-closed td {
-  color: green !important;
-  border: 1px solid green;
-}
-
-.status-subject-closing td {
-  color: #890188 !important;
-  border: 1px solid #890188;
-}
-
-#showCalendarBtn{
-    display: inline-block;
-    padding: 10px 20px;
-    background: #4f46e5;
-    color: white;
-    text-decoration: none;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    border: none;
-    font-family: inherit;
-    font-size: 1rem;
-    transition: background-color 0.3s ease;
-}
-#showCalendarBtn:hover {
-    background: #4338ca;
-}
-
-
-
-/* =========================
-   MODAL UI UPGRADE (Desktop + Mobile)
-   ========================= */
-
-/* Bigger + cleaner modal */
-#userModal .modal-dialog{
-  max-width: 1100px; /* desktop width */
-  margin: 1.25rem auto;
-}
-
-#userModal .modal-content{
-  border-radius: 16px;
-  border: 1px solid rgba(0,0,0,0.08);
-  overflow: hidden;
-}
-
-/* Header with hierarchy */
-#userModal .modal-header{
-  background: linear-gradient(180deg, rgba(79,70,229,0.08), rgba(255,255,255,0));
-  border-bottom: 1px solid rgba(0,0,0,0.08);
-  padding: 16px 18px;
-}
-
-#userModal_header{
-  font-weight: 700;
-  font-size: 18px;
-  margin: 0;
-}
-
-/* Body spacing */
-#userModal .modal-body{
-  padding: 16px 18px;
-}
-
-/* Section cards inside modal */
-.modal-section{
-  background: rgba(255,255,255,0.75);
-  border: 1px solid rgba(0,0,0,0.08);
-  border-radius: 14px;
-  padding: 14px;
-  box-shadow: 0 8px 22px rgba(0,0,0,0.04);
-}
-
-/* Section title */
-.modal-section-title{
-  font-size: 13px;
-  font-weight: 800;
-  letter-spacing: .6px;
-  text-transform: uppercase;
-  color: rgba(0,0,0,0.55);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 10px;
-}
-
-.modal-section-title:before{
-  content: "";
-  width: 10px;
-  height: 10px;
-  border-radius: 3px;
-  background: rgba(79,70,229,0.55);
-}
-
-/* Make inputs feel “premium” */
-#userModal .form-control,
-#userModal select,
-#userModal textarea{
-  border-radius: 10px;
-  border: 1px solid rgba(0,0,0,0.12);
-  background: rgba(255,255,255,0.92);
-}
-
-#userModal label{
-  font-weight: 700;
-  font-size: 12px;
-  letter-spacing: .4px;
-  text-transform: uppercase;
-  color: rgba(0,0,0,0.60);
-}
-
-/* Comment thread container: scrollable, not endless */
-.container_remarks{
-  max-height: 480px;
-  overflow: auto;
-  padding-right: 6px;
-}
-
-/* Thread message card look (works with your existing markup) */
-#remarks_view .msg-item{
-  border: 1px solid rgba(0,0,0,0.08);
-  background: rgba(255,255,255,0.90);
-  border-radius: 14px;
-  padding: 12px 12px;
-  margin-bottom: 10px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.04);
-}
-
-#remarks_view .msg-head{
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 6px;
-}
-
-#remarks_view .msg-name{
-  font-weight: 800;
-  font-size: 14px;
-}
-
-#remarks_view .msg-meta{
-  font-size: 12px;
-  color: rgba(0,0,0,0.55);
-}
-
-#remarks_view .msg-body{
-  font-size: 13px;
-  color: rgba(0,0,0,0.80);
-  line-height: 1.35;
-  white-space: pre-wrap;
-}
-
-/* Sticky footer actions (great on mobile) */
-#userModal .modal-footer{
-  border-top: 1px solid rgba(0,0,0,0.08);
-  background: rgba(255,255,255,0.92);
-  position: sticky;
-  bottom: 0;
-  z-index: 5;
-  padding: 12px 14px;
-}
-
-/* Better button sizing on mobile */
-@media (max-width: 991px){
-  #userModal .modal-dialog{
-    max-width: 96%;
-    margin: .75rem auto;
-  }
-
-  /* Make thread scroll shorter on small screens */
-  .container_remarks{
-    max-height: 260px;
-  }
-
-  /* Buttons full width */
-  #action, #btnClose{
-    width: 100%;
-  }
-}
 
 
 </style>
-
-
-
-
 
 <!-- =========================
      DASHBOARD MAIN WRAPPER
@@ -429,134 +26,143 @@ font-family: 'Poppins', Tahoma, Geneva, Verdana, sans-serif;
   <div id="wrapper">
     <div id="layoutSidenav_content">
       <div class="container-fluid">
-
-        <!-- Dark Mode Toggle -->
-        <div class="form-check form-switch float-right m-3">
-          <input class="form-check-input" type="checkbox" id="darkModeToggle">
-          <label class="form-check-label text-dark" for="darkModeToggle">Dark Mode</label>
-        </div>
-
         <!-- Hidden Form -->
         <form method="post" name="cof_form" id="cof_form" enctype="multipart/form-data">
           <div class="row">
             <input type="hidden" name="chcksbjcls" id="chcksbjcls" value="check">
           </div>
         </form>
-
-        <!-- Filters: Year Picker + Calendar Button -->
-        <div class="row align-items-end mb-3">
-          <div class="col-12 col-lg-7 mb-2 mb-lg-0">
-            <label class="sr-only" for="yearpicker">Start Date</label>
+        <div class="action-bar-container" style="box-shadow: 0 5px 10px 2px #2d3c597f; margin-bottom: -20px;">
+          <div class="year-picker-group">
             <div class="input-group">
-              <div class="input-group-prepend">
-                <div class="input-group-text">LOGS IN YEAR OF:</div>
+              <div class="input-group-append">
+                <span class="input-group-text">
+                  <i class="fas fa-history me-2"></i>LOGS IN YEAR OF:
+                </span>
               </div>
-              <select class="form-control" name="yearpicker" id="yearpicker" required>
+              <select class="form-control" name="yearpicker" id="yearpicker"required>
                 <option value="2019,2020,2021,2022,2023,2024,2025,2026">OVERALL</option>
-                <option value="2026" selected>2026</option>
+                <option value="2026" selected>2026</OPTION>
                 <option value="2025">2025</option>
                 <option value="2024">2024</option>
                 <option value="2023">2023</option>
                 <option value="2022">2022</option>
-                <option value="2021">2021</option>
-                <option value="2020">2020</option>
-                <option value="2019">2019</option>
               </select>
             </div>
           </div>
-
-          <div class="col-12 col-lg-5 d-flex justify-content-lg-end">
-            <form action="testcalendar.php" method="POST" style="display: inline;">
-              <input type="hidden" name="u_id" value="<?php echo $_SESSION['user_id']; ?>">
-              <button type="submit" id="showCalendarBtn" class="btn btn-primary">Show Calendar</button>
+          <div class="d-flex align-items-center gap-3">
+            <form action="testcalendar.php" method="POST" class="m-0">
+              <input type="hidden" name="u_id" value="<?php echo $_SESSION['user_id'];?>">
+              <button type="submit" id="showCalendarBtn" class="btn">
+                <i class="fas fa-calendar-alt me-2"></i>CALENDAR
+              </button>
             </form>
+            <div class="form-check form-switch float-right m-3">
+              <input class="form-check-input" style="margin-left:-50px;" type="checkbox" id="darkModeToggle">
+              <label class="form-check-label text-dark" for="darkModeToggle">Dark Mode</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KPI CARDS (replaces card-deck properly) -->
+    <div class="main-container">  
+      <main class="p-4">
+        <div class="row g-4">
+          <div class="row g-4 mb-4">
+            <div class="col-xl-3 col-lg-6 col-md-6">
+              <div class="card h-100 dashcard-clickable" data-filter="" style="border-radius: 15px; cursor:pointer;">
+                <div class="card-body p-4">
+                  <div class="d-flex align-items-center justify-content-between mb-3">
+                    <div class=" bg-opacity-10 p-3 rounded-circle " style="color: #576A8F;">
+                      <i class="fas fa-file-alt fa-2x"></i>
+                    </div>
+                    <h2 class="fw-black mb-1" id="count_total" style="font-size:2.2rem; letter-spacing: -1px; ">0</h2>
+                  </div>
+                  <div>
+                    <p class=" fw-bold text-uppercase mb-0" style="font-size: 0.75rem; color: #576A8F;letter-spacing: 1px;">Total Reports</p>
+                    <hr class="mt-2 mb-3" style="border-top: 2px solid #576A8F; opacity: 1; width: 100%;"/>
+                    <div class="d-flex justify-content-between align-items-center">
+                      <a href="#report_data" class="text-decoration-none small text-muted stretched-link">Click here for more info</a>
+                      <i class="fas fa-chevron-right small text-muted"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-lg-6 col-md-6">
+              <div class="card  h-100 dashcard-clickable" data-filter="ON PROCESS" style="border-radius: 15px; cursor: pointer;">
+                <div class="card-body p-4">
+                  <div class="d-flex align-items-center justify-content-between mb-3">
+                    <div class=" bg-opacity-10 p-3 rounded-circle" style="color: #E5BA41;">
+                      <i class="fas fa-spinner fa-2x"></i>
+                  </div>
+                  <h2 class ="fw-black mb-1" id="count_open" style="font-size: 2.2rem; letter-spacing: -1px;">0</h2>
+                </div>
+                <div>
+                  <p class="text-warning fw-bold text-uppercase mb-0" style="font-size: 0.75rem;color: #E5BA41; letter-spacing: 1px;">On Process</p>
+                  <hr class="mt-2 mb-3" style="border-top: 2px solid #E5BA41;; opacity:1; width:100%;"/>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <a href="#report_data" class="text-decoration-none small text-muted stretched-link">Click here for more info</a>
+                    <i class="fas fa-chevron-right small text-muted"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-xl-3 col-lg-6 col-md-6">
+            <div class="card h-100 dashcard-clickable" data-filter="ATTENDED WITH FIX ASSET" style="border-radius: 15px; cursor:pointer;">
+              <div class="card-body p-4">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                  <div class="bg-danger bg-opacity-10 p-3 rounded-circle text-danger" style="color: #D25353;">
+                    <i class="fas fa-exclamation-triangle fa-2x"></i>
+                  </div>
+                  <h2 class="fw-black mb-1" id="count_owfa" style="font-size:2.2rem; letter-spacing: -1px;">0</h2>
+                </div>
+                <div>
+                  <p class="text-danger fw-bold text-uppercase mb-0" style="font-size:0.75rem; color: #D25353;letter-spacing:1px;">Over Sla / Pending</p>
+                  <hr class="mt-2 mb-3" style="border-top: 2px solid #D25353; opacity:1; width:100%;"/>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <a href="#report_data" class="text-decoration-none small text-muted stretched-link">Click here for more info</a>
+                    <i class="fas fa-chevron-right small text-muted"></i>
+                  </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        <!-- KPI CARDS (replaces card-deck properly) -->
-        <div class="row mb-3">
-
-          <div class="col-12 col-md-6 col-xl-3 mb-3">
-            <div class="dashcard card text-white bg-primary border-dark" style="height: 9rem;">
-              <div class="card-body">
-                <div class="card-title">
-                  TOTAL REPORTS:
-                  <span class="float-right" id="count_total" style="font-size: 32px;"></span>
+        <div class="col-xl-3 col-lg-6 col-md-6">
+          <div class="card h-100 dashcard-clickable" data-filter="CLOSED" style="border-radius: 15px; cursor:pointer;">
+            <div class="card-body p-4">
+              <div class="d-flex align-items-center justify-content-between mb-2">
+                <div class="bg-success bg-opacity-10 p-3 rounded-circle text-success" style="color: #94A378;">
+                  <i class="fas fa-check-double fa-2x"></i>
                 </div>
+                <h2 class="fw-black mb-1" id="count_closed" style="font-size:2.2rem; letter-spacing: -1px;">0</h2>
               </div>
-              <div class="card-footer d-flex align-items-center justify-content-between">
-                <a class="text-white stretched-link" id="card_totalval" href="#bottom" value="">
-                  <span class="small text-white">Click here for more info.</span>
-                </a>
-                <div class="go-arrow"></div>
+              <div class="mb-2">
+
+              </div>
+              <div>
+                <p class="text-success fw-bold text-uppercase mb-0" style="font-size:0.75rem; color: #94A378; letter-spacing: 1px;">Closed Reports</p>
+                <hr class="mt-2 mb-3" style="border-top: 2px solid #94A378; opacity:1; width:100%;"/>
+                <div class="d-flex justify-content-between align-items-center">
+                  <a href="#report_data" class="text-decoration-none small text-muted stretched-link">View History</a>
+                  <i class="fas fa-chevron-right small text-muted"></i>
+                </div>
               </div>
             </div>
           </div>
-
-          <div class="col-12 col-md-6 col-xl-3 mb-3">
-            <div class="dashcard card text-white bg-warning" style="height: 9rem;">
-              <div class="card-body">
-                <div class="card-title">
-                  ON PROCESS:
-                  <span class="float-right" id="count_open" style="font-size: 32px;"></span>
-                </div>
-              </div>
-              <div class="card-footer d-flex align-items-center justify-content-between">
-                <a class="text-white stretched-link" id="card_openval" href="#bottom" value="ON PROCESS">
-                  <span class="small text-white">Click here for more info.</span>
-                </a>
-                <div class="go-arrow"></div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-12 col-md-6 col-xl-3 mb-3">
-            <div class="dashcard card text-white bg-danger" style="height: 9rem;">
-              <div class="card-body">
-                <div class="card-title" style="font-size: 15px;">
-                  PENDING (OVER SLA):
-                  <span class="float-right" id="count_owfa" style="font-size: 32px;"></span>
-                </div>
-              </div>
-              <div class="card-footer d-flex align-items-center justify-content-between">
-                <a class="text-white stretched-link" id="card_openwfaval" href="#bottom" value="ATTENDED WITH FIX ASSET">
-                  <span class="small text-white">Click here for more info.</span>
-                </a>
-                <div class="go-arrow"></div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-12 col-md-6 col-xl-3 mb-3">
-            <div class="dashcard card text-white bg-success" style="height: 9rem;">
-              <div class="card-body">
-                <div class="card-title">
-                  CLOSED REPORTS
-                  <span class="float-right" id="count_closed" style="font-size: 32px;"></span>
-                </div>
-                <div class="card-subtitle clcktxt" value="SUBJECT FOR CLOSING">
-                  SUBJECT FOR CLOSING
-                  <span class="float-none" id="today_closed" style="font-size: 23px; margin-left: 15px;"></span>
-                </div>
-              </div>
-              <div class="card-footer d-flex align-items-center justify-content-between">
-                <a class="text-white stretched-link" id="card_closedval" href="#bottom" value="CLOSED">
-                  <span class="small text-white">Click here for more info.</span>
-                </a>
-                <span class="small text-white">CLOSED REPORT HISTORY</span>
-                <div class="go-arrow"></div>
-              </div>
-            </div>
-          </div>
-
         </div>
-
+      </div>
         <!-- CHARTS -->
         <div class="row" id="ovrall">
 
           <div class="col-12 col-lg-6 mb-3">
             <div class="card card2 h-100">
-              <h5 class="card-header text-black">Overall Status</h5>
+              <h5 class="card-header" style="background-color: #95a2b9b4; color:black;">Overall Status</h5>
               <div class="card-body">
                 <div id="chartdiv5"></div>
               </div>
@@ -565,7 +171,7 @@ font-family: 'Poppins', Tahoma, Geneva, Verdana, sans-serif;
 
           <div class="col-12 col-lg-6 mb-3">
             <div class="card card2 h-100">
-              <h5 class="card-header text-black">I.T Support Logs</h5>
+              <h5 class="card-header text-black"  style="background-color: #95a2b9b4; color:black;">I.T Support Logs</h5>
               <div class="card-body">
                 <div id="chartdiv8"></div>
               </div>
@@ -574,7 +180,7 @@ font-family: 'Poppins', Tahoma, Geneva, Verdana, sans-serif;
 
           <div class="col-12 col-lg-6 mb-3">
             <div class="card card2 h-100">
-              <h5 class="card-header text-black">Recently enrolled reports.</h5>
+              <h5 class="card-header text-black"  style="background-color: #95a2b9b4; color:black;">Recently enrolled reports.</h5>
               <div class="card-body">
                 <div id="chartdiv1"></div>
               </div>
@@ -583,7 +189,7 @@ font-family: 'Poppins', Tahoma, Geneva, Verdana, sans-serif;
 
           <div class="col-12 col-lg-6 mb-3">
             <div class="card card2 h-100">
-              <h5 class="card-header text-black">CATEGORIES</h5>
+              <h5 class="card-header text-black"  style="background-color: #95a2b9b4; color:black;">CATEGORIES</h5>
               <div class="card-body">
                 <div id="chartdiv2" name="chartdiv2"></div>
               </div>
@@ -592,7 +198,7 @@ font-family: 'Poppins', Tahoma, Geneva, Verdana, sans-serif;
 
           <div class="col-12 mb-3">
             <div class="card card2">
-              <h5 class="card-header text-black">Number of Escalated Reports Per Area</h5>
+              <h5 class="card-header text-black"  style="background-color: #95a2b9b4; color:black;">Number of Escalated Reports Per Area</h5>
               <div class="card-body">
                 <div id="chart_area"></div>
               </div>
@@ -601,7 +207,7 @@ font-family: 'Poppins', Tahoma, Geneva, Verdana, sans-serif;
 
           <div class="col-12 mb-3">
             <div class="card card2">
-              <h5 class="card-header text-black">Non Compliant Stores on End of Day Process (7:AM CUT OFF)</h5>
+              <h5 class="card-header text-black"  style="background-color: #95a2b9b4; color:black;">Non Compliant Stores on End of Day Process (7:AM CUT OFF)</h5>
               <div class="card-body">
 
                 <div class="row mb-3">
@@ -622,25 +228,36 @@ font-family: 'Poppins', Tahoma, Geneva, Verdana, sans-serif;
           </div>
 
         </div><!-- /#ovrall -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" />
 
         <!-- TABLES -->
         <div class="row">
 
           <div class="col-12 mb-3">
             <div class="card card2">
-              <h5 class="card-header text-black">TICKETS</h5>
+              <h5 class="card-header text-black"  style="background-color: #95a2b9b4; color:black;">TICKETS</h5>
               <div class="card-body">
 
                 <div class="row">
-                  <div class="col-12 mb-3">
-                    <div class="table-responsive">
-                      <table id="report_data" class="table table-striped table-condensed text-center borderless w-100"></table>
+                  <!-- old code with overflow -->
+                  <!-- <div class="col-12 mb-3">  
+                     <div class="table-responsive" id="proTeamScroll" style="max-height:450px; width:100%;overflow-y:auto;">
+                    <table id="report_data" class="table table-hover">
+
+                    </div>
+                  </div> -->
+
+                                    <div class="col-12 mb-3">
+                     <div class="table-responsive" id="proTeamScroll" style="">
+                    <table id="report_data" class="table table-hover">
+
                     </div>
                   </div>
 
                   <div class="col-12">
-                    <div class="table-responsive">
-                      <table id="network_tb" class="table table-striped table-condensed text-center borderless w-100"></table>
+                     <div class="table-responsive" id="proTeamScroll" style="max-height:450px; width:100%;overflow-y:auto;">
+                      <table id="network_tb" class="table table-hover">
+
                     </div>
                   </div>
                 </div>
@@ -662,8 +279,8 @@ font-family: 'Poppins', Tahoma, Geneva, Verdana, sans-serif;
 
 
 <!-- =========================
-     Start of Add/Edit Modal
-     ========================= -->
+Start of Add/Edit Modal
+========================= -->
 <div class="col-12 col-lg-12 modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" style="max-width: 100%;">
     <form method="post" id="report_form" enctype="multipart/form-data">
@@ -872,13 +489,13 @@ font-family: 'Poppins', Tahoma, Geneva, Verdana, sans-serif;
               <div id="msg_thread">
 
                 <div class="col-12 mb-3 px-0">
-                  <label style="font-weight: bold;">Add Comment:</label>
+                  <label style="font-weight: bold; color:white;">Add Comment:</label>
                   <textarea name="admsg" id="addmsg" class="form-control form-control-sm"
                     placeholder="Reply to their message or give an updates regarding on this ticket..." required></textarea>
                 </div>
 
                 <div class="col-12 mt-4 mb-2 dv_msg px-0">
-                  <label for="remarks_view" style="font-weight: bold;">Comment Thread:</label>
+                  <label for="remarks_view" style="font-weight: bold; color:white;">Comment Thread:</label>
                   <hr>
                   <div class="container_remarks">
                     <div id="remarks_view"></div>
@@ -902,5 +519,24 @@ font-family: 'Poppins', Tahoma, Geneva, Verdana, sans-serif;
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
- 
+<script>
+  $(document).ready(function() {
+    // KPI Card Click Functionality
+    $('.dashcard-clickable').on('click', function() {
+        const filterValue = $(this).data('filter');
+      
+        if ($.fn.DataTable.isDataTable('#report_data')) {
+            const table = $('#report_data').DataTable();
+            table.search(filterValue).draw();
+        }
+
+        $('html, body').animate({
+            scrollTop: $("#report_data").offset().top - 100
+        }, 600);
+
+        $(this).fadeOut(100).fadeIn(100);
+    });
+});
+</script>
+
 

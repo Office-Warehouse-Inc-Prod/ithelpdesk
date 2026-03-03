@@ -1,143 +1,174 @@
-<?php include 'main_ses.php';
- date_default_timezone_set('Asia/Manila');
- ?>
+<?php include 'main_ses.php'; ?>
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Login | Office Warehouse Inc.</title>
-  <link rel="icon" type="image/x-icon" href="assets/images/owilogo.jpeg">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;500;700&display=swap" rel="stylesheet">
-  <style>
-    body {
-      background: radial-gradient(circle at top left, #1e1e2f, #040414);
-      font-family: 'Roboto', sans-serif;
-      color: white;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem;
-      animation: fadeIn 1s ease-in-out;
-    }
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login | Office Warehouse Inc.</title>
+    <link rel="icon" type="image/x-icon" href="assets/images/owilogo.jpeg">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(rgba(34, 56, 167, 0.3), rgba(214, 216, 184, 0.27)), 
+                        url('images/bg_login.png'); 
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+        }
 
-    .login-card {
-      background: rgba(13, 13, 26, 0.85);
-      backdrop-filter: blur(8px);
-      border-radius: 16px;
-      padding: 2rem;
-      box-shadow: 0 8px 25px rgba(255, 204, 12, 0.15);
-      width: 100%;
-      max-width: 900px;
-      animation: slideUp 0.8s ease-out;
-      transform: translateY(20px);
-    }
+        .main-wrapper {
+            flex: 1;
+            display: flex;
+            align-items: center; /* Vertical Center */
+            justify-content: center; /* Horizontal Center */
+            padding: 20px;
+        }
 
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(40px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+        .login-card {
+            background: #ffffff;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 420px; /* Fixed maximum width for the card */
+            z-index: 2;
+        }
 
-    .form-control {
-      background: transparent;
-      border: 1px solid #555;
-      color: white;
-      transition: box-shadow 0.3s, border-color 0.3s;
-    }
+        /* Responsive behavior for the branding image */
+        .side-left-img {
+            max-height: 600px;
+            width: 100%;
+            object-fit: contain;
+            border-radius: 15px;
+        }
 
-    .form-control:focus {
-      border-color: #ffcc0c;
-      box-shadow: 0 0 10px rgba(255, 204, 12, 0.6);
-    }
+        .divider-text h2 {
+            color: #213456;
+            font-weight: 800;
+            font-size: 2.2rem;
+            margin: 0;
+        }
 
-    .btn-login {
-      background-color: #ffcc0c;
-      color: #000;
-      font-weight: 600;
-      border-radius: 10px;
-      transition: transform 0.3s, background-color 0.3s;
-    }
+        .login-title {
+            font-size: 13px;
+            letter-spacing: 1px;
+            font-weight: 600;
+            color: #666;
+        }
 
-    .btn-login:hover {
-      background-color: #e6b800;
-      transform: scale(1.05);
-      box-shadow: 0 4px 15px rgba(255, 204, 12, 0.4);
-    }
+        .form-control {
+            padding: 0.75rem 1rem;
+            border-left: none;
+        }
 
-    .logo {
-      width: 120px;
-      margin-bottom: 1rem;
-      animation: pop 0.8s ease;
-    }
+        .input-group-text {
+            background-color: #fff;
+            color: #213456;
+        }
 
-    @keyframes pop {
-      0% { transform: scale(0.7); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
-    }
+        .btn-primary {
+            background: #213456;
+            border: none;
+            padding: 0.8rem;
+            font-weight: 600;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
 
-    .subtitle {
-      color: #b3b3b3;
-      font-size: 0.95rem;
-    }
+        .btn-primary:hover {
+            background: #150556;
+            transform: translateY(-1px);
+            border-color: #E5BA41;
+        }
 
-    #err_mes {
-      color: #ff5c5c;
-      margin-top: 1rem;
-      animation: shake 0.3s;
-    }
-
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-5px); }
-      50% { transform: translateX(5px); }
-      75% { transform: translateX(-5px); }
-    }
-  </style>
+        /* Centering Logic for Mobile/Desktop */
+        @media (max-width: 991px) {
+            .side-left-container {
+                display: none !important; /* Hide image on smaller screens */
+            }
+        }
+        
+        footer {
+            background: #888787;
+            color: #213456 ;
+            padding: 10px 0;
+            text-align: center;
+            font-size: 0.8rem;
+        }
+    </style>
 </head>
 <body>
-  <div class="login-card row g-0 shadow-lg">
-    <div class="col-md-6 d-none d-md-flex align-items-center justify-content-center">
-      <img src="assets/helpdesk.png" alt="Helpdesk Image" class="img-fluid p-3">
+
+<div class="main-wrapper">
+    <div class="container">
+        <div class="row justify-content-center align-items-center">
+            
+            <div class="col-lg-6 d-none d-lg-block side-left-container text-end pe-5">
+                <img src="images/bg_login blue.png" class="side-left-img" alt="Branding">
+            </div>
+
+            <div class="col-12 col-md-8 col-lg-5 d-flex justify-content-center">
+                <div class="login-card">
+                    <div class="text-center mb-4">
+                        <div class="divider-text">
+                            <h2>WELCOME</h2>
+                        </div>
+                        <div class="login-title text-uppercase mt-1">Log in your details</div>
+                    </div>
+
+                    <form method="post" id="report_form">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Username</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                <input type="text" name="email" class="form-control" placeholder="Username" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                <input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
+                                <span class="input-group-text toggle-password" style="cursor:pointer;">
+                                    <i class="fas fa-eye"></i>
+                                </span>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 shadow">Login</button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
     </div>
-    <div class="col-md-6 p-4">
-      <div class="text-center">
-        <img src="assets/owilogo.jpeg" class="logo" alt="Logo">
-        <h2 class="fw-bold">OWI HELPDESK Rev 3.0</h2>
-        <p class="subtitle">Login to continue</p>
-      </div>
+</div>
 
-      <?php if (!empty($message)): ?>
-        <p id="err_mes"><?= $message ?></p>
-      <?php endif; ?>
 
-      <form method="post" id="report_form" enctype="multipart/form-data" class="mt-4">
-        <div class="form-floating mb-3">
-          <input type="text" class="form-control" id="floatingUsername" name="email" placeholder="Username" required>
-          <label for="floatingUsername">Username</label>
-        </div>
-        <div class="form-floating mb-4">
-          <input type="password" class="form-control" id="floatingPassword" name="password" placeholder="Password" required>
-          <label for="floatingPassword">Password</label>
-        </div>
-        <div class="d-grid">
-          <button type="submit" class="btn btn-login">Login</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <script>
-    setTimeout(() => {
-      const err = document.getElementById("err_mes");
-      if (err) err.remove();
-    }, 5000);
-  </script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.toggle-password').on('click', function () {
+            const passwordInput = $('#password');
+            const icon = $(this).find('i');
+            if (passwordInput.attr('type') === 'password') {
+                passwordInput.attr('type', 'text');
+                icon.removeClass('fa-eye').addClass('fa-eye-slash');
+            } else {
+                passwordInput.attr('type', 'password');
+                icon.removeClass('fa-eye-slash').addClass('fa-eye');
+            }
+        });
+    });
+</script>
 </body>
 </html>
