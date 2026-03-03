@@ -34,6 +34,38 @@ $datetime->setTimezone($timezone);
 #showCalendarBtn:hover {
     background: #4338ca;
 }
+
+/* ===== Soft Light DataTable Background ===== */
+
+#report_data thead th{
+    background: #F3F4F6 !important;  /* soft grey header */
+    color: #374151 !important;       /* dark gray text */
+    font-weight: 700;
+}
+
+#report_data tbody tr{
+    background: #F9FAFB !important;  /* very soft white */
+}
+
+#report_data tbody tr:nth-child(even){
+    background: #F3F4F6 !important;  /* subtle zebra */
+}
+
+#report_data tbody td{
+    color: #4B5563 !important;       /* soft dark gray text */
+    border-color: #E5E7EB !important;
+}
+
+#report_data tbody tr:hover{
+    background: #E5E7EB !important;  /* soft hover */
+}
+
+/* DataTables wrapper */
+.dataTables_wrapper{
+    background: #F9FAFB;
+    padding: 15px;
+    border-radius: 12px;
+}
 </style>
 
 <head>
@@ -97,7 +129,7 @@ $datetime->setTimezone($timezone);
 </div>
 <div class="card-footer d-flex align-items-center justify-content-between">
                        
-                          <a class="small text-white stretched-link" id="card_openval" href="#bottom" value="OPEN" >Click here for more info.</a>
+                          <a class="small text-white stretched-link" id="card_openval" href="#bottom" value="ON PROCESS" >Click here for more info.</a>
                           <div class="go-arrow">  </div>
                       </div>
 </div>
@@ -305,7 +337,7 @@ style="text-transform:uppercase" onkeyup="this.value = this.value;"></textarea>
 
 <div class="form-group col-4 col-md-4 col-lg-4">
 <label>STATUS</label>
-<input type="text" class="form-control form-control-sm" name="status" id="status" value="OPEN" readonly="">
+<input type="text" class="form-control form-control-sm" name="status" id="status" value="ON PROCESS" readonly="">
 </div>
 <div class="form-group col-4 col-md-4 col-lg-4 hide_cl">
 <label id="dateclabel" class="hidden">DATE CLOSED</label>
@@ -491,7 +523,7 @@ columns: [
           if(data == '1 Days Unresolved'){
             data = '1 Day Unresolved'
           }
-         else if(data == '01/01/1970 01:00'){
+         else if(data == '01/01/1970 08:00'){
             data = 'UNRESOLVED'
           }
           else if(data<0){
@@ -507,65 +539,29 @@ columns: [
 ],
 
 
-rowCallback: function(row, data, index){
-if(data['status'] == 'ON PROCESS'){
-$(row).find('td:eq(0)').css('color', 'red');
-$(row).find('td:eq(1)').css('color', 'red');
-$(row).find('td:eq(2)').css('color', 'red');
-$(row).find('td:eq(3)').css('color', 'red');
-$(row).find('td:eq(4)').css('color', 'red');
-$(row).find('td:eq(5)').css('color', 'red');
-$(row).find('td:eq(6)').css('color', 'red');
-$(row).find('td:eq(7)').css('color', 'red');
-$(row).find('td:eq(8)').css('color', 'red');
-$(row).find('td:eq(9)').css('color', 'red');
-$(row).find('td:eq(11)').css('color', 'red');
-}
-else if (data['status'] == 'ATTENDED WITH FIX ASSET'){
-$(row).find('td:eq(0)').css('color', 'red');
-$(row).find('td:eq(1)').css('color', 'red');
-$(row).find('td:eq(2)').css('color', 'red');
-$(row).find('td:eq(3)').css('color', 'red');
-$(row).find('td:eq(4)').css('color', 'red');
-$(row).find('td:eq(5)').css('color', 'red');
-$(row).find('td:eq(6)').css('color', 'red');
-$(row).find('td:eq(7)').css('color', 'red');
-$(row).find('td:eq(8)').css('color', 'red');
-$(row).find('td:eq(9)').css('color', 'red');
-$(row).find('td:eq(11)').css('color', 'red');
-}
-else if (data['status'] == 'SUBJECT FOR CLOSING'){
-$(row).find('td:eq(0)').css('color', '#890188');
-$(row).find('td:eq(1)').css('color', '#890188');
-$(row).find('td:eq(2)').css('color', '#890188');
-$(row).find('td:eq(3)').css('color', '#890188');
-$(row).find('td:eq(4)').css('color', '#890188');
-$(row).find('td:eq(5)').css('color', '#890188');
-$(row).find('td:eq(6)').css('color', '#890188');
-$(row).find('td:eq(7)').css('color', '#890188');
-$(row).find('td:eq(8)').css('color', '#890188');
-$(row).find('td:eq(9)').css('color', '#890188');
-$(row).find('td:eq(11)').css('color', '#890188');
-}
-else if (data['status'] == 'CLOSED'){
-$(row).find('td:eq(0)').css('color', 'green');
-$(row).find('td:eq(1)').css('color', 'green');
-$(row).find('td:eq(2)').css('color', 'green');
-$(row).find('td:eq(3)').css('color', 'green');
-$(row).find('td:eq(4)').css('color', 'green');
-$(row).find('td:eq(5)').css('color', 'green');
-$(row).find('td:eq(6)').css('color', 'green');
-$(row).find('td:eq(7)').css('color', 'green');
-$(row).find('td:eq(8)').css('color', 'green');
-$(row).find('td:eq(9)').css('color', 'green');
-$(row).find('td:eq(10)').css('color', 'green');
-$(row).find('td:eq(11)').css('color', 'green');
-$(row).find('td:eq(12)').css('color', 'green');
-$(row).find('td:eq(13)').css('color', 'green');
-}
+rowCallback: function (row, data) {
 
+  // clear any previous inline styles set by callback
+  $(row).find('td:eq(6)').attr('style', '');
 
-},
+  const status = (data['status'] || '').toUpperCase();
+  const $statusTd = $(row).find('td:eq(6)'); // STATUS column
+
+  if (status === 'ON PROCESS') {
+    $statusTd.attr('style', 'color:#F97316 !important; font-weight:800;');
+  } else if (status === 'SUBJECT FOR CLOSING') {
+    $statusTd.attr('style', 'color:#7C3AED !important; font-weight:800;');
+    
+  }
+  else if (status === 'PENDING') {
+    $statusTd.attr('style', 'color:#CC313F !important; font-weight:800;');
+  } else if (status === 'CLOSED') {
+    $statusTd.attr('style', 'color:#16A34A !important; font-weight:800;');
+  } else {
+    // default
+    $statusTd.attr('style', 'color:#374151 !important; font-weight:700;');
+  }
+}
 
 });
 
