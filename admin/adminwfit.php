@@ -362,6 +362,9 @@ hr{
       </head>
 
       <div class="container mt-3">
+        <button onclick="location.reload();" class="btn btn-primary btn-sm">
+    <i class="fas fa-sync-alt"></i> Reload
+</button>
       <table class="table table-dark table-responsive table-condensed" id="new_rep_table"></table>
       </div>
 
@@ -448,8 +451,14 @@ hr{
       </select>
       </div>
 
+      <select id="setStatus" name="setStatus" class="form-control form-control-sm" required>
+    <option value="">Select Status</option>
+    <option value="Assigned">Assigned</option>
+    <option value="Closed">Closed</option>
+</select>
+
       <input type="hidden" name="contactNumber" id="contactNumber">
-      <input type="text" name="dept_email" id="dept_email">
+      <input type="hidden" name="dept_email" id="dept_email">
 
 
 

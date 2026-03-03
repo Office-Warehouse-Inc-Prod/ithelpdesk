@@ -387,7 +387,8 @@ if ($_POST["operation"] == "New_Report") {
 
     $close_by    = $_POST["close_by"] ?? '0';
     $remarks     = $_POST["remarks"] ?? '';
-    $status      = 'ASSIGNED'; // force status to ASSIGNED
+    $status     = $_POST["setStatus"] ?? '';
+    // $status      = 'ASSIGNED'; // force status to ASSIGNED
     $refNo       = $_POST["refNo"] ?? '';
     $plvl        = $_POST["priority_level"] ?? '0'; // ✅ PRIORITY
 

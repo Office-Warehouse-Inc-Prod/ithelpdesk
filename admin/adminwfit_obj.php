@@ -19,7 +19,7 @@
       const dataset = t.newrptdata || [];
 
       reptable = $("#new_rep_table").DataTable({
-      "dom": '<"pull-left"lf><"pull-right">tip',
+"dom": '<"pull-left"f><"pull-right">tip',
       stateSave: true,
       "bDestroy": true,
       "responsive": true,
@@ -54,6 +54,20 @@
       setInterval(function(){
       getdata();
       }, 60000);
+
+
+      // 🔥 STRICT EQUALS search (exact match only)
+$('#new_rep_table_filter input')
+    .off()
+    .on('keyup', function () {
+
+        var value = $.fn.dataTable.util.escapeRegex($(this).val());
+
+        reptable
+            .column(1) // Department/Store column
+            .search('^' + value + '$', true, false) // regex true, smart false
+            .draw();
+    });
 
       // open modal
       $('#new_rep_table tbody').off('click', 'button').on('click', 'button', function () {
