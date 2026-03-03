@@ -1,45 +1,21 @@
- <?php
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "helpdesk1";
+<?php
+$conn = new mysqli("localhost", "root", "", "helpdesk1");
 
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-// Check connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
-} 
+}
 
-$sql = "SELECT
-reports.ticket_no, 
-reports.`status`, 
-reports_msgcnt.msg_cnt, 
-reports.store
-FROM
-reports
-INNER JOIN
-reports_msgcnt
-ON 
-    reports_msgcnt.ticket_no = reports.ticket_no
-WHERE
-`status` = 'ASSIGNED'  AND
-deptsel = '1' AND 
-store IS NOT NULL
-GROUP BY
-concern";
+$sql = "SELECT COUNT(*) as total
+        FROM reports
+        WHERE status = 'ASSIGNED'
+        AND deptsel = '1'
+        AND store IS NOT NULL";
+
 $result = $conn->query($sql);
 
-echo $result->num_rows;
-/*
-if ($result->num_rows > 0) {
-    // output data of each row
-    while($row = $result->fetch_assoc()) {
-        echo "id: " . $row["id"]. " - Notification: " . $row["description"];
-    }
-} else {
-    echo "0 results";
-}
-*/
+$row = $result->fetch_assoc();
+
+echo $row['total'];
+
 $conn->close();
 ?>
