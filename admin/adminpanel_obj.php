@@ -101,7 +101,7 @@ table = $("#report_data").DataTable({
 
   pageLength: 10,
   data: dataset,
-  order: [[1, "desc"]],
+  order: [[5, "desc"]],
 
   columns: [
 {
@@ -198,7 +198,26 @@ render:function(data,type,row){
       }
     },
     { title: "Store", data: "str_code", defaultContent: "" },
-    { title: "Date Created", data: "date_created", defaultContent: "" },
+    // { title: "Date Created", data: "date_created", defaultContent: "" },
+      {
+  title:"Date Created",
+  data:"date_created",
+  defaultContent:"",
+  render: function(data, type, row){
+
+      if(type === 'sort' || type === 'type'){
+          // Convert MM/DD/YYYY HH:MM:SS to YYYY-MM-DD HH:MM:SS
+          let parts = data.split(" ");
+          let date = parts[0].split("/");
+          let time = parts[1];
+
+          return date[2] + "-" + date[0] + "-" + date[1] + " " + time;
+      }
+
+      return data; // display normally
+  }
+},
+    
     { title: "Subject", data: "subject", defaultContent: "" },
     // { title: "Via", data: "via", defaultContent: "" },
 

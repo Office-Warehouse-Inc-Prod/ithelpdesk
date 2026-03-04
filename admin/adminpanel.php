@@ -14,7 +14,7 @@ include 'sub_graph_modal.php';
 
 
 ?>
-<style>
+<!-- <style>
 /* =========================
    MODERN DASHBOARD UI (Drop-in)
    Keeps your existing classes & IDs
@@ -421,11 +421,242 @@ select.form-control option {
 
 
 
+</style> -->
+
+
+
+<style>
+/* =========================
+   OWI HELP DESK THEME (like screenshot)
+   Navy + Yellow accents • light cards
+   ========================= */
+
+:root{
+  --navy:#121C31;
+  --navy2:#1a2a4a;
+  --yellow:#EAAA00;
+  --bg:#EEF2F7;
+  --card:#ffffff;
+  --line:#E5E7EB;
+  --text:#111827;
+  --muted:#6B7280;
+  --shadow: 0 14px 32px rgba(17,24,39,.12);
+  --radius:16px;
+}
+
+/* Page background + subtle diagonal */
+body{
+  background:
+    linear-gradient(135deg, rgba(18,28,49,.18) 0%, rgba(18,28,49,.18) 12%, transparent 12%) ,
+    linear-gradient(315deg, rgba(18,28,49,.18) 0%, rgba(18,28,49,.18) 12%, transparent 12%),
+    var(--bg) !important;
+  color: var(--text) !important;
+}
+
+/* ===== Top navbar (if applicable) ===== */
+.navbar, header, .topbar, .navbar-default{
+  background: var(--navy) !important;
+  border-color: rgba(255,255,255,.10) !important;
+}
+.navbar a, .navbar-brand, .navbar-nav > li > a,
+.navbar i, .navbar .fa, .navbar .fas{
+  color: #fff !important;
+}
+.navbar-nav > li.active > a,
+.navbar-nav > li > a:hover{
+  color: var(--yellow) !important;
+}
+.navbar-nav > li.active > a{
+  border-bottom: 3px solid var(--yellow);
+}
+
+/* ===== Top controls strip (year picker / calendar / toggle) ===== */
+.form-check.form-switch{
+  background: #fff !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 999px !important;
+  box-shadow: 0 10px 22px rgba(17,24,39,.08) !important;
+}
+.form-check-label{ color: var(--muted) !important; font-weight: 700; }
+
+.input-group-text{
+  background: var(--navy) !important;
+  color: #fff !important;
+  border: 1px solid rgba(0,0,0,.08) !important;
+  font-weight: 800 !important;
+  border-radius: 12px 0 0 12px !important;
+}
+select.form-control, .form-control{
+  background: #fff !important;
+  color: var(--text) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 0 12px 12px 0 !important;
+}
+select.form-control:focus, .form-control:focus{
+  border-color: rgba(234,170,0,.55) !important;
+  box-shadow: 0 0 0 .2rem rgba(234,170,0,.18) !important;
+}
+
+/* Calendar button like screenshot */
+#showCalendarBtn{
+  background: var(--yellow) !important;
+  color: #111827 !important;
+  border: none !important;
+  border-radius: 12px !important;
+  font-weight: 900 !important;
+  letter-spacing: .02em;
+  box-shadow: 0 10px 22px rgba(17,24,39,.12);
+}
+#showCalendarBtn:hover{
+  filter: brightness(.98);
+  transform: translateY(-1px);
+}
+
+/* ===== Summary cards (top 4 cards) ===== */
+.card-deck{ gap: 16px; }
+
+.dashcard{
+  background: var(--card) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: var(--radius) !important;
+  box-shadow: var(--shadow) !important;
+  overflow: hidden;
+  position: relative;
+}
+
+/* subtle colored top border per card (keeps bg-* but makes it “corporate”) */
+.dashcard.bg-primary{ border-top: 4px solid #3b82f6 !important; }
+.dashcard.bg-danger{  border-top: 4px solid #ef4444 !important; }
+.dashcard.bg-warning{ border-top: 4px solid var(--yellow) !important; }
+.dashcard.bg-success{ border-top: 4px solid #22c55e !important; }
+
+/* force readable text (your cards had text-white before) */
+.dashcard, .dashcard *{ color: var(--text) !important; }
+
+.dashcard .card-body{
+  padding: 16px 18px 10px 18px !important;
+}
+.dashcard .card-title{
+  font-size: 12px !important;
+  font-weight: 900 !important;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted) !important;
+}
+.dashcard .card-title span{
+  float: right;
+  font-size: 30px !important;
+  font-weight: 900 !important;
+  color: var(--navy) !important;
+}
+
+.dashcard .card-footer{
+  background: #fff !important;
+  border-top: 1px solid var(--line) !important;
+  padding: 12px 18px !important;
+}
+.dashcard .card-footer a{
+  color: var(--muted) !important;
+  font-weight: 700 !important;
+  text-decoration: none !important;
+}
+.dashcard .card-footer a:hover{
+  color: var(--navy) !important;
+  text-decoration: underline !important;
+}
+
+/* ===== Big section cards (Overall Status / IT Support Logs / etc.) ===== */
+.card2{
+  background: #fff !important;
+  border: 1px solid var(--line) !important;
+  border-radius: var(--radius) !important;
+  box-shadow: var(--shadow) !important;
+  overflow: hidden;
+}
+
+/* Navy header bar + yellow underline like screenshot */
+.card2 .card-header{
+  background: var(--navy) !important;
+  color: var(--yellow) !important;
+  font-weight: 900 !important;
+  text-transform: none;
+  letter-spacing: .02em;
+  border-bottom: 3px solid var(--yellow) !important;
+  padding: 14px 18px !important;
+}
+.card2 .card-body{ padding: 18px !important; }
+
+/* ===== DataTables / tables (clean light) ===== */
+#report_data, #network_tb{
+  background: #fff !important;
+  color: var(--text) !important;
+}
+
+#report_data thead th, #network_tb thead th{
+  background: #F8FAFC !important;
+  color: #334155 !important;
+  font-weight: 900 !important;
+  border-bottom: 1px solid var(--line) !important;
+  white-space: nowrap;
+}
+
+#report_data tbody td, #network_tb tbody td{
+  color: #334155 !important;
+  border-color: var(--line) !important;
+}
+
+#report_data tbody tr:hover, #network_tb tbody tr:hover{
+  background: #F8FAFC !important;
+}
+
+/* DataTables controls */
+.dataTables_wrapper .dataTables_filter input,
+.dataTables_wrapper .dataTables_length select{
+  background: #fff !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 10px !important;
+  color: var(--text) !important;
+}
+.dataTables_wrapper .dataTables_info,
+.dataTables_wrapper .dataTables_paginate{
+  color: var(--muted) !important;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button.current{
+  background: rgba(234,170,0,.18) !important;
+  border-color: rgba(234,170,0,.35) !important;
+}
+
+/* ===== Action circle buttons keep modern look ===== */
+.action-btn-group{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  white-space:nowrap;
+}
+.btn-circle{
+  width:34px; height:34px;
+  border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  border:none;
+  color:#fff !important;
+  transition: .15s ease;
+  box-shadow: 0 10px 18px rgba(17,24,39,.12);
+}
+.btn-circle:hover{ transform: translateY(-1px); }
+.btn-edit{ background:#2563eb !important; }
+.btn-viber{ background:#7360F2 !important; }
+.btn-email{ background:#20c997 !important; }
+.btn-disabled{ background:#94a3b8 !important; cursor:not-allowed; }
+
+/* ===== Optional: status text only (if your JS colors rows) ===== */
+.status-open td{ color:#b91c1c !important; }
+.status-fixed td{ color:#c2410c !important; }
+.status-closed td{ color:#15803d !important; }
+.status-subject-closing td{ color:#6d28d9 !important; }
+
+  
 </style>
-
-
-
-
 
 <div class="container-fluid">
   <div id="wrapper">

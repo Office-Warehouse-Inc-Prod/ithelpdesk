@@ -32,12 +32,30 @@
       },
       pageLength: 5,
       data: dataset,
-      "order": [[0, "Desc"]],
+      "order": [[3, "Desc"]],
       columns: [
       {title:"TicketNo", data:"ticket_no","defaultContent": ""},
       {title:"Department/Store", data:"str_code","defaultContent": ""},
       {title:"Created By", data:"full_name","defaultContent": ""},
-      {title:"Date Created", data:"date_created","defaultContent": ""},
+    //   {title:"Date Created", data:"date_created","defaultContent": ""},
+    {
+  title:"Date Created",
+  data:"date_created",
+  defaultContent:"",
+  render: function(data, type, row){
+
+      if(type === 'sort' || type === 'type'){
+          // Convert MM/DD/YYYY HH:MM:SS to YYYY-MM-DD HH:MM:SS
+          let parts = data.split(" ");
+          let date = parts[0].split("/");
+          let time = parts[1];
+
+          return date[2] + "-" + date[0] + "-" + date[1] + " " + time;
+      }
+
+      return data; // display normally
+  }
+},
       {title:"SUBJECT", data:"concern","defaultContent": ""},
       {title:"Types of Service", data:"service_desc","defaultContent": ""},
       {title:"CONCERN", data:"subject","defaultContent": ""},
