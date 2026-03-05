@@ -304,13 +304,16 @@ body {
     </form>
   </div>
 </nav>
-<div class="container p-0">
+
+
+
+<!-- <div class="container p-0">
 <footer class="footer bg-warning">
       <div class="container">
         <span class="text-muted pull-left">Developed by: IT</span>
       </div>
     </footer>
-</div>
+</div> -->
 </body>
 </html>
 

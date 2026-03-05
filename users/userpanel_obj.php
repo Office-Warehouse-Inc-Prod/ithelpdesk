@@ -5,6 +5,25 @@
 
 
 $(document).ready(function(){
+
+
+$("#deptsel").on("change", function(){
+
+        let val = $(this).val();
+
+        if(val == "4"){ // MERCHANDISING
+            // $("#report_form").addClass("horizontal-layout");
+$("#helpdesk_row").fadeOut();
+$("#merchDrCard").fadeIn();
+
+
+        }else{
+            // $("#report_form").removeClass("horizontal-layout");
+        }
+
+    });
+
+
   $('#dvtables').show();
   $('#reports_table').show();
 
@@ -379,6 +398,9 @@ table =  $("#reports_table").DataTable({
 stateSave: true,
 "bDestroy": true,
 "responsive": true, "lengthChange": false, "autoWidth": false,
+  scrollY: '100%',
+  scrollCollapse: true,
+  autoWidth: false,
 language: {
 search: "_INPUT_",
 searchPlaceholder: "Search..."
@@ -1041,7 +1063,7 @@ $('#action').click(function () {
         contentType: false,
         success: function (data) {
             console.log('First AJAX success');
-            
+            console.log(tktno);
             // Case-insensitive check
             if (tktno.includes("PD")) {
                 console.log('PD found, making second AJAX call');
@@ -1233,4 +1255,277 @@ $("#remarks_view").empty();
 var today = new Date();
 var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate()+' '+today.getHours()+':'+(today.getMinutes()<10?'0':'') + today.getMinutes()+':'+(today.getSeconds()<10?'0':'') + today.getSeconds();
 
+
+
+// Merchandising Module,
+
+
+// $(function () {
+
+//   // ---------- TOGGLE MERCH MODE ----------
+//   function toggleMerchMode() {
+//     const val = $("#deptsel").val();
+
+//     if (val === "4") {
+//       $("#topFieldsDefault, #itemSectionDefault").hide();
+//       $("#topFieldsMerch, #itemSectionMerch").stop(true,true).slideDown(200);
+//     } else {
+//       $("#topFieldsMerch, #itemSectionMerch").hide();
+//       $("#topFieldsDefault, #itemSectionDefault").stop(true,true).slideDown(200);
+//     }
+//   }
+
+//   $("#deptsel").on("change", toggleMerchMode);
+//   toggleMerchMode(); // run once
+
+
+//   // ---------- MERCH ITEMS STORAGE ----------
+//   let merchItems = [];
+
+//   function refreshMerchTable() {
+//     const $tbody = $("#merchItemsTable tbody");
+//     $tbody.empty();
+
+//     merchItems.forEach((it, idx) => {
+//       $tbody.append(`
+//         <tr data-index="${idx}">
+//           <td>${idx + 1}</td>
+//           <td>${escapeHtml(it.alu)}</td>
+//           <td>${escapeHtml(it.desc)}</td>
+//           <td>${escapeHtml(it.serial)}</td>
+//           <td>${escapeHtml(it.defect)}</td>
+//           <td>${escapeHtml(it.vendor)}</td>
+//           <td>${it.qty}</td>
+//           <td>${escapeHtml(it.classificationLabel)}</td>
+//           <td class="text-center">
+//             <button type="button" class="btn btn-danger btn-sm btnRemove">
+//               <i class="fas fa-trash"></i>
+//             </button>
+//           </td>
+//         </tr>
+//       `);
+//     });
+
+//     $("#merch_items_json").val(JSON.stringify(merchItems));
+//   }
+
+//   function escapeHtml(str) {
+//     return String(str || "")
+//       .replaceAll("&","&amp;")
+//       .replaceAll("<","&lt;")
+//       .replaceAll(">","&gt;")
+//       .replaceAll('"',"&quot;")
+//       .replaceAll("'","&#039;");
+//   }
+
+//   // ---------- ADD ITEM ----------
+// $("#m_addItem").on("click", function () {
+//   const alu    = $("#m_alu").val().trim();
+//   const desc   = $("#m_desc").val().trim();
+//   // const serial = $("#m_serial").val().trim();
+//   const defect = $("#m_defect").val().trim();
+//   const vendor = $("#m_vendor").val().trim();
+//   const qty    = parseInt($("#m_qty").val(), 10) || 0;
+//   const cls    = $("#m_classification").val();
+
+// const serial = $("#m_serial").val().trim();
+
+// if (!alu || !desc || !serial || !defect || !vendor || !cls || qty <= 0) {
+//   alert("Please complete ALU, Description, Serial #, Nature of Defect, Vendor, Qty, and Classification.");
+//   return;
+// }
+
+// const existsSame = merchItems.some(x => x.alu === alu && (x.serial || "").toUpperCase() === serial.toUpperCase());
+// if (existsSame) {
+//   if (!confirm("Same ALU and Serial already exists. Add again?")) return;
+// }
+
+//   const classificationLabel = (cls === "STORE_UNIT") ? "Store Unit" : "Customer Unit";
+
+//   merchItems.push({
+//     alu,
+//     desc,
+//     serial,
+//     defect,
+//     vendor,
+//     qty,
+//     classification: cls,
+//     classificationLabel
+//   });
+
+//   // clear inputs
+//   $("#m_alu,#m_desc,#m_serial,#m_defect,#m_vendor").val("");
+//   $("#m_qty").val(1);
+//   $("#m_classification").prop("selectedIndex", 0);
+
+//   refreshMerchTable();
+// });
+
+//   // ---------- REMOVE ITEM ----------
+//   $("#merchItemsTable").on("click", ".btnRemove", function () {
+//     const idx = $(this).closest("tr").data("index");
+//     merchItems.splice(idx, 1);
+//     refreshMerchTable();
+//   });
+
+// });
+
+
+
+// $("#report_form").on("submit", function(e){
+//   e.preventDefault();
+
+//   $.ajax({
+//     url: "save_merch_items.php",
+//     method: "POST",
+//     data: $(this).serialize(), // includes ticket_no + merch_items_json + uId
+//     dataType: "json",
+//     success: function(res){
+//       if(res.status === "success"){
+//         alert("Saved! Inserted: " + res.inserted);
+//       }else{
+//         alert("Error: " + res.message);
+//       }
+//     },
+//     error: function(xhr){
+//       alert("Server error. Check console.");
+//       console.log(xhr.responseText);
+//     }
+//   });
+// }); // old pd merch
+
+$(function () {
+  let items = [];
+
+  function escapeHtml(str) {
+    return String(str || "")
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+
+  function refreshTable() {
+    const $tb = $("#merchItemsTable tbody");
+    $tb.empty();
+
+    items.forEach((it, idx) => {
+      $tb.append(`
+        <tr data-index="${idx}">
+          <td>${idx + 1}</td>
+          <td>${escapeHtml(it.alu)}</td>
+          <td>${escapeHtml(it.desc)}</td>
+          <td>${escapeHtml(it.serial)}</td>
+          <td>${escapeHtml(it.defect)}</td>
+          <td>${escapeHtml(it.vendor)}</td>
+          <td>${it.qty}</td>
+          <td>${it.classification === "STORE_UNIT" ? "Store Unit" : "Customer Unit"}</td>
+          <td class="text-center">
+            <button type="button" class="btn btn-danger btn-sm btnRemove">
+              <i class="fas fa-trash"></i>
+            </button>
+          </td>
+        </tr>
+      `);
+    });
+
+    $("#items_json").val(JSON.stringify(items));
+  }
+
+  $("#m_addItem").on("click", function () {
+    const alu = $("#m_alu").val().trim();
+    const desc = $("#m_desc").val().trim();
+    const serial = $("#m_serial").val().trim();
+    const defect = $("#m_defect").val().trim();
+    const vendor = $("#m_vendor").val().trim();
+    const qty = parseInt($("#m_qty").val(), 10) || 0;
+    const cls = $("#m_classification").val();
+
+    // serial required (since duplicates are allowed by serial)
+    if (!alu || !desc || !serial || !defect || !vendor || qty <= 0 || !cls) {
+      alert("Complete ALU, Description, Serial #, Nature of Defect, Vendor, Qty, Classification.");
+      return;
+    }
+
+    // allow duplicates ALU by design
+    items.push({ alu, desc, serial, defect, vendor, qty, classification: cls });
+
+    $("#m_alu,#m_desc,#m_serial,#m_defect,#m_vendor").val("");
+    $("#m_qty").val(1);
+    $("#m_classification").prop("selectedIndex", 0);
+
+    refreshTable();
+  });
+
+  $("#merchItemsTable").on("click", ".btnRemove", function () {
+    const idx = $(this).closest("tr").data("index");
+    items.splice(idx, 1);
+    refreshTable();
+  });
+
+  // SUBMIT: create ticket first, then save items
+$("#merch_ticket_form").on("submit", function(e){
+  e.preventDefault();
+
+  // quick debug
+  console.log("SUBJECT:", $(this).find("[name='subject']").val());
+  console.log("CONCERN:", $(this).find("[name='concern']").val());
+
+  const items_json = $("#items_json").val();
+  if (!items_json || items_json === "[]") {
+    alert("Please add at least 1 item.");
+    return;
+  }
+
+  const $btn = $("#btnSubmitMerch");
+  $btn.prop("disabled", true).text("Submitting...");
+
+  // send all form fields + items_json
+  const payload = $(this).serialize() + "&items_json=" + encodeURIComponent(items_json);
+
+  $.ajax({
+    url: "api_create_merch_ticket.php",
+    method: "POST",
+    dataType: "json",
+    data: payload,
+    success: function(res1){
+      if(res1.status !== "success"){
+        alert("Create ticket failed: " + (res1.message || "Unknown error"));
+        $btn.prop("disabled", false).text("Submit Ticket");
+        return;
+      }
+
+      const ticket_no = res1.ticket_no;
+
+      $.ajax({
+        url: "api_save_merch_items.php",
+        method: "POST",
+        dataType: "json",
+        data: { ticket_no, items_json, uId: $("#uId").val() },
+        success: function(res2){
+          if(res2.status === "success"){
+            alert("Ticket Created: " + ticket_no + "\nItems Saved: " + res2.inserted);
+            location.reload();
+          } else {
+            alert("Save items failed: " + (res2.message || "Unknown error"));
+            $btn.prop("disabled", false).text("Submit Ticket");
+          }
+        },
+        error: function(xhr){
+          console.log(xhr.responseText);
+          alert("Items API error. Check console.");
+          $btn.prop("disabled", false).text("Submit Ticket");
+        }
+      });
+    },
+    error: function(xhr){
+      console.log(xhr.responseText);
+      alert("Create Ticket API error. Check console.");
+      $btn.prop("disabled", false).text("Submit Ticket");
+    }
+  });
+});
+});
 </script>
+

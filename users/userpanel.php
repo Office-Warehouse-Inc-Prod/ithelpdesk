@@ -321,7 +321,7 @@ header,
 </style>
 
 
-<div class="container-fluid mt-4">
+<div class="container-fluid mt-4" id="helpdesk_row">
   <div class="row">
 
     <!-- LEFT: CREATE TICKET -->
@@ -364,7 +364,7 @@ header,
                             <option value="1" >IT</option>
                             <option value="2" >ADMIN</option>
                             <option value="3">MARKETING</option>
-                            <option value="4">REPAIR/SRTF</option>
+                            <option value="4">MERCHANDISING</option>
                             <option value="6">VISUAL</option>
 
 
@@ -549,6 +549,125 @@ header,
     </div>
 
   </div>
+</div>
+
+<div class="col-md-12">
+
+
+<!-- MERCH DR CARD (shows only when deptsel == 4) -->
+<div id="merchDrCard" class="card shadow-sm mt-3" style="display:none;border:1px solid #e5e7eb;border-radius:10px;">
+
+<form id="merch_ticket_form" method="post">
+
+  <input type="hidden" name="uId" id="uId" value="<?php echo $_SESSION['user_id']; ?>">
+
+  <div class="card shadow-sm mt-3">
+    <div class="card-body">
+
+      <h5 class="mb-3">Merchandising Defective Item Ticket</h5>
+
+      <div class="mb-2">
+        <label class="mb-1">Attention To</label>
+        <input type="text" class="form-control" value="MERCHANDISING" readonly>
+      </div>
+
+      <div class="mb-2">
+        <label class="mb-1">Subject</label>
+        <input type="text" class="form-control" name="subject" id="subject" required
+               style="text-transform:uppercase;">
+      </div>
+
+      <div class="mb-3">
+        <label class="mb-1">Concern</label>
+        <textarea class="form-control" name="concern" id="concern" rows="3" required></textarea>
+      </div>
+
+      <hr>
+
+      <!-- Item inputs -->
+      <div class="row">
+        <div class="col-md-3 mb-2">
+          <label class="mb-1">ALU</label>
+          <input type="text" class="form-control" id="m_alu">
+        </div>
+
+        <div class="col-md-5 mb-2">
+          <label class="mb-1">Description</label>
+          <input type="text" class="form-control" id="m_desc">
+        </div>
+
+        <div class="col-md-4 mb-2">
+          <label class="mb-1">Serial #</label>
+          <input type="text" class="form-control" id="m_serial" placeholder="Required">
+        </div>
+
+        <div class="col-md-5 mb-2">
+          <label class="mb-1">Nature of Defect</label>
+          <input type="text" class="form-control" id="m_defect">
+        </div>
+
+        <div class="col-md-3 mb-2">
+          <label class="mb-1">Vendor</label>
+          <input type="text" class="form-control" id="m_vendor">
+        </div>
+
+        <div class="col-md-2 mb-2">
+          <label class="mb-1">Qty</label>
+          <input type="number" class="form-control" id="m_qty" min="1" value="1">
+        </div>
+
+        <div class="col-md-2 mb-2">
+          <label class="mb-1">Classification</label>
+          <select class="form-control" id="m_classification">
+            <option value="" selected disabled>Select</option>
+            <option value="STORE_UNIT">Store Unit</option>
+            <option value="CUSTOMER_UNIT">Customer Unit</option>
+          </select>
+        </div>
+
+        <div class="col-12 text-right mt-1">
+          <button type="button" class="btn btn-success" id="m_addItem">
+            <i class="fas fa-plus"></i> Add Item
+          </button>
+        </div>
+      </div>
+
+      <!-- Items table -->
+      <div class="table-responsive mt-3">
+        <table class="table table-bordered table-hover mb-0" id="merchItemsTable" style="font-size:13px;">
+          <thead class="thead-light">
+            <tr>
+              <th style="width:55px;">#</th>
+              <th>ALU</th>
+              <th>Description</th>
+              <th>Serial #</th>
+              <th>Nature of Defect</th>
+              <th>Vendor</th>
+              <th style="width:90px;">Qty</th>
+              <th style="width:160px;">Classification</th>
+              <th style="width:90px;">Action</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <input type="hidden" name="items_json" id="items_json" value="[]">
+
+      <div class="mt-3">
+        <button type="submit" class="btn btn-primary w-100" id="btnSubmitMerch">
+          Submit Ticket
+        </button>
+      </div>
+
+    </div>
+  </div>
+</form>
+
+</div>
+
+
+
 </div>
 
 <?php include 'userpanel_obj.php'; ?>
