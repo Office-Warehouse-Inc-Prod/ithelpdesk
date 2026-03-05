@@ -119,7 +119,7 @@
                 <div class="login-card">
                     <div class="text-center mb-4">
                         <div class="divider-text">
-                            <h2>WELCOME</h2>
+                            <h2>WELCOME H2</h2>
                         </div>
                         <div class="login-title text-uppercase mt-1">Log in your details</div>
                     </div>
