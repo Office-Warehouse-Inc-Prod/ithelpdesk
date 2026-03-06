@@ -30,7 +30,7 @@
       search: "_INPUT_",
       searchPlaceholder: "Search..."
       },
-      pageLength: 5,
+      pageLength: 10,
       data: dataset,
       "order": [[4, "Desc"]],
       columns: [
