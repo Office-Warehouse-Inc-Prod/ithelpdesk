@@ -497,7 +497,7 @@ $.post('fetchdata/fetch_data.php',{yr:y,mode:'yearch'}, function(data) {
 let card_data = jQuery.parseJSON(data); 
 const a = card_data;
 // console.log(a)
-$('#count_total').html(a[0].total_res);
+$('#count_total').html(a[0].owfa_res);
 $('#count_open').html(a[0].open_res);
 $('#count_owfa').html(a[0].t_pending);
 $('#count_closed').html(a[0].cls_res);
