@@ -1,15 +1,15 @@
+<?php include 'main_ses.php'; ?>
 <!doctype html>
-<title>Site Maintenance</title>
-<style>
-  body { text-align: center; padding: 150px; }
-  h1 { font-size: 50px; }
-  body { font: 20px Helvetica, sans-serif; color: #333; }
-  article { display: block; text-align: left; width: 650px; margin: 0 auto; }
-  a { color: #dc8100; text-decoration: none; }
-  a:hover { color: #333; text-decoration: none; }
-</style>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login | Office Warehouse Inc.</title>
+    <link rel="icon" type="image/x-icon" href="assets/images/owilogo.jpeg">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-<<<<<<< HEAD
     <style>
         body {
             font-family: 'Poppins', sans-serif;
@@ -119,7 +119,7 @@
                 <div class="login-card">
                     <div class="text-center mb-4">
                         <div class="divider-text">
-                            <h2>WELCOME H2</h2>
+                            <h2>WELCOME</h2>
                         </div>
                         <div class="login-title text-uppercase mt-1">Log in your details</div>
                     </div>
@@ -150,12 +150,25 @@
             </div>
 
         </div>
-=======
-<article>
-    <h1>We&rsquo;ll be back soon!</h1>
-    <div>
-        <p>Sorry for the inconvenience but we&rsquo;re performing some maintenance at the moment. If you need to you can always <a href="mailto:ithelpdesk@officewarehouse.com.ph">contact us</a>, otherwise we&rsquo;ll be back online shortly!</p>
-        <p>&mdash; The Team</p>
->>>>>>> 391bf5f (maintenance mode)
     </div>
-</article>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.toggle-password').on('click', function () {
+            const passwordInput = $('#password');
+            const icon = $(this).find('i');
+            if (passwordInput.attr('type') === 'password') {
+                passwordInput.attr('type', 'text');
+                icon.removeClass('fa-eye').addClass('fa-eye-slash');
+            } else {
+                passwordInput.attr('type', 'password');
+                icon.removeClass('fa-eye-slash').addClass('fa-eye');
+            }
+        });
+    });
+</script>
+</body>
+</html>
