@@ -83,7 +83,7 @@ $('#new_rep_table_filter input')
         var value = $.fn.dataTable.util.escapeRegex($(this).val());
 
         reptable
-            .column(1) // Department/Store column
+            .column(2) // Department/Store column
             .search('^' + value + '$', true, false) // regex true, smart false
             .draw();
     });
