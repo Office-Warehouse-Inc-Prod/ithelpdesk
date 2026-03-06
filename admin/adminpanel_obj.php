@@ -29,6 +29,7 @@ val =  $(this).attr("value");
 $('#card_openval').click(function(e) {
 e.preventDefault();
 val =  $(this).attr("value");
+// console.log(val)
 });
 
 $('#card_openwfaval').click(function(e) {
@@ -235,6 +236,7 @@ render:function(data,type,row){
         if (s === "ASSIGNED") cls = "badge bg-warning text-dark";
         else if (s === "CLOSED") cls = "badge bg-success";
         else if (s === "SUBJECT FOR CLOSING") cls = "badge bg-primary";
+        else if (s === "ON PROCESS") cls = "badge bg-info";
         else if (s === "ATTENDED WITH FIX ASSET") cls = "badge bg-info text-dark";
 
         return `<span class="${cls} px-2 py-1">${data}</span>`;
@@ -433,7 +435,8 @@ table
 
 
 $('#card_openval').on('click', function () {
-var val =  $(this).attr("value");
+// var val =  $(this).attr("value");
+var val =  ('ASSIGNED');
 // alert(val);
 table
 .columns( 7 )
@@ -477,7 +480,7 @@ $('#network_tb').slideToggle();
 
 $('#store_graph_modal').modal('hide'); 
 
-crd_btm();
+// crd_btm();
 // slct_isp();
 // slct_itsup();
 // slct_sub();
@@ -496,7 +499,7 @@ const a = card_data;
 // console.log(a)
 $('#count_total').html(a[0].total_res);
 $('#count_open').html(a[0].open_res);
-$('#count_owfa').html(a[0].owfa_res);
+$('#count_owfa').html(a[0].t_pending);
 $('#count_closed').html(a[0].cls_res);
 $('#today_closed').html(a[0].t_res);
 
@@ -510,6 +513,7 @@ $('#datetimepicker1, #datetimepicker2, #datetimepicker3').datetimepicker()
 
 $("#yearpicker").on('change',function(){
 const yr =$("#yearpicker").val()
+console.log(yr);
 // reports_total(this.value);
 getdata(yr);
 // get_card_data(this.value);

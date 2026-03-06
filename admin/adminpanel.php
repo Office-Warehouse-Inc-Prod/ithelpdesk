@@ -656,6 +656,11 @@ select.form-control:focus, .form-control:focus{
 .status-subject-closing td{ color:#6d28d9 !important; }
 
   
+.bg-orange{
+    background-color: orange;
+    color:#fff;
+}
+
 </style>
 
 <div class="container-fluid">
@@ -704,21 +709,6 @@ select.form-control:focus, .form-control:focus{
 
 
 <div class="card-deck align-items-center mb-3">
-
-
-<div class="dashcard card text-white mb-4 bg-primary border-dark" style="width: 18rem; height: 9rem;">
-<div class="card-body">
-
-<div class="card-title">TOTAL REPORTS: <span class="float-right" id="count_total" style="font-size: 32px;"></span></div>
-             
-</div>                                  
-<div class="card-footer d-flex align-items-center justify-content-between">
-<a class=" text-white stretched-link" id="card_totalval" href="#bottom" value="" ><span class="small text-white">Click here for more info.</span></a>
-                          <div class="go-arrow">  </div>
-                          
-                      </div>
-</div>
-
 <div class="dashcard card text-white mb-4 bg-warning" style="width: 18rem; height: 9rem; ">
 <div class="card-body">
 
@@ -727,12 +717,27 @@ select.form-control:focus, .form-control:focus{
 </div>
 <div class="card-footer d-flex align-items-center justify-content-between">
 
-                       <a class=" text-white stretched-link" id="card_openval" href="#bottom" value="OPEN" ><span class="small text-white">Click here for more info.</span></a>
+                       <a class=" text-white stretched-link" id="card_openval" href="#bottom" value="ASSIGNED" ><span class="small text-white">Click here for more info.</span></a>
                    
 
                           <div class="go-arrow">  </div>
                       </div>
 </div>
+
+<div class="dashcard card text-white mb-4 bg-primary border-dark" style="width: 18rem; height: 9rem;">
+<div class="card-body">
+
+<div class="card-title">ON PROCESS: <span class="float-right" id="count_total" style="font-size: 32px;"></span></div>
+             
+</div>                                  
+<div class="card-footer d-flex align-items-center justify-content-between">
+<a class=" text-white stretched-link" id="card_totalval" href="#bottom" value="ON PROCESS" ><span class="small text-white">Click here for more info.</span></a>
+                          <div class="go-arrow">  </div>
+                          
+                      </div>
+</div>
+
+
 
 <div class="dashcard card text-white mb-4 bg-danger" style="width: 18rem; height: 9rem;">
 <div class="card-body">
@@ -742,7 +747,7 @@ select.form-control:focus, .form-control:focus{
 </div>
 <div class="card-footer d-flex align-items-center justify-content-between">
                       
-                           <a class="text-white stretched-link" id="card_openwfaval" href="#bottom" value="ATTENDED WITH FIX ASSET" ><span class="small text-white">Click here for more info.</span></a>
+                           <a class="text-white stretched-link" id="card_openwfaval" href="#bottom" value="PENDING" ><span class="small text-white">Click here for more info.</span></a>
                           <div class="go-arrow">  </div>
                       </div>
 

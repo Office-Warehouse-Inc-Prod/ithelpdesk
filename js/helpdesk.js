@@ -184,12 +184,12 @@ function lrinout() {
   }, 1500);
 }
 
-function crd_btm() {
-  $("a[href='#bottom']").click(function () {
-    $("html, body").animate({ scrollTop: $(".second").offset().top }, "slow");
-    return false;
-  });
-}
+// function crd_btm() {
+//   $("a[href='#bottom']").click(function () {
+//     $("html, body").animate({ scrollTop: $(".second").offset().top }, "slow");
+//     return false;
+//   });
+// }
 
 // function admin_dttable() {
 //   moment.updateLocale(moment.locale(), { invalidDate: "" }); //sets null value

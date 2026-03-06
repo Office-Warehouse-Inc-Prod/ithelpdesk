@@ -15,9 +15,10 @@ class dbconfig extends dbconn
         YEAR(date_created) as date_created,
         COUNT(reports.`status`) AS t_all,
         COUNT(CASE WHEN reports.`status` = 'ASSIGNED' then 1 else NULL end ) as t_open,
-        COUNT(CASE WHEN reports.`status` = 'ATTENDED WITH FIX ASSET' then 1 else NULL end) as t_owfa,
+        COUNT(CASE WHEN reports.`status` = 'ON PROCESS' then 1 else NULL end) as t_owfa,
         COUNT(CASE WHEN reports.`status` = 'CLOSED' then 1 else NULL end) as t_close,
-		COUNT(CASE WHEN reports.`status` = 'SUBJECT FOR CLOSING' then 1 else NULL END) AS t_day
+		COUNT(CASE WHEN reports.`status` = 'SUBJECT FOR CLOSING' then 1 else NULL END) AS t_day,
+		COUNT(CASE WHEN reports.`status` = 'PENDING' then 1 else NULL END) AS t_pending
 		-- COUNT(CASE WHEN reports.`status` = 'CLOSED' AND DATE(reports.date_closed) = CURRENT_DATE THEN 1 else NULL END) AS t_day
         FROM
         reports WHERE sub_id NOT IN ('15','28','34','35') AND `status` NOT IN ('WAITING FOR IT HELDESK RESPONSE','NEW REPORT') AND YEAR(date_created) IN (".$_POST['yr'] .")";
@@ -33,7 +34,9 @@ class dbconfig extends dbconn
         		'open_res' => $row["t_open"], 
         		'owfa_res' => $row["t_owfa"], 
         		'cls_res' => $row["t_close"],
-        		't_res' => $row["t_day"]
+        		't_res' => $row["t_day"],
+        		't_pending' => $row["t_pending"],
+
 
         	);
         }
@@ -304,7 +307,7 @@ public function admin_data_table_res(){
         FROM vw6foradmin
         WHERE  sub_id NOT IN ('15','28','34','35')
           AND status <> 'NEW REPORT'
-          AND YEAR(date_created) = '2026'
+          AND YEAR(date_created) = {$yr}
     ";
 
     $statement = $this->connection->prepare($query);
@@ -392,46 +395,58 @@ public function newreporthist(){
 
 	$query="SELECT
 	reports.deptsel AS deptsel,
-	`reports`.`ticket_no` AS `ticket_no`,
-	`reports`.`date_created` AS `date_created`,
-	`reports`.`store` AS `store`,
-	`tbl_branch`.`str_code` AS `str_code`,
-	`reports`.`concern` AS `concern`,
-	`reports`.`service_desc` AS `service_desc`,
-	`reports`.`subject` AS `subject`,
-	`reports`.`status` AS `status`,
-	`reports`.`userId` AS `userId`,
-	`reports`.`via` AS `via`,
-	`reports`.`itsup` AS `itsup`,
-	`it_tech`.`it_desc` AS `it_desc`,
-	`reports`.`cat_id` AS `cat_id`,
-	`categories`.`cat_desc` AS `cat_desc`,
-	concat_ws( '-', `reports`.`cat_id`, `categories`.`cat_desc` ) AS `cat_x`,
-	`reports`.`sub_id` AS `sub_id`,
-	`subcat`.`sub_cat` AS `sub_cat`,
-	`reports`.`date_closed` AS `date_closed`,
-	`reports`.`remarks` AS `remarks`,
-	`reports_msgcnt`.`msg_cnt` AS `msg_cnt`,
-	`reports_newmsg`.`nmsg_stat` AS `nmsg_stat`,
-	`users`.`fname` AS `fname`,
-	`users`.`lstname` AS `lstname`,
-	concat_ws( ' ', `users`.`fname`, `users`.`lstname` ) AS `full_name` 
+	reports.ticket_no AS ticket_no,
+	reports.date_created AS date_created,
+	reports.store AS store,
+	tbl_branch.str_code AS str_code,
+	reports.concern AS concern,
+	reports.service_desc AS service_desc,
+	reports.`subject` AS `subject`,
+	reports.`status` AS `status`,
+	reports.userId AS userId,
+	reports.via AS via,
+	reports.itsup AS itsup,
+	it_tech.it_desc AS it_desc,
+	reports.cat_id AS cat_id,
+	categories.cat_desc AS cat_desc,
+	concat_ws( '-', `reports`.`cat_id`, `categories`.`cat_desc` ) AS cat_x,
+	reports.sub_id AS sub_id,
+	subcat.sub_cat AS sub_cat,
+	reports.date_closed AS date_closed,
+	reports.remarks AS remarks,
+	reports_msgcnt.msg_cnt AS msg_cnt,
+	reports_newmsg.nmsg_stat AS nmsg_stat,
+	users.fname AS fname,
+	users.lstname AS lstname,
+	concat_ws( ' ', `users`.`fname`, `users`.`lstname` ) AS full_name,
+	tbl_deptsel.dept_desc AS dept_desc
 FROM
-	(((((((
-								`reports`
-								JOIN `tbl_branch` ON ( `tbl_branch`.`str_num` = `reports`.`store` ))
-							LEFT JOIN `it_tech` ON ( `it_tech`.`itsup` = `reports`.`itsup` ))
-						LEFT JOIN `categories` ON ( `categories`.`cat_id` = `reports`.`cat_id` ))
-					LEFT JOIN `subcat` ON ( `subcat`.`sub_id` = `reports`.`sub_id` ))
-				LEFT JOIN `reports_msgcnt` ON ( `reports_msgcnt`.`ticket_no` = `reports`.`ticket_no` ))
-			LEFT JOIN `reports_newmsg` ON ( `reports_newmsg`.`ticket_no` = `reports`.`ticket_no` ))
-	LEFT JOIN `users` ON ( `users`.`id` = `reports`.`userId` )) 
+	(
+		(
+			(
+				(
+					(
+						(
+							( reports JOIN tbl_branch ON ( tbl_branch.str_num = reports.store ) )
+							LEFT JOIN it_tech ON ( it_tech.itsup = reports.itsup ) 
+						)
+						LEFT JOIN categories ON ( categories.cat_id = reports.cat_id ) 
+					)
+					LEFT JOIN subcat ON ( subcat.sub_id = reports.sub_id ) 
+				)
+				LEFT JOIN reports_msgcnt ON ( reports_msgcnt.ticket_no = reports.ticket_no ) 
+			)
+			LEFT JOIN reports_newmsg ON ( reports_newmsg.ticket_no = reports.ticket_no ) 
+		)
+		LEFT JOIN users ON ( users.id = reports.userId ) 
+	)
+	INNER JOIN tbl_deptsel ON reports.deptsel = tbl_deptsel.dept_id 
 WHERE
-	`reports`.`status` = 'NEW REPORT' 
-	GROUP BY
-	concern
+	reports.`status` = 'NEW REPORT' 
+GROUP BY
+	concern 
 ORDER BY
-	`reports`.`date_created` DESC";
+	reports.date_created DESC";
 	$statement = $this->connection->prepare($query);
 	$statement-> execute();
 	$result = $statement->fetchAll();
@@ -453,7 +468,9 @@ ORDER BY
 			'cat_desc' => $row["cat_desc"],
 			'sub_cat' => $row["sub_cat"],
 			'msg_cnt' => $row["msg_cnt"],
-			'full_name' => $row["full_name"]
+			'full_name' => $row["full_name"],
+			'dept_desc' => $row["dept_desc"]
+
 			// 'sub_cat' => $row["sub_cat"],
 		);
 	}	
