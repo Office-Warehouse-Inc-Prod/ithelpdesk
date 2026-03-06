@@ -201,146 +201,129 @@ else{
 }
 
 
-if($_POST["operation"] == "Save and Reply")
- { 
-     $optbrval =$_POST["store"];
-     $optval =$_POST["itsup"];
-     $optcval =$_POST["cat"];
-     $optsval =$_POST["sub_num"];
-     $opclbval=$_POST["close_by"];
-     $tmpval = '0';
-if ( ($optbrval == '0') || ($optval == '0') || ($optcval == '0') || ($optsval == '0') || ($opclbval == '0') ) {
-$brid="";
-$itsup="";
-$cat_id="";
-$sub_id="";
-$clby="";
-$ispid="";
-$data=   array(
-    ':ticket_no' => $_POST["ticket_no"],
-    ':date_created' => date('Y-m-d H:i:s',strtotime($_POST["date_created"])),
-    // ':concern' => $_POST["concern"],
-    ':via' => $_POST["via"],
-    ':status' => $_POST["status"],
-    // ':isp_id' => $_POST["isp_id"],
-    ':date_closed' => date('Y-m-d H:i:s',strtotime($_POST["date_closed"])),
-    ':close_by' => $_POST["close_by"],
-    ':remarks' => $_POST["remarks"],
-    ':refNo' => $_POST["refNo"],
-    ':date_refNo' => date('Y-m-d H:i:s',strtotime($_POST["date_refNo"]))
+if ($_POST["operation"] == "Save and Reply") {
 
-   ) ;
+    $optbrval = $_POST["store"] ?? '0';
+    $optval   = $_POST["itsup"] ?? '0';
+    $optcval  = $_POST["cat"] ?? '0';
+    $optsval  = $_POST["sub_num"] ?? '0';
+    $opclbval = $_POST["close_by"] ?? '0';
+
+    $fields = [];
+    $data = [
+        ':ticket_no' => $_POST["ticket_no"],
+        ':date_created' => !empty($_POST["date_created"]) ? date('Y-m-d H:i:s', strtotime($_POST["date_created"])) : null,
+        ':via' => $_POST["via"],
+        ':status' => $_POST["status"],
+        ':refNo' => $_POST["refNo"],
+        ':date_refNo' => !empty($_POST["date_refNo"]) ? date('Y-m-d H:i:s', strtotime($_POST["date_refNo"])) : null,
+        ':date_closed' => !empty($_POST["date_closed"]) ? date('Y-m-d H:i:s', strtotime($_POST["date_closed"])) : null,
+        ':remarks' => $_POST["remarks"]
+    ];
+
+    // always update these
+    $fields[] = "date_created = :date_created";
+    $fields[] = "via = :via";
+    $fields[] = "status = :status";
+    $fields[] = "refNo = :refNo";
+    $fields[] = "date_refNo = :date_refNo";
+    $fields[] = "date_closed = :date_closed";
+    $fields[] = "remarks = :remarks";
+
+    // conditionally update select fields
+    if ($optbrval != '0') {
+        $fields[] = "store = :store";
+        $data[':store'] = $_POST["str_num"];
+    }
+
+    if ($optval != '0') {
+        $fields[] = "itsup = :itsup";
+        $data[':itsup'] = $_POST["it_num"];
+    }
+
+    if ($optcval != '0') {
+        $fields[] = "cat_id = :cat_id";
+        $data[':cat_id'] = $_POST["cat"];
+    }
+
+    if ($optsval != '0') {
+        $fields[] = "sub_id = :sub_id";
+        $data[':sub_id'] = $_POST["sub_num"];
+    }
+
+    if ($opclbval != '0') {
+        $fields[] = "close_by = :close_by";
+        $data[':close_by'] = $_POST["close_by"];
+    }
+
+    if (!empty($_POST["isp_num"]) && $_POST["isp_num"] != '0') {
+        $fields[] = "isp_id = :isp_id";
+        $data[':isp_id'] = $_POST["isp_num"];
+    }
+
+    $sql = "UPDATE reports SET " . implode(", ", $fields) . " WHERE ticket_no = :ticket_no";
+    $statement = $connection->prepare($sql);
+
+    $result = $statement->execute($data);
+
+    if ($result) {
+
+        $restat = $connection->prepare("
+            INSERT INTO reports_remarks (ticket_no, remarks_detail, remarks_date, itsup) 
+            VALUES (:ticket_no, :remarks_detail, :remarks_date, :itsup)
+        ");
+
+        $restat->execute([
+            ':ticket_no' => $_POST["ticket_no"],
+            ':remarks_detail' => $_POST["remarks"],
+            ':remarks_date' => date('Y-m-d H:i:s'),
+            ':itsup' => $tchnum
+        ]);
+
+        if (!empty($_POST["admsg"])) {
+            $makecom = $connection->prepare("
+                INSERT INTO reports_comments (ticket_no, comment_details, comment_date, userId) 
+                VALUES (:ticket_no, :comment_details, :comment_date, :userId)
+            ");
+
+            $makecom->execute([
+                ':ticket_no' => $_POST["ticket_no"],
+                ':comment_details' => $_POST["admsg"],
+                ':comment_date' => date('Y-m-d H:i:s'),
+                ':userId' => $_POST["u_id"]
+            ]);
+
+            $nmsgcntres = $connection->prepare("
+                UPDATE reports_newmsg
+                SET nmsg_stat = :nmsg_stat
+                WHERE ticket_no = :ticket_no
+            ");
+
+            $nmsgcntres->execute([
+                ':ticket_no' => $_POST["ticket_no"],
+                ':nmsg_stat' => '1'
+            ]);
+
+            $resasgn = $connection->prepare("
+                INSERT INTO tbl_notif (ticket_no, store, itsup, notif_data, notif_val, notif_date, assigned_by)
+                VALUES (:ticket_no, :store, :itsup, :notif_data, :notif_val, :notif_date, :assigned_by)
+            ");
+
+            $resasgn->execute([
+                ':ticket_no' => $_POST["ticket_no"],
+                ':store' => $_POST["str_num"],
+                ':itsup' => $_POST["it_num"],
+                ':notif_data' => $_POST['itsup'] . " add a new comment on ticket number: " . $_POST['ticket_no'] . ": " . $_POST['admsg'],
+                ':notif_val' => '3',
+                ':notif_date' => date('Y-m-d H:i:s'),
+                ':assigned_by' => $userid
+            ]);
+        }
+
+        echo 'Data has been updated';
+    } else {
+        echo 'Update failed';
+    }
 }
-else{
-
-    $brid="store = :store,";
-    $itsup = "itsup = :itsup,";
-    $cat_id="cat_id = :cat_id,";
-    $sub_id="sub_id =:sub_id,";
-    $clby="close_by = :close_by,";
-    $ispid="isp_id = :isp_id,";
-
-      $data=   array(
-    ':ticket_no' => $_POST["ticket_no"],
-    ':store' => $_POST["str_num"],
-    ':date_created' => date('Y-m-d H:i:s',strtotime($_POST["date_created"])),
-    // ':concern' => $_POST["concern"],
-    ':via' => $_POST["via"],
-    ':status' => $_POST["status"],
-    ':itsup' => $_POST["it_num"],
-    ':cat_id' => $_POST["cat"],
-    ':sub_id' => $_POST["sub_num"],
-    ':isp_id' => $_POST["isp_num"],
-    ':refNo' => $_POST["refNo"],
-    ':date_refNo' => date('Y-m-d H:i:s',strtotime($_POST["date_refNo"])),
-    ':date_closed' => date('Y-m-d H:i:s',strtotime($_POST["date_closed"])),
-    ':close_by' => $_POST["close_by"],
-    ':remarks' => $_POST["remarks"]
-   ) ;
-}
-
-  $statement = $connection->prepare(
-   "UPDATE reports
-   SET ticket_no = :ticket_no, $brid date_created = :date_created,  via = :via, 
-                    status = :status, $itsup $cat_id $sub_id $ispid refNo = :refNo, date_refNo = :date_refNo, date_closed = :date_closed, $clby remarks = :remarks
-   WHERE ticket_no = :ticket_no"
-  );
-
-  $result = $statement->execute($data);
-  if(!empty($result))
-  {
-     $restat = $connection->prepare("
-    INSERT INTO reports_remarks (ticket_no, remarks_detail, remarks_date, itsup) 
-   VALUES (:ticket_no, :remarks_detail, :remarks_date, :itsup )
-  ");
-  $remarkres1= $restat->execute(
-    array(
-
-     ':ticket_no' => $_POST["ticket_no"],
-      ':remarks_detail' => $_POST["remarks"],
-      ':remarks_date' => date('Y-m-d H:i:s'),
-      ':itsup' => $tchnum
-    ));
-
-    $makecom = $connection->prepare("
-    INSERT INTO reports_comments (ticket_no, comment_details, comment_date, userId) 
-   VALUES (:ticket_no, :comment_details, :comment_date, :userId )
-  ");
-  }
-     echo 'Data has been updated';
-
-      $addmsg=   array(
-    ':comment_details' => $_POST["admsg"],
-   ) ;
-
- if(!empty($addmsg))
-  {
-
-  $remarkres= $makecom->execute(
-    array(
-
-     ':ticket_no' => $_POST["ticket_no"],
-      ':comment_details' => $_POST["admsg"],
-      ':comment_date' => date('Y-m-d H:i:s'),
-      ':userId' => $_POST["u_id"]
-    ));
-
-
-  $nmsgcntres = $connection->prepare("
-   UPDATE reports_newmsg
-   SET nmsg_stat = :nmsg_stat
-  WHERE ticket_no = :ticket_no
-  ");
-  $nmakemsgcnt= $nmsgcntres->execute(
-    array(
-
-      ':ticket_no' => $_POST["ticket_no"],
-      ':nmsg_stat' => '1'
-
-    ));
-
-   // echo 'Data has been updated';
- }
-
-      $resasgn = $connection->prepare("
-      INSERT INTO tbl_notif (ticket_no, store, itsup, notif_data, notif_val, notif_date, assigned_by)
-      VALUES (:ticket_no, :store, :itsup, :notif_data, :notif_val, :notif_date, :assigned_by)");
-      $assigned= $resasgn->execute(
-    array(
-
-     ':ticket_no' => $_POST["ticket_no"],
-     ':store' => $_POST["str_num"],
-      ':itsup' => $_POST["it_num"],
-      ':notif_data' =>$_POST['itsup']." "."add a new comment on ticket number:"." ".$_POST['ticket_no'].":"." ".$_POST['admsg'],
-      ':notif_val' => '3',
-      ':notif_date' => date('Y-m-d H:i:s'),
-      ':assigned_by' => $userid
-     
-    ));
- 
-
-
-}
-
 } // end 
 ?>

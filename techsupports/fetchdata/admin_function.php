@@ -217,62 +217,56 @@ class dbconfig extends dbconn
 		return $data;
 
 	}
+public function admin_data_table_res()
+{
+    $query = "SELECT * FROM vw6
+              WHERE vw6.deptsel = '1'
+              AND vw6.sub_id NOT IN ('15','28','34','35')
+              AND status <> 'NEW REPORT'
+              AND itsup = :tech_id";
 
-	public function admin_data_table_res(){
-// 	$query="select * from vw6 WHERE
-// vw6.sub_id NOT IN ('15','28','34','35') AND status <> 'WAITING FOR IT HELPDESK RESPONSE' AND itsup = '{$_SESSION['tech_id']}'";
+    $statement = $this->connection->prepare($query);
+    $statement->bindParam(':tech_id', $_SESSION['tech_id']);
+    $statement->execute();
+    $result = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-$query = "Select * from vw6 WHERE vw6.deptsel = '1' AND
-	vw6.sub_id NOT IN ('15','28','34','35') AND status <> 'NEW REPORT' AND itsup = '{$_SESSION['tech_id']}'";
+    $fetchdata = array();
 
+    foreach ($result as $row) {
+        $fetchdata[] = array(
+            'ticket_no'      => $row['ticket_no'],
+            'store'          => $row['store'],
+            'str_code'       => $row['str_code'],
+            'date_created'   => !empty($row["date_created"]) ? date('m/d/Y H:i', strtotime($row["date_created"])) : '',
+            'subject'        => $row['subject'],
+            'via'            => $row['via'],
+            'status'         => $row['status'],
+            'itsup'          => $row['itsup'],
+            'it_desc'        => $row['it_desc'],
+            'it_sel'         => $row['it_sel'],
+            'cat_id'         => $row['cat_id'],
+            'category'       => $row['category'],
+            'sub_id'         => $row['sub_id'],
+            'sub_category'   => $row['sub_category'],
+            'date_closed'    => ($row['status'] == 'OPEN')
+                                ? $row["dtdf"] . " Days Unresolved"
+                                : (!empty($row["date_closed"]) ? date('m/d/Y H:i', strtotime($row["date_closed"])) : ''),
+            'tdc'            => $row['tdc'],
+            'crdt'           => $row['crdt'],
+            'dtdf'           => $row['dtdf'],
+            'years'          => $row['years'],
+            'close_by'       => $row['close_by'],
+            'clusers'        => $row['clusers'],
+            'remarks'        => $row['remarks'],
+            'isp_id'         => $row['isp_id'],
+            'isp_shortDesc'  => $row['isp_shortDesc'],
+            'refNo'          => $row['refNo'],
+            'date_refNo'     => !empty($row["date_refNo"]) ? date('m/d/Y H:i', strtotime($row["date_refNo"])) : ''
+        );
+    }
 
-	// $query="
-	// Select * from vw6 WHERE
-	// vw6.sub_id NOT IN ('15','28','34','35') AND status <> 'WAITING FOR IT HELPDESK RESPONSE'";
-	$statement = $this->connection->prepare($query);
-	$statement-> execute();
-	$result = $statement->fetchAll();
-	$data[] = array();
-	// $fetchdata[] = array();
-
-		foreach($result as $row)
-				{
-				$fetchdata[] = array(
-					'ticket_no' => $row['ticket_no'],
-					'store' => $row['store'],
-					'str_code' => $row['str_code'],
-					'date_created' => date('m/d/Y H:i',strtotime($row["date_created"])),
-					'subject' => $row['subject'],
-					'via' => $row['via'],
-					'status' => $row['status'],
-					'itsup' => $row['itsup'],
-					'it_desc' => $row['it_desc'],
-					'it_sel' => $row['it_sel'],
-					'cat_id' => $row['cat_id'],
-					'category' => $row['category'],
-					'sub_id' => $row['sub_id'],
-					'sub_category' => $row['sub_category'],
-					'date_closed' => ($row['status'] == 'OPEN') ? $row["dtdf"]." "."Days Unresolved": date('m/d/Y H:i',strtotime($row["date_closed"])),
-					// 'date_closed' => date('m/d/Y H:i',strtotime($row["date_closed"])),
-					'tdc' => $row['tdc'],
-					'crdt' => $row['crdt'],
-					'dtdf' => $row['dtdf'],
-					'years' => $row['years'],
-					'close_by' => $row['close_by'],
-					'clusers' => $row['clusers'],
-					'remarks' => $row['remarks'],
-					'isp_id' => $row['isp_id'],
-					'isp_shortDesc' => $row['isp_shortDesc'],
-					'refNo' => $row['refNo'],
-					'date_refNo' => date('m/d/Y H:i',strtotime($row["date_refNo"]))
-
-				);
-
-				}
-			$data = array_filter($fetchdata);
-				return $data;
-
-	}
+    return $fetchdata;
+}
 
 public function newreporthist(){
 
