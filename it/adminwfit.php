@@ -332,7 +332,7 @@ $con1=new dbconfig();
         <select class = "form-control form-control-sm" name= "status" id="status" required>
         <option value=""> &larr; Status &rarr;</option>
            <?php
-              $query="select * from status WHERE it_module_tag = 'Y'";
+              $query="select * from status WHERE it_module_tag = 'Y' AND stat_id <> '29'";
               $run=$con1->prepare($query);
               $run->execute();
               $rs=$run->get_result();
