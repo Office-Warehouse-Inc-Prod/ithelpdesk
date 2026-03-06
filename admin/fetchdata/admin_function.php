@@ -9,6 +9,8 @@ $cur_time = date("H:i:s");
 class dbconfig extends dbconn
 {
 	public function fetch_cards_result(){
+
+	$yr = $_POST['yr'];
 		$query = '';
 		$output = array();
 		$query = "SELECT 
@@ -21,7 +23,7 @@ class dbconfig extends dbconn
 		COUNT(CASE WHEN reports.`status` = 'PENDING' then 1 else NULL END) AS t_pending
 		-- COUNT(CASE WHEN reports.`status` = 'CLOSED' AND DATE(reports.date_closed) = CURRENT_DATE THEN 1 else NULL END) AS t_day
         FROM
-        reports WHERE sub_id NOT IN ('15','28','34','35') AND `status` NOT IN ('WAITING FOR IT HELDESK RESPONSE','NEW REPORT') AND YEAR(date_created) IN (".$_POST['yr'] .")";
+        reports WHERE sub_id NOT IN ('15','28','34','35') AND `status` NOT IN ('WAITING FOR IT HELDESK RESPONSE','NEW REPORT') AND YEAR(date_created) IN ($yr)";
 
         $statement = $this->connection->prepare($query);
         $statement-> execute();
@@ -443,8 +445,6 @@ FROM
 	INNER JOIN tbl_deptsel ON reports.deptsel = tbl_deptsel.dept_id 
 WHERE
 	reports.`status` = 'NEW REPORT' 
-GROUP BY
-	concern 
 ORDER BY
 	reports.date_created DESC";
 	$statement = $this->connection->prepare($query);

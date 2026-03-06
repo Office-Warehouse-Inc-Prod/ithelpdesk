@@ -3,7 +3,7 @@ require_once '../../database.php';
 
 try {
 
-    $stmt = $conn->prepare("SELECT COUNT(*) AS total FROM reports WHERE status = 'NEW REPORT'");
+    $stmt = $conn->prepare("SELECT COUNT(*) AS total FROM reports WHERE status = 'NEW REPORT' AND store IS NOT NULL");
     $stmt->execute();
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
 

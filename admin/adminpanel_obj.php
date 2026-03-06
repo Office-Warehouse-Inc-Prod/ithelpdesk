@@ -490,10 +490,10 @@ admin_hideshowforms();
 const yr =$("#yearpicker").val();
 getdata(yr)
 get_card_data(yr)
-function get_card_data(y){
-$.post('fetchdata/fetch_data.php',{yr:y,mode:'yearch'}, function(data) {
+function get_card_data(yr){
+$.post('fetchdata/fetch_data.php',{yr:yr,mode:'yearch'}, function(data) {
 /*optional stuff to do after success */
-// console.log(data)
+// console.log(yr)
 let card_data = jQuery.parseJSON(data); 
 const a = card_data;
 // console.log(a)
@@ -513,10 +513,10 @@ $('#datetimepicker1, #datetimepicker2, #datetimepicker3').datetimepicker()
 
 $("#yearpicker").on('change',function(){
 const yr =$("#yearpicker").val()
-console.log(yr);
+// console.log(yr);
 // reports_total(this.value);
 getdata(yr);
-// get_card_data(this.value);
+get_card_data(this.value);
 // _techgraph(yr);
 // _overallpie(yr);
 // _dbline(yr); 
