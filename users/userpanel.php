@@ -364,7 +364,7 @@ header,
                             <option value="1" >IT</option>
                             <option value="2" >ADMIN</option>
                             <option value="3">MARKETING</option>
-                            <option value="4">MERCHANDISING</option>
+                            <!-- <option value="4">MERCHANDISING</option> -->
                             <option value="6">VISUAL</option>
 
 
