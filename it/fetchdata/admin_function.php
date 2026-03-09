@@ -23,7 +23,7 @@ class dbconfig extends dbconn
 		COUNT(CASE WHEN reports.`status` = 'PENDING' then 1 else NULL END) AS t_pending
 		-- COUNT(CASE WHEN reports.`status` = 'CLOSED' AND DATE(reports.date_closed) = CURRENT_DATE THEN 1 else NULL END) AS t_day
         FROM
-        reports WHERE sub_id NOT IN ('15','28','34','35') AND `status` NOT IN ('WAITING FOR IT HELDESK RESPONSE','NEW REPORT') AND YEAR(date_created) IN ($yr)";
+        reports WHERE sub_id NOT IN ('15','28','34','35') AND `status` NOT IN ('WAITING FOR IT HELDESK RESPONSE','NEW REPORT') AND YEAR(date_created) IN ($yr) AND deptsel = '1'";
 
         $statement = $this->connection->prepare($query);
         $statement-> execute();
@@ -309,7 +309,7 @@ public function admin_data_table_res(){
         FROM vw6foradmin
         WHERE  sub_id NOT IN ('15','28','34','35')
           AND status <> 'NEW REPORT'
-          AND YEAR(date_created) = {$yr}
+          AND YEAR(date_created) = {$yr} AND deptsel = '1'
     ";
 
     $statement = $this->connection->prepare($query);
@@ -444,7 +444,7 @@ FROM
 	)
 	INNER JOIN tbl_deptsel ON reports.deptsel = tbl_deptsel.dept_id 
 WHERE
-	reports.`status` = 'NEW REPORT' 
+	reports.`status` = 'NEW REPORT' AND reports.deptsel = '1'
 ORDER BY
 	reports.date_created DESC";
 	$statement = $this->connection->prepare($query);
