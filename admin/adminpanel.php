@@ -661,6 +661,12 @@ select.form-control:focus, .form-control:focus{
     color:#fff;
 }
 
+
+/* -------- status closed all row ---- */
+#report_data tbody tr.status-closed {
+    background-color: #c8e6c9 !important;
+    color: #237227!important;
+}
 </style>
 
 <div class="container-fluid">
