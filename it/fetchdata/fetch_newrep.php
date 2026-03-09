@@ -4,8 +4,7 @@ include('../db.php');
 // include('../function.php');
 $query = '';
 $output = array();
-// $query = "SELECT COUNT(*) FROM reports WHERE `status` = 'NEW REPORT'
-$query = "SELECT DISTINCT COUNT(*) FROM reports WHERE `status` = 'NEW REPORT' AND store IS NOT NULL'
+$query = "SELECT * FROM vw_wfittable
  ";
 // if(isset($_POST["search"]["value"]))
 // {

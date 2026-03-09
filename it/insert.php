@@ -371,694 +371,222 @@ else{
      echo 'Data has been updated'; // update alert 
 }
 
-// if ($_POST["operation"] == "New_Report") {
 
-//     // SAFE POST (avoid undefined errors)
-//     $ticket_no   = $_POST["ticket_no"];
-//     $store       = $_POST["store"] ?? '0';
-//     $dept        = $_POST["f_deptsel"] ?? '0';
-//     $via         = 'PENDING';
+if($_POST["operation"] == "Save and Reply")
+ { 
+     $optbrval = $_POST["store"];
+     $optval = $_POST["itsup"];
+     $optcval = $_POST["cat"];
+     $optsval = $_POST["sub_num"];
+     $opclbval= $_POST["close_by"];
+     $tmpval = '0';
+if ( ($optbrval == '0') || ($optval == '0') || ($optcval == '0') || ($optsval == '0') || ($opclbval == '0') ) {
+$brid="";
+$itsup="";
+$cat_id="";
+$sub_id="";
+$clby="";
+$ispid="";
+$data=   array(
+    ':ticket_no' => $_POST["ticket_no"],
+    ':date_created' => date('Y-m-d H:i:s',strtotime($_POST["date_createdx"])),
+    // ':concern' => $_POST["concern"],
+    ':via' => $_POST["via"],
+    ':status' => $_POST["status"],
+    // ':isp_id' => $_POST["isp_id"],
+    ':date_closed' => date('Y-m-d H:i:s',strtotime($_POST["date_closed"])),
+    ':close_by' => $_POST["close_by"],
+    ':remarks' => $_POST["remarks"],
+    ':refNo' => $_POST["refNo"],
+    ':date_refNo' => date('Y-m-d H:i:s',strtotime($_POST["date_refNo"]))
 
-//     // $cat       = $_POST["cat"] ?? '0';
-//     $cat         = '31';  // default to "General" category
+   ) ;
+}
+else{
 
-//     // $sub       = $_POST["sub_num"] ?? '0';
-//     $sub         = '199'; // default to "General" sub-category
+    $brid="store = :store,";
+    $itsup = "itsup = :itsup,";
+    $cat_id="cat_id = :cat_id,";
+    $sub_id="sub_id =:sub_id,";
+    $clby="close_by = :close_by,";
+    $ispid="isp_id = :isp_id,";
 
-//     $close_by    = $_POST["close_by"] ?? '0';
-//     $remarks     = $_POST["remarks"] ?? '';
-//     $status     = $_POST["setStatus"] ?? '';
-//     // $status      = 'ASSIGNED'; // force status to ASSIGNED
-//     $refNo       = $_POST["refNo"] ?? '';
-//     $plvl        = $_POST["priority_level"] ?? '0'; // ✅ PRIORITY
+      $data=   array(
+    ':ticket_no' => $_POST["ticket_no"],
+    ':store' => $_POST["store"],
+    ':date_created' => date('Y-m-d H:i:s',strtotime($_POST["date_createdx"])),
+    // ':concern' => $_POST["concern"],
+    ':via' => $_POST["via"],
+    ':status' => $_POST["status"],
+    ':itsup' => $_POST["itsup"],
+    // ':itsup' => 'TEST',
+    ':cat_id' => $_POST["cat"],
+    ':sub_id' => $_POST["sub_num"],
+    ':isp_id' => '0',
+    ':refNo' => $_POST["refNo"],
+    ':date_refNo' => date('Y-m-d H:i:s',strtotime($_POST["date_refNo"])),
+    ':date_closed' => date('Y-m-d H:i:s',strtotime($_POST["date_closed"])),
+    ':close_by' => $_POST["close_by"],
+    ':remarks' => $_POST["remarks"]
+   ) ;
 
-//     // safer date parsing (avoid 1970-01-01 when empty)
-//     $date_created = !empty($_POST["date_createdx"])
-//         ? date('Y-m-d H:i:s', strtotime($_POST["date_createdx"]))
-//         : date('Y-m-d H:i:s');
+}
 
-//     $date_closed  = !empty($_POST["date_closed"])
-//         ? date('Y-m-d H:i:s', strtotime($_POST["date_closed"]))
-//         : null;
+  $statement = $connection->prepare(
+   "UPDATE reports
+   SET ticket_no = :ticket_no, $brid date_created = :date_created,  via = :via, 
+                    status = :status, $itsup $cat_id $sub_id $ispid refNo = :refNo, date_refNo = :date_refNo, date_closed = :date_closed, $clby remarks = :remarks
+   WHERE ticket_no = :ticket_no"
+  );
 
-//     $date_refNo   = !empty($_POST["date_refNo"])
-//         ? date('Y-m-d H:i:s', strtotime($_POST["date_refNo"]))
-//         : null;
+  $result = $statement->execute($data);
 
-//     /* ---------------------------------
-//        ✅ GET CONTACT NUMBER FROM tbl_dept (BACKEND SOURCE OF TRUTH)
-//        --------------------------------- */
-//     $contactNumber = '';
-
-//     if ($dept != '0' && $dept != '') {
-//         $stmtCN = $connection->prepare("
-//             SELECT contactNumber
-//             FROM tbl_dept
-//             WHERE dept_id = :dept
-//             LIMIT 1
-//         ");
-//         $stmtCN->execute([':dept' => $dept]);
-//         $rowCN = $stmtCN->fetch(PDO::FETCH_ASSOC);
-//         $contactNumber = $rowCN['contactNumber'] ?? '';
-//     }
-
-//     /* ---------------------------------
-//        BUILD UPDATE QUERY DYNAMICALLY
-//        --------------------------------- */
-
-//     $fields = [
-//         "ticket_no = :ticket_no",
-//         "date_created = :date_created",
-//         "via = :via",
-//         "status = :status",
-//         "refNo = :refNo",
-//         "remarks = :remarks"
-//     ];
-
-//     // add nullable dates only if present (or explicitly set to NULL)
-//     if ($date_refNo !== null)  $fields[] = "date_refNo = :date_refNo";
-//     if ($date_closed !== null) $fields[] = "date_closed = :date_closed";
-
-//     $data = [
-//         ':ticket_no'    => $ticket_no,
-//         ':date_created' => $date_created,
-//         ':via'          => $via,
-//         ':status'       => $status,
-//         ':refNo'        => $refNo,
-//         ':remarks'      => $remarks
-//     ];
-
-//     if ($date_refNo !== null)  $data[':date_refNo']  = $date_refNo;
-//     if ($date_closed !== null) $data[':date_closed'] = $date_closed;
-
-//     if ($store != '0') {
-//         $fields[] = "store = :store";
-//         $data[':store'] = $store;
-//     }
-
-//     if ($dept != '0') {
-//         $fields[] = "f_deptsel = :f_deptsel";
-//         $data[':f_deptsel'] = $dept;
-//     }
-
-//     if ($cat != '0') {
-//         $fields[] = "cat_id = :cat_id";
-//         $data[':cat_id'] = $cat;
-//     }
-
-//     if ($sub != '0') {
-//         $fields[] = "sub_id = :sub_id";
-//         $data[':sub_id'] = $sub;
-//     }
-
-//     if ($close_by != '0') {
-//         $fields[] = "close_by = :close_by";
-//         $data[':close_by'] = $close_by;
-//     }
-
-//     // ✅ PRIORITY LEVEL SAVE (only update when user selected something)
-//     if ($plvl != '0' && $plvl != '') {
-//         $fields[] = "priority_level = :priority_level";
-//         $data[':priority_level'] = $plvl;
-//     }
-
-//     // ✅ CONTACT NUMBER SAVE (only if found)
-//     if ($contactNumber !== '') {
-//         $fields[] = "contactNumber = :contactNumber";
-//         $data[':contactNumber'] = $contactNumber;
-//     }
-
-//     // ISP default
-//     $fields[] = "isp_id = '0'";
-
-//     $sql = "UPDATE reports SET " . implode(", ", $fields) . " WHERE ticket_no = :ticket_no";
-
-//     $statement = $connection->prepare($sql);
-//     $result = $statement->execute($data);
-
-//     /* ---------------------------------
-//        REASSIGN HISTORY (DEPARTMENT)
-//        --------------------------------- */
-
-//     if (($_POST['old_dept'] ?? '') != $dept) {
-
-//         $reasgn = $connection->prepare("
-//             INSERT INTO tbl_reassigned 
-//             (ticket_no, date_created, old_dept, new_dept, r_remarks, date_rasigned)
-//             VALUES (:ticket_no, :date_created, :old_dept, :new_dept, :remarks, NOW())
-//         ");
-
-//         $reasgn->execute([
-//             ':ticket_no'    => $ticket_no,
-//             ':date_created' => $date_created,
-//             ':old_dept'     => $_POST['old_dept'] ?? '0',
-//             ':new_dept'     => $dept,
-//             ':remarks'      => $remarks
-//         ]);
-//     }
-
-//     /* ---------------------------------
-//        REMARKS
-//        --------------------------------- */
-
-//     if ($result) {
-
-//         $restat = $connection->prepare("
-//             INSERT INTO reports_remarks
-//             (ticket_no, remarks_detail, remarks_date, f_deptsel)
-//             VALUES (:ticket_no, :remarks, NOW(), :dept)
-//         ");
-
-//         $restat->execute([
-//             ':ticket_no' => $ticket_no,
-//             ':remarks'   => $remarks,
-//             ':dept'      => $dept
-//         ]);
-//     }
-
-//     /* ---------------------------------
-//        RESET MSG COUNT
-//        --------------------------------- */
-
-//     $msgcntres = $connection->prepare("
-//         UPDATE reports_msgcnt
-//         SET msg_cnt = 0
-//         WHERE ticket_no = :ticket_no
-//     ");
-
-//     $msgcntres->execute([':ticket_no' => $ticket_no]);
-
-//     /* ---------------------------------
-//        NOTIFICATION
-//        --------------------------------- */
-
-//     if ($result) {
-
-//         $notif = $connection->prepare("
-//             INSERT INTO tbl_notif
-//             (ticket_no, store, f_deptsel, notif_data, notif_val, notif_date, assigned_by)
-//             VALUES (:ticket_no, :store, :dept, :msg, '1', NOW(), :assigned_by)
-//         ");
-
-//         $notif->execute([
-//             ':ticket_no'    => $ticket_no,
-//             ':store'        => $store,
-//             ':dept'         => $dept,
-//             ':msg'          => "Ticket $ticket_no has been assigned to a department.",
-//             ':assigned_by'  => $userid
-//         ]);
-//     }
-
-//     /* ---------------------------------
-//        ADDITIONAL COMMENT
-//        --------------------------------- */
-
-//     if (!empty($_POST["admsg"])) {
-
-//         $makecom = $connection->prepare("
-//             INSERT INTO reports_comments
-//             (ticket_no, comment_details, comment_date, userId)
-//             VALUES (:ticket_no, :comment, NOW(), :uid)
-//         ");
-
-//         $makecom->execute([
-//             ':ticket_no' => $ticket_no,
-//             ':comment'   => $_POST["admsg"],
-//             ':uid'       => $_POST["u_id"]
-//         ]);
-
-//         $connection->prepare("
-//             UPDATE reports_newmsg
-//             SET nmsg_stat = '2'
-//             WHERE ticket_no = :ticket_no
-//         ")->execute([':ticket_no' => $ticket_no]);
-
-//         // Ticket trail
-//         $connection->prepare("
-//             INSERT INTO tbl_tickethist
-//             (ticket_no, date_updated, status, userID)
-//             VALUES (:ticket_no, NOW(), :status, :uid)
-//         ")->execute([
-//             ':ticket_no' => $ticket_no,
-//             ':status'    => $status,
-//             ':uid'       => $_POST["u_id"]
-//         ]);
-//     }
+// if ($result) {
+// echo "Record updated successfully.";
+// } else {
+// echo "Error updating record: " . implode(", ", $statement->errorInfo());
 // }
 
-
-if ($_POST["operation"] == "New_Report") {
-
-    // ✅ SAFETY GUARD
-    if (empty($_POST["ticket_no"])) {
-        http_response_code(400);
-        exit("Missing ticket_no");
-    }
-
-    // SAFE POST (avoid undefined errors)
-    $ticket_no   = $_POST["ticket_no"];
-    $store       = $_POST["store"] ?? '0';
-    $dept        = $_POST["f_deptsel"] ?? '0';
-    $via         = 'PENDING';
-
-    // default category/subcategory
-    $cat         = '31';  // General
-    $sub         = '199'; // General
-
-    $close_by    = $_POST["close_by"] ?? '0';
-    $remarks     = $_POST["remarks"] ?? '';
-    $status      = $_POST["setStatus"] ?? '';
-    $refNo       = $_POST["refNo"] ?? '';
-    $plvl        = $_POST["priority_level"] ?? '0'; // ✅ PRIORITY
-
-    // safer date parsing (avoid 1970-01-01 when empty)
-    $date_created = !empty($_POST["date_createdx"])
-        ? date('Y-m-d H:i:s', strtotime($_POST["date_createdx"]))
-        : date('Y-m-d H:i:s');
-
-    $date_closed  = !empty($_POST["date_closed"])
-        ? date('Y-m-d H:i:s', strtotime($_POST["date_closed"]))
-        : null;
-
-    $date_refNo   = !empty($_POST["date_refNo"])
-        ? date('Y-m-d H:i:s', strtotime($_POST["date_refNo"]))
-        : null;
-
-    /* ---------------------------------
-       ✅ GET CONTACT NUMBER FROM tbl_dept (BACKEND SOURCE OF TRUTH)
-       --------------------------------- */
-    $contactNumber = '';
-
-    if ($dept != '0' && $dept != '') {
-        $stmtCN = $connection->prepare("
-            SELECT contactNumber
-            FROM tbl_dept
-            WHERE dept_id = :dept
-            LIMIT 1
-        ");
-        $stmtCN->execute([':dept' => $dept]);
-        $rowCN = $stmtCN->fetch(PDO::FETCH_ASSOC);
-        $contactNumber = $rowCN['contactNumber'] ?? '';
-    }
-
-    /* ---------------------------------
-       ✅ BUILD UPDATE QUERY DYNAMICALLY (FIXED)
-       DO NOT UPDATE ticket_no
-       --------------------------------- */
-
-    $fields = [
-        "date_created = :date_created",
-        "via = :via",
-        "status = :status",
-        "refNo = :refNo",
-        "remarks = :remarks"
-    ];
-
-    $data = [
-        ':date_created' => $date_created,
-        ':via'          => $via,
-        ':status'       => $status,
-        ':refNo'        => $refNo,
-        ':remarks'      => $remarks
-    ];
-
-    // add nullable dates only if present
-    if ($date_refNo !== null) {
-        $fields[] = "date_refNo = :date_refNo";
-        $data[':date_refNo'] = $date_refNo;
-    }
-
-    if ($date_closed !== null) {
-        $fields[] = "date_closed = :date_closed";
-        $data[':date_closed'] = $date_closed;
-    }
-
-    if ($store != '0' && $store != '') {
-        $fields[] = "store = :store";
-        $data[':store'] = $store;
-    }
-
-    if ($dept != '0' && $dept != '') {
-        $fields[] = "f_deptsel = :f_deptsel";
-        $data[':f_deptsel'] = $dept;
-    }
-
-    if ($cat != '0' && $cat != '') {
-        $fields[] = "cat_id = :cat_id";
-        $data[':cat_id'] = $cat;
-    }
-
-    if ($sub != '0' && $sub != '') {
-        $fields[] = "sub_id = :sub_id";
-        $data[':sub_id'] = $sub;
-    }
-
-    if ($close_by != '0' && $close_by != '') {
-        $fields[] = "close_by = :close_by";
-        $data[':close_by'] = $close_by;
-    }
-
-    // ✅ PRIORITY LEVEL SAVE (only update when user selected something)
-    if ($plvl != '0' && $plvl != '') {
-        $fields[] = "priority_level = :priority_level";
-        $data[':priority_level'] = $plvl;
-    }
-
-    // ✅ CONTACT NUMBER SAVE (only if found)
-    if ($contactNumber !== '') {
-        $fields[] = "contactNumber = :contactNumber";
-        $data[':contactNumber'] = $contactNumber;
-    }
-
-    // ISP default
-    $fields[] = "isp_id = '0'";
-
-    // ✅ IMPORTANT FIX: WHERE uses separate placeholder
-    $sql = "UPDATE reports SET " . implode(", ", $fields) . " WHERE ticket_no = :where_ticket_no";
-    $data[':where_ticket_no'] = $ticket_no;
-
-    $statement = $connection->prepare($sql);
-    $result = $statement->execute($data);
-
-    /* ---------------------------------
-       REASSIGN HISTORY (DEPARTMENT)
-       --------------------------------- */
-    if (($_POST['old_dept'] ?? '') != $dept) {
-
-        $reasgn = $connection->prepare("
-            INSERT INTO tbl_reassigned 
-            (ticket_no, date_created, old_dept, new_dept, r_remarks, date_rasigned)
-            VALUES (:ticket_no, :date_created, :old_dept, :new_dept, :remarks, NOW())
-        ");
-
-        $reasgn->execute([
-            ':ticket_no'    => $ticket_no,
-            ':date_created' => $date_created,
-            ':old_dept'     => $_POST['old_dept'] ?? '0',
-            ':new_dept'     => $dept,
-            ':remarks'      => $remarks
-        ]);
-    }
-
-    /* ---------------------------------
-       REMARKS
-       --------------------------------- */
-    if ($result) {
-
-        $restat = $connection->prepare("
-            INSERT INTO reports_remarks
-            (ticket_no, remarks_detail, remarks_date, f_deptsel)
-            VALUES (:ticket_no, :remarks, NOW(), :dept)
-        ");
-
-        $restat->execute([
-            ':ticket_no' => $ticket_no,
-            ':remarks'   => $remarks,
-            ':dept'      => $dept
-        ]);
-    }
-
-    /* ---------------------------------
-       RESET MSG COUNT
-       --------------------------------- */
-    $msgcntres = $connection->prepare("
-        UPDATE reports_msgcnt
-        SET msg_cnt = 0
-        WHERE ticket_no = :ticket_no
-    ");
-    $msgcntres->execute([':ticket_no' => $ticket_no]);
-
-    /* ---------------------------------
-       NOTIFICATION
-       --------------------------------- */
-    if ($result) {
-
-        $notif = $connection->prepare("
-            INSERT INTO tbl_notif
-            (ticket_no, store, f_deptsel, notif_data, notif_val, notif_date, assigned_by)
-            VALUES (:ticket_no, :store, :dept, :msg, '1', NOW(), :assigned_by)
-        ");
-
-        $notif->execute([
-            ':ticket_no'    => $ticket_no,
-            ':store'        => $store,
-            ':dept'         => $dept,
-            ':msg'          => "Ticket $ticket_no has been assigned to a department.",
-            ':assigned_by'  => $userid
-        ]);
-    }
-
-    /* ---------------------------------
-       ADDITIONAL COMMENT
-       --------------------------------- */
-    if (!empty($_POST["admsg"])) {
-
-        $makecom = $connection->prepare("
-            INSERT INTO reports_comments
-            (ticket_no, comment_details, comment_date, userId)
-            VALUES (:ticket_no, :comment, NOW(), :uid)
-        ");
-
-        $makecom->execute([
-            ':ticket_no' => $ticket_no,
-            ':comment'   => $_POST["admsg"],
-            ':uid'       => $_POST["u_id"]
-        ]);
-
-        $connection->prepare("
-            UPDATE reports_newmsg
-            SET nmsg_stat = '2'
-            WHERE ticket_no = :ticket_no
-        ")->execute([':ticket_no' => $ticket_no]);
-
-        // Ticket trail
-        $connection->prepare("
-            INSERT INTO tbl_tickethist
-            (ticket_no, date_updated, status, userID)
-            VALUES (:ticket_no, NOW(), :status, :uid)
-        ")->execute([
-            ':ticket_no' => $ticket_no,
-            ':status'    => $status,
-            ':uid'       => $_POST["u_id"]
-        ]);
-    }
-}
-
-
-// new save and reply for admin module
-if ($_POST["operation"] == "Save and Reply") {
-
-    // SAFE POST (avoid undefined errors)
-    $ticket_no   = $_POST["ticket_no"];
-    $store       = $_POST["store"] ?? '0';
-    $close_by    = $_POST["close_by"] ?? '0';
-    $remarks     = $_POST["remarks"] ?? '';
-    $status      = $_POST["status"] ?? '';
-    $plvl        = $_POST["priority_level"] ?? '0'; // ✅ PRIORITY
-
-    // safer date parsing (avoid 1970-01-01 when empty)
-    $date_created = !empty($_POST["date_createdx"])
-        ? date('Y-m-d H:i:s', strtotime($_POST["date_createdx"]))
-        : date('Y-m-d H:i:s');
-
-    $date_closed  = !empty($_POST["date_closed"])
-        ? date('Y-m-d H:i:s', strtotime($_POST["date_closed"]))
-        : null;
-    /* ---------------------------------
-       BUILD UPDATE QUERY DYNAMICALLY
-       --------------------------------- */
-
-// REQUIRED
-$ticket_no = trim($_POST["ticket_no"] ?? '');
-
-if ($ticket_no === '') {
-    exit("Ticket number is required.");
-}
-
-// FIELDS
-$store     = $_POST["store"] ?? '0';
-$close_by  = $_POST["close_by"] ?? '0';
-$remarks   = $_POST["remarks"] ?? '';
-$status    = $_POST["status"] ?? '';
-$plvl      = $_POST["priority_level"] ?? ($_POST["prioty_level"] ?? '0'); // fallback fix
-
-// SAFE DATES
-$date_created = !empty($_POST["date_createdx"])
-    ? date('Y-m-d H:i:s', strtotime($_POST["date_createdx"]))
-    : date('Y-m-d H:i:s');
-
-$date_closed = !empty($_POST["date_closed"])
-    ? date('Y-m-d H:i:s', strtotime($_POST["date_closed"]))
-    : null;
-
-
-// -----------------------------
-// BUILD UPDATE QUERY
-// -----------------------------
-
-$fields = [];
-$data   = [':ticket_no' => $ticket_no];
-
-
-// Always update date_created (optional — remove if you don't want it touched)
-// $fields[] = "date_created = :date_created";
-// $data[':date_created'] = $date_created;
-
-
-// OPTIONAL FIELDS
-
-if ($store !== '0' && $store !== '') {
-    $fields[] = "store = :store";
-    $data[':store'] = $store;
-}
-
-if ($status !== '') {
-    $fields[] = "status = :status";
-    $data[':status'] = $status;
-}
-
-if ($remarks !== '') {
-    $fields[] = "remarks = :remarks";
-    $data[':remarks'] = $remarks;
-}
-
-if ($plvl !== '0' && $plvl !== '') {
-    $fields[] = "priority_level = :priority_level";
-    $data[':priority_level'] = $plvl;
-}
-
-if ($close_by !== '0' && $close_by !== '') {
-    $fields[] = "close_by = :close_by";
-    $data[':close_by'] = $close_by;
-}
-
-
-// VERY IMPORTANT:
-// Always explicitly set date_closed so reopening works too.
-
-$fields[] = "date_closed = :date_closed";
-$data[':date_closed'] = $date_closed;
-
-
-// Prevent empty UPDATE
-if (empty($fields)) {
-    exit("No fields to update.");
-}
-
-
-// FINAL SQL
-$sql = "UPDATE reports 
-        SET " . implode(", ", $fields) . "
-        WHERE ticket_no = :ticket_no";
-
-$stmt = $connection->prepare($sql);
-
-if ($stmt->execute($data)) {
-
-    // Optional but VERY useful for debugging
-    if ($stmt->rowCount() > 0) {
-        echo "Ticket updated successfully.";
-    } else {
-        echo "No changes detected.";
-    }
-
-} else {
-    echo "Update failed.";
-}
-
-
-
-    /* ---------------------------------
-       REMARKS
-       --------------------------------- */
-
-    if($result){
-
-        $restat = $connection->prepare("
-            INSERT INTO reports_remarks
-            (ticket_no, remarks_detail, remarks_date, deptsel)
-            VALUES (:ticket_no, :remarks, NOW(), :dept)
-        ");
-
-        $restat->execute([
-            ':ticket_no' => $ticket_no,
-            ':remarks'   => $remarks,
-            ':dept'      => $dept
-        ]);
-    }
-
-    /* ---------------------------------
-       RESET MSG COUNT
-       --------------------------------- */
+if($_POST['it_num'] != $_POST['itsup'])
+  {
+     $reasgn = $connection->prepare("
+    INSERT INTO tbl_reassigned (ticket_no, date_created, itsup, nw_sup, r_remarks, date_rasigned) 
+   VALUES (:ticket_no, :date_created, :itsup, :nw_sup, :r_remarks, :date_rasigned )
+  ");
+  $reasgnres= $reasgn->execute(
+    array(
+      ':ticket_no' => $_POST["ticket_no"],
+      ':date_created' => date('Y-m-d H:i:s',strtotime($_POST["date_createdx"])),
+      ':itsup' => $_POST["it_num"],
+      ':nw_sup' => $_POST["itsup"],
+      ':r_remarks' => $_POST["remarks"],
+      ':date_rasigned' => date('Y-m-d H:i:s')
+    ));
+  }
+
+  if(!empty($result))
+  {
+     $restat = $connection->prepare("
+    INSERT INTO reports_remarks (ticket_no, remarks_detail, remarks_date, itsup) 
+   VALUES (:ticket_no, :remarks_detail, :remarks_date, :itsup )
+  ");
+  $remarkres1= $restat->execute(
+    array(
+
+     ':ticket_no' => $_POST["ticket_no"],
+      ':remarks_detail' => $_POST["remarks"],
+      ':remarks_date' => date('Y-m-d H:i:s'),
+      ':itsup' => $tchnum
+    ));
+
+    $makecom = $connection->prepare("
+    INSERT INTO reports_comments (ticket_no, comment_details, comment_date, userId) 
+   VALUES (:ticket_no, :comment_details, :comment_date, :userId )
+  ");
+
+  $tickhisres = $connection->prepare("
+  INSERT INTO tbl_tickethist (ticket_no, date_updated) 
+ VALUES (:ticket_no, :date_updated)
+");
+
+  }
 
     $msgcntres = $connection->prepare("
-        UPDATE reports_msgcnt
-        SET msg_cnt = 0
-        WHERE ticket_no = :ticket_no
-    ");
+   UPDATE reports_msgcnt
+   SET msg_cnt = :msg_cnt
+  WHERE ticket_no = :ticket_no
+  ");
+  $makemsgcnt= $msgcntres->execute(
+    array(
 
-    $msgcntres->execute([':ticket_no'=>$ticket_no]);
+      ':ticket_no' => $_POST["ticket_no"],
+      ':msg_cnt' => '0'
 
-    /* ---------------------------------
-       NOTIFICATION
-       --------------------------------- */
+    ));
 
-    if($result){
+   if(!empty($result)) {
+      $resasgn = $connection->prepare("
+      INSERT INTO tbl_notif (ticket_no, store, itsup, notif_data, notif_val, notif_date, assigned_by)
+      VALUES (:ticket_no, :store, :itsup, :notif_data, :notif_val, :notif_date, :assigned_by)");
+      $assigned= $resasgn->execute(
+    array(
 
-        $notif = $connection->prepare("
-            INSERT INTO tbl_notif
-            (ticket_no, store, f_deptsel, notif_data, notif_val, notif_date, assigned_by)
-            VALUES (:ticket_no, :store, :dept, :msg, '1', NOW(), :assigned_by)
-        ");
+     ':ticket_no' => $_POST["ticket_no"],
+     ':store' => $_POST["store"],
+      ':itsup' => $_POST["itsup"],
+      ':notif_data' => "New Ticket"." ".$_POST["ticket_no"]." ". "Has been assigned.",
+      ':notif_val' => '1',
+      ':notif_date' => date('Y-m-d H:i:s'),
+      ':assigned_by' => $userid
+     
+    ));
+ }
+    //  echo 'Data has been updated';
 
-        $notif->execute([
-            ':ticket_no'    => $ticket_no,
-            ':store'        => $store,
-            ':dept'         => $dept,
-            ':msg'          => "Ticket $ticket_no has been assigned to a department.",
-            ':assigned_by'  => $userid
-        ]);
-    }
+      $addmsg=   array(
+    ':comment_details' => $_POST["admsg"],
+   ) ;
 
-    /* ---------------------------------
-       ADDITIONAL COMMENT
-       --------------------------------- */
+ if(!empty($addmsg))
+  {
 
-    if(!empty($_POST["admsg"])){
+    $makecom = $connection->prepare("
+    INSERT INTO reports_comments (ticket_no, comment_details, comment_date, userId) 
+   VALUES (:ticket_no, :comment_details, :comment_date, :userId )
+  ");
 
-        $makecom = $connection->prepare("
-            INSERT INTO reports_comments
-            (ticket_no, comment_details, comment_date, userId)
-            VALUES (:ticket_no, :comment, NOW(), :uid)
-        ");
+  $remarkres= $makecom->execute(
+    array(
 
-        $makecom->execute([
-            ':ticket_no' => $ticket_no,
-            ':comment'   => $_POST["admsg"],
-            ':uid'       => $_POST["u_id"]
-        ]);
+     ':ticket_no' => $_POST["ticket_no"],
+      ':comment_details' => $_POST["admsg"],
+      ':comment_date' => date('Y-m-d H:i:s'),
+      ':userId' => $_POST["u_id"]
+    ));
 
-        $connection->prepare("
-            UPDATE reports_newmsg
-            SET nmsg_stat = '2'
-            WHERE ticket_no = :ticket_no
-        ")->execute([':ticket_no'=>$ticket_no]);
+    
+  $nmsgcntres = $connection->prepare("
+   UPDATE reports_newmsg
+   SET nmsg_stat = :nmsg_stat
+  WHERE ticket_no = :ticket_no
+  ");
+  $nmakemsgcnt= $nmsgcntres->execute(
+    array(
 
-        // Ticket trail
-        $connection->prepare("
-            INSERT INTO tbl_tickethist
-            (ticket_no, date_updated, status, userID)
-            VALUES (:ticket_no, NOW(), :status, :uid)
-        ")->execute([
-            ':ticket_no' => $ticket_no,
-            ':status'    => $status,
-            ':uid'       => $_POST["u_id"]
-        ]);
-    }
+      ':ticket_no' => $_POST["ticket_no"],
+      ':nmsg_stat' => '2'
+
+    ));
+
+   // echo 'Data has been updated';
+ }
+
+
+ // ticket_trail
+
+ if(!empty($addmsg))
+ {
+
+  $tickhisres = $connection->prepare("
+  INSERT INTO tbl_tickethist (ticket_no, date_updated, status, userID) 
+  VALUES (:ticket_no, :date_updated, :status, :userID )
+");
+$tickhisres1= $tickhisres->execute(
+  array(
+
+    ':ticket_no' => $_POST["ticket_no"] ,
+    ':date_updated' => date('Y-m-d H:i:s'),
+    ':status' => $_POST["status"],
+    ':userID' => $_POST["u_id"]
+
+  ));
+
 }
 
 
 
+
+}
 
 
  if($_POST["operation"] == "changepass")

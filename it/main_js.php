@@ -457,7 +457,7 @@ $('#network_tb').slideToggle();
 
 $('#store_graph_modal').modal('hide'); 
 
-crd_btm();
+// crd_btm();
 slct_isp();
 // slct_itsup();
 slct_sub();

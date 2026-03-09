@@ -6,198 +6,8 @@ $regcon=new dbconfig();
 
 <style>
 .swal-btn{
-  margin: 10px;
+  margin: 10px; /* add 10px margin between buttons */
 }
-
-.table {
-  background-color: #ffffff;
-  border-collapse: separate;
-  border-spacing: 0;
-  border-radius: 8px;
-  overflow: hidden;  
-  box-shadow: 0 10px 8px rgba(108, 108, 53, 0.4);
-  border: 1px solid #e9ecef;
-}
-
-
-.table thead th {
-  background-color: #54699e;
-  color: white;
-  font-weight: 600;
-  text-transform: uppercase;
-  font-size: 0.85rem;
-  letter-spacing: 0.5px;
-  padding: 15px;
-  border-bottom: 2px solid #dee2e6;
-}
-
-.table tbody td {
-  padding: 12px 15px;
-  vertical-align: middle;
-  color: #333;
-  border-bottom: 1px solid #f1f1f1;
-}
-
-/* Hover Effect with requested color #213456 */
-.table tbody tr:hover {
-  background-color: #213456 !important;
-  color: #ffffff !important;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-/* Responsive Table Wrapper */
-.table-responsive {
-  border-radius: 8px;
-  margin-top: 20px;
-}
-
-#str_crt_modal .modal-content {
-  border: none;
-  border-radius: 15px;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-}
-
-#str_crt_modal .modal-header {
-  background-color: #213456;
-  color: #fff;
-  border-top-left-radius: 15px;
-  border-top-right-radius: 15px;
-  border-bottom: 4px solid #E1AD01; /* Your Theme Gold */
-}
-
-#str_crt_modal .store-title {
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  display: flex;
-  align-items: center;
-}
-
-#str_crt_modal .input-group-text {
-  background-color: #f8f9fa;
-  border-right: none;
-  color: #213456;
-}
-
-#str_crt_modal .form-control {
-  border-left: none;
-  height: 45px;
-  border-radius: 0 8px 8px 0;
-}
-
-#str_crt_modal .form-control:focus {
-  border-color: #ced4da;
-  box-shadow: none;
-}
-
-#str_crt_modal .input-group:focus-within {
-  box-shadow: 0 0 0 0.2rem rgba(225, 173, 1, 0.25);
-  border-radius: 8px;
-}
-
-#btn_submit {
-  background-color: #E1AD01;
-  border: none;
-  color: #213456;
-  font-weight: 700;
-  padding: 10px 40px;
-  border-radius: 30px;
-  transition: all 0.3s ease;
-}
-
-#btn_submit:hover {
-  background-color: #213456;
-  color: #E1AD01;
-  transform: translateY(-2px);
-}
-
-.dataTables_wrapper .pull-left {
-  flex-direction: row;      
-  align-items: center;      
-  justify-content: flex-start; /* Aligns both items to the left */
-  width: 100%;              
-  gap: 40px;                /* Keeps the gap between them */
-  margin-bottom: 20px; 
-}
-
-.dataTables_filter {
-  position: relative;
-  display: inline-block;    
-  margin: 0 !important;     
-}
-
-.dataTables_filter label {
-  display: flex;
-  align-items: center;
-  margin-bottom: 0;         
-}
-
-/* Search Icon */
-.dataTables_filter::before {
-  content: "\f002"; 
-  font-family: "Font Awesome 5 Free";
-  font-weight: 900;
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #213456;
-  z-index: 1;
-  opacity: 0.6;
-}
-
-.dataTables_filter input {
-  border: 2px solid #e0e0e0 !important;
-  border-radius: 50px !important;
-  padding: 8px 15px 8px 35px !important; 
-  width: 300px !important;
-  background-color: #ffffff !important;
-  transition: all 0.3s ease;
-  outline: none !important;
-  color: #213456;
-  margin-left: 0 !important; 
-}
-
-.dataTables_filter input:focus {
-  border-color: #E1AD01 !important;
-  box-shadow: 0 0 10px rgba(225, 173, 1, 0.2) !important;
-}
-
-#strbtnact {
-  background-color: #E1AD01 !important;
-  border: none !important;
-  border-radius: 50px !important;
-  color: #213456 !important;
-  font-weight: 700 !important;
-  padding: 10px 25px !important;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  font-size: 13px;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-  white-space: nowrap;      
-  display: inline-flex;     
-  align-items: center;
-  gap: 8px;
-  margin: 0;                
-}
-
-#strbtnact:hover {
-  background-color: #213456 !important;
-  color: #ffffff !important;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(33, 52, 86, 0.3);
-}
-
-/* Table Header Styling */
-#usermtc_table thead th {
-  background-color: #213456 !important;
-  color: #ffffff !important;
-  border: none;
-  padding: 15px;
-  font-size: 13px;
-}
-
 </style>
 
 <head>
@@ -210,7 +20,7 @@ $regcon=new dbconfig();
 <script src="../js/dataTables.responsive.min.js"></script>
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <!-- <script src="../vendor/sweetalert/src/sweetalert2.js"></script> -->
-</head>
+ </head>
 
 
 <div class="container mt-3">
@@ -224,8 +34,7 @@ $regcon=new dbconfig();
       <div class="modal-header border-bottom-0">
         <h5 class="store-title" id="exampleModalLabel">Add New Store</h5>
            <!--  <small id="emailHelp" class="form-text text-muted">Your information is safe with us.</small> -->
-        
-        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -317,7 +126,7 @@ $regcon=new dbconfig();
 
 </div>
 
-  <table id="usermtc_table" class="table table-hover table-responsive text-center"></table>
+  <table id="usermtc_table" class="table table-dark table-responsive table-condensed text-center"></table>
 
 </div>
 <script type="text/javascript">
@@ -588,5 +397,12 @@ $('#strbtnact').click(function (e) {
 
 
 }); // Doc Ready
+
+
+
+
+
+
+
 
 </script>

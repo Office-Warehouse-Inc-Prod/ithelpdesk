@@ -1,15 +1,21 @@
 <?php
-require_once '../../database.php';
+$conn = new mysqli("localhost", "root", "", "helpdesk1");
 
-try {
-
-    $stmt = $conn->prepare("SELECT COUNT(*) AS total FROM reports WHERE status = 'NEW REPORT' AND deptsel = '1' AND store IS NOT NULL");
-    $stmt->execute();
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    echo (int)$row['total']; // ensures integer only
-
-} catch (PDOException $e) {
-
-    echo 0; // never expose DB errors in badge
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
 }
+
+$sql = "SELECT COUNT(*) as total
+        FROM reports
+        WHERE status = 'ASSIGNED'
+        AND deptsel = '1'
+        AND store IS NOT NULL";
+
+$result = $conn->query($sql);
+
+$row = $result->fetch_assoc();
+
+echo $row['total'];
+
+$conn->close();
+?>

@@ -6,52 +6,10 @@ $( document ).ready(function() {
 
 
 
-  const toggle = document.getElementById('darkModeToggle');
-  const body = document.body;
-
-  // Load theme preference from localStorage
-  // if (localStorage.getItem('theme') === 'dark') {
-  //   body.classList.add('dark-mode');
-  //   toggle.checked = true;
-  // }
-
-  // toggle.addEventListener('change', () => {
-  //   if (toggle.checked) {
-  //     body.classList.add('dark-mode');
-  //     localStorage.setItem('theme', 'dark');
-  //   } else {
-  //     body.classList.remove('dark-mode');
-  //     localStorage.setItem('theme', 'light');
-  //   }
-  // });
-  
 
   
 
 
-
-  verQTY();
-
-  function verQTY(){
-
-let  formxxx= document.getElementById('cof_form');
-let formData = new FormData(formxxx); 
-$.ajax({
-      url: "insert.php",
-      method: "POST",
-      data: formData,
-      contentType: false,
-      processData: false,
-      success: function (data) {
-      },
-      error: function (error) {
-     
-}
-    });
-
-
-
-}
 
 
 //for debug purposes enable here
@@ -71,6 +29,7 @@ val =  $(this).attr("value");
 $('#card_openval').click(function(e) {
 e.preventDefault();
 val =  $(this).attr("value");
+// console.log(val)
 });
 
 $('#card_openwfaval').click(function(e) {
@@ -92,7 +51,7 @@ $('#myInput').on( 'input', function () {
 
 function getdata(yr){
 $.post('fetchdata/fetch_data.php',{yr:yr, mode:'dtb'},function(data){
-// console.log(data);
+console.log(data);
 admin_datatable(data);
 },'json');
 }
@@ -111,47 +70,7 @@ table = $("#report_data").DataTable({
     "<'dt-bottom d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-2'ip>",
 
   buttons: [
-    {
-      text: '<i class="fas fa-plus"></i> <span class="d-none d-md-inline">Add Report</span>',
-      attr: {
-        title: 'Add Report',
-        id: 'add_button',
-        class: 'btn btn-danger btn-sm rounded-pill px-3 shadow-sm'
-      },
-      action: function (e, dt, node, config) {
-        $('#remarks_view').empty();
-        $('#userModal').modal({ show: true, backdrop: 'static' });
-        $('.modal-title').text("ADD REPORT");
 
-        $('#action').val("Add");
-        $('#operation').val("Add");
-        $('#report_form').trigger('reset');
-
-        $(':input[type="submit"]').prop('disabled', false);
-        $('#date_created').attr('readonly', false);
-        $('#date_refNo').attr('readonly', false);
-        $('#date_closed').attr('readonly', false);
-
-        $('#store').prop("disabled", false);
-        $('#via').prop("disabled", false);
-        $('#status').prop("disabled", false);
-
-        // ✅ new dept field support (fallback if you still use #itsup)
-        if ($('#f_deptsel').length) $('#f_deptsel').prop("disabled", false);
-        if ($('#itsup').length) $('#itsup').prop("disabled", false);
-
-        $('#cat').prop("disabled", false);
-        $('#sub').prop("disabled", false);
-        $('#isp').prop("disabled", false);
-        $('#remarks').attr('readonly', false);
-
-        $('#img').empty();
-        admin_hideshowforms();
-        unilayout_netshowmodalform();
-
-        $('#addmsg').removeAttr('required');
-      }
-    },
     {
       extend: 'excelHtml5',
       text: '<i class="fas fa-file-excel"></i> <span class="d-none d-md-inline">Export</span>',
@@ -183,19 +102,73 @@ table = $("#report_data").DataTable({
 
   pageLength: 10,
   data: dataset,
-  order: [[2, "desc"]],
+  order: [[5, "desc"]],
 
   columns: [
-    {
-      title: "",
-      data: null,
-      orderable: false,
-      className: "text-center",
-      defaultContent:
-        "<button class='btn btn-outline-danger btn-sm rounded-circle' name='update' title='Edit'>" +
-          "<i class='fas fa-edit'></i>" +
-        "</button>"
-    },
+{
+    title: "Actions",
+    data: null,
+    orderable:false,
+    width:"130px", // ⭐ VERY IMPORTANT
+    className:"text-center",
+render:function(data,type,row){
+
+    // ✏️ EDIT
+    let editBtn = `
+        <button class='btn btn-circle btn-edit'
+                name='update'
+                title='Edit Ticket'>
+            <i class='fas fa-pen'></i>
+        </button>
+    `;
+
+    // 📞 VIBER
+    let viberBtn = row.contactNumber
+        ? `
+  <a href="#"
+     class="btn btn-circle btn-viber viber-call"
+     data-ticket_no="${row.ticket_no}"
+     data-dept_id="${row.f_deptsel}"
+     data-number="${row.contactNumber}"
+     title="Call via Viber">
+      <i class="fab fa-viber"></i>
+  </a>
+          `
+        : `
+            <button class="btn btn-circle btn-disabled"
+                    disabled
+                    title="No Contact Number">
+                <i class="fab fa-viber"></i>
+            </button>
+          `;
+
+    // ✉️ EMAIL
+    let emailBtn = row.dept_email
+        ? `
+            <a href="mailto:${row.dept_email}?subject=Helpdesk Ticket ${row.ticket_no}"
+               class="btn btn-circle btn-email"
+               title="Send Email">
+                <i class="fas fa-envelope"></i>
+            </a>
+          `
+        : `
+            <button class="btn btn-circle btn-disabled"
+                    disabled
+                    title="No Email">
+                <i class="fas fa-envelope"></i>
+            </button>
+          `;
+
+    return `
+        <div class="action-btn-group">
+            ${editBtn}
+            ${viberBtn}
+            ${emailBtn}
+        </div>
+    `;
+}
+},
+
     {
       title: "",
       data: "msg_cnt",
@@ -211,10 +184,43 @@ table = $("#report_data").DataTable({
       }
     },
     { title: "Ticket No", data: "ticket_no", defaultContent: "" },
+    { title: "Priority Level", data: "priority_desc", defaultContent: "",
+      render: function (data, type, row) {
+        if (type !== 'display') return data;
+        const s = (data || "").toUpperCase();
+        let cls = "badge bg-secondary";
+
+        if (s === "CRITICAL") cls = "badge bg-danger";
+        else if (s === "HIGH") cls = "badge bg-warning text-dark";
+        else if (s === "MEDIUM") cls = "badge bg-warning text-dark";
+        else if (s === "LOW") cls = "badge bg-info text-dark";
+
+        return `<span class="${cls} px-2 py-1">${data}</span>`;
+      }
+    },
     { title: "Store", data: "str_code", defaultContent: "" },
-    { title: "Date Created", data: "date_created", defaultContent: "" },
+    // { title: "Date Created", data: "date_created", defaultContent: "" },
+      {
+  title:"Date Created",
+  data:"date_created",
+  defaultContent:"",
+  render: function(data, type, row){
+
+      if(type === 'sort' || type === 'type'){
+          // Convert MM/DD/YYYY HH:MM:SS to YYYY-MM-DD HH:MM:SS
+          let parts = data.split(" ");
+          let date = parts[0].split("/");
+          let time = parts[1];
+
+          return date[2] + "-" + date[0] + "-" + date[1] + " " + time;
+      }
+
+      return data; // display normally
+  }
+},
+    
     { title: "Subject", data: "subject", defaultContent: "" },
-    { title: "Via", data: "via", defaultContent: "" },
+    // { title: "Via", data: "via", defaultContent: "" },
 
     // ✅ Status pill badge (modern + readable)
     {
@@ -227,9 +233,10 @@ table = $("#report_data").DataTable({
         const s = (data || "").toUpperCase();
         let cls = "badge bg-secondary";
 
-        if (s === "ON PROCESS") cls = "badge bg-warning text-dark";
+        if (s === "ASSIGNED") cls = "badge bg-warning text-dark";
         else if (s === "CLOSED") cls = "badge bg-success";
         else if (s === "SUBJECT FOR CLOSING") cls = "badge bg-primary";
+        else if (s === "ON PROCESS") cls = "badge bg-info";
         else if (s === "ATTENDED WITH FIX ASSET") cls = "badge bg-info text-dark";
 
         return `<span class="${cls} px-2 py-1">${data}</span>`;
@@ -246,9 +253,10 @@ table = $("#report_data").DataTable({
         return dept;
       }
     },
+    { title: "Dept Personnel", data: "category", defaultContent: "" },
 
-    { title: "Category", data: "category", defaultContent: "" },
-    { title: "Subcategory", data: "sub_category", defaultContent: "" },
+    // { title: "Category", data: "category", defaultContent: "" },
+    // { title: "Subcategory", data: "sub_category", defaultContent: "" },
 
     // Date Closed clean
     {
@@ -265,28 +273,26 @@ table = $("#report_data").DataTable({
     },
 
     // Days Completion clean + human-friendly
-    {
-      title: "Days",
-      data: "tdc",
-      defaultContent: "",
-      render: function (data, type, row) {
-        if (type !== 'display') return data;
+{
+  title: "Days",
+  data: "tdc",
+  defaultContent: "",
+  render: function (data, type, row) {
+    // keep sorting numeric
+    if (type !== 'display') return data;
 
-        if (!data) return "";
-        let d = String(data);
+    if (data === null || data === undefined || data === "") return "";
 
-        // Normalize
-        if (d === "0" || d === "0 Days Unresolved") return "";
-        if (d === "1 Days Unresolved") return "1 Day Unresolved";
-        if (d.includes("01/01/1970")) return "";
+    const n = parseInt(data, 10);
+    if (isNaN(n) || n < 0) return "";
 
-        // If numeric negative or zero
-        const n = parseInt(d, 10);
-        if (!isNaN(n) && n <= 0) return "";
+    const isOpen = (row.status || '').toUpperCase() !== 'CLOSED';
+    const dayWord = (n === 1) ? "Day" : "Days";
 
-        return d;
-      }
-    },
+    return isOpen ? `${n} ${dayWord} Unresolved` : `${n} ${dayWord}`;
+  }
+},
+
 
     {
       title: "Work Output",
@@ -308,7 +314,7 @@ table = $("#report_data").DataTable({
 
     const s = (data['status'] || "").toUpperCase();
 
-    if (s === 'ON PROCESS') $(row).addClass('status-open');
+    if (s === 'ASSIGNED') $(row).addClass('status-open');
     else if (s === 'ATTENDED WITH FIX ASSET') $(row).addClass('status-fixed');
     else if (s === 'CLOSED') $(row).addClass('status-closed');
     else if (s === 'SUBJECT FOR CLOSING') $(row).addClass('status-subject-closing');
@@ -330,37 +336,19 @@ $('#report_data tbody').on('dblclick', 'tr', function () {
   $('#date_createdx').val(data['date_created']);
   $('#subjct').val(data['subject']);
   $('#concern').val(data['concern']);
-  $('#via').val(data['via']);
+  // $('#via').val(data['via']);
   $('#status').val(data['status']);
-  $('#it_num').val(data['itsup']);
-  $('#itsup').val(data['itsup']);
-  $('#cat_num').val(data['cat_id']);
+  // console.log(data['priority_desc']);
+  $('#priority_desc').val(data['priority_desc']);
   $('#close_by').val(data['close_by']);
-  $('#cl_desc').val(data['clusers']); // added 5/3/2024
-  $('#cat').val(data['cat_id']);
-  $('#sub_num').val(data['sub_id']);
-  $('#sub').val(data['sub_category']);
-  $('#isp_num').val(data['isp_id']);
-  $('#isp').val(data['isp_id']);
-  $('#refNo').val(data['refNo']);
-  $('#date_refNo').val(data['date_refNo']);
-  $('#file-input').val("");
+
   admin_hideshowforms();
   $('#date_closed').val(data['date_closed']);
   $('#remarks').val(data['remarks']);
   // $('#remarks').val('');
-  unilayout_netshowmodalform();
+  // unilayout_netshowmodalform();
 
-  $('#itsup').off('change').on('change', function () {
-    var itfrstsup = $('#it_num').val();
-    var itchange = this.value;
-    if (itfrstsup != itchange ) {
-      $('#remarks').attr("placeholder", "Reason for re-assign/ Workoutput");
-      $('#remarks').val("");
-    } else {
-      $('#remarks').val(data['remarks']);
-    }
-  });
+
 
   if($('#status').val() == 'CLOSED') {
     $(':input[type="submit"]').prop('disabled', true); 
@@ -391,17 +379,17 @@ $('#report_data tbody').on('dblclick', 'tr', function () {
   }
 
   // ✅ Retained block as requested
-  var sst = document.querySelector("#sub");  
+  // var sst = document.querySelector("#sub");  
   var option = document.createElement("option");
   option.value = 0;
   option.id = 'tmpsubid';
   option.selected = 'selected';
   option.text = $(this).find('td:eq(10)').html();
-  sst.add(option);   
+  // sst.add(option);   
 
   getinfo(tid, 'remarks', user_id);
   
-  gtsub_id();
+  // gtsub_id();
 
   $('.modal-title').text("Ticket Number: " + tid);
   $('#action').val("Save and Reply");
@@ -447,7 +435,8 @@ table
 
 
 $('#card_openval').on('click', function () {
-var val =  $(this).attr("value");
+// var val =  $(this).attr("value");
+var val =  ('ASSIGNED');
 // alert(val);
 table
 .columns( 7 )
@@ -487,32 +476,30 @@ $('#network_tb').slideToggle();
 } // end of data table
 
 
-function crd_btm(){
-    console.log("bottom");
-}
+
 
 $('#store_graph_modal').modal('hide'); 
 
 // crd_btm();
-slct_isp();
+// slct_isp();
 // slct_itsup();
-slct_sub();
-gtsub_id();
+// slct_sub();
+// gtsub_id();
 admin_hideshowforms();  
 
 const yr =$("#yearpicker").val();
 getdata(yr)
 get_card_data(yr)
-function get_card_data(y){
-$.post('fetchdata/fetch_data.php',{yr:y,mode:'yearch'}, function(data) {
+function get_card_data(yr){
+$.post('fetchdata/fetch_data.php',{yr:yr,mode:'yearch'}, function(data) {
 /*optional stuff to do after success */
-// console.log(data)
+// console.log(yr)
 let card_data = jQuery.parseJSON(data); 
 const a = card_data;
 // console.log(a)
-$('#count_total').html(a[0].total_res);
+$('#count_total').html(a[0].owfa_res);
 $('#count_open').html(a[0].open_res);
-$('#count_owfa').html(a[0].owfa_res);
+$('#count_owfa').html(a[0].t_pending);
 $('#count_closed').html(a[0].cls_res);
 $('#today_closed').html(a[0].t_res);
 
@@ -526,14 +513,15 @@ $('#datetimepicker1, #datetimepicker2, #datetimepicker3').datetimepicker()
 
 $("#yearpicker").on('change',function(){
 const yr =$("#yearpicker").val()
+// console.log(yr);
 // reports_total(this.value);
 getdata(yr);
 get_card_data(this.value);
-_techgraph(yr);
-_overallpie(yr);
-_dbline(yr); 
-_catpie(yr);
-_areagraph(yr);
+// _techgraph(yr);
+// _overallpie(yr);
+// _dbline(yr); 
+// _catpie(yr);
+// _areagraph(yr);
 // bargrph_tech_res(yr);
 // itsupdata(yr);
 // _storegraph(yr);
@@ -609,7 +597,7 @@ return false;
       alert("Invalid date");
       return false;
     }
-    else if (Status == 'OPEN'){
+    else if (Status == 'ASSIGNED'){
         if (DateClosed < DateCreated ){
       alert("Date closed should be greater than date created!");
       return false;
@@ -724,92 +712,111 @@ $('#addmsg').val('');
 });
 
 
-$('#subpie_clsbtn').click(function(event) {
-event.preventDefault();
-$('#chartdiv9').empty();
-
-});
-
-$('#substr_clsbtn').click(function(event) {
-event.preventDefault();
-$('#substr_clsbtn').empty();
-
-});
 
 
-$('#action').click(function () { 
-        var files = $('#file-input')[0].files;
-        var tktno = $('#ticket_no').val();
-        var formData = new FormData();
+let activeCall = null; // {call_id, start_ms}
 
-        for (var i = 0; i < files.length; i++) {
-            formData.append('files[]',files[i]);
-            
+function formatDuration(ms){
+  const totalSec = Math.floor(ms / 1000);
+  const m = String(Math.floor(totalSec / 60)).padStart(2,'0');
+  const s = String(totalSec % 60).padStart(2,'0');
+  return `${m}:${s}`;
+}
+
+function showEndCallSwal(){
+  if(!activeCall) return;
+
+  let timerInterval = null;
+
+  Swal.fire({
+    title: 'End Call',
+    html: `
+      <div style="font-size:14px; margin-bottom:8px;">
+        <b>Duration:</b> <span id="callDuration">00:00</span>
+      </div>
+
+      <select id="callStatus" class="swal2-select">
+        <option value="ANSWERED">Answered</option>
+        <option value="NO_ANSWER">No Answer</option>
+        <option value="BUSY">Busy</option>
+        <option value="FAILED">Failed</option>
+        <option value="VOICEMAIL">Voicemail</option>
+      </select>
+    `,
+    showCancelButton: true,
+    confirmButtonText: 'Hang Up & Save',
+    cancelButtonText: 'Not yet',
+    allowOutsideClick: false,
+    didOpen: () => {
+      const durEl = document.getElementById('callDuration');
+      timerInterval = setInterval(() => {
+        durEl.textContent = formatDuration(Date.now() - activeCall.start_ms);
+      }, 500);
+    },
+    willClose: () => {
+      if(timerInterval) clearInterval(timerInterval);
+    },
+    preConfirm: () => {
+      const status = document.getElementById('callStatus').value;
+      return status;
+    }
+  }).then((result) => {
+    if(result.isConfirmed){
+      const status = result.value;
+
+      $.ajax({
+        url: 'fetchdata/update_call.php',
+        type: 'POST',
+        data: {
+          call_id: activeCall.call_id,
+          call_status: status
+        },
+        success: function(){
+          Swal.fire('Saved', 'Call log updated.', 'success');
+          activeCall = null;
+        },
+        error: function(xhr){
+          Swal.fire('Error', xhr.responseText || 'Failed to update call log.', 'error');
         }
-        formData.append('ticket_no',tktno);
+      });
+    }
+  });
+}
 
+// 1) log + open viber
+$(document).on('click', '.viber-call', function(e){
+  e.preventDefault();
 
-        $.ajax({
-            type: "POST",
-            url: "insertimg.php",
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function (data) {
-                // alert(response);
-            }
-        });
-        
-    });
+  const ticket_no = $(this).data('ticket_no');
+  const dept_id   = $(this).data('dept_id');
+  const number    = $(this).data('number');
 
-    //validition for file upload size
-    var uploadField = document.getElementById("file-input");
+  $.ajax({
+    url: 'fetchdata/log_call.php',
+    type: 'POST',
+    dataType: 'json',
+    data: { ticket_no, dept_id },
+    success: function(res){
+      // store active call
+      activeCall = {
+        call_id: res.call_id,
+        start_ms: Date.parse(res.call_startdate) || Date.now()
+      };
 
-    uploadField.onchange = function() {
-
-      for (var i = 0; i < $("#file-input").get(0).files.length; ++i) {
-                var file1=$("#file-input").get(0).files[i].name;
-
-                if(file1){                        
-                    var file_size=$("#file-input").get(0).files[i].size;
-                    if(file_size<2097152){
-                        var ext = file1.split('.').pop().toLowerCase();                            
-                        if($.inArray(ext,['jpg','jpeg','gif','png', 'txt', 'pdf', 'docx', 'doc', 'xlsx', 'xls'])===-1){
-                            alert("Invalid file extension");
-                            this.value = "";
-                            return false;
-                        }
-
-                    }else{
-                        alert("File must not exceed 2MB");
-                        this.value = "";
-                        return false;
-                    }                        
-                }
-            }
-  
-};
-// end of validition for file upload size
-
-let endDate = new Date();
-endDate.setDate(endDate.getDate() - 1); // Set to yesterday
-let startDate = new Date(endDate); // Copy the same date (yesterday)
-
-$('#frompolDate').val(startDate.toISOString().split('T')[0]);
-$('#topolDate').val(endDate.toISOString().split('T')[0]);
-
-// Load initial data for yesterday
-_polledraph($('#frompolDate').val(), $('#topolDate').val());
-
-
-// Add event listeners for date changes
-$('#frompolDate, #topolDate').change(function() {
-  // alert("GOOD");
-    _polledraph($('#frompolDate').val(), $('#topolDate').val());
-
-
-
+      // open viber
+      window.location.href = `viber://chat?number=%2B${number}`;
+    }
+  });
 });
+
+// 2) when user returns to browser tab/window, prompt to end call
+window.addEventListener('focus', function(){
+  // if there is an active call, ask to end it
+  if(activeCall){
+    showEndCallSwal();
+  }
+});
+
 
 
 });//document ready close

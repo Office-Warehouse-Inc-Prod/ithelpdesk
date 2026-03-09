@@ -433,14 +433,14 @@ order: [[0, 'desc']],
     pieSeries.slices.template.adapter.add("fill", function (fill, target) {
       if (target.dataItem) {
         switch (target.dataItem.category) {
-          case "OPEN":
+          case "PENDING":
             return am4core.color("#FF7A7A"); // soft red
-          case "ATTENDED WITH FIX ASSET":
-            return am4core.color("#FFD966"); // soft yellow
+          case "ON PROCESS":
+            return am4core.color("#F2A65A"); // soft yellow
           case "CLOSED":
-            return am4core.color("#7DD77D"); // soft green
+            return am4core.color("#578f63"); // soft green
           case "SUBJECT FOR CLOSING":
-            return am4core.color("#CBA6E3"); // soft purple
+            return am4core.color("#b667eb"); // soft purple
           default:
             return am4core.color("#9EC9F7"); // fallback pastel blue
         }
@@ -605,10 +605,11 @@ var chart = am4core.create("chartdiv8", am4charts.XYChart);
 chart.data = grphdata
 
 chart.colors.list = [
-  am4core.color("#0077F7"),
-  am4core.color("#27A243"),
-  am4core.color("#DC3545"),
-  am4core.color("#FFC107")
+  am4core.color("#6594B1"),
+  am4core.color("#6F8F72"),
+  am4core.color("#F2A65A"),
+  am4core.color("#D25353")
+
 
 ];
 
@@ -689,7 +690,7 @@ series3.dataFields.valueY = "opncase";
 series3.dataFields.categoryX = "it_name";
 series3.clustered = false;
 series3.columns.template.width = am4core.percent(50);
-series3.tooltipText = "OPEN REPORTS: [bold]{valueY}";
+series3.tooltipText = "ON PROCESS: [bold]{valueY}";
 series3.columns.template.events.on("hit", function(ev) {
               
               let itVal= ev.target.dataItem.dataContext["itsup"] ;
@@ -719,7 +720,7 @@ series4.dataFields.valueY = "opnwfxast";
 series4.dataFields.categoryX = "it_name";
 series4.clustered = false;
 series4.columns.template.width = am4core.percent(50);
-series4.tooltipText = "WITH FIX ASSET: [bold]{valueY}";
+series4.tooltipText = "PENDING (OVER SLA): [bold]{valueY}";
 
 chart.cursor = new am4charts.XYCursor();
 chart.cursor.lineX.disabled = true;
@@ -972,7 +973,7 @@ var chart = am4core.create("chart_area", am4charts.XYChart);
 chart.data = grphdata
 // Create axes
 chart.colors.list = [
-  am4core.color("#0077F7")
+  am4core.color("#6594B1")
 ];
 
 var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());

@@ -63,26 +63,45 @@ $holidays = getPhilippineHolidays($currentYear);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Employee Calendar</title>
     <style>
-        body {
-            margin: 32px 12px;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
-            Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-            background: #f5f7fa;
-            color: #222;
+        :root {
+            --primary-color: #213456;
+            --primary-light: #F4F0FF;
+            --bg-body: #F4F5FA;
+            --accent-color: #E1AD01;  /* Gold */
+            --accent-hover: #c99a01;
+            --text-light: #ffffff;
+            --bg-body: #F4F5FA;
+            --sidebar-width: 260px;
+            --topbar-height: 70px;
+            --card-shadow: 0 4px 12px 0 rgba(58, 53, 65, 0.1);
         }
-        
+
+        body {
+            font-family: 'Public Sans', sans-serif;
+            background-color: var(--bg-body);
+            color: #3A3541DE;
+            overflow-x: hidden;
+             background: linear-gradient(rgba(218, 219, 207, 0.3), rgba(214, 216, 184, 0.27)), 
+                    url('images/bg_login.png'); 
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            min-height: 100vh;
+        }
+
         .calendar-wrapper {
-            max-width: auto;
+            max-width: 1000px;
             margin: 0 auto;
             background: white;
             border-radius: 12px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            box-shadow: 20px 20px 20px rgba(33, 16, 118, 0.1);
             overflow: hidden;
         }
         
         .calendar-header {
             padding: 16px;
-            background: #4f46e5;
+            background: #213456;
             color: white;
             display: flex;
             justify-content: space-between;
@@ -190,7 +209,7 @@ $holidays = getPhilippineHolidays($currentYear);
         }
         
         .event {
-            background: #4f46e5;
+            background: #213456;
             color: white;
             padding: 4px 6px; /* Reduced padding */
             border-radius: 4px;
@@ -285,7 +304,7 @@ $holidays = getPhilippineHolidays($currentYear);
         }
         
         .btn-primary {
-            background: #4f46e5;
+            background: #213456;
             color: white;
         }
         
@@ -371,28 +390,26 @@ $holidays = getPhilippineHolidays($currentYear);
             opacity: 0.8;
             margin-top: 1px;
             font-style: italic;
-      }
-      
-      .sunday-cell {
-    background-color: #4d5656 !important;
-    position: relative;
-}
+        }
+        .sunday-cell{
+            background-color: #4d5656 !important;
+            position: relative;
+        }
+        .sunday-cell::after{
+            content:'';
+            position: absolute;
+            left:0;
+            top:0;
+            bottom:0;
+            width:3px;
+            background-color: #adb5bd;
+        }
 
-.sunday-cell::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 3px;
-    background-color: #adb5bd;
-}
-
-.holiday-cell {
+        .holiday-cell{
             background-color: #ffebee !important;
             position: relative;
         }
-        
+
         .holiday-cell::after {
             content: '';
             position: absolute;
@@ -417,140 +434,255 @@ $holidays = getPhilippineHolidays($currentYear);
             z-index: 1;
         }
 
+        .calendar-header{
+            padding: 20px;
+            background: var(--primary-color);
+            border-bottom: 4px solid var(--accent-color);
+            display:flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            gap:15px;
+            flex-wrap: wrap;
+        }
+
+        .calendar-header h2{
+            color: var(----accent-color);
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-size: 1.25rem;
+            margin: 0;
+        }
+
+        .header-nav{
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn{
+            display:inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size:0.9rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .btn-home{
+            background-color: var(--accent-color);
+            color:var(--primary-color) !important;
+            box-shadow: 0 4px 0px #b08701;
+        }
+
+        .btn-home:hover{
+            background-color: var(--accent-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 0px #b08701;
+        }
+
+        .btn-nav{
+            background-color: rgba(255,255,255,0.1);
+            color:white;
+            border:1px solid rgba(255,173,1,0.5);
+        }
+
+        .btn-nav:hover{
+            background-color: var(--accent-color);
+            color: var(--primary-color);
+            border-color: var(--accent-color);
+
+        }
+
+        .week-display{
+            color:white;
+            font-weight: 700;
+            font-size: 1rem;
+            padding: 0 10px;
+            text-align: center;
+            min-width:150px;
+        }
+
+        @media(max-width:768px){
+            .calendar-header{
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .header-nav{
+                justify-content: center;
+                width: 100%;
+            }
+
+            .employee-column{
+                width:120px;
+            }
+            .employee-name{
+                font-size: 0.9rem;
+            }
+            .week-display{
+                width:100%;
+                order:-1;
+                margin-bottom: 10px;
+            }
+        }
+
+        .calendar-cell::-webkit-scrollbar{
+            width:4px;
+        }
+
+        .calendar-cell::-webkit-scrollbar-thumb{
+            background: var(--accent-color);
+            border-radius: 10px;
+        }
     </style>
 </head>
 <body>
 
-    <div class="calendar-wrapper col-md-12">
-    <div class="calendar-header">
-    <h2>IT SCHEDULE CALENDAR</h2>
-    <a href="adminpanel.php" class="btn btn-secondary" id="home-btn">Home</a>
-    <input type="hidden" id="user_id" value="<?php echo htmlspecialchars($_SESSION['user_id']); ?>" readonly>
-    <div class="header-nav">    
-        <!-- Home Button -->
+<div class="calendar-wrapper col-md-12">
 
+    <div class="calendar-header">
+        <div class="d-flex align-items-center"> 
+          <h2>IT Schedule Calendar</h2>
+        </div>
+
+        <div class="header-nav">
+            <a href="adminpanel.php" class="btn btn-home" id="home-btn">
+                Home
+            </a>
+          <button id="prev-week" class="btn btn-nav">« Previous</button>
         
-        <button id="prev-week" class="btn btn-secondary">Previous</button>
-        <div class="week-display" id="week-display"></div>
-        <button id="next-week" class="btn btn-secondary">Next</button>
+          <div class="week-display" id="week-display">
+            <span>Loading...</span>
+          </div>
+        
+          <button id="next-week" class="btn btn-nav">Next »</button>
+        </div>
+        <input type="hidden" id="user_id" value="<?php echo htmlspecialchars($_SESSION['user_id']); ?>" readonly>
+    </div>
+        
+    <div class="calendar-grid">
+        <div class="employee-column">
+            <div class="employee-header">Employees</div>
+            <!-- Employee list will be populated by JavaScript -->
+        </div>
+            
+        <div class="calendar-days">
+            <div class="days-header">
+                <!-- Day headers will be populated by JavaScript -->
+            </div>
+                
+            <div class="calendar-rows">
+                <!-- Calendar rows will be populated by JavaScript -->
+            </div>
+        </div>
     </div>
 </div>
-        
-        <div class="calendar-grid">
-            <div class="employee-column">
-                <div class="employee-header">Employees</div>
-                <!-- Employee list will be populated by JavaScript -->
-            </div>
-            
-            <div class="calendar-days">
-                <div class="days-header">
-                    <!-- Day headers will be populated by JavaScript -->
-                </div>
-                
-                <div class="calendar-rows">
-                    <!-- Calendar rows will be populated by JavaScript -->
-                </div>
-            </div>
-        </div>
-    </div>
     
-    <!-- Modal for adding/editing events -->
-    <div class="modal-overlay" id="modalOverlay">
-        <div class="modal">
-            <h2 id="modalTitle">Add Event</h2>
-            <form id="eventForm">
-                <label for="eventTitle">Title</label>
-                <input type="text" id="eventTitle" name="title" required placeholder="Event title">
+<!-- Modal for adding/editing events -->
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+        <h2 id="modalTitle">Add Event</h2>
+        <form id="eventForm">
+            <label for="eventTitle">Title</label>
+            <input type="text" id="eventTitle" name="title" required placeholder="Event title">
                 
-                <label for="eventDate">Date</label>
-                <input type="date" id="eventDate" name="date" required>
+            <label for="eventDate">Date</label>
+            <input type="date" id="eventDate" name="date" required>
                 
-                <label for="eventTime">Time</label>
-                <input type="time" id="eventTime" name="time" required>
+            <label for="eventTime">Time</label>
+            <input type="time" id="eventTime" name="time" required>
                 
-                <label for="eventNote">Notes</label>
-                <textarea id="eventNote" name="note" placeholder="Additional notes (optional)"></textarea>
-                
-                <div class="modal-buttons">
-                    <button type="button" class="btn btn-danger" id="deleteBtn" style="display: none;">Delete</button>
-                    <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
-                    <button type="submit" class="btn btn-primary" id="saveBtn">
-                        <span id="saveBtnText">Save Event</span>
-                        <span id="saveBtnSpinner" class="loading" style="display: none;"></span>
-                    </button>
-                </div>
-            </form>
-        </div>
+            <label for="eventNote">Notes</label>
+            <textarea id="eventNote" name="note" placeholder="Additional notes (optional)"></textarea>
+      
+            <div class="modal-buttons">
+                <button type="button" class="btn btn-danger" id="deleteBtn" style="display: none;">Delete</button>
+                <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                <button type="submit" class="btn btn-primary" id="saveBtn">
+                    <span id="saveBtnText">Save Event</span>
+                    <span id="saveBtnSpinner" class="loading" style="display: none;"></span>
+                </button>
+            </div>
+        </form>
     </div>
+</div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // API endpoints
-            const API_BASE = 'api/';
-            const EMPLOYEES_ENDPOINT = API_BASE + 'employees.php';
-            const EVENTS_ENDPOINT = API_BASE + 'events.php';
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // API endpoints
+        const API_BASE = 'api/';
+        const EMPLOYEES_ENDPOINT = API_BASE + 'employees.php';
+        const EVENTS_ENDPOINT = API_BASE + 'events.php';
             
-            let holidays = <?php echo json_encode($holidays); ?>;
-            // Current displayed week
-            let currentDate = new Date();
-            currentDate.setHours(0, 0, 0, 0);
-            // Adjust to start of week (Monday)
-            const dayOfWeek = currentDate.getDay();
-            const diff = currentDate.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
-            currentDate.setDate(diff);
+        let holidays = <?php echo json_encode($holidays); ?>;
+        // Current displayed week
+        let currentDate = new Date();
+        currentDate.setHours(0, 0, 0, 0);
+        // Adjust to start of week (Monday)
+        const dayOfWeek = currentDate.getDay();
+        const diff = currentDate.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
+        currentDate.setDate(diff);
             
-            // DOM elements
-            const employeeColumn = document.querySelector('.employee-column');
-            const daysHeader = document.querySelector('.days-header');
-            const calendarRows = document.querySelector('.calendar-rows');
-            const prevWeekBtn = document.getElementById('prev-week');
-            const nextWeekBtn = document.getElementById('next-week');
-            const weekDisplay = document.getElementById('week-display');
-            const modalOverlay = document.getElementById('modalOverlay');
-            const modalTitle = document.getElementById('modalTitle');
-            const eventForm = document.getElementById('eventForm');
-            const cancelBtn = document.getElementById('cancelBtn');
-            const deleteBtn = document.getElementById('deleteBtn');
-            const saveBtn = document.getElementById('saveBtn');
-            const saveBtnText = document.getElementById('saveBtnText');
-            const saveBtnSpinner = document.getElementById('saveBtnSpinner');
+        // DOM elements
+        const employeeColumn = document.querySelector('.employee-column');
+        const daysHeader = document.querySelector('.days-header');
+        const calendarRows = document.querySelector('.calendar-rows');
+        const prevWeekBtn = document.getElementById('prev-week');
+        const nextWeekBtn = document.getElementById('next-week');
+        const weekDisplay = document.getElementById('week-display');
+        const modalOverlay = document.getElementById('modalOverlay');
+        const modalTitle = document.getElementById('modalTitle');
+        const eventForm = document.getElementById('eventForm');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const deleteBtn = document.getElementById('deleteBtn');
+        const saveBtn = document.getElementById('saveBtn');
+        const saveBtnText = document.getElementById('saveBtnText');
+        const saveBtnSpinner = document.getElementById('saveBtnSpinner');
             
-            // Form elements
-            const eventTitleInput = document.getElementById('eventTitle');
-            const eventDateInput = document.getElementById('eventDate');
-            const eventTimeInput = document.getElementById('eventTime');
-            const eventNoteInput = document.getElementById('eventNote');
+        // Form elements
+        const eventTitleInput = document.getElementById('eventTitle');
+        const eventDateInput = document.getElementById('eventDate');
+        const eventTimeInput = document.getElementById('eventTime');
+        const eventNoteInput = document.getElementById('eventNote');
             
-            // State variables
-            let selectedCell = null;
-            let editingEvent = null;
-            let employees = [];
-            let events = [];
+        // State variables
+        let selectedCell = null;
+        let editingEvent = null;
+        let employees = [];
+        let events = [];
             
-            // Initialize the calendar
-            function initCalendar() {
-                fetchEmployees().then(() => {
-                    updateWeekDisplay();
-                    renderWeekHeader();
-                    fetchEvents().then(renderCalendarGrid);
-                });
+        // Initialize the calendar
+        function initCalendar() {
+            fetchEmployees().then(() => {
+                updateWeekDisplay();
+                renderWeekHeader();
+                fetchEvents().then(renderCalendarGrid);
+            });
+        }
+            
+        // Fetch employees from database
+         async function fetchEmployees() {
+            try {
+                const response = await fetch(EMPLOYEES_ENDPOINT);
+                if (!response.ok) throw new Error('Failed to fetch employees');
+                employees = await response.json();
+                renderEmployees();
+            } catch (error) {
+                console.error('Error fetching employees:', error);
+                alert('Failed to load employees. Please try again.');
             }
+        }
             
-            // Fetch employees from database
-            async function fetchEmployees() {
-                try {
-                    const response = await fetch(EMPLOYEES_ENDPOINT);
-                    if (!response.ok) throw new Error('Failed to fetch employees');
-                    employees = await response.json();
-                    renderEmployees();
-                } catch (error) {
-                    console.error('Error fetching employees:', error);
-                    alert('Failed to load employees. Please try again.');
-                }
-            }
-            
-            // Fetch events from database
-            async function fetchEvents() {
+        // Fetch events from database
+        async function fetchEvents() {
         try {
             const startDate = getFormattedDate(currentDate);
             const endDateObj = new Date(currentDate);
@@ -566,87 +698,84 @@ $holidays = getPhilippineHolidays($currentYear);
         }
     }
             
-            // Render employee list
-            function renderEmployees() {
-    // Clear existing employees (except the header)
-    while (employeeColumn.children.length > 1) {
+    // Render employee list
+    function renderEmployees() {
+        // Clear existing employees (except the header)
+        while (employeeColumn.children.length > 1) {
         employeeColumn.removeChild(employeeColumn.lastChild);
-    }
+        }
 
-    // Create a document fragment for better performance
-    const fragment = document.createDocumentFragment();
+        // Create a document fragment for better performance
+        const fragment = document.createDocumentFragment();
     
-    employees.forEach(employee => {
-        const employeeCard = document.createElement('div');
-        employeeCard.className = 'employee-card';
-        employeeCard.dataset.employeeId = employee.userId;
+        employees.forEach(employee => {
+
+            const employeeCard = document.createElement('div');
+            employeeCard.className = 'employee-card';
+            employeeCard.dataset.employeeId = employee.userId;
         
-        employeeCard.innerHTML = `
+            employeeCard.innerHTML = `
             <div class="employee-name">${employee.name}</div>
             
             <input type="hidden" class="employee-id" value="${employee.userId}">
-        `;
+            `;
         
-        fragment.appendChild(employeeCard);
-    });
+            fragment.appendChild(employeeCard);
+        });
     
-    employeeColumn.appendChild(fragment);
-}
+        employeeColumn.appendChild(fragment);
+    }
             
-            // Update the week display text
-            function updateWeekDisplay() {
-                const startOfWeek = new Date(currentDate);
-                const endOfWeek = new Date(currentDate);
-                endOfWeek.setDate(endOfWeek.getDate() + 6);
-                
-                const options = { month: 'short', day: 'numeric' };
-                const startStr = startOfWeek.toLocaleDateString('en-US', options);
-                const endStr = endOfWeek.toLocaleDateString('en-US', options);
-                
-                weekDisplay.textContent = `${startStr} - ${endStr}`;
-            }
+    // Update the week display text
+    function updateWeekDisplay() {
+        const startOfWeek = new Date(currentDate);
+        const endOfWeek = new Date(currentDate);
+        endOfWeek.setDate(endOfWeek.getDate() + 6);         
+        const options = { month: 'short', day: 'numeric' };
+        const startStr = startOfWeek.toLocaleDateString('en-US', options);
+        const endStr = endOfWeek.toLocaleDateString('en-US', options);
+        weekDisplay.textContent = `${startStr} - ${endStr}`;
+    }
             
-            // Render the week day headers
-            function renderWeekHeader() {
-                daysHeader.innerHTML = '';
+    // Render the week day headers
+    function renderWeekHeader() {
+        daysHeader.innerHTML = '';
                 
-                for (let i = 0; i < 7; i++) {
-                    const day = new Date(currentDate);
-                    day.setDate(currentDate.getDate() + i);
-                    
-                    const dayHeader = document.createElement('div');
-                    dayHeader.className = 'day-header';
+        for (let i = 0; i < 7; i++) {
+            const day = new Date(currentDate);
+            day.setDate(currentDate.getDate() + i);
+            const dayHeader = document.createElement('div');
+            dayHeader.className = 'day-header';
 
-                    if (day.getDay() === 0) {
-                        dayHeader.classList.add('sunday-cell');
-                    }
-                                
-                    const dayName = day.toLocaleDateString('en-US', { weekday: 'short' });
-                    const dayNumber = day.getDate();
-                    
-                    dayHeader.innerHTML = `
-                        <div>${dayName}</div>
-                        <div>${dayNumber}</div>
-                    `;
-                    
-                    // Highlight current day
-                    const today = new Date();
-                    today.setHours(0, 0, 0, 0);
-                    if (day.getDate() === today.getDate() && 
-                        day.getMonth() === today.getMonth() && 
-                        day.getFullYear() === today.getFullYear()) {
-                        dayHeader.style.backgroundColor = '#e0f2fe';
-                    }
-                    
-                    daysHeader.appendChild(dayHeader);
-                }
+            if (day.getDay() === 0) {
+                dayHeader.classList.add('sunday-cell');
             }
+                                
+            const dayName = day.toLocaleDateString('en-US', { weekday: 'short' });
+            const dayNumber = day.getDate();
+                    
+            dayHeader.innerHTML = `
+                <div>${dayName}</div>
+                <div>${dayNumber}</div>
+            `;
+                    
+            // Highlight current day
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            if (day.getDate() === today.getDate() && 
+                day.getMonth() === today.getMonth() && 
+                day.getFullYear() === today.getFullYear()) {
+                dayHeader.style.backgroundColor = '#e0f2fe';
+            }
+                    
+            daysHeader.appendChild(dayHeader);
+        }
+    }
             
-            // Render the calendar grid
-            function renderCalendarGrid() {
-    calendarRows.innerHTML = '';
-    
-    employees.forEach(employee => {
+    // Render the calendar grid
+    function renderCalendarGrid() {
+        calendarRows.innerHTML = '';
+        employees.forEach(employee => {
         const row = document.createElement('div');
         row.className = 'calendar-row';
         row.dataset.employeeId = employee.userId;
@@ -668,7 +797,7 @@ $holidays = getPhilippineHolidays($currentYear);
             const isHoliday = holidays[dateStr];
             if (isHoliday) {
                 cell.classList.add('holiday-cell');
-                
+
                 const holidayTooltip = document.createElement('div');
                 holidayTooltip.className = 'holiday-tooltip';
                 holidayTooltip.textContent = holidays[dateStr];
@@ -754,8 +883,8 @@ $holidays = getPhilippineHolidays($currentYear);
     });
 }
             
-            // Open the modal
-            function openModal(title, date, event = null) {
+// Open the modal
+function openModal(title, date, event = null) {
     const userId = parseInt(document.getElementById('user_id').value);
     const isRestrictedUser = [282, 288].includes(userId);
     
@@ -804,16 +933,16 @@ $holidays = getPhilippineHolidays($currentYear);
     modalOverlay.classList.add('active');
 }
             
-            // Close the modal
-            function closeModal() {
-                modalOverlay.classList.remove('active');
-                selectedCell = null;
-                editingEvent = null;
-            }
+// Close the modal
+    function closeModal() {
+        modalOverlay.classList.remove('active');
+        selectedCell = null;
+        editingEvent = null;
+    }
             
-            // Save event to database
-            async function saveEvent(eventData) {
-    try {
+    // Save event to database
+    async function saveEvent(eventData) {
+        try {
         showLoading(true);
         
         const url = eventData.id ? `${EVENTS_ENDPOINT}?id=${eventData.id}` : EVENTS_ENDPOINT;
@@ -833,87 +962,86 @@ $holidays = getPhilippineHolidays($currentYear);
         }
         
         return await response.json();
-    } catch (error) {
-        console.error('Error saving event:', error);
-        throw error;
-    } finally {
-        showLoading(false);
+        } catch (error) {
+           console.error('Error saving event:', error);
+           throw error;
+        } finally {
+          showLoading(false);
+        }
     }
-}
             
-            // Delete event from database
-            async function deleteEvent(eventId) {
-                try {
-                    showLoading(true);
+   // Delete event from database
+    async function deleteEvent(eventId) {
+        try {
+            showLoading(true);
                     
-                    const response = await fetch(`${EVENTS_ENDPOINT}?id=${eventId}`, {
-                        method: 'DELETE'
-                    });
-                    
-                    if (!response.ok) throw new Error('Failed to delete event');
-                    
-                    const result = await response.json();
-                    return result;
-                } catch (error) {
-                    console.error('Error deleting event:', error);
-                    throw error;
-                } finally {
-                    showLoading(false);
-                }
-            }
-            
-            // Show/hide loading state
-            function showLoading(loading) {
-                if (loading) {
-                    saveBtn.disabled = true;
-                    saveBtnText.style.display = 'none';
-                    saveBtnSpinner.style.display = 'inline-block';
-                } else {
-                    saveBtn.disabled = false;
-                    saveBtnText.style.display = 'inline';
-                    saveBtnSpinner.style.display = 'none';
-                }
-            }
-            
-            function getEmployeeName(employeeId) {
-    const employee = employees.find(emp => emp.userId == employeeId);
-    return employee ? employee.name : 'Unknown';
-}
-
-
-            // Helper function to format date as YYYY-MM-DD
-            function getFormattedDate(date) {
-                const year = date.getFullYear();
-                const month = String(date.getMonth() + 1).padStart(2, '0');
-                const day = String(date.getDate()).padStart(2, '0');
-                return `${year}-${month}-${day}`;
-            }
-            
-            // Helper function to add days to a date
-            function addDays(date, days) {
-                const result = new Date(date);
-                result.setDate(result.getDate() + days);
-                return result;
-            }
-            
-            // Event listeners
-            prevWeekBtn.addEventListener('click', function() {
-                currentDate.setDate(currentDate.getDate() - 7);
-                updateWeekDisplay();
-                renderWeekHeader();
-                fetchEvents().then(renderCalendarGrid);
+            const response = await fetch(`${EVENTS_ENDPOINT}?id=${eventId}`, {
+                method: 'DELETE'
             });
+                    
+            if (!response.ok) throw new Error('Failed to delete event');
+                    
+            const result = await response.json();
+            return result;
+        } catch (error) {
+            console.error('Error deleting event:', error);
+            throw error;
+        } finally {
+            showLoading(false);
+        }
+    }
             
-            nextWeekBtn.addEventListener('click', function() {
-                currentDate.setDate(currentDate.getDate() + 7);
-                updateWeekDisplay();
-                renderWeekHeader();
-                fetchEvents().then(renderCalendarGrid);
-            });
+    // Show/hide loading state
+    function showLoading(loading) {
+        if (loading) {
+            saveBtn.disabled = true;
+            saveBtnText.style.display = 'none';
+            saveBtnSpinner.style.display = 'inline-block';
+        } else {
+            saveBtn.disabled = false;
+            saveBtnText.style.display = 'inline';
+            saveBtnSpinner.style.display = 'none';
+        }
+    }
             
-            cancelBtn.addEventListener('click', closeModal);
+    function getEmployeeName(employeeId) {
+        const employee = employees.find(emp => emp.userId == employeeId);
+        return employee ? employee.name : 'Unknown';
+    }
+
+    // Helper function to format date as YYYY-MM-DD
+    function getFormattedDate(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
             
-            deleteBtn.addEventListener('click', async function() {
+    // Helper function to add days to a date
+    function addDays(date, days) {
+        const result = new Date(date);
+        result.setDate(result.getDate() + days);
+        return result;
+    }
+            
+    // Event listeners
+    prevWeekBtn.addEventListener('click', function() {
+        currentDate.setDate(currentDate.getDate() - 7);
+        updateWeekDisplay();
+        renderWeekHeader();
+        fetchEvents().then(renderCalendarGrid);
+    });
+            
+    nextWeekBtn.addEventListener('click', function() {
+        currentDate.setDate(currentDate.getDate() + 7);
+        updateWeekDisplay();
+        renderWeekHeader();
+        fetchEvents().then(renderCalendarGrid);
+    });
+            
+    cancelBtn.addEventListener('click', closeModal);
+            
+    deleteBtn.addEventListener('click', async function() {
     if (!editingEvent || !confirm('Are you sure you want to delete this event?')) return;
     
     const userId = parseInt(document.getElementById('user_id').value);
