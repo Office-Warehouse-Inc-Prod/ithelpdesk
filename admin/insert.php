@@ -9,6 +9,18 @@ include('db.php');
 // include('function.php');
 
 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+require '../vendor/autoload.php'; 
+// require '/opt/lampp/htdocs/ithelpdesk/vendor/autoload.php';
+// or if manual:
+// require 'PHPMailer/src/Exception.php';
+// require 'PHPMailer/src/PHPMailer.php';
+// require 'PHPMailer/src/SMTP.php';
+
+
+
 if(isset($_POST["chcksbjcls"]))
 {
 
@@ -371,7 +383,15 @@ else{
      echo 'Data has been updated'; // update alert 
 }
 
+
+
 // if ($_POST["operation"] == "New_Report") {
+
+//     // ✅ SAFETY GUARD
+//     if (empty($_POST["ticket_no"])) {
+//         http_response_code(400);
+//         exit("Missing ticket_no");
+//     }
 
 //     // SAFE POST (avoid undefined errors)
 //     $ticket_no   = $_POST["ticket_no"];
@@ -379,16 +399,13 @@ else{
 //     $dept        = $_POST["f_deptsel"] ?? '0';
 //     $via         = 'PENDING';
 
-//     // $cat       = $_POST["cat"] ?? '0';
-//     $cat         = '31';  // default to "General" category
-
-//     // $sub       = $_POST["sub_num"] ?? '0';
-//     $sub         = '199'; // default to "General" sub-category
+//     // default category/subcategory
+//     $cat         = '31';  // General
+//     $sub         = '199'; // General
 
 //     $close_by    = $_POST["close_by"] ?? '0';
 //     $remarks     = $_POST["remarks"] ?? '';
-//     $status     = $_POST["setStatus"] ?? '';
-//     // $status      = 'ASSIGNED'; // force status to ASSIGNED
+//     $status      = $_POST["setStatus"] ?? '';
 //     $refNo       = $_POST["refNo"] ?? '';
 //     $plvl        = $_POST["priority_level"] ?? '0'; // ✅ PRIORITY
 
@@ -423,11 +440,11 @@ else{
 //     }
 
 //     /* ---------------------------------
-//        BUILD UPDATE QUERY DYNAMICALLY
+//        ✅ BUILD UPDATE QUERY DYNAMICALLY (FIXED)
+//        DO NOT UPDATE ticket_no
 //        --------------------------------- */
 
 //     $fields = [
-//         "ticket_no = :ticket_no",
 //         "date_created = :date_created",
 //         "via = :via",
 //         "status = :status",
@@ -435,12 +452,7 @@ else{
 //         "remarks = :remarks"
 //     ];
 
-//     // add nullable dates only if present (or explicitly set to NULL)
-//     if ($date_refNo !== null)  $fields[] = "date_refNo = :date_refNo";
-//     if ($date_closed !== null) $fields[] = "date_closed = :date_closed";
-
 //     $data = [
-//         ':ticket_no'    => $ticket_no,
 //         ':date_created' => $date_created,
 //         ':via'          => $via,
 //         ':status'       => $status,
@@ -448,30 +460,38 @@ else{
 //         ':remarks'      => $remarks
 //     ];
 
-//     if ($date_refNo !== null)  $data[':date_refNo']  = $date_refNo;
-//     if ($date_closed !== null) $data[':date_closed'] = $date_closed;
+//     // add nullable dates only if present
+//     if ($date_refNo !== null) {
+//         $fields[] = "date_refNo = :date_refNo";
+//         $data[':date_refNo'] = $date_refNo;
+//     }
 
-//     if ($store != '0') {
+//     if ($date_closed !== null) {
+//         $fields[] = "date_closed = :date_closed";
+//         $data[':date_closed'] = $date_closed;
+//     }
+
+//     if ($store != '0' && $store != '') {
 //         $fields[] = "store = :store";
 //         $data[':store'] = $store;
 //     }
 
-//     if ($dept != '0') {
+//     if ($dept != '0' && $dept != '') {
 //         $fields[] = "f_deptsel = :f_deptsel";
 //         $data[':f_deptsel'] = $dept;
 //     }
 
-//     if ($cat != '0') {
+//     if ($cat != '0' && $cat != '') {
 //         $fields[] = "cat_id = :cat_id";
 //         $data[':cat_id'] = $cat;
 //     }
 
-//     if ($sub != '0') {
+//     if ($sub != '0' && $sub != '') {
 //         $fields[] = "sub_id = :sub_id";
 //         $data[':sub_id'] = $sub;
 //     }
 
-//     if ($close_by != '0') {
+//     if ($close_by != '0' && $close_by != '') {
 //         $fields[] = "close_by = :close_by";
 //         $data[':close_by'] = $close_by;
 //     }
@@ -491,7 +511,9 @@ else{
 //     // ISP default
 //     $fields[] = "isp_id = '0'";
 
-//     $sql = "UPDATE reports SET " . implode(", ", $fields) . " WHERE ticket_no = :ticket_no";
+//     // ✅ IMPORTANT FIX: WHERE uses separate placeholder
+//     $sql = "UPDATE reports SET " . implode(", ", $fields) . " WHERE ticket_no = :where_ticket_no";
+//     $data[':where_ticket_no'] = $ticket_no;
 
 //     $statement = $connection->prepare($sql);
 //     $result = $statement->execute($data);
@@ -499,7 +521,6 @@ else{
 //     /* ---------------------------------
 //        REASSIGN HISTORY (DEPARTMENT)
 //        --------------------------------- */
-
 //     if (($_POST['old_dept'] ?? '') != $dept) {
 
 //         $reasgn = $connection->prepare("
@@ -520,7 +541,6 @@ else{
 //     /* ---------------------------------
 //        REMARKS
 //        --------------------------------- */
-
 //     if ($result) {
 
 //         $restat = $connection->prepare("
@@ -539,19 +559,16 @@ else{
 //     /* ---------------------------------
 //        RESET MSG COUNT
 //        --------------------------------- */
-
 //     $msgcntres = $connection->prepare("
 //         UPDATE reports_msgcnt
 //         SET msg_cnt = 0
 //         WHERE ticket_no = :ticket_no
 //     ");
-
 //     $msgcntres->execute([':ticket_no' => $ticket_no]);
 
 //     /* ---------------------------------
 //        NOTIFICATION
 //        --------------------------------- */
-
 //     if ($result) {
 
 //         $notif = $connection->prepare("
@@ -572,7 +589,6 @@ else{
 //     /* ---------------------------------
 //        ADDITIONAL COMMENT
 //        --------------------------------- */
-
 //     if (!empty($_POST["admsg"])) {
 
 //         $makecom = $connection->prepare("
@@ -607,31 +623,29 @@ else{
 // }
 
 
+
+
 if ($_POST["operation"] == "New_Report") {
 
-    // ✅ SAFETY GUARD
     if (empty($_POST["ticket_no"])) {
         http_response_code(400);
         exit("Missing ticket_no");
     }
 
-    // SAFE POST (avoid undefined errors)
     $ticket_no   = $_POST["ticket_no"];
     $store       = $_POST["store"] ?? '0';
     $dept        = $_POST["f_deptsel"] ?? '0';
     $via         = 'PENDING';
 
-    // default category/subcategory
-    $cat         = '31';  // General
-    $sub         = '199'; // General
+    $cat         = '31';
+    $sub         = '199';
 
     $close_by    = $_POST["close_by"] ?? '0';
     $remarks     = $_POST["remarks"] ?? '';
     $status      = $_POST["setStatus"] ?? '';
     $refNo       = $_POST["refNo"] ?? '';
-    $plvl        = $_POST["priority_level"] ?? '0'; // ✅ PRIORITY
+    $plvl        = $_POST["priority_level"] ?? '0';
 
-    // safer date parsing (avoid 1970-01-01 when empty)
     $date_created = !empty($_POST["date_createdx"])
         ? date('Y-m-d H:i:s', strtotime($_POST["date_createdx"]))
         : date('Y-m-d H:i:s');
@@ -644,11 +658,7 @@ if ($_POST["operation"] == "New_Report") {
         ? date('Y-m-d H:i:s', strtotime($_POST["date_refNo"]))
         : null;
 
-    /* ---------------------------------
-       ✅ GET CONTACT NUMBER FROM tbl_dept (BACKEND SOURCE OF TRUTH)
-       --------------------------------- */
     $contactNumber = '';
-
     if ($dept != '0' && $dept != '') {
         $stmtCN = $connection->prepare("
             SELECT contactNumber
@@ -660,11 +670,6 @@ if ($_POST["operation"] == "New_Report") {
         $rowCN = $stmtCN->fetch(PDO::FETCH_ASSOC);
         $contactNumber = $rowCN['contactNumber'] ?? '';
     }
-
-    /* ---------------------------------
-       ✅ BUILD UPDATE QUERY DYNAMICALLY (FIXED)
-       DO NOT UPDATE ticket_no
-       --------------------------------- */
 
     $fields = [
         "date_created = :date_created",
@@ -682,7 +687,6 @@ if ($_POST["operation"] == "New_Report") {
         ':remarks'      => $remarks
     ];
 
-    // add nullable dates only if present
     if ($date_refNo !== null) {
         $fields[] = "date_refNo = :date_refNo";
         $data[':date_refNo'] = $date_refNo;
@@ -718,33 +722,25 @@ if ($_POST["operation"] == "New_Report") {
         $data[':close_by'] = $close_by;
     }
 
-    // ✅ PRIORITY LEVEL SAVE (only update when user selected something)
     if ($plvl != '0' && $plvl != '') {
         $fields[] = "priority_level = :priority_level";
         $data[':priority_level'] = $plvl;
     }
 
-    // ✅ CONTACT NUMBER SAVE (only if found)
     if ($contactNumber !== '') {
         $fields[] = "contactNumber = :contactNumber";
         $data[':contactNumber'] = $contactNumber;
     }
 
-    // ISP default
     $fields[] = "isp_id = '0'";
 
-    // ✅ IMPORTANT FIX: WHERE uses separate placeholder
     $sql = "UPDATE reports SET " . implode(", ", $fields) . " WHERE ticket_no = :where_ticket_no";
     $data[':where_ticket_no'] = $ticket_no;
 
     $statement = $connection->prepare($sql);
     $result = $statement->execute($data);
 
-    /* ---------------------------------
-       REASSIGN HISTORY (DEPARTMENT)
-       --------------------------------- */
     if (($_POST['old_dept'] ?? '') != $dept) {
-
         $reasgn = $connection->prepare("
             INSERT INTO tbl_reassigned 
             (ticket_no, date_created, old_dept, new_dept, r_remarks, date_rasigned)
@@ -760,11 +756,7 @@ if ($_POST["operation"] == "New_Report") {
         ]);
     }
 
-    /* ---------------------------------
-       REMARKS
-       --------------------------------- */
     if ($result) {
-
         $restat = $connection->prepare("
             INSERT INTO reports_remarks
             (ticket_no, remarks_detail, remarks_date, f_deptsel)
@@ -778,9 +770,6 @@ if ($_POST["operation"] == "New_Report") {
         ]);
     }
 
-    /* ---------------------------------
-       RESET MSG COUNT
-       --------------------------------- */
     $msgcntres = $connection->prepare("
         UPDATE reports_msgcnt
         SET msg_cnt = 0
@@ -788,11 +777,7 @@ if ($_POST["operation"] == "New_Report") {
     ");
     $msgcntres->execute([':ticket_no' => $ticket_no]);
 
-    /* ---------------------------------
-       NOTIFICATION
-       --------------------------------- */
     if ($result) {
-
         $notif = $connection->prepare("
             INSERT INTO tbl_notif
             (ticket_no, store, f_deptsel, notif_data, notif_val, notif_date, assigned_by)
@@ -808,11 +793,7 @@ if ($_POST["operation"] == "New_Report") {
         ]);
     }
 
-    /* ---------------------------------
-       ADDITIONAL COMMENT
-       --------------------------------- */
     if (!empty($_POST["admsg"])) {
-
         $makecom = $connection->prepare("
             INSERT INTO reports_comments
             (ticket_no, comment_details, comment_date, userId)
@@ -831,7 +812,6 @@ if ($_POST["operation"] == "New_Report") {
             WHERE ticket_no = :ticket_no
         ")->execute([':ticket_no' => $ticket_no]);
 
-        // Ticket trail
         $connection->prepare("
             INSERT INTO tbl_tickethist
             (ticket_no, date_updated, status, userID)
@@ -842,6 +822,155 @@ if ($_POST["operation"] == "New_Report") {
             ':uid'       => $_POST["u_id"]
         ]);
     }
+
+/* =========================================================
+   EMAIL SENDING PART
+   ========================================================= */
+if ($result) {
+    try {
+        $deptEmail = '';
+        $deptName  = '';
+        $storeName = '';
+
+        // ✅ correct department fields
+        $stmtDept = $connection->prepare("
+            SELECT dept_id, dept_desc, dept_shrtdesc, str_num, contactNumber, dept_email
+            FROM tbl_dept
+            WHERE dept_id = :dept
+            LIMIT 1
+        ");
+        $stmtDept->execute([':dept' => $dept]);
+        $rowDept = $stmtDept->fetch(PDO::FETCH_ASSOC);
+
+        if ($rowDept) {
+            $deptName  = $rowDept['dept_desc'] ?? '';
+            $deptEmail = trim($rowDept['dept_email'] ?? '');
+        }
+
+        // ✅ get store name
+        $stmtStore = $connection->prepare("
+            SELECT str_name
+            FROM tbl_branch
+            WHERE str_num = :store
+            LIMIT 1
+        ");
+        $stmtStore->execute([':store' => $store]);
+        $rowStore = $stmtStore->fetch(PDO::FETCH_ASSOC);
+
+        if ($rowStore) {
+            $storeName = $rowStore['str_name'] ?? '';
+        }
+
+        // ✅ stop if no email configured
+        if (empty($deptEmail)) {
+            throw new Exception("No department email found for department ID: " . $dept);
+        }
+
+        $mail = new PHPMailer(true);
+
+        // ✅ optional debug while testing
+        // $mail->SMTPDebug = 2;
+        // $mail->Debugoutput = 'html';
+
+        // SMTP SETTINGS
+        // $mail->isSMTP();
+      $mail->isSMTP();
+      $mail->Host       = 'mail.officewarehouse.com.ph';   // 🔧 CHANGE
+      $mail->SMTPAuth   = true;
+      $mail->Username   = 'portal_noreply@officewarehouse.com.ph'; // 🔧 CHANGE
+      $mail->Password   = 'Owi@123456**';          // 🔧 CHANGE
+      $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+      $mail->Port       = 587;
+
+        // FROM
+        $mail->setFrom('portal_noreply@officewarehouse.com.ph', 'HELPDESK AI');
+
+        // TO
+        $mail->addAddress($deptEmail, $deptName);
+
+        $mail->isHTML(true);
+        $mail->Subject = "Ticket {$ticket_no} Assigned to {$deptName}";
+
+        $priorityLabel = '';
+        switch ($plvl) {
+            case '1': $priorityLabel = 'Low'; break;
+            case '2': $priorityLabel = 'Medium'; break;
+            case '3': $priorityLabel = 'High'; break;
+            case '4': $priorityLabel = 'Urgent'; break;
+            default:  $priorityLabel = 'Not Set'; break;
+        }
+
+        $mailBody = '
+        <html>
+        <body style="margin:0;padding:20px;background:#f4f6f9;font-family:Arial,sans-serif;">
+            <table width="700" align="center" cellpadding="0" cellspacing="0" style="background:#ffffff;border:1px solid #dddddd;border-radius:8px;overflow:hidden;">
+                <tr>
+                    <td style="background:#EAAA00;color:#000;padding:18px 24px;font-size:20px;font-weight:bold;">
+                        Helpdesk AI Ticket Assignment
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding:24px;font-size:14px;color:#333;">
+                        <p>Good day,</p>
+                        <p>A ticket has been assigned to your department for review and action.</p>
+
+                        <table cellpadding="8" cellspacing="0" width="100%" style="border-collapse:collapse;margin-top:10px;">
+                            <tr>
+                                <td style="border:1px solid #ddd;width:180px;"><strong>Ticket No.</strong></td>
+                                <td style="border:1px solid #ddd;">' . htmlspecialchars($ticket_no) . '</td>
+                            </tr>
+                            <tr>
+                                <td style="border:1px solid #ddd;"><strong>Store</strong></td>
+                                <td style="border:1px solid #ddd;">' . htmlspecialchars($storeName) . '</td>
+                            </tr>
+                            <tr>
+                                <td style="border:1px solid #ddd;"><strong>Department</strong></td>
+                                <td style="border:1px solid #ddd;">' . htmlspecialchars($deptName) . '</td>
+                            </tr>
+                            <tr>
+                                <td style="border:1px solid #ddd;"><strong>Status</strong></td>
+                                <td style="border:1px solid #ddd;">' . htmlspecialchars($status) . '</td>
+                            </tr>
+                            <tr>
+                                <td style="border:1px solid #ddd;"><strong>Priority</strong></td>
+                                <td style="border:1px solid #ddd;">' . htmlspecialchars($priorityLabel) . '</td>
+                            </tr>
+                            <tr>
+                                <td style="border:1px solid #ddd;"><strong>Reference No.</strong></td>
+                                <td style="border:1px solid #ddd;">' . htmlspecialchars($refNo) . '</td>
+                            </tr>
+                            <tr>
+                                <td style="border:1px solid #ddd;"><strong>Remarks</strong></td>
+                                <td style="border:1px solid #ddd;">' . nl2br(htmlspecialchars($remarks)) . '</td>
+                            </tr>
+                            <tr>
+                                <td style="border:1px solid #ddd;"><strong>Date Created</strong></td>
+                                <td style="border:1px solid #ddd;">' . htmlspecialchars($date_created) . '</td>
+                            </tr>
+                        </table>
+
+                        <p style="margin-top:20px;">Please log in to the OWI Helpdesk for complete details and necessary action.</p>
+                        <p>Thank you.</p>
+                    </td>
+                </tr>
+            </table>
+        </body>
+        </html>';
+
+        $mail->Body    = $mailBody;
+        $mail->AltBody = "Ticket {$ticket_no} has been assigned to {$deptName}. "
+                       . "Store: {$storeName}, Status: {$status}, Priority: {$priorityLabel}, Ref No: {$refNo}, Remarks: {$remarks}";
+
+        $mail->send();
+
+        echo "Report updated successfully and email sent to {$deptEmail}.";
+
+    } catch (Exception $e) {
+        echo "Report updated successfully, but email failed: " . $e->getMessage();
+    }
+} else {
+    echo "Failed to update report.";
+}
 }
 
 

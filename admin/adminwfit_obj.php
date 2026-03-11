@@ -150,25 +150,72 @@ $('#new_rep_table_filter input')
       admin_hideshowforms();
 
       // submit save/reply
-      $(document).on('submit', '#newrpt_form', function(event){
-      event.preventDefault();
-      event.stopImmediatePropagation();
+    //   $(document).on('submit', '#newrpt_form', function(event){ //old code
+    //   event.preventDefault();
+    //   event.stopImmediatePropagation();
 
-      $.ajax({
-      url: "insert.php",
-      method: "POST",
-      data: new FormData(this),
-      contentType: false,
-      processData: false,
-      success: function(data){
-      alert(data);
-      $('#newrpt_form')[0].reset();
-      $('#newrpt_Modal').modal('hide');
-      getdata();
-      location.reload();
-      }
-      });
-      });
+    //   $.ajax({
+    //   url: "insert.php",
+    //   method: "POST",
+    //   data: new FormData(this),
+    //   contentType: false,
+    //   processData: false,
+    //   success: function(data){
+    //   alert(data);
+    //   $('#newrpt_form')[0].reset();
+    //   $('#newrpt_Modal').modal('hide');
+    //   getdata();
+    //   location.reload();
+    //   }
+    //   });
+    //   });
+
+
+    $(document).on('submit', '#newrpt_form', function(event){
+    event.preventDefault();
+    event.stopImmediatePropagation();
+
+    Swal.fire({
+        title: 'Submitting Ticket...',
+        text: 'Please wait while the system saves the ticket and sends the email notification.',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: function () {
+            Swal.showLoading();
+        }
+    });
+
+    $.ajax({
+        url: "insert.php",
+        method: "POST",
+        data: new FormData(this),
+        contentType: false,
+        processData: false,
+
+        success: function(data){
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: data,
+                confirmButtonColor: '#EAAA00'
+            }).then(function(){
+                $('#newrpt_form')[0].reset();
+                $('#newrpt_Modal').modal('hide');
+                getdata();
+                location.reload();
+            });
+        },
+
+        error: function(xhr, status, error){
+            Swal.fire({
+                icon: 'error',
+                title: 'Submission Failed',
+                text: xhr.responseText ? xhr.responseText : 'Something went wrong while saving the ticket.',
+                confirmButtonColor: '#d33'
+            });
+        }
+    });
+});
 
 
 //   let msisdn = $(this).data("msisdn"); // e.g. 63917xxxxxxx (no +)
