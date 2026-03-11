@@ -7,6 +7,60 @@ date_default_timezone_set("Asia/Manila");
 
 include('db.php');
 // include('function.php');
+
+
+if(isset($_POST["chcksbjcls"]))
+{
+
+  if($_POST["chcksbjcls"] == "check")
+  {
+
+    try {
+      // $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+      // set the PDO error mode to exception
+      $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+      $sqlai = "
+      INSERT INTO reports_comments (ticket_no, comment_details, comment_date, userId)
+SELECT DISTINCT
+	reports.ticket_no,
+	 ' (3 DAYS NO RESPONSE)  CLOSED BY HELPDESK.AI',
+	 CURRENT_TIMESTAMP,
+	 '1'
+FROM
+	reports
+	LEFT JOIN
+	reports_comments
+	ON 
+		reports.ticket_no = reports_comments.ticket_no
+		
+WHERE reports.`status` = 'SUBJECT FOR CLOSING' AND DATE(DATE_ADD(reports.date_closed,INTERVAL +3 DAY)) < CURRENT_DATE
+      ";
+      $sql = "UPDATE reports
+      SET status = 'CLOSED' 
+      WHERE `status` = 'SUBJECT FOR CLOSING' AND DATE(DATE_ADD(date_closed,INTERVAL +3 DAY)) < CURRENT_DATE";
+
+      // Prepare statement
+      $stmt2 = $connection->prepare($sqlai);
+      $stmt1 = $connection->prepare($sql);
+    
+      // execute the query
+
+      $stmt2->execute();
+      $stmt1->execute();
+
+  
+    } catch(PDOException $e) {
+      echo $sql . "<br>" . $e->getMessage();
+    }
+
+
+  }
+
+}
+
+
+
+
 if(isset($_POST["operation"]))
 {
 
@@ -43,14 +97,14 @@ if(isset($_POST["operation"]))
 
 
 
-$qry = $connection->prepare(" SELECT ticket_no FROM visual_counter");
+$qry = $connection->prepare(" SELECT ticket_no FROM counter");
 $qry->execute();
 $res = $qry->fetch(PDO::FETCH_ASSOC); 
 $ticknum = $res['ticket_no']+1;
 
   $statement = $connection->prepare("
-   INSERT INTO reports (ticket_no, store, date_created, subject,  via, status, itsup, cat_id, sub_id, date_closed, close_by, remarks, isp_id, deptsel) 
-   VALUES (:ticket_no, :store, :date_created, :subject, :via, :status, :itsup, :cat_id, :sub_id, :date_closed, :close_by, :remarks, :isp_id, :deptsel)
+   INSERT INTO reports (ticket_no, store, date_created, subject,  via, status, itsup, cat_id, sub_id, date_closed, close_by, remarks, isp_id, date_refNo, deptsel) 
+   VALUES (:ticket_no, :store, :date_created, :subject, :via, :status, :itsup, :cat_id, :sub_id, :date_closed, :close_by, :remarks, :isp_id, :date_refNo, :deptsel)
   ");
   $dcval = $_POST["date_created"];
   $dclval = $_POST["date_closed"];
@@ -58,7 +112,7 @@ $ticknum = $res['ticket_no']+1;
   $datetimecl = date_create($dcval)->format('Y-m-d H:i:s');
   $result = $statement->execute(
    array(
-    ':ticket_no' =>'VISUAL-'. $ticknum,
+    ':ticket_no' => $ticknum,
     ':store' => $_POST["store"],
     ':date_created' => $datetime,
     ':subject' => strtoupper($_POST["subjct"]),
@@ -72,7 +126,8 @@ $ticknum = $res['ticket_no']+1;
     ':close_by' => $_POST["close_by"],
     ':remarks' => ucfirst($_POST["remarks"]),
     ':isp_id' => '0',
-    ':deptsel' => '6'
+    ':date_refNo' => date('Y-m-d H:i:s',strtotime($_POST["date_refNo"])),
+    ':deptsel' => '1' // it dept
 
     
    )
@@ -86,7 +141,7 @@ $ticknum = $res['ticket_no']+1;
   $remarkres= $restat->execute(
     array(
 
-      ':ticket_no' =>'VISUAL-'. $ticknum,
+      ':ticket_no' =>  $ticknum,
       ':remarks_detail' => $_POST["remarks"],
       ':remarks_date' => date('Y-m-d H:i:s'),
       ':itsup' => $tchnum
@@ -102,7 +157,7 @@ $ticknum = $res['ticket_no']+1;
       $assigned= $resasgn->execute(
     array(
 
-     ':ticket_no' =>'VISUAL-'. $ticknum,
+     ':ticket_no' =>  $ticknum,
      ':store' => $_POST["store"],
       ':itsup' => $_POST["itsup"],
       ':notif_data' => "New Ticket"." ".$ticknum." ". "Has been assigned.",
@@ -121,7 +176,7 @@ $ticknum = $res['ticket_no']+1;
       $assigned1= $resasgn1->execute(
     array(
 
-     ':ticket_no' =>'VISUAL-'.   $ticknum,
+     ':ticket_no' =>  $ticknum,
       ':comment_details' => $_POST["admsg"],
       ':comment_date' => date('Y-m-d H:i:s'),
       ':userId' => $userid
@@ -129,12 +184,41 @@ $ticknum = $res['ticket_no']+1;
     ));
  } 
 
+ 
+ // ticket_trail
+
+  $tickhisres = $connection->prepare("
+  INSERT INTO tbl_tickethist (ticket_no, date_updated, status, userID) 
+  VALUES (:ticket_no, :date_updated, :status, :userID )
+");
+$tickhisres1= $tickhisres->execute(
+  array(
+
+    ':ticket_no' =>  $ticknum,
+    ':date_updated' => date('Y-m-d H:i:s'),
+    ':status' => $_POST["status"],
+    ':userID' => $_POST["u_id"]
+
+  ));
+
+
+  $msgcntres1 = $connection->prepare("
+  INSERT INTO reports_msgcnt (ticket_no, msg_cnt)
+  VALUES (:ticket_no, :msg_cnt)
+ ");
+ $makemsgcnt1= $msgcntres1->execute(
+   array(
+
+     ':ticket_no' => $ticknum,
+     ':msg_cnt' => '0'
+
+   ));
 
   
 if(!empty($result))
 {
   $statement = $connection->prepare(
-    "UPDATE visual_counter SET ticket_no = :ticket_no");
+    "UPDATE counter SET ticket_no = :ticket_no");
   $result = $statement->execute(
     array(
       ':ticket_no' => $ticknum,));
@@ -290,11 +374,11 @@ else{
 
 if($_POST["operation"] == "Save and Reply")
  { 
-     $optbrval =$_POST["store"];
-     $optval =$_POST["itsup"];
-     $optcval =$_POST["cat"];
-     $optsval =$_POST["sub_num"];
-     $opclbval=$_POST["close_by"];
+     $optbrval = $_POST["store"];
+     $optval = $_POST["itsup"];
+     $optcval = $_POST["cat"];
+     $optsval = $_POST["sub_num"];
+     $opclbval= $_POST["close_by"];
      $tmpval = '0';
 if ( ($optbrval == '0') || ($optval == '0') || ($optcval == '0') || ($optsval == '0') || ($opclbval == '0') ) {
 $brid="";
@@ -305,7 +389,7 @@ $clby="";
 $ispid="";
 $data=   array(
     ':ticket_no' => $_POST["ticket_no"],
-    ':date_created' => date('Y-m-d H:i:s',strtotime($_POST["date_created"])),
+    ':date_created' => date('Y-m-d H:i:s',strtotime($_POST["date_createdx"])),
     // ':concern' => $_POST["concern"],
     ':via' => $_POST["via"],
     ':status' => $_POST["status"],
@@ -330,11 +414,12 @@ else{
       $data=   array(
     ':ticket_no' => $_POST["ticket_no"],
     ':store' => $_POST["store"],
-    ':date_created' => date('Y-m-d H:i:s',strtotime($_POST["date_created"])),
+    ':date_created' => date('Y-m-d H:i:s',strtotime($_POST["date_createdx"])),
     // ':concern' => $_POST["concern"],
     ':via' => $_POST["via"],
     ':status' => $_POST["status"],
     ':itsup' => $_POST["itsup"],
+    // ':itsup' => 'TEST',
     ':cat_id' => $_POST["cat"],
     ':sub_id' => $_POST["sub_num"],
     ':isp_id' => '0',
@@ -344,6 +429,7 @@ else{
     ':close_by' => $_POST["close_by"],
     ':remarks' => $_POST["remarks"]
    ) ;
+
 }
 
   $statement = $connection->prepare(
@@ -355,6 +441,12 @@ else{
 
   $result = $statement->execute($data);
 
+// if ($result) {
+// echo "Record updated successfully.";
+// } else {
+// echo "Error updating record: " . implode(", ", $statement->errorInfo());
+// }
+
 if($_POST['it_num'] != $_POST['itsup'])
   {
      $reasgn = $connection->prepare("
@@ -364,7 +456,7 @@ if($_POST['it_num'] != $_POST['itsup'])
   $reasgnres= $reasgn->execute(
     array(
       ':ticket_no' => $_POST["ticket_no"],
-      ':date_created' => date('Y-m-d H:i:s',strtotime($_POST["date_created"])),
+      ':date_created' => date('Y-m-d H:i:s',strtotime($_POST["date_createdx"])),
       ':itsup' => $_POST["it_num"],
       ':nw_sup' => $_POST["itsup"],
       ':r_remarks' => $_POST["remarks"],
@@ -391,6 +483,12 @@ if($_POST['it_num'] != $_POST['itsup'])
     INSERT INTO reports_comments (ticket_no, comment_details, comment_date, userId) 
    VALUES (:ticket_no, :comment_details, :comment_date, :userId )
   ");
+
+  $tickhisres = $connection->prepare("
+  INSERT INTO tbl_tickethist (ticket_no, date_updated) 
+ VALUES (:ticket_no, :date_updated)
+");
+
   }
 
     $msgcntres = $connection->prepare("
@@ -423,7 +521,7 @@ if($_POST['it_num'] != $_POST['itsup'])
      
     ));
  }
-     echo 'Data has been updated';
+    //  echo 'Data has been updated';
 
       $addmsg=   array(
     ':comment_details' => $_POST["admsg"],
@@ -446,7 +544,7 @@ if($_POST['it_num'] != $_POST['itsup'])
       ':userId' => $_POST["u_id"]
     ));
 
-
+    
   $nmsgcntres = $connection->prepare("
    UPDATE reports_newmsg
    SET nmsg_stat = :nmsg_stat
@@ -462,6 +560,32 @@ if($_POST['it_num'] != $_POST['itsup'])
 
    // echo 'Data has been updated';
  }
+
+
+ // ticket_trail
+
+ if(!empty($addmsg))
+ {
+
+  $tickhisres = $connection->prepare("
+  INSERT INTO tbl_tickethist (ticket_no, date_updated, status, userID) 
+  VALUES (:ticket_no, :date_updated, :status, :userID )
+");
+$tickhisres1= $tickhisres->execute(
+  array(
+
+    ':ticket_no' => $_POST["ticket_no"] ,
+    ':date_updated' => date('Y-m-d H:i:s'),
+    ':status' => $_POST["status"],
+    ':userID' => $_POST["u_id"]
+
+  ));
+
+}
+
+
+
+
 }
 
 
@@ -566,6 +690,130 @@ WHERE id = $slctrestusr");
   $result = $statement->execute(
    array(
     ':str_num' => $_POST["strslt_num"]
+  
+   )
+  );
+    echo ("Updated!");
+
+ }
+
+  if($_POST['operation'] == "Dactivate")
+ {
+$IDx = $_POST['IDx'];
+$statement = $connection->prepare("UPDATE users SET usr_stat = :usr_stat, usr_upt_date =:updtex WHERE id = $IDx");
+  $result = $statement->execute(
+   array(
+    ':usr_stat' => 'D',
+    ':updtex' => date('Y-m-d H:i:s')
+  
+   )
+  );
+    echo ("Updated!");
+
+ }
+
+ if($_POST['operation'] == "Activate")
+ {
+$IDx = $_POST['IDx'];
+$statement = $connection->prepare("UPDATE users SET usr_stat = :usr_stat, usr_upt_date =:updtex WHERE id = $IDx");
+  $result = $statement->execute(
+   array(
+    ':usr_stat' => 'A',
+    ':updtex' => date('Y-m-d H:i:s')
+  
+   )
+  );
+    echo ("Updated!");
+
+ }
+
+ if($_POST['operation'] == "str_add")
+ {
+
+  $strNo = $_POST['strNo'];
+  $strCode = $_POST['strCode'];
+  $strArea = $_POST['strArea'];
+  $strName = $_POST['strName'];
+  $strAddrs = $_POST['strAddrs'];
+  $strContact = $_POST['strContact'];
+  $slctAM = $_POST['slctAM'];
+  $slctTech = $_POST['slctTech'];
+
+$statement = $connection->prepare("INSERT INTO tbl_branch (str_num, str_code, area_num, str_name, str_adrs, str_contact, itsup, AM, SBS_NO, PRICE_LVL)
+VALUES (:str_num, :str_code, :area_num, :str_name, :str_adrs, :str_contact, :itsup, :AM, :SBS_NO, :PRICE_LVL)");
+  $result = $statement->execute(
+   array(
+    ':str_num' => $strNo,
+    ':str_code' => $strCode,
+    ':area_num' => $strArea,
+    ':str_name' => $strName,
+    ':str_adrs' => $strAddrs,
+    ':str_contact' => $strContact,
+    ':itsup' => $slctTech,
+    ':AM' => $slctAM,
+    ':SBS_NO' => '1',
+    ':PRICE_LVL' => '1',
+
+  
+   )
+  );
+    echo ("Updated!");
+
+ }
+
+ if($_POST['operation'] == "stredit")
+ {
+
+  $strId = $_POST['strId'];
+  $strNo = $_POST['strNo'];
+  $strCode = $_POST['strCode'];
+  $strArea = $_POST['strArea'];
+  $strName = $_POST['strName'];
+  $strAddrs = $_POST['strAddrs'];
+  $strContact = $_POST['strContact'];
+  $slctAM = $_POST['slctAM'];
+  $slctTech = $_POST['slctTech'];
+
+  $statement = $connection->prepare("UPDATE tbl_branch SET str_num = :str_num, str_code =:str_code, area_num = :area_num, str_name = :str_name, str_adrs = :str_adrs, str_contact = :str_contact, itsup =:itsup, AM = :AM  WHERE str_id = $strId");
+  $result = $statement->execute(
+   array(
+    ':str_num' => $strNo,
+    ':str_code' => $strCode,
+    ':area_num' => $strArea,
+    ':str_name' => $strName,
+    ':str_adrs' => $strAddrs,
+    ':str_contact' => $strContact,
+    ':itsup' => $slctTech,
+    ':AM' => $slctAM,
+  
+   )
+  );
+    echo ("Updated!");
+
+ }
+
+
+ if($_POST['operation'] == "ClosedStore")
+ {
+$strIDx = $_POST['strIDx'];
+$statement = $connection->prepare("UPDATE tbl_branch SET str_add = :str_add WHERE str_id = $strIDx");
+  $result = $statement->execute(
+   array(
+    ':str_add' => 'CLOSED'
+  
+   )
+  );
+    echo ("Updated!");
+
+ }
+
+ if($_POST['operation'] == "OpenStore")
+ {
+$strIDx = $_POST['strIDx'];
+$statement = $connection->prepare("UPDATE tbl_branch SET str_add = :str_add WHERE str_id = $strIDx");
+  $result = $statement->execute(
+   array(
+    ':str_add' => ''
   
    )
   );

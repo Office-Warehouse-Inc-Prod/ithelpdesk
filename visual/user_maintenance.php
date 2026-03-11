@@ -5,6 +5,12 @@ include 'rst_form.php';
 $regcon=new dbconfig();
  ?>
 
+<style>
+.swal-btn{
+  margin: 10px; /* add 10px margin between buttons */
+}
+</style>
+
 <head>
 <link rel="stylesheet" href="../css/bootstrap-datetimepicker.min.css"/>
 <script src="../js/bootstrap-datetimepicker.min.js"></script>
@@ -15,7 +21,196 @@ $regcon=new dbconfig();
 <script src="../js/dataTables.responsive.min.js"></script>
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <!-- <script src="../vendor/sweetalert/src/sweetalert2.js"></script> -->
- </head>
+</head>
+
+<style>
+.table{
+  background-color: #ffffff;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 10px 8px rgba(108,108,53,0.4);
+  border: 1px solid #e9ecef;
+  margin-top:15px;
+}
+
+.table thead th{
+  background-color: #54699e;
+  color:white;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+  padding: 15px;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.table tbody td{
+  padding:12px 15px;
+  vertical-align: middle;
+  color:#333;
+  border-bottom: 1px solid #f1f1f1;
+}
+
+.table tbody tr:hover{
+  background-color: #213456 !important;
+  color:#ffffff !important;
+  cursor:pointer;
+  transition: all 0.2s ease;
+}
+
+.table-responsive{
+  border-radius: 8px;
+  margin-top:20px;
+}
+    
+#usr_crt_modal .modal-content {
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+}
+
+#usr_crt_modal .modal-header {
+  background-color: #213456;
+  color: #fff;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+  border-bottom: 4px solid #E1AD01; /* Your Theme Gold */
+}
+
+#usr_crt_modal .modal-title {
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+}
+
+#usr_crt_modal .input-group-text {
+  background-color: #f8f9fa;
+  border-right: none;
+  color: #213456;
+}
+
+#usr_crt_modal .form-control {
+  border-left: none;
+  height: 45px;
+  border-radius: 0 8px 8px 0;
+}
+
+#usr_crt_modal .form-control:focus {
+  border-color: #ced4da;
+  box-shadow: none;
+}
+
+#usr_crt_modal .input-group:focus-within {
+  box-shadow: 0 0 0 0.2rem rgba(225, 173, 1, 0.25);
+  border-radius: 8px;
+}
+
+#btn_submit {
+  background-color: #E1AD01;
+  border: none;
+  color: #213456;
+  font-weight: 700;
+  padding: 10px 40px;
+  border-radius: 30px;
+  transition: all 0.3s ease;
+}
+
+#btn_submit:hover {
+  background-color: #213456;
+  color: #E1AD01;
+  transform: translateY(-2px);
+}
+
+.dataTables_wrapper .pull-left {
+  flex-direction: row;      
+  align-items: center;      
+  justify-content: flex-start; /* Aligns both items to the left */
+  width: 100%;              
+  gap: 40px;                /* Keeps the gap between them */
+  margin-bottom: 20px; 
+}
+
+.dataTables_filter {
+  position: relative;
+  display: inline-block;    
+  margin: 0 !important;     
+}
+
+.dataTables_filter label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0;         
+}
+
+/* Search Icon */
+.dataTables_filter::before {
+  content: "\f002"; 
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #213456;
+  z-index: 1;
+  opacity: 0.6;
+}
+
+.dataTables_filter input {
+  border: 2px solid #e0e0e0 !important;
+  border-radius: 50px !important;
+  padding: 8px 15px 8px 35px !important; 
+  width: 300px !important;
+  background-color: #ffffff !important;
+  transition: all 0.3s ease;
+  outline: none !important;
+  color: #213456;
+  margin-left: 0 !important; 
+}
+
+.dataTables_filter input:focus {
+  border-color: #E1AD01 !important;
+  box-shadow: 0 0 10px rgba(225, 173, 1, 0.2) !important;
+}
+
+#crtbtnact {
+  background-color: #E1AD01 !important;
+  border: none !important;
+  border-radius: 50px !important;
+  color: #213456 !important;
+  font-weight: 700 !important;
+  padding: 10px 25px !important;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 13px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  white-space: nowrap;      
+  display: inline-flex;     
+  align-items: center;
+  gap: 8px;
+  margin: 0;                
+}
+
+#crtbtnact:hover {
+  background-color: #213456 !important;
+  color: #ffffff !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(33, 52, 86, 0.3);
+}
+
+/* Table Header Styling */
+#usermtc_table thead th {
+  background-color: #213456 !important;
+  color: #ffffff !important;
+  border: none;
+  padding: 15px;
+  font-size: 13px;
+}
+</style>
 
 
 <div class="container mt-3">
@@ -29,7 +224,8 @@ $regcon=new dbconfig();
       <div class="modal-header border-bottom-0">
         <h5 class="modal-title" id="exampleModalLabel">Create User Account</h5>
            <!--  <small id="emailHelp" class="form-text text-muted">Your information is safe with us.</small> -->
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        
+        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -84,7 +280,7 @@ $regcon=new dbconfig();
               </select>  
           </div>
           <div class="col-md-12 form-group">
-                <select class="form-control form-control-sm" name="slct_gender" id="slct_gender">
+                <select class="form-control form-control-sm" name="slct_gender" id="slct_gender" require>
                   <option value="">Select User Gender</option>
                   <option value="1">Male</option>
                   <option value="2">Female</option>
@@ -96,7 +292,7 @@ $regcon=new dbconfig();
 
         </div>
         <div class="modal-footer border-top-0 d-flex justify-content-center">
-          <input type="text" name="operation" id="operation" value="3" /> 
+          <input type="hidden" name="operation" id="operation" value="3" /> 
           <button id="btn_submit" class="btn btn-success">Submit</button>
 
         </div>
@@ -107,7 +303,7 @@ $regcon=new dbconfig();
 
 </div>
 
-  <table id="usermtc_table" class="table table-dark table-responsive table-condensed text-center"></table>
+  <table id="usermtc_table" class="table table-hover table-responsive"></table>
 
 </div>
 <script type="text/javascript">
@@ -130,6 +326,7 @@ var user_id = <?= $_SESSION['user_id']; ?>
 function getdata(){
   $.post('fetchdata/fetch_data.php',{mode:'usermtc_dtable'},function(data){
     admin_datatable(data);
+    // console.log(data);
   },'json');
 }
 getdata();
@@ -159,10 +356,29 @@ const dataset=t.usermtc_data;
                {title:"Username", data:"username","defaultContent": ""},
                {title:"Department", data:"dept_desc","defaultContent": ""},
                {title:"Store Code", data:"str_code","defaultContent": ""},
+               {title:"Status", data:"usr_stat","defaultContent": ""},
               //  {title:"Update", data:null,"defaultContent": "<Button class='GetName btn btn-info mr-2' name='BtnVw' id='BtnVw'><i class='fas fa-eye'></i></Button>"}
+	       {title:"Update", data:null,"width": "20%","defaultContent": "<Button class='GetName btn btn-info mr-2' name='BtnVw' id='BtnVw'><i class='fas fa-eye'></i></Button> <Button class=' GetPosition btn btn-success mr-2' name='BtnEdit' id='BtnEdit'><i class='fas fa-edit'></i></Button> <Button class=' GetPositions btn btn-danger' name='BtnDact' id='BtnDact'><i class='fas fa-window-close'></i></Button>"}
+	       ],
+	       "columnDefs": [
+                {
 
-               {title:"Update", data:null,"defaultContent": "<Button class='GetName btn btn-info mr-2' name='BtnVw' id='BtnVw'><i class='fas fa-eye'></i></Button> <Button class=' GetPosition btn btn-success' name='BtnEdit' id='BtnEdit'><i class='fas fa-edit'></i></Button>"}
- 
+targets: [6],
+"width": "2%",
+render: function ( data, type, row) {
+    if(type === 'display'){
+      if(data == 'A'){
+          data = '<i class="fas fa-user-check" style="color : green; font-size: 25px;"></i>'
+        }
+        else if (data == 'D'){
+          data = '<i class="fas fa-user-times" style="color : red; font-size: 25px;"></i>'
+
+        }
+}
+return data;
+}
+
+}
                ]
 
    }); //  end of datatable
@@ -211,7 +427,7 @@ $('#usermtc_table tbody').on('click', 'button', function () {
       
       var action = this.id;
             var data = reptable.row( $(this).parents('tr') ).data();
-     
+    const IDx = data.user_id;
             if (action=='BtnVw') {
 
             // var data = reptable.row( $(this).parents('tr') ).data();
@@ -252,26 +468,80 @@ $('#usermtc_table tbody').on('click', 'button', function () {
      
          if(action == 'BtnEdit'){
 
+            
           // alert( 'This is the Position: '+data[1]);
           // alert('beta phase');
             $("#usr_crt_modal").modal("show");
 
             $(".strcol").show();
-            $("#select_dept").hide();
+            $("#select_dept").show();
             $('#slct_gender').hide();
             $('#slct_gender').removeAttr('required');
-                 $('#usr_crt_modal #operation').val("stredit");
-                 $('#usrID').val(data['user_id']);
-                 $('#fname').val(data['fname']);
-                 $('#lstname').val(data['lstname']);
-                 $('#strslt_num').val(data['dept_id']);
-                 $('#select_dept').val(data['dept_desc']);
-                 $('#select_strcd').val(data['str_num']);
-                //  $('#slct_gender').val(data['gender_id']);
-              
+            $('#usr_crt_modal #operation').val("stredit");
+            $('#usrID').val(data['user_id']);
+            $('#fname').val(data['fname']);
+            $('#lstname').val(data['lstname']);
+            $('#strslt_num').val(data['dept_id']);
+            $('#select_dept').val(data['dept_desc']);
+            $('#select_strcd').val(data['str_num']);
+          //  $('#slct_gender').val(data['gender_id']);
+        
                 //  $("#exampleModalLongTitle #menu_value").val();
                 // $('#restusr_id').val(data['user_id']);
     
+	 }
+
+	           if (action == 'BtnDact') {
+        //  alert(IDx);
+        Swal.fire({
+  title: "Do you want to update this user account status?",
+  showDenyButton: true,
+  showCancelButton: true,
+  confirmButtonText: "Deactivate",
+  denyButtonText: "Activate",
+  buttonsStyling: false,
+  customClass: {
+    confirmButton: 'btn btn-danger swal-btn',
+    denyButton: 'btn btn-success swal-btn',
+    cancelButton: 'btn btn-secondary swal-btn'
+  }
+}).then((result) => {
+  /* Read more about isConfirmed, isDenied below */
+  if (result.isConfirmed) {
+  Swal.fire({
+    title: "Deactivated!",
+    text: "",
+    icon: "success",
+    timer: 1000, // auto-close the modal after 1.5 seconds
+    showConfirmButton: false // no button required
+  });
+  $.ajax({
+    type: 'POST',
+    url: 'insert.php', 
+    data: { operation: 'Dactivate', IDx: IDx },
+    success: function() {
+      getdata();
+    }
+  });
+} else if (result.isDenied){
+  Swal.fire({
+    title: "Activated!",
+    text: "",
+    icon: "success",
+    timer: 1000, // auto-close the modal after 1.5 seconds
+    showConfirmButton: false, // no button required
+  });
+  $.ajax({
+    type: 'POST',
+    url: 'insert.php', 
+    data: { operation: 'Activate', IDx: IDx },
+    success: function() {
+      getdata();
+    }
+  });
+}
+});
+
          }
            
     
@@ -282,7 +552,7 @@ $('#usermtc_table tbody').on('click', 'button', function () {
 });
 
 $('#select_dept').change(function() {
-  if ($(this).val() == 10) {
+  if ($(this).val() == '10') {
       $(".strcol").show();
        $('#strslt_num').val('');
       $('#select_strcd').prop({
@@ -319,41 +589,46 @@ $('#select_strcd').change(function() {
 // validation
 let FName = $('#fname').val();
 let LstName = $('#lstname').val();
-// let Gender = $('#slct_gender').val();
+let Gender = $('#slct_gender').val();
 let StrVal = $('strslt_num').val();
+let SelDept = $('#select_dept').val();
+// select_dept
 
-if (FName != "" && LstName != ""  && StrVal != "") {
-      $.ajax({
-        url: "insert.php",
-        method: "POST",
-        data: $('#reg_form').serialize(),
-        success: function (data) {
-          console.log(data)
-          $("#reg_form")[0].reset();
-          $("#usr_crt_modal").modal("hide");
-          Swal.fire({
-             icon: 'success',
-             title: 'Your work has been saved',
-             showConfirmButton: false,
-             timer: 1500
-          });
-          $("#userModal").modal("hide");
-      //     setTimeout(function(){// wait for 5 secs(2)
-      //      location.reload(); // then reload the page.(3)
-      // }, 2000);
-          
-        },
+if (FName !== "" && LstName !== "") {
+  $.ajax({
+    url: "insert.php",
+    method: "POST",
+    data: $('#reg_form').serialize(),
+    success: function (data) {
+      console.log(data);
+
+      $("#reg_form")[0].reset();
+      $("#usr_crt_modal").modal("hide");
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Saved successfully',
+        text: 'The record has been added to the system.',
+        width: 360,
+        showConfirmButton: false,
+        timer: 1800,
+        timerProgressBar: true
       });
-}
-else{
-           Swal.fire({
-             icon: 'error',
-             title: 'Please Complete',
-             showConfirmButton: false,
-             timer: 1500
-          });
+
+      $("#userModal").modal("hide");
+    }
+  });
+} else {
+  Swal.fire({
+    icon: 'warning',
+    title: 'Incomplete information',
+    text: 'Please complete all required fields.',
+    width: 360,
+    confirmButtonText: 'OK'
+  });
   return false;
 }
+
 
   });
 

@@ -24,23 +24,42 @@ switch ($mode) {
         $records= $fn->pie();
         // $records= $fn->sub();
         break;
+    case 'netpie':
+        $records= $fn->netpie();
+        break;
+    case 'overallnet':
+        $records= $fn->overallnet_res();
+            break;
+    case 'areanet_grph':
+        $records= $fn->areanet_grph();
+            break;
+    case 'strnet_grph':
+        $records= $fn->strnet_grph();
+        break;
     case 'area_grph':
        $records= $fn->area_grph();
         break;
     case 'str_grph':
         $records= $fn->str_grph();
         break;
-
-     case 'dtb':
-         $records['rptdata']= $fn->admin_data_table_res();
-
-          break; 
+    case 'polled_store':
+        $records= $fn->polled_store();
+            break;
+    case 'dtb':
+        $records['rptdata']= $fn->admin_data_table_res();
+        break;
+    case 'dtbnet':
+        $records['rptdatanet']= $fn->admin_data_table_resnet();
+        break;  
     case 'newrpt_tbl':
          $records['newrptdata']= $fn->newreporthist();
         break;
     case 'usermtc_dtable':
          $records['usermtc_data']= $fn->usermtc_table();
-        break;    
+        break;
+    case 'store_dtable':
+        $records['store_data']= $fn->store_dtable();
+        break;       
     case 're_assigned_supp':
        $records['re_assigned_supp'] =$fn->reassign_itsup();
        break; 
@@ -80,6 +99,9 @@ switch ($mode) {
     case 'count_sla':
       $records['count_slares'] = $fn->count_sla();
         break;
+        case 'dtbcat':
+            $records['rptcat'] = $fn->tbl_cat();
+              break;
     default:
         break;
 
