@@ -770,11 +770,14 @@ hr{ border-top: 1px solid var(--line) !important; }
       </select>
       </div>
 
-      <select id="setStatus" name="setStatus" class="form-control form-control-sm" required>
+
+      <input type="hidden" name="setStatus" id="setStatus" value="Assigned" required>
+
+      <!-- <select id="setStatus" name="setStatus" class="form-control form-control-sm" required>
     <option value="">Select Status</option>
     <option value="Assigned">Assigned</option>
     <option value="Closed">Closed</option>
-</select>
+</select> -->
 
       <input type="hidden" name="contactNumber" id="contactNumber">
       <input type="hidden" name="dept_email" id="dept_email">
@@ -790,12 +793,25 @@ hr{ border-top: 1px solid var(--line) !important; }
       <select class="form-control form-control-sm" name="priority_level" id="priority_level" required>
       <option value=""> &larr; PRIORITY &rarr;</option>
       <option value="4">LOW</option>
-      <option value="3">MEDIUM</option>
+      <option value="3">NORMAL</option>
       <option value="2">HIGH</option>
       <option value="1">CRITICAL</option>
       </select>
       </div>
 
+
+      <div class="form-group col-md 4">
+    <label for="sla_days">Service Level Agreement (SLA)</label>
+    <select name="sla_days" id="sla_days" class="form-control" required>
+        <option value="">Select SLA</option>
+        <option value="2">24 – 48 hours</option>
+        <option value="5">3 – 5 days</option>
+        <option value="7">5 – 7 days</option>
+        <option value="14">1 – 2 weeks</option>
+        <option value="21">2 – 3 weeks</option>
+        <option value="28">3 – 4 weeks</option>
+    </select>
+</div>
 
 
 

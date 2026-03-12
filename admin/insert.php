@@ -624,7 +624,6 @@ else{
 
 
 
-
 if ($_POST["operation"] == "New_Report") {
 
     if (empty($_POST["ticket_no"])) {
@@ -635,6 +634,7 @@ if ($_POST["operation"] == "New_Report") {
     $ticket_no   = $_POST["ticket_no"];
     $store       = $_POST["store"] ?? '0';
     $dept        = $_POST["f_deptsel"] ?? '0';
+    $concern        = $_POST["concern"] ?? '0';
     $via         = 'PENDING';
 
     $cat         = '31';
@@ -645,6 +645,7 @@ if ($_POST["operation"] == "New_Report") {
     $status      = $_POST["setStatus"] ?? '';
     $refNo       = $_POST["refNo"] ?? '';
     $plvl        = $_POST["priority_level"] ?? '0';
+    $sla_days    = $_POST["sla_days"] ?? '0';
 
     $date_created = !empty($_POST["date_createdx"])
         ? date('Y-m-d H:i:s', strtotime($_POST["date_createdx"]))
@@ -725,6 +726,11 @@ if ($_POST["operation"] == "New_Report") {
     if ($plvl != '0' && $plvl != '') {
         $fields[] = "priority_level = :priority_level";
         $data[':priority_level'] = $plvl;
+    }
+
+    if ($sla_days != '0' && $sla_days != '') {
+        $fields[] = "sla_days = :sla_days";
+        $data[':sla_days'] = $sla_days;
     }
 
     if ($contactNumber !== '') {
@@ -823,154 +829,199 @@ if ($_POST["operation"] == "New_Report") {
         ]);
     }
 
-/* =========================================================
-   EMAIL SENDING PART
-   ========================================================= */
-if ($result) {
-    try {
-        $deptEmail = '';
-        $deptName  = '';
-        $storeName = '';
+    /* =========================================================
+       EMAIL SENDING PART
+       ========================================================= */
+    if ($result) {
+        try {
+            $deptEmail = '';
+            $deptName  = '';
+            $storeName = '';
 
-        // ✅ correct department fields
-        $stmtDept = $connection->prepare("
-            SELECT dept_id, dept_desc, dept_shrtdesc, str_num, contactNumber, dept_email
-            FROM tbl_dept
-            WHERE dept_id = :dept
-            LIMIT 1
-        ");
-        $stmtDept->execute([':dept' => $dept]);
-        $rowDept = $stmtDept->fetch(PDO::FETCH_ASSOC);
+            $stmtDept = $connection->prepare("
+                SELECT dept_id, dept_desc, dept_shrtdesc, str_num, contactNumber, dept_email
+                FROM tbl_dept
+                WHERE dept_id = :dept
+                LIMIT 1
+            ");
+            $stmtDept->execute([':dept' => $dept]);
+            $rowDept = $stmtDept->fetch(PDO::FETCH_ASSOC);
 
-        if ($rowDept) {
-            $deptName  = $rowDept['dept_desc'] ?? '';
-            $deptEmail = trim($rowDept['dept_email'] ?? '');
+            if ($rowDept) {
+                $deptName  = $rowDept['dept_desc'] ?? '';
+                $deptEmail = trim($rowDept['dept_email'] ?? '');
+            }
+
+            $stmtStore = $connection->prepare("
+                SELECT str_name
+                FROM tbl_branch
+                WHERE str_num = :store
+                LIMIT 1
+            ");
+            $stmtStore->execute([':store' => $store]);
+            $rowStore = $stmtStore->fetch(PDO::FETCH_ASSOC);
+
+            if ($rowStore) {
+                $storeName = $rowStore['str_name'] ?? '';
+            }
+
+            if (empty($deptEmail)) {
+                throw new Exception("No department email found for department ID: " . $dept);
+            }
+
+            $priorityLabel = '';
+            switch ($plvl) {
+                case '1': $priorityLabel = 'Low'; break;
+                case '2': $priorityLabel = 'Normal'; break;
+                case '3': $priorityLabel = 'High'; break;
+                case '4': $priorityLabel = 'Urgent'; break;
+                default:  $priorityLabel = 'Not Set'; break;
+            }
+
+            $slaLabel = '';
+            switch ((string)$sla_days) {
+                case '2':  $slaLabel = '24 - 48 hours'; break;
+                case '5':  $slaLabel = '3 - 5 days'; break;
+                case '7':  $slaLabel = '5 - 7 days'; break;
+                case '14': $slaLabel = '1 - 2 weeks'; break;
+                case '21': $slaLabel = '2 - 3 weeks'; break;
+                case '28': $slaLabel = '3 - 4 weeks'; break;
+                default:   $slaLabel = ($sla_days && $sla_days != '0') ? $sla_days . ' day(s)' : 'Not Set'; break;
+            }
+
+            $dueDate = '';
+            if (!empty($sla_days) && $sla_days != '0') {
+                $dueDate = date('Y-m-d H:i:s', strtotime($date_created . " +{$sla_days} days"));
+            }
+
+            $mail = new PHPMailer(true);
+
+            // $mail->SMTPDebug = 2;
+            // $mail->Debugoutput = 'html';
+
+            $mail->isSMTP();
+            $mail->Host       = 'mail.officewarehouse.com.ph';
+            $mail->SMTPAuth   = true;
+            $mail->Username   = 'portal_noreply@officewarehouse.com.ph';
+            $mail->Password   = 'Owi@123456**';
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port       = 587;
+
+            $mail->setFrom('portal_noreply@officewarehouse.com.ph', 'HELPDESK AI');
+            $mail->addAddress($deptEmail, $deptName);
+
+            $mail->isHTML(true);
+            $mail->Subject = "Ticket {$ticket_no} Assigned to {$deptName}";
+
+            $mailBody = '
+            <html>
+            <body style="margin:0;padding:20px;background:#f4f6f9;font-family:Arial,sans-serif;">
+                <table width="700" align="center" cellpadding="0" cellspacing="0" style="background:#ffffff;border:1px solid #d6def7;border-radius:8px;overflow:hidden;">
+                    
+                    <tr>
+                        <td style="background:#627bc5;color:#ffffff;padding:18px 24px;font-size:20px;font-weight:bold;">
+                            Helpdesk AI Ticket Assignment
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="padding:24px;font-size:14px;color:#333;">
+                            
+                            <p>Good day,</p>
+                            <p>A ticket has been assigned to your department for review and action.</p>
+
+                            <table cellpadding="8" cellspacing="0" width="100%" style="border-collapse:collapse;margin-top:10px;">
+                                
+                                <tr style="background:#f3f6ff;">
+                                    <td style="border:1px solid #d6def7;width:180px;"><strong>Ticket No.</strong></td>
+                                    <td style="border:1px solid #d6def7;">' . htmlspecialchars($ticket_no) . '</td>
+                                </tr>
+
+                                <tr>
+                                    <td style="border:1px solid #d6def7;"><strong>Store</strong></td>
+                                    <td style="border:1px solid #d6def7;">' . htmlspecialchars($storeName) . '</td>
+                                </tr>
+
+                                <tr style="background:#f3f6ff;">
+                                    <td style="border:1px solid #d6def7;"><strong>Department</strong></td>
+                                    <td style="border:1px solid #d6def7;">' . htmlspecialchars($deptName) . '</td>
+                                </tr>
+
+                                <tr>
+                                    <td style="border:1px solid #d6def7;"><strong>Status</strong></td>
+                                    <td style="border:1px solid #d6def7;">' . htmlspecialchars($status) . '</td>
+                                </tr>
+
+                                <tr style="background:#f3f6ff;">
+                                    <td style="border:1px solid #d6def7;"><strong>Priority</strong></td>
+                                    <td style="border:1px solid #d6def7;">' . htmlspecialchars($priorityLabel) . '</td>
+                                </tr>
+
+                                <tr>
+                                    <td style="border:1px solid #d6def7;"><strong>SLA</strong></td>
+                                    <td style="border:1px solid #d6def7;">' . htmlspecialchars($slaLabel) . '</td>
+                                </tr>
+
+                                <tr style="background:#f3f6ff;">
+                                    <td style="border:1px solid #d6def7;"><strong>SLA Max Days</strong></td>
+                                    <td style="border:1px solid #d6def7;">' . htmlspecialchars($sla_days) . '</td>
+                                </tr>
+
+                                <tr>
+                                    <td style="border:1px solid #d6def7;"><strong>Due Date</strong></td>
+                                    <td style="border:1px solid #d6def7;">' . htmlspecialchars($dueDate) . '</td>
+                                </tr>
+
+                                <tr style="background:#f3f6ff;">
+                                    <td style="border:1px solid #d6def7;"><strong>Reference No.</strong></td>
+                                    <td style="border:1px solid #d6def7;">' . htmlspecialchars($refNo) . '</td>
+                                </tr>
+
+                                <tr>
+                                    <td style="border:1px solid #d6def7;"><strong>Concern</strong></td>
+                                    <td style="border:1px solid #d6def7;">' . nl2br(htmlspecialchars($concern)) . '</td>
+                                </tr>
+
+                                <tr style="background:#f3f6ff;">
+                                    <td style="border:1px solid #d6def7;"><strong>Date Created</strong></td>
+                                    <td style="border:1px solid #d6def7;">' . htmlspecialchars($date_created) . '</td>
+                                </tr>
+
+                            </table>
+
+                            <p style="margin-top:20px;">Please log in to the <strong>OWI Helpdesk</strong> for complete details and necessary action.</p>
+                            <p>Thank you.</p>
+
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="background:#8bacf6;color:#ffffff;text-align:center;padding:10px;font-size:12px;">
+                            OWI Helpdesk System Notification
+                        </td>
+                    </tr>
+
+                </table>
+            </body>
+            </html>
+            ';
+
+            $mail->Body    = $mailBody;
+            $mail->AltBody = "Ticket {$ticket_no} has been assigned to {$deptName}. "
+                           . "Store: {$storeName}, Status: {$status}, Priority: {$priorityLabel}, "
+                           . "SLA: {$slaLabel}, SLA Max Days: {$sla_days}, Due Date: {$dueDate}, "
+                           . "Ref No: {$refNo}, Remarks: {$remarks}";
+
+            $mail->send();
+
+            echo "Report updated successfully and email sent to {$deptEmail}.";
+
+        } catch (Exception $e) {
+            echo "Report updated successfully, but email failed: " . $e->getMessage();
         }
-
-        // ✅ get store name
-        $stmtStore = $connection->prepare("
-            SELECT str_name
-            FROM tbl_branch
-            WHERE str_num = :store
-            LIMIT 1
-        ");
-        $stmtStore->execute([':store' => $store]);
-        $rowStore = $stmtStore->fetch(PDO::FETCH_ASSOC);
-
-        if ($rowStore) {
-            $storeName = $rowStore['str_name'] ?? '';
-        }
-
-        // ✅ stop if no email configured
-        if (empty($deptEmail)) {
-            throw new Exception("No department email found for department ID: " . $dept);
-        }
-
-        $mail = new PHPMailer(true);
-
-        // ✅ optional debug while testing
-        // $mail->SMTPDebug = 2;
-        // $mail->Debugoutput = 'html';
-
-        // SMTP SETTINGS
-        // $mail->isSMTP();
-      $mail->isSMTP();
-      $mail->Host       = 'mail.officewarehouse.com.ph';   // 🔧 CHANGE
-      $mail->SMTPAuth   = true;
-      $mail->Username   = 'portal_noreply@officewarehouse.com.ph'; // 🔧 CHANGE
-      $mail->Password   = 'Owi@123456**';          // 🔧 CHANGE
-      $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-      $mail->Port       = 587;
-
-        // FROM
-        $mail->setFrom('portal_noreply@officewarehouse.com.ph', 'HELPDESK AI');
-
-        // TO
-        $mail->addAddress($deptEmail, $deptName);
-
-        $mail->isHTML(true);
-        $mail->Subject = "Ticket {$ticket_no} Assigned to {$deptName}";
-
-        $priorityLabel = '';
-        switch ($plvl) {
-            case '1': $priorityLabel = 'Low'; break;
-            case '2': $priorityLabel = 'Medium'; break;
-            case '3': $priorityLabel = 'High'; break;
-            case '4': $priorityLabel = 'Urgent'; break;
-            default:  $priorityLabel = 'Not Set'; break;
-        }
-
-        $mailBody = '
-        <html>
-        <body style="margin:0;padding:20px;background:#f4f6f9;font-family:Arial,sans-serif;">
-            <table width="700" align="center" cellpadding="0" cellspacing="0" style="background:#ffffff;border:1px solid #dddddd;border-radius:8px;overflow:hidden;">
-                <tr>
-                    <td style="background:#EAAA00;color:#000;padding:18px 24px;font-size:20px;font-weight:bold;">
-                        Helpdesk AI Ticket Assignment
-                    </td>
-                </tr>
-                <tr>
-                    <td style="padding:24px;font-size:14px;color:#333;">
-                        <p>Good day,</p>
-                        <p>A ticket has been assigned to your department for review and action.</p>
-
-                        <table cellpadding="8" cellspacing="0" width="100%" style="border-collapse:collapse;margin-top:10px;">
-                            <tr>
-                                <td style="border:1px solid #ddd;width:180px;"><strong>Ticket No.</strong></td>
-                                <td style="border:1px solid #ddd;">' . htmlspecialchars($ticket_no) . '</td>
-                            </tr>
-                            <tr>
-                                <td style="border:1px solid #ddd;"><strong>Store</strong></td>
-                                <td style="border:1px solid #ddd;">' . htmlspecialchars($storeName) . '</td>
-                            </tr>
-                            <tr>
-                                <td style="border:1px solid #ddd;"><strong>Department</strong></td>
-                                <td style="border:1px solid #ddd;">' . htmlspecialchars($deptName) . '</td>
-                            </tr>
-                            <tr>
-                                <td style="border:1px solid #ddd;"><strong>Status</strong></td>
-                                <td style="border:1px solid #ddd;">' . htmlspecialchars($status) . '</td>
-                            </tr>
-                            <tr>
-                                <td style="border:1px solid #ddd;"><strong>Priority</strong></td>
-                                <td style="border:1px solid #ddd;">' . htmlspecialchars($priorityLabel) . '</td>
-                            </tr>
-                            <tr>
-                                <td style="border:1px solid #ddd;"><strong>Reference No.</strong></td>
-                                <td style="border:1px solid #ddd;">' . htmlspecialchars($refNo) . '</td>
-                            </tr>
-                            <tr>
-                                <td style="border:1px solid #ddd;"><strong>Remarks</strong></td>
-                                <td style="border:1px solid #ddd;">' . nl2br(htmlspecialchars($remarks)) . '</td>
-                            </tr>
-                            <tr>
-                                <td style="border:1px solid #ddd;"><strong>Date Created</strong></td>
-                                <td style="border:1px solid #ddd;">' . htmlspecialchars($date_created) . '</td>
-                            </tr>
-                        </table>
-
-                        <p style="margin-top:20px;">Please log in to the OWI Helpdesk for complete details and necessary action.</p>
-                        <p>Thank you.</p>
-                    </td>
-                </tr>
-            </table>
-        </body>
-        </html>';
-
-        $mail->Body    = $mailBody;
-        $mail->AltBody = "Ticket {$ticket_no} has been assigned to {$deptName}. "
-                       . "Store: {$storeName}, Status: {$status}, Priority: {$priorityLabel}, Ref No: {$refNo}, Remarks: {$remarks}";
-
-        $mail->send();
-
-        echo "Report updated successfully and email sent to {$deptEmail}.";
-
-    } catch (Exception $e) {
-        echo "Report updated successfully, but email failed: " . $e->getMessage();
+    } else {
+        echo "Failed to update report.";
     }
-} else {
-    echo "Failed to update report.";
-}
 }
 
 
