@@ -300,17 +300,30 @@ class dbconfig extends dbconn
 
 public function admin_data_table_res(){
 
-    // ✅ sanitize year (avoid SQL injection and broken query)
-    $yr = isset($_POST['yr']) ? (int)$_POST['yr'] : (int)date('Y');
+    // // ✅ sanitize year (avoid SQL injection and broken query)
+    // $yr = isset($_POST['yr']) ? (int)$_POST['yr'] : (int)date('Y');
 
-    // ✅ Use parameter binding
-    $query = "
-        SELECT *
-        FROM vw6foradmin
-        WHERE  sub_id NOT IN ('15','28','34','35')
-          AND status <> 'NEW REPORT'
-          AND YEAR(date_created) = {$yr}
-    ";
+    // // ✅ Use parameter binding
+    // $query = "
+    //     SELECT *
+    //     FROM vw6foradmin
+    //     WHERE  sub_id NOT IN ('15','28','34','35')
+    //       AND status <> 'NEW REPORT'
+    //       AND YEAR(date_created) IN ({$yr})
+    // "; // old code
+
+	$yr = isset($_POST['yr']) ? $_POST['yr'] : date('Y');
+
+/* sanitize: allow only numbers and commas */
+$yr = preg_replace('/[^0-9,]/', '', $yr);
+
+$query = "
+    SELECT *
+    FROM vw6foradmin
+    WHERE sub_id NOT IN ('15','28','34','35')
+      AND status <> 'NEW REPORT'
+      AND YEAR(date_created) IN ($yr)
+";
 
     $statement = $this->connection->prepare($query);
     $statement->execute([

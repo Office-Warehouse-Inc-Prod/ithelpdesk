@@ -63,6 +63,69 @@ exit();
 }
 
 
+
+/* Change Password */
+.change-pass {
+    color: #1e3a8a !important; /* navy blue */
+    font-weight: 500;
+}
+
+.change-pass:hover {
+    background-color: #f1f5ff;
+    color: #1e3a8a !important;
+}
+
+/* Logout */
+.logout-btn {
+    color: #dc2626 !important; /* red */
+    font-weight: 600;
+}
+
+.logout-btn:hover {
+    background-color: #ffe5e5;
+    color: #dc2626 !important;
+}
+
+
+/* Force dropdown text color */
+.dropdown-menu .dropdown-item {
+    color: #1f2937 !important; /* dark gray */
+}
+
+/* Change Password */
+.dropdown-menu .change-pass {
+    color: #1e3a8a !important; /* navy */
+}
+
+/* Logout */
+.dropdown-menu .logout-btn {
+    color: #dc2626 !important; /* red */
+    font-weight: 600;
+}
+
+/* Hover behavior */
+.dropdown-menu .dropdown-item:hover {
+    background-color: #f3f4f6;
+    color: inherit !important;
+}
+
+/* Make icons visible and aligned */
+.dropdown-menu .dropdown-item i {
+    width: 18px;
+    margin-right: 8px;
+    color: inherit !important;
+}
+
+/* Change Password */
+.change-pass {
+    color: #1e40af !important; /* navy */
+}
+
+/* Logout */
+.logout-btn {
+    color: #dc2626 !important; /* red */
+    font-weight: 600;
+}
   </style>
 
 <body>
@@ -158,7 +221,7 @@ GENERATE REPORT
       <img class="rounded-circle" src="../images/users/<?= $_SESSION['imguser'];?>" alt="User Image" style="width: 35px; height: 35px; object-fit: cover;">
       <span class="ml-2 d-none d-lg-inline"><?php echo $_SESSION['fname'].' '.$_SESSION['lstname']; ?></span>
     </a>
-    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+    <!-- <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
       <a class="dropdown-item" href="change_password.php">
         <i class="fas fa-key mr-2"></i>Change Password
       </a>
@@ -166,7 +229,21 @@ GENERATE REPORT
       <a class="dropdown-item" href="../logout.php">
         <i class="fas fa-sign-out-alt mr-2"></i>Log Out
       </a>
-    </div>
+    </div> -->
+
+    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+  
+  <a class="dropdown-item change-pass" href="change_password.php">
+    <i class="fas fa-key mr-2"></i>Change Password
+  </a>
+
+  <div class="dropdown-divider"></div>
+
+  <a class="dropdown-item logout-btn" href="../logout.php">
+    <i class="fas fa-sign-out-alt mr-2"></i>Log Out
+  </a>
+
+</div>
   </li>
 </ul>
 </div>
