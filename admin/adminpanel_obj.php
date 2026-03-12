@@ -234,10 +234,11 @@ render:function(data,type,row){
         let cls = "badge bg-secondary";
 
         if (s === "ASSIGNED") cls = "badge bg-warning text-dark";
-        else if (s === "CLOSED") cls = "badge bg-success";
-        else if (s === "SUBJECT FOR CLOSING") cls = "badge bg-primary";
+        else if (s === "CLOSED") cls = "badge bg-success text-white";
+        else if (s === "SUBJECT FOR CLOSING") cls = "badge bg-primary text-white";
         else if (s === "ON PROCESS") cls = "badge bg-info";
         else if (s === "ATTENDED WITH FIX ASSET") cls = "badge bg-info text-dark";
+        else if (s === "PENDING") cls = "badge bg-danger text-white";
 
         return `<span class="${cls} px-2 py-1">${data}</span>`;
       }
