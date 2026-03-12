@@ -316,7 +316,7 @@ render:function(data,type,row){
     const s = (data['status'] || "").toUpperCase();
 
     if (s === 'ASSIGNED') $(row).addClass('status-open');
-    else if (s === 'ATTENDED WITH FIX ASSET') $(row).addClass('status-fixed');
+    else if (s === 'ON PROCESS') $(row).addClass('status-fixed');
     else if (s === 'CLOSED') $(row).addClass('status-closed');
     else if (s === 'SUBJECT FOR CLOSING') $(row).addClass('status-subject-closing');
   }
