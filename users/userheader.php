@@ -30,7 +30,9 @@ session_start();
     
     <link rel="stylesheet" type="text/css" href="../css/responsive.dataTables.min.css" />
     <link rel="stylesheet" href="../vendor/sweetalert/dist/sweetalert2.min.css" />
-      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../dist/select2/dist/css/select2.css" />
+    <link rel="stylesheet" href="../dist/select2/dist/css/select2.min.css" />
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
@@ -51,6 +53,7 @@ session_start();
     <script src="../js/dataTables.responsive.min.js"></script>
     <script src="../dist/jquery.alphanum-master/jquery.alphanum.js"></script>
     <script src="../vendor/sweetalert/dist/sweetalert2.all.min.js"></script>
+    <script src="../dist/select2/dist/js/select2.min.js"></script>
 
 
     <!-- Custom styles for this template -->

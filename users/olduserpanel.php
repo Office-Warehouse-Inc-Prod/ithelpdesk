@@ -93,7 +93,7 @@ background-color: #212529;
                                      </div>
 
                                      <div class="form-group col-md-4">
-                                <input type="submit" name="action" id="action" class=" btn btn-primary" style=""  value="Save Ticket"/>
+                                <input type="submit" name="action" id="action" class=" btn btn-primary"  value="Save Ticket"/>
 
                                 </div>
                               <div class="col-md-4">

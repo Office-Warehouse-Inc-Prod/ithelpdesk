@@ -367,13 +367,14 @@ Start of Add/Edit Modal
                   <select class="form-control form-control-sm" name="cat" id="cat" required>
                     <option value=""> &larr; CATEGORY &rarr;</option>
                     <?php
-                      $query="select * from category WHERE deptsel = '1'";
+                      // $query="select * from category WHERE deptsel = '1'";
+                          $query="select * from categories WHERE deptsel = '1'";
                       $run=$conn->prepare($query);
                       $run->execute();
                       $rs=$run->get_result();
                       while ($res=$rs->fetch_assoc()) {
-                        $supid = $res['id'];
-                        $suppdesc = $res['category_name'];
+                        $supid = $res['cat_id'];
+                        $suppdesc = $res['cat_desc'];
                     ?>
                       <option value="<?php echo $supid; ?>"><?= $suppdesc; ?></option>
                     <?php } ?>

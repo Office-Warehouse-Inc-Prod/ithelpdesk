@@ -8,16 +8,38 @@ $(document).ready(function(){
 
 
 $("#deptsel").on("change", function(){
-
+    $('#subject').val('');
         let val = $(this).val();
+        
+            $("#subject").select2({
+      width: '100%',
+      minimumResultsForSearch: Infinity, // Disable the search box
+      ajax: {
+        url: "select.php",
+        type: "get",
+        dataType: 'json',
+        delay: 250,
+        data: function (params) {
+          return {
+            type: 'category',
+            val : val
+          };
+        },
+        processResults: function (response) {
+          return {
+            results: response
+          };
+        },
+        cache: true
+      }
+    });
 
         if(val == "4"){ // MERCHANDISING
             // $("#report_form").addClass("horizontal-layout");
-$("#helpdesk_row").fadeOut();
-$("#merchDrCard").fadeIn();
-
-
-        }else{
+        $("#helpdesk_row").fadeOut();
+        $("#merchDrCard").fadeIn();
+        }
+        else{
             // $("#report_form").removeClass("horizontal-layout");
         }
 

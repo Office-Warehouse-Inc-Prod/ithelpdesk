@@ -266,17 +266,17 @@ $con1=new dbconfig();
   
       <div class="form-group col-md-6">
         <label>CATEGORY</label>
-        <input type="hidden" name="cat_num" id="cat_num" readonly="">
+        <input type="text" name="cat_num" id="cat_num" readonly="">
         <select class="form-control form-control-sm" name="cat" id="cat" required >
         <option value=""> &larr; CATEGORY &rarr;</option>  
         <?php
-          $query="select * from category WHERE deptsel = '1'";
+          $query="select * from categories WHERE deptsel = '1' AND (old_tag IS NULL OR old_tag <> 'Y') ORDER BY order_id ASC";
           $run=$con1->prepare($query);
           $run->execute();
           $rs=$run->get_result();
           while ($res=$rs->fetch_assoc()) {
-          $supid = $res['id'];
-          $suppdesc = $res['category_name'];
+          $supid = $res['cat_id'];
+          $suppdesc = $res['cat_desc'];
         ?>
 
         <option value="<?php echo $supid;?>"><?= $suppdesc; ?></option>
@@ -309,7 +309,7 @@ $con1=new dbconfig();
             <option value="<?php echo $ispid;?>"><?= $ispdesc; ?></option>
             <?php }?>
         </select> 
-      </div>
+      </div> 
 
       <div class="form-group col-md-4 hide_isp" >
         <label id="lbl_refNo" for="refNo">Reference No:</label>
