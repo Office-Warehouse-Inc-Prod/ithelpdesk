@@ -1,0 +1,1107 @@
+body {
+   font-family: 'Poppins', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body.dark-mode {
+    background: linear-gradient(145deg, #0f0f0f, #1a1a1a);
+    color: #e0e0e0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body.dark-mode .card,
+body.dark-mode .card2 {
+    background: linear-gradient(145deg, #1a1a1a, #2a2a2a);
+    color: #ffffff;
+    border: 1px solid #2a2a2a;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.1);
+    border-radius: 15px;
+    transition: all 0.3s ease;
+}
+
+body.dark-mode .card-header {
+    background-color: transparent;
+    border-bottom: 1px solid #444;
+    font-weight: bold;
+    font-size: 18px;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.4);
+}
+
+body.dark-mode .form-check-label,
+body.dark-mode .input-group-text,
+body.dark-mode label {
+    color: #00ffff;
+}
+
+body.dark-mode select,
+body.dark-mode .form-control {
+    background-color: #1d1d1d;
+    color: #00ffff;
+    border: 1px solid #00ffff;
+    border-radius: 10px;
+}
+
+body.dark-mode .table {
+    color: #ffffff;
+    background-color: #1b1b1b;
+    border-collapse: collapse;
+}
+
+body.dark-mode .table th,
+body.dark-mode .table td {
+    border: 1px solid #2c2c2c;
+}
+
+body.dark-mode .form-control::placeholder {
+    color: #2062ac;
+} 
+.search-input-group input {
+    border: none;
+    background: transparent;
+    padding-left: 35px;
+    font-size: 0.9rem;
+}
+
+.search-input-group i {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #2062ac;
+}
+/* --- User Profile Dropdown --- */
+.avatar-circle {
+    width: 40px;
+    height: 40px;
+    background: var(--primary-color);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-weight: 600;
+    cursor: pointer;
+}
+       
+.card{
+    border-radius:10px;
+    border:none;
+    position:relative;
+    margin-bottom:0;  
+    box-shadow: 0  5px 2px #2062ac;
+    color: #2062ac;
+    overflow-x: hidden;
+    border: 2px solid transparent;
+    transition: border-color 0.3 ease, color 0.3s ease;
+    
+}
+.card .card-header{
+    border-bottom-color: #2062ac;
+    line-height:30px;
+    -ms-grid-row-align:center;
+    align-self:center;
+    width:100%;
+    display:flex;
+    align-items:center;
+    margin-bottom:40px;
+    background-color: #2062ac;
+    border-bottom:1px solid rgba(166, 162, 162, 0.125);
+}
+.card-header:first-child{
+    border-radius:calc(.25rem -1px)calc(.25rem -1px)00;
+}
+
+/* Your existing hover rule */
+
+.card:hover{
+    border-color: #E5BA41;
+    background-color: white;
+}
+
+.card:hover .card-header,
+.card:hover a{
+    color: #E1AD01 !important;
+}
+
+.container{
+    margin-top:20px;
+    width:100%;
+    padding:-10px; 
+    box-shadow: 0 10px 20px rgba(221, 221, 93, 0.4);
+    background-color:white;
+}
+
+.table:not(.table-sm) thead th{
+    border-bottom: none;
+    background-color: #e9e9eb;
+    color:#666;
+    padding-top:15px;
+    padding-bottom:15px;
+}        
+.bg-success{
+    background-color: #54ca68 !important;
+}
+
+.bg-purple{
+    background-color: #9c27b0 !important;
+    color: #fff;
+}
+.bg-cyan{
+    background-color: #10cfbd !important;
+    color:#fff;
+}
+.bg-red{
+    background-color: #f44336 !important;
+    color: #fff;
+}
+.progress{
+    -webkit-box-shadow: 0 0.4rem 0.6rem rgba(0,0,0,0,0.15);
+    box-shadow: 0 0.4rem 0.6rem rgba(0,0,0,0.15);
+}
+.table thead th{
+    background-color: #2062ac;
+    font-size:12px;
+    text-transform: uppercase;
+    letter-spacing:1px;
+    font-weight:700;
+    color:#555;
+    padding:20px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.table tbody td{
+    padding:15px 10px;
+    font-size:14px;
+}
+  /* body.dark-mode #chartdiv1,
+  body.dark-mode #chartdiv2,
+  body.dark-mode #chartdiv5,
+  body.dark-mode #chartdiv8,
+  body.dark-mode #chart_area {
+    background-color: #131313;
+    border-radius: 15px;
+    box-shadow: inset 0 0 10px #00ffff20;
+  } */
+
+.form-check-input:checked {
+    background-color: #00ffff;
+    border-color: #00ffff;
+}
+
+::selection {
+    background: #00ffff;
+    color: #000;
+}
+
+.btn-success, .btn-danger {
+    border-radius: 5px;
+    padding: 0.5em 1.5em;
+    font-weight: bold;
+    transition: 0.3s ease-in-out;
+}
+
+.btn-success:hover {
+    background-color: #2062ac;
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #ff4d4d;
+    color: #fff;
+}
+
+/* .modal-content {
+    background: #1c1c1c;
+    border-radius: 20px;
+    border: 1px solid #2c2c2c;
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.1);
+} */
+
+
+@keyframes pulse-glow {
+  0% {
+    box-shadow: 0 0 10px #00ffff55;
+  }
+  50% {
+    box-shadow: 0 0 20px #00ffffaa;
+  }
+  100% {
+    box-shadow: 0 0 10px #00ffff55;
+  }
+}
+
+.dashcard:hover {
+  animation: pulse-glow 1.5s infinite;
+}
+
+#report_data {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 6px;
+  background: #2062ac; 
+  color: #ccc;
+  font-family: 'Poppins', Tahoma, Geneva, Verdana, sans-serif;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: none; 
+}
+
+#report_data thead tr {
+  background:#2062ac;
+  color: #666; 
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700; 
+  font-size: 1.2rem; 
+  text-align: center;
+  border-bottom: 1px solid #ccc; 
+}
+
+#report_data tbody tr {
+  background: transparent; 
+  box-shadow: none;
+}
+
+#report_data tbody tr:hover {
+  background: #E1AD01; 
+  color: #fff;
+}
+
+#report_data th,
+#report_data td {
+  padding: 10px 12px;
+  border: none;
+  border-bottom: 1px solid #333; 
+}
+
+#report_data th:last-child,
+#report_data td:last-child {
+  border-right: none;
+}
+
+#report_data tbody tr td {
+  font-weight: 400;
+  font-size: 0.9rem;
+}
+
+#report_data::-webkit-scrollbar {
+  height: 6px;
+}
+
+#report_data::-webkit-scrollbar-thumb {
+  background: #2062ac; 
+  border-radius: 3px;
+}
+
+.status-open td {
+  color: red !important;
+  border: 1px solid red;
+}
+
+.status-fixed td {
+  color: red !important;
+  border: 1px solid red;
+}
+
+.status-closed td {
+  color: green !important;
+  border: 1px solid green;
+}
+
+.status-subject-closing td {
+  color: #890188 !important;
+  border: 1px solid #890188;
+}
+
+
+.action-bar-container {
+    display: flex;
+    flex-wrap: wrap; 
+    justify-content: space-between;
+    align-items: center;
+    background: #ffffff;
+    padding: 15px 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+    gap: 15px; 
+}
+
+.year-picker-group {
+    flex: 1;
+    min-width: 300px; 
+}
+#showCalendarBtn {
+    background-color: #2062ac;
+    color: white;
+    border-radius: 8px;
+    padding: 8px 20px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+#showCalendarBtn:hover {
+    background-color: var(--owi-gold, #E1AD01);
+    color: #2062ac;
+}
+
+/* Custom Switch Styling */
+.form-switch .form-check-input {
+    cursor: pointer;
+    width: 3em;
+    height: 1.5em;
+}
+
+/* Mobile Specific Adjustments */
+@media (max-width: 768px) {
+    .action-bar-container {
+        flex-direction: column; /* Stack vertically */
+        align-items: stretch; /* Stretch to full width */
+        padding: 15px;
+    }
+
+    .year-picker-group {
+        min-width: 100%;
+    }
+
+    .action-bar-container > div:last-child {
+        justify-content: space-between; /* Buttons/Switch side-by-side on mobile */
+        width: 100%;
+    }
+
+    .input-group-text {
+        font-size: 0.8rem; /* Smaller text for mobile screens */
+    }
+}
+
+/* =========================
+   MODAL UI UPGRADE (Desktop + Mobile)
+   ========================= */
+
+/* Bigger + cleaner modal */
+#userModal .modal-dialog{
+  max-width: 1100px; /* desktop width */
+  margin: 1.25rem auto;
+}
+
+#userModal .modal-content{
+  border-radius: 16px;
+  border: 1px solid #2062ac;
+  overflow: hidden;
+}
+
+/* Header with hierarchy */
+#userModal .modal-header{
+  background: #2062ac;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+  padding: 16px 18px;
+}
+
+#userModal_header{
+  font-weight: 700;
+  font-size: 18px;
+  margin: 0;
+}
+
+/* Body spacing */
+#userModal .modal-body{
+  padding: 16px 18px;
+}
+
+/* Section cards inside modal */
+.modal-section{
+  background: rgba(255,255,255,0.75);
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.04);
+}
+
+/* Section title */
+.modal-section-title{
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: .6px;
+  text-transform: uppercase;
+  color: rgba(0,0,0,0.55);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.modal-section-title:before{
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  background: #2062ac;
+}
+
+/* Make inputs feel “premium” */
+#userModal .form-control,
+#userModal select,
+#userModal textarea{
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.12);
+  background: white;
+}
+
+#userModal label{
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: .4px;
+  text-transform: uppercase;
+  color: #2062ac;
+}
+
+/* Comment thread container: scrollable, not endless */
+.container_remarks{
+  max-height: 480px;
+  overflow: auto;
+  padding-right: 6px;
+}
+
+/* Thread message card look (works with your existing markup) */
+#remarks_view .msg-item{
+  border: 1px solid rgba(0,0,0,0.08);
+  background: rgba(255,255,255,0.90);
+  border-radius: 14px;
+  padding: 12px 12px;
+  margin-bottom: 10px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.04);
+}
+
+#remarks_view .msg-head{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+#remarks_view .msg-name{
+  font-weight: 800;
+  font-size: 14px;
+}
+
+#remarks_view .msg-meta{
+  font-size: 12px;
+  color: rgba(0,0,0,0.55);
+}
+
+#remarks_view .msg-body{
+  font-size: 13px;
+  color: rgba(0,0,0,0.80);
+  line-height: 1.35;
+  white-space: pre-wrap;
+}
+
+/* Sticky footer actions (great on mobile) */
+#userModal .modal-footer{
+  border-top: 1px solid rgba(0,0,0,0.08);
+  background: rgba(255,255,255,0.92);
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  padding: 12px 14px;
+}
+
+/* Better button sizing on mobile */
+@media (max-width: 991px){
+  #userModal .modal-dialog{
+    max-width: 96%;
+    margin: .75rem auto;
+  }
+
+  /* Make thread scroll shorter on small screens */
+  .container_remarks{
+    max-height: 260px;
+  }
+
+  /* Buttons full width */
+  #action, #btnClose{
+    width: 100%;
+  }
+}
+
+/* --- Scoped Filter Bar Styling --- */
+.action-bar-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #ffffff;
+    padding: 15px 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    border-left: 6px solid #2062ac; /* Brand Blue */
+    margin-bottom: 20px;
+    gap: 15px;
+    flex-wrap: nowrap;
+}
+
+body.dark-mode .action-bar-container {
+    background: #1e293b;
+    border-left-color: #E1AD01; /* Brand Gold */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Year Picker Group */
+.year-picker-group {
+    flex: 1;
+    max-width: 450px;
+}
+
+.year-picker-group .input-group-text {
+    background-color: #2062ac !important;
+    color: #ffffff !important;
+    border: none;
+    font-weight: 600;
+    font-size: 0.8rem;
+}
+
+/* Calendar Button */
+#showCalendarBtn {
+    background-color: #E1AD01 !important;
+    color: #2062ac !important;
+    border: none !important;
+    font-weight: 700;
+    padding: 8px 20px;
+    border-radius: 8px;
+    white-space: nowrap;
+    transition: all 0.2s;
+}
+
+#showCalendarBtn:hover {
+    background-color:#2062ac !important;
+    color:white;
+    transform: translateY(-2px);
+}
+
+/* One-line Dark Mode Toggle */
+.mode-toggle-inline {
+    display: flex;
+    align-items: center;
+    background: rgba(33, 52, 86, 0.05);
+    padding: 6px 15px;
+    border-radius: 50px;
+    white-space: nowrap;
+}
+
+body.dark-mode .mode-toggle-inline {
+    background: rgba(225, 173, 1, 0.1);
+}
+
+.toggle-label-text {
+    font-weight: 700;
+    font-size: 0.75rem;
+    margin-left: 10px;
+    color: #2062ac;
+    text-transform: uppercase;
+}
+
+body.dark-mode .toggle-label-text {
+    color: #E1AD01;
+}
+
+
+/* ============================= */
+/* Modern Card Container */
+/* ============================= */
+.custom-container-card {
+    background: #ffffff;
+    border-radius: 18px;
+    border: none;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.08);
+    overflow: hidden;
+    transition: 0.3s ease;
+}
+
+.custom-container-card:hover {
+    transform: translateY(-3px);
+}
+
+/* ============================= */
+/* Gradient Header */
+/* ============================= */
+.header-yellow {
+    background: linear-gradient(135deg, #E1AD01, #f7c948);
+    padding: 18px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-yellow h5 {
+    margin: 0;
+    font-weight: 700;
+    color: #1a1a1a;
+    letter-spacing: 1px;
+    font-size: 16px;
+}
+
+/* ============================= */
+/* Modern Search */
+/* ============================= */
+.search-input-group {
+    position: relative;
+    width: 260px;
+}
+
+.search-input-group i {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+}
+
+.search-input-group .form-control {
+    padding-left: 40px;
+    border-radius: 30px;
+    border: none;
+    font-size: 13px;
+    height: 38px;
+    background: rgba(255,255,255,0.9);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    transition: 0.3s;
+}
+
+.search-input-group .form-control:focus {
+    box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+    outline: none;
+}
+
+.table {
+    background-color: #E1AD01;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 8px;
+    overflow: hidden;
+     box-shadow: 0 5px 5px rgba(21, 69, 159, 0.4);
+    border: 1px solid #e9ecef;
+    margin-top: -30px;
+}
+
+
+.card .table thead th {
+    background-color: #2062ac;
+    color: white;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    padding: 15px;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.card.table tbody td {
+    padding: 12px 15px;
+    vertical-align: middle;
+    color: #333;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+/* Hover Effect with requested color #2062ac */
+.card.table tbody tr:hover {
+    background-color: #2062ac !important;
+    color: #ffffff !important;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/* Responsive Table Wrapper */
+.card .table-responsive {
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+/* Change Password Modal Custom Styles */
+#userModal .modal-content {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+}
+
+#userModal .modal-header {
+    background-color: #2062ac;
+    color: #fff;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    border-bottom: 4px solid #E1AD01; /* Your Theme Gold */
+}
+
+#userModal .modal-title {
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+}
+
+#userModal .input-group-text {
+    background-color: white;
+    border-right: none;
+    color: #2062ac;
+}
+
+#userModal .form-control {
+    border-left: none;
+    height: 45px;
+    border-radius: 0 8px 8px 0;
+}
+
+#userModal .form-control:focus {
+    border-color: #2062ac;
+    box-shadow: none;
+}
+
+#userModal .input-group:focus-within {
+    box-shadow: 0 0 0 0.2rem rgba(225, 173, 1, 0.25);
+    border-radius: 8px;
+}
+
+/* --- Left Side: Input Panel --- */
+.m_col {
+    background: #ffffff;
+    padding: 2rem !important;
+    border-right: 1px solid #edf2f7;
+}
+
+.m_col label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #718096;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.m_col .form-control {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 0.6rem 0.75rem;
+    transition: all 0.2s ease;
+    background-color: #f8fafc;
+}
+
+.m_col .form-control:focus {
+    background-color: #fff;
+    border-color: #2062ac;
+    box-shadow: 0 0 0 3px rgba(28, 7, 112, 0.1);
+    outline: none;
+}
+
+.m_col textarea {
+    min-height: 80px;
+}
+
+/* --- Right Side: Message Thread Panel --- */
+#msg_thread {
+    padding: 1rem 1.5rem;
+    background-color: #f8fafc;
+    height: 100%;
+}
+
+/* Comment Input Area */
+#addmsg {
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 1rem;
+    background: #ffffff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+/* Container for Remarks (The Thread) */
+.container_remarks {
+    background: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    height: 450px;
+    overflow-y: auto;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* Individual Message Bubbles (to be used in your JS output) */
+.chat-bubble {
+    max-width: 85%;
+    padding: 0.8rem 1rem;
+    border-radius: 15px;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    position: relative;
+}
+
+/* System/Received messages */
+.chat-left {
+    align-self: flex-start;
+    background: #f1f5f9;
+    color: #334155;
+    border-bottom-left-radius: 2px;
+}
+
+/* User/Sent messages */
+.chat-right {
+    align-self: flex-end;
+    background: #2062ac;
+    color: #ffffff;
+    border-bottom-right-radius: 2px;
+}
+
+.msg-meta {
+    font-size: 0.7rem;
+    color: #94a3b8;
+    margin-bottom: 4px;
+    display: block;
+}
+
+/* --- Action Buttons --- */
+.btn-success {
+    background-color: #2062ac !important;
+    border: none;
+    padding: 0.6rem 2rem;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: transform 0.2s ease;
+}
+
+.btn-success:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(28, 7, 112, 0.2);
+}
+
+.btn-danger {
+    background-color: #fff;
+    border: 1px solid #e2e8f0;
+    color: #e53e3e;
+    padding: 0.6rem 1.5rem;
+    font-weight: 600;
+    border-radius: 8px;
+}
+
+.btn-danger:hover {
+    background-color: #fff5f5;
+    color: #c53030;
+}
+
+/* --- Global Theme Vars --- */
+:root {
+    --navy-primary: #2062ac;
+    --gold-accent: #E1AD01;
+    --chat-bg: #f4f7f9;
+}
+
+/* --- Left Side: Refined Input Panel --- */
+.m_col {
+    background: #ffffff;
+    padding: 2rem !important;
+    border-right: 1px solid #edf2f7;
+}
+
+.m_col label {
+    color: var(--navy-primary);
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+}
+
+.m_col .form-control:focus {
+    border-color: var(--gold-accent);
+    box-shadow: 0 0 0 3px rgba(225, 173, 1, 0.15);
+}
+
+/* --- Right Side: Premium Messenger Thread --- */
+#msg_thread {
+    background-color: #2062ac;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.container_remarks {
+    background: var(--chat-bg);
+    height: 500px;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(123, 128, 44, 0.605);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    border: none;
+}
+
+/* --- Message Bubbles --- */
+.msg-bubble {
+    max-width: 80%;
+    padding: 12px 16px;
+    font-size: 0.9rem;
+    position: relative;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+/* Received (Support/Other Users) - Navy Style */
+.msg-received {
+    align-self: flex-start;
+    background-color: var(--navy-primary);
+    color: #ffffff;
+    border-radius: 20px 20px 20px 5px;
+}
+
+/* Sent (You) - Gold Style */
+.msg-sent {
+    align-self: flex-end;
+    background-color: var(--gold-accent);
+    color: #ffffff;
+    border-radius: 20px 20px 5px 20px;
+}
+
+/* Bubble Meta Info */
+.msg-info {
+    font-size: 0.7rem;
+    margin-bottom: 4px;
+    font-weight: 600;
+    display: block;
+}
+
+.msg-received .msg-info { color: rgba(255,255,255,0.7); }
+.msg-sent .msg-info { color: #ffffff; text-align: right; }
+
+/* --- Chat Input Footer --- */
+.chat-input-box {
+    background: #ffffff;
+    padding: 20px;
+    border-top: 1px solid #e2e8f0;
+    border-radius: 0 0 12px 0;
+}
+
+#addmsg {
+    border-radius: 25px;
+    padding: 12px 20px;
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
+}
+
+#addmsg:focus {
+    background-color: #ffffff;
+    border-color: var(--gold-accent);
+    box-shadow: 0 4px 12px rgba(225, 173, 1, 0.1);
+    outline: none;
+}
+
+/* --- Buttons --- */
+.btn-success {  
+    background-color: var(--navy-primary) !important;
+    border: 2px solid var(--navy-primary);
+    font-weight: 700;
+}
+
+.btn-success:hover {
+    background-color: #2062ac !important;
+    border-color: var(--gold-accent);
+    color:white;
+}
+
+/* Scrollbar Styling */
+.container_remarks::-webkit-scrollbar { width: 6px; }
+.container_remarks::-webkit-scrollbar-thumb { 
+    background: #cbd5e0; 
+    border-radius: 10px; 
+}
+
+
+/* --- Card Container Improvement --- */
+.card2 {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    background: #ffffff;
+}
+
+/* --- Header using your Navy/Gold Theme --- */
+.card2 .card-header {
+    background-color: #2062ac !important; /* Your Navy */
+    color: #E1AD01 !important; /* Your Gold */
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 1.2rem 1.5rem;
+    border-bottom: 2px solid #E1AD01;
+    display: flex;
+    align-items: center;
+}
+
+/* --- Table Refinement --- */
+#report_data, #network_tb {
+    border-collapse: separate;
+    border-spacing: 0 8px; /* Creates a "card-row" look */
+    margin-top: -8px;
+}
+
+#report_data thead th, #network_tb thead th {
+    background-color: #f8fafc;
+    color: #2062ac;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    font-weight: 800;
+    border: none;
+    padding: 15px;
+}
+
+#report_data tbody tr, #network_tb tbody tr {
+    background-color: #2062ac;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+/* Hover Effect: Glows slightly and shows your Gold theme */
+#report_data tbody tr:hover, #network_tb tbody tr:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(33, 52, 86, 0.1);
+    background-color: #E1AD01; /* Very faint gold tint */
+}
+
+#report_data td, #network_tb td {
+    padding: 15px;
+    vertical-align: middle;
+    border-top: 1px solid #edf2f7;
+    border-bottom: 1px solid #edf2f7;
+    color: #4a5568;
+}
+
+/* --- Status Badge Styles (Apply these in your HTML/PHP logic) --- */
+.badge-modern {
+    padding: 6px 12px;
+    border-radius: 30px;
+    font-weight: 600;
+    font-size: 0.7rem;
+}
+
+/* Custom Scrollbar for the table container */
+#proTeamScroll::-webkit-scrollbar {
+    width: 6px;
+}
+#proTeamScroll::-webkit-scrollbar-thumb {
+    background: #cbd5e0;
+    border-radius: 10px;
+}
+
+
+
+
+    
+
+    
+    
+
+
+
