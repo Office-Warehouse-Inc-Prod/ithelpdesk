@@ -364,9 +364,9 @@ header,
                             <option value="1" >IT</option>
                             <option value="2" >ADMIN</option>
                             <option value="3">MARKETING</option>
-                            <option value="4">MERCHANDISING</option>
+                            <!-- <option value="4">MERCHANDISING</option> -->
                             <option value="6">VISUAL</option>
-                            <option value="8">H.R.</option>
+                            <option value="11">H.R</option>
 
 
 
@@ -378,7 +378,7 @@ header,
                 <!-- SUBJECT -->
                 <label><i class="fas fa-envelope"></i> Subject</label>
                 <select class="form-control" id="subject" name="subject" required>
-                    <option value='' selected disabled>---Select Cateogry---</option>
+                    <option value='' selected disabled>---Select Category---</option>
                   </select>
                 <!-- <input type="text" class="form-control" name="subject" id="subject"
                        style="font-size: 12px; text-transform: uppercase;"

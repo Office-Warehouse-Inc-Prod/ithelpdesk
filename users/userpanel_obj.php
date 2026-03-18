@@ -159,7 +159,7 @@ function getTkt(){
 //In  = Deptsel value
 
   $.post('fetch.php',{iN:iN, operation:'search_tkt'},function(data){
-  // console.log(data);
+  console.log(data);
 
 let tkt = jQuery.parseJSON(data); 
 const tktno = tkt;
@@ -487,6 +487,18 @@ $(row).find('td:eq(6)').css({"font-weight": "bold", "color": "red"});
 $(row).find('td:eq(7)').css({"font-weight": "bold", "color": "red"});
 $(row).find('td:eq(8)').css({"font-weight": "bold", "color": "red"});
 }
+else if (data['Status'].toUpperCase() == 'PENDING' && data['NewRpt'] =='0' ){
+$(row).find('td:eq(0)').css("color", "red")
+.addClass('fas fa-envelope');
+$(row).find('td:eq(1)').css({"font-weight": "bold", "color": "red"});
+$(row).find('td:eq(2)').css({"font-weight": "bold", "color": "red"});
+$(row).find('td:eq(3)').css({"font-weight": "bold", "color": "red"});
+$(row).find('td:eq(4)').css({"font-weight": "bold", "color": "red"});
+$(row).find('td:eq(5)').css({"font-weight": "bold", "color": "red"});
+$(row).find('td:eq(6)').css({"font-weight": "bold", "color": "red"});
+$(row).find('td:eq(7)').css({"font-weight": "bold", "color": "red"});
+$(row).find('td:eq(8)').css({"font-weight": "bold", "color": "red"});
+}
 else if (data['Status'].toUpperCase() == 'ASSIGNED' && data['NewRpt'] =='1' ){
 $(row).find('td:eq(0)').css({"font-weight": "bold", "color": "red"});
 $(row).find('td:eq(1)').css({"font-weight": "bold", "color": "red"});
@@ -498,6 +510,7 @@ $(row).find('td:eq(6)').css({"font-weight": "bold", "color": "red"});
 $(row).find('td:eq(7)').css({"font-weight": "bold", "color": "red"});
 $(row).find('td:eq(8)').css({"font-weight": "bold", "color": "red"});
 }
+
 else if (data['Status'].toUpperCase() == 'SCHEDULE FOR PULL OUT' ){
 $(row).find('td:eq(0)').css({"font-weight": "bold", "color": "#1597BB"});
 $(row).find('td:eq(1)').css({"font-weight": "bold", "color": "#1597BB"});
@@ -608,6 +621,7 @@ $(row).find('td:eq(6)').css({"font-weight": "bold", "color": "#FFC107"});
 $(row).find('td:eq(7)').css({"font-weight": "bold", "color": "#FFC107"});
 $(row).find('td:eq(8)').css({"font-weight": "bold", "color": "#FFC107"});
 }
+
 else if (data['Status'].toUpperCase() == 'SUBJECT FOR CLOSING' ){
 $(row).find('td:eq(0)').css({"font-weight": "bold", "color": "#890188"});
 $(row).find('td:eq(1)').css({"font-weight": "bold", "color": "#890188"});

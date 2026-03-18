@@ -30,7 +30,7 @@ if ($_SESSION['dept_id'] == "10") {
         break;
        
     default:
-    $fltrval = "IN ('ASSIGNED', 'NEW REPORT', 'WAREHOUSE PULL OUT','SUPPLIER PULL OUT','READY FOR PULL OUT','CONFIRM PULL OUT','PULL OUT BY SUPPLIER','REPAIRED','REPLACE SAME MODEL','REPLACE DIFFERENT MODEL','RTV','RETURN TO STORE','RETURN BY SUPPLIER','ON PROCESS','SUBJECT FOR CLOSING','ITEM RECEIVED','APPROVED','EVALUATE','REPAIRED','SCHEDULE FOR DISPOSAL','SUBJECT FOR ADJUSTMENT','APPROVED SUMMARY ADJUSTMENT','RETURN BY SUPPLIER','LIST FOR DISPOSAL','OKAY FOR PULL OUT','ITEM-RECEIVED')";
+    $fltrval = "IN ('ASSIGNED', 'NEW REPORT', 'WAREHOUSE PULL OUT','SUPPLIER PULL OUT','READY FOR PULL OUT','CONFIRM PULL OUT','PULL OUT BY SUPPLIER','REPAIRED','REPLACE SAME MODEL','REPLACE DIFFERENT MODEL','RTV','RETURN TO STORE','RETURN BY SUPPLIER','ON PROCESS','SUBJECT FOR CLOSING','ITEM RECEIVED','APPROVED','EVALUATE','REPAIRED','SCHEDULE FOR DISPOSAL','SUBJECT FOR ADJUSTMENT','APPROVED SUMMARY ADJUSTMENT','RETURN BY SUPPLIER','LIST FOR DISPOSAL','OKAY FOR PULL OUT','ITEM-RECEIVED','PENDING')";
       break;
   }
 $query = '';
@@ -98,6 +98,10 @@ switch ($deptselectvalue) {
     case '7':
       $counter = 'ld_counter';
       $deptabr = 'LD-';
+    break;
+    case '11':
+      $counter = 'hr_counter';
+      $deptabr = 'HR-';
     break;
   default:
     # code...
@@ -336,6 +340,10 @@ WHERE
             $counter = 'ld_counter';
             $deptabr = 'LD-';
             break;
+          case '11':
+            $counter = 'hr_counter';
+            $deptabr = 'HR-';
+            break;
       default:
         # code...
         break;
@@ -443,6 +451,9 @@ public function updatetickno($t){
       break;
       case '7':
         $counter = 'ld_counter';
+        break;
+        case '11':
+        $counter = 'hr_counter';
         break;
     default:
       # code...

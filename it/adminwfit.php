@@ -266,7 +266,7 @@ $con1=new dbconfig();
   
       <div class="form-group col-md-6">
         <label>CATEGORY</label>
-        <input type="text" name="cat_num" id="cat_num" readonly="">
+        <input type="hidden" name="cat_num" id="cat_num" readonly="">
         <select class="form-control form-control-sm" name="cat" id="cat" required >
         <option value=""> &larr; CATEGORY &rarr;</option>  
         <?php
@@ -361,7 +361,7 @@ $con1=new dbconfig();
     <div class="form-group col-md-12">
       <label>Work Output: </label>
       <textarea name="remarks" id="remarks" class="form-control form-control-sm"placeholder="Your Workoutput"
-      style="text-transform:uppercase"></textarea>
+      style="text-transform:uppercase" required></textarea>
     </div>
     <hr/>
 
@@ -378,7 +378,7 @@ $con1=new dbconfig();
         <div class="row">
           <div class="col-md-12 dv_msg">
             <label style="font-weight: bold;">Add Message:</label>
-            <textarea name="admsg" id="" class="form-control form-control-sm"placeholder="Reply to their message or give an updates regarding on this ticket..."></textarea>
+            <textarea name="admsg" id="" required class="form-control form-control-sm"placeholder="Reply to their message or give an updates regarding on this ticket..."></textarea>
           </div>
           <div class="col-md-12 mt-4 mb-2 dv_msg">
             <label for="remarks_view" style="font-weight: bold;">Ticket Thread:</label>

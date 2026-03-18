@@ -94,6 +94,15 @@ $user = NULL;
     header("Location: adminsupport/techdashboard.php");
     exit();
    } 
+
+   //Newly added HR
+     elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'hr-admin' ) {
+    $_SESSION['login'] = 'true';
+    $_SESSION['user_id'] = $results['id'];
+    $_SESSION['deptsel'] = $results['deptsel'];
+    header("Location: hr/adminpanel.php");
+    exit();
+   } 
   elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'mktg-admin' ) {
     $_SESSION['login'] = 'true';
     $_SESSION['user_id'] = $results['id'];

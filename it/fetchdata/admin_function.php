@@ -363,7 +363,7 @@ public function newreporthist(){
 	`reports`.`ticket_no` AS `ticket_no`,
 	`reports`.`date_created` AS `date_created`,
 	`reports`.`store` AS `store`,
-	`tbl_branch`.`str_code` AS `str_code`,
+	`tbl_branch`.`str_name` AS `str_code`,
 	`reports`.`concern` AS `concern`,
 	`reports`.`service_desc` AS `service_desc`,
 	`reports`.`subject` AS `subject`,

@@ -78,8 +78,8 @@ if ($type === 'category') {
             }
             $stmt->close();
         } 
-    } elseif ($val === '8') {
-        $stmt = $conn->prepare("SELECT * FROM categories WHERE deptsel = '8' AND (old_tag IS NULL OR old_tag <> 'Y') ORDER BY order_id ASC");
+    } elseif ($val === '11') { //hr
+        $stmt = $conn->prepare("SELECT * FROM categories WHERE deptsel = '11' AND (old_tag IS NULL OR old_tag <> 'Y') ORDER BY order_id ASC");
         if ($stmt->execute()) {
             $result = $stmt->get_result();
             if ($result->num_rows > 0) {

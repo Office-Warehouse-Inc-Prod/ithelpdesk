@@ -636,6 +636,7 @@ if ($_POST["operation"] == "New_Report") {
     $dept        = $_POST["f_deptsel"] ?? '0';
     $concern        = $_POST["concern"] ?? '0';
     $via         = 'PENDING';
+    $subject     = $_POST["subject"] ?? '0';
 
     $cat         = '31';
     $sub         = '199';
@@ -871,10 +872,10 @@ if ($_POST["operation"] == "New_Report") {
 
             $priorityLabel = '';
             switch ($plvl) {
-                case '1': $priorityLabel = 'Low'; break;
-                case '2': $priorityLabel = 'Normal'; break;
-                case '3': $priorityLabel = 'High'; break;
-                case '4': $priorityLabel = 'Urgent'; break;
+                case '4': $priorityLabel = 'Low'; break;
+                case '3': $priorityLabel = 'Normal'; break;
+                case '2': $priorityLabel = 'High'; break;
+                case '1': $priorityLabel = 'Critical'; break;
                 default:  $priorityLabel = 'Not Set'; break;
             }
 
@@ -915,95 +916,110 @@ if ($_POST["operation"] == "New_Report") {
 
             $mailBody = '
             <html>
-            <body style="margin:0;padding:20px;background:#f4f6f9;font-family:Arial,sans-serif;">
-                <table width="700" align="center" cellpadding="0" cellspacing="0" style="background:#ffffff;border:1px solid #d6def7;border-radius:8px;overflow:hidden;">
+<body style="margin:0;padding:20px;background:#f4f6f9;font-family:Arial,sans-serif;">
+    <table width="700" align="center" cellpadding="0" cellspacing="0" style="background:#ffffff;border:1px solid #d6def7;border-radius:8px;overflow:hidden;">
+        
+        <tr>
+            <td style="background:#627bc5;color:#ffffff;padding:18px 24px;font-size:20px;font-weight:bold;">
+                Helpdesk AI Ticket Assignment
+            </td>
+        </tr>
+
+        <tr>
+            <td style="padding:24px;font-size:14px;color:#333;">
+                
+                <p>Good day,</p>
+                <p>A ticket has been assigned to your department for review and action.</p>
+
+                <table cellpadding="8" cellspacing="0" width="100%" style="border-collapse:collapse;margin-top:10px;">
                     
-                    <tr>
-                        <td style="background:#627bc5;color:#ffffff;padding:18px 24px;font-size:20px;font-weight:bold;">
-                            Helpdesk AI Ticket Assignment
-                        </td>
+                    <tr style="background:#f3f6ff;">
+                        <td style="border:1px solid #d6def7;width:180px;"><strong>Ticket No.</strong></td>
+                        <td style="border:1px solid #d6def7;">' . htmlspecialchars($ticket_no) . '</td>
                     </tr>
 
                     <tr>
-                        <td style="padding:24px;font-size:14px;color:#333;">
-                            
-                            <p>Good day,</p>
-                            <p>A ticket has been assigned to your department for review and action.</p>
+                        <td style="border:1px solid #d6def7;"><strong>Store</strong></td>
+                        <td style="border:1px solid #d6def7;">' . htmlspecialchars($storeName) . '</td>
+                    </tr>
 
-                            <table cellpadding="8" cellspacing="0" width="100%" style="border-collapse:collapse;margin-top:10px;">
-                                
-                                <tr style="background:#f3f6ff;">
-                                    <td style="border:1px solid #d6def7;width:180px;"><strong>Ticket No.</strong></td>
-                                    <td style="border:1px solid #d6def7;">' . htmlspecialchars($ticket_no) . '</td>
-                                </tr>
-
-                                <tr>
-                                    <td style="border:1px solid #d6def7;"><strong>Store</strong></td>
-                                    <td style="border:1px solid #d6def7;">' . htmlspecialchars($storeName) . '</td>
-                                </tr>
-
-                                <tr style="background:#f3f6ff;">
-                                    <td style="border:1px solid #d6def7;"><strong>Department</strong></td>
-                                    <td style="border:1px solid #d6def7;">' . htmlspecialchars($deptName) . '</td>
-                                </tr>
-
-                                <tr>
-                                    <td style="border:1px solid #d6def7;"><strong>Status</strong></td>
-                                    <td style="border:1px solid #d6def7;">' . htmlspecialchars($status) . '</td>
-                                </tr>
-
-                                <tr style="background:#f3f6ff;">
-                                    <td style="border:1px solid #d6def7;"><strong>Priority</strong></td>
-                                    <td style="border:1px solid #d6def7;">' . htmlspecialchars($priorityLabel) . '</td>
-                                </tr>
-
-                                <tr>
-                                    <td style="border:1px solid #d6def7;"><strong>SLA</strong></td>
-                                    <td style="border:1px solid #d6def7;">' . htmlspecialchars($slaLabel) . '</td>
-                                </tr>
-
-                                <tr style="background:#f3f6ff;">
-                                    <td style="border:1px solid #d6def7;"><strong>SLA Max Days</strong></td>
-                                    <td style="border:1px solid #d6def7;">' . htmlspecialchars($sla_days) . '</td>
-                                </tr>
-
-                                <tr>
-                                    <td style="border:1px solid #d6def7;"><strong>Due Date</strong></td>
-                                    <td style="border:1px solid #d6def7;">' . htmlspecialchars($dueDate) . '</td>
-                                </tr>
-
-                                <tr style="background:#f3f6ff;">
-                                    <td style="border:1px solid #d6def7;"><strong>Reference No.</strong></td>
-                                    <td style="border:1px solid #d6def7;">' . htmlspecialchars($refNo) . '</td>
-                                </tr>
-
-                                <tr>
-                                    <td style="border:1px solid #d6def7;"><strong>Concern</strong></td>
-                                    <td style="border:1px solid #d6def7;">' . nl2br(htmlspecialchars($concern)) . '</td>
-                                </tr>
-
-                                <tr style="background:#f3f6ff;">
-                                    <td style="border:1px solid #d6def7;"><strong>Date Created</strong></td>
-                                    <td style="border:1px solid #d6def7;">' . htmlspecialchars($date_created) . '</td>
-                                </tr>
-
-                            </table>
-
-                            <p style="margin-top:20px;">Please log in to the <strong>OWI Helpdesk</strong> for complete details and necessary action.</p>
-                            <p>Thank you.</p>
-
-                        </td>
+                    <tr style="background:#f3f6ff;">
+                        <td style="border:1px solid #d6def7;"><strong>Department</strong></td>
+                        <td style="border:1px solid #d6def7;">' . htmlspecialchars($deptName) . '</td>
                     </tr>
 
                     <tr>
-                        <td style="background:#8bacf6;color:#ffffff;text-align:center;padding:10px;font-size:12px;">
-                            OWI Helpdesk System Notification
-                        </td>
+                        <td style="border:1px solid #d6def7;"><strong>Status</strong></td>
+                        <td style="border:1px solid #d6def7;">' . htmlspecialchars($status) . '</td>
+                    </tr>
+
+                    <tr style="background:#f3f6ff;">
+                        <td style="border:1px solid #d6def7;"><strong>Priority</strong></td>
+                        <td style="border:1px solid #d6def7;">' . htmlspecialchars($priorityLabel) . '</td>
+                    </tr>
+
+                    <tr>
+                        <td style="border:1px solid #d6def7;"><strong>SLA</strong></td>
+                        <td style="border:1px solid #d6def7;">' . htmlspecialchars($slaLabel) . '</td>
+                    </tr>
+
+                    <tr style="background:#f3f6ff;">
+                        <td style="border:1px solid #d6def7;"><strong>SLA Max Days</strong></td>
+                        <td style="border:1px solid #d6def7;">' . htmlspecialchars($sla_days) . '</td>
+                    </tr>
+
+                    <tr>
+                        <td style="border:1px solid #d6def7;"><strong>Due Date</strong></td>
+                        <td style="border:1px solid #d6def7;">' . htmlspecialchars($dueDate) . '</td>
+                    </tr>
+
+                    <tr style="background:#f3f6ff;">
+                        <td style="border:1px solid #d6def7;"><strong>Subject</strong></td>
+                        <td style="border:1px solid #d6def7;">' . htmlspecialchars($subject) . '</td>
+                    </tr>
+
+                    <tr>
+                        <td style="border:1px solid #d6def7;"><strong>Concern</strong></td>
+                        <td style="border:1px solid #d6def7;">' . nl2br(htmlspecialchars($concern)) . '</td>
+                    </tr>
+
+                    <tr style="background:#f3f6ff;">
+                        <td style="border:1px solid #d6def7;"><strong>Date Created</strong></td>
+                        <td style="border:1px solid #d6def7;">' . htmlspecialchars($date_created) . '</td>
                     </tr>
 
                 </table>
-            </body>
-            </html>
+
+                <p style="margin-top:20px;">Please log in to the <strong>OWI Helpdesk</strong> for complete details and necessary action.</p>
+
+                <!-- BUTTON -->
+                <div style="text-align:center;margin-top:25px;">
+                    <a href="https://owihelpdesk.officewarehouse.com.ph" 
+                       style="background:#627bc5;
+                              color:#ffffff;
+                              padding:12px 24px;
+                              text-decoration:none;
+                              border-radius:5px;
+                              display:inline-block;
+                              font-weight:bold;">
+                        Open OWI Helpdesk
+                    </a>
+                </div>
+
+                <p style="margin-top:20px;">Thank you.</p>
+
+            </td>
+        </tr>
+
+        <tr>
+            <td style="background:#8bacf6;color:#ffffff;text-align:center;padding:10px;font-size:12px;">
+                OWI Helpdesk System Notification
+            </td>
+        </tr>
+
+    </table>
+</body>
+</html>
             ';
 
             $mail->Body    = $mailBody;

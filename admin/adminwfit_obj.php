@@ -95,7 +95,7 @@ $('#new_rep_table_filter input')
 
       $('#ticket_no').val(data['ticket_no']);
       $('#store').val(data['store']);
-      $('#str_desc').val(data['str_code']);
+      $('#str_desc').val(data['str_code'] + '-'+ data['str_name']);
       $('#crtd_by').val(data['full_name']);
       $('#date_createdx').val(data['date_created']);
 

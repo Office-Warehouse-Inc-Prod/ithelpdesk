@@ -129,6 +129,7 @@ $datetime->setTimezone($timezone);
       <div class="modal-body">
        <div id="chartdiv9"></div>
       </div>
+      <table class="table table-striped" id="tbl_cat"></table>
     </div>
   </div>
 </div>
@@ -150,7 +151,21 @@ $datetime->setTimezone($timezone);
   </div>
 </div>
 
-
+<div class="modal fade" id="storenet_graph_modal" tabindex="-1" role="dialog" aria-labelledby="storenet_graph_modal" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Per Store</h5>
+        <button type="button" class="close" id="substr_clsbtn" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+       <div id="storenet_graph"></div>
+      </div>
+    </div>
+  </div>
+</div>
 
 
 <!-- I.T Bar modal -->
@@ -187,7 +202,7 @@ $datetime->setTimezone($timezone);
                           <span class="ml-2 badge badge-primary badge-pill" id="itm_open"></span>
                         </li>
                         <li class="mr-4 list-group-item d-flex justify-content-between align-items-center">
-                          ON PROCESS:
+                          Attended with Fix Asset:
                           <span class="ml-2 badge badge-primary badge-pill" id="itm_wfa"></span>
                         </li>
                           <li class="mr-4 list-group-item d-flex justify-content-between align-items-center">
