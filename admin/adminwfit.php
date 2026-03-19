@@ -757,7 +757,7 @@ hr{ border-top: 1px solid var(--line) !important; }
       <select class="form-control form-control-sm" name="f_deptsel" id="f_deptsel" required>
       <option value="">Assign department...</option>
       <?php
-      $query="SELECT * FROM tbl_dept";
+      $query="SELECT * FROM tbl_dept WHERE dept_id <> '8' ";
       $run=$con1->prepare($query);
       $run->execute();
       $rs=$run->get_result();

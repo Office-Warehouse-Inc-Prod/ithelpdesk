@@ -365,7 +365,7 @@ $query = "
             // ✅ new unified fields (department)
             'f_deptsel' => $assigned_id,
             'dept_desc' => $assigned_desc,
-            'dept_sel'  => $assigned_sel,
+            'dept_sel'  => $row['dept_sel'],
 
             'cat_id' => $row['cat_id'] ?? '',
             'category' => $row['category'] ?? '',

@@ -328,10 +328,13 @@ $('#report_data tbody').on('dblclick', 'tr', function () {
   // Simulate the original `button` click by using this `tr` as parent
   var data = table.row($(this)).data();
   if (!data) return;
-  // console.log(data);
+  console.log(data);
   $('#subjct').attr('readonly', true);
   var tid = $(this).find('td:eq(2)').html(); 
   $('#ticket_no').val(data['ticket_no']);
+  // $('#f_deptsel').val(data['f_deptsel']); // new 
+  $('#f_deptsel').val(data['f_deptsel']); // new 
+  
   $('#str_num').val(data['store']);
   $('#store').val(data['store']);
   $('#date_createdx').val(data['date_created']);
