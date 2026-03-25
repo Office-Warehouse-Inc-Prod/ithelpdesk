@@ -59,7 +59,7 @@ class dbconfig extends dbconn
 			FROM
 			reports
 			LEFT JOIN tbl_status ON reports.`status` = tbl_status.stat_desc
-			where `reports`.`sub_id` NOT IN ('15','28','34','35') AND `status` NOT IN ('WAITING FOR IT HELPDESK RESPONSE','NEW REPORT') AND YEAR(date_created) IN (".$_POST['yr'] .") AND reports.deptsel = '1'
+			where `reports`.`sub_id` NOT IN ('15','28','34','35') AND `status` NOT IN ('WAITING FOR IT HELPDESK RESPONSE','NEW REPORT') AND YEAR(date_created) IN (".$_POST['yr'] .") AND reports.deptsel = '2'
 			GROUP BY `status`
 			ORDER BY stat_id ASC
 
@@ -100,7 +100,7 @@ class dbconfig extends dbconn
 				LEFT JOIN reports ON reports.itsup = it_tech.itsup
 				INNER JOIN users ON users.tech_id = it_tech.itsup
 				WHERE
-				reports.sub_id NOT IN (15,28,34,35) AND reports.itsup NOT IN ('8') AND reports.deptsel = '1' and
+				reports.sub_id NOT IN (15,28,34,35) AND reports.itsup NOT IN ('8') AND reports.deptsel = '2' and
 				YEAR(reports.date_created) IN (".$_POST['yr'].")
 				GROUP BY
 				reports.itsup
@@ -145,7 +145,7 @@ class dbconfig extends dbconn
 		FROM
 		reports
 		WHERE
-		year(date_created) BETWEEN '".$_POST['yr'] ."' AND '".$_POST['yr'] ."' and reports.sub_id NOT IN ('15','28','34','35') AND reports.deptsel = '1'
+		year(date_created) BETWEEN '".$_POST['yr'] ."' AND '".$_POST['yr'] ."' and reports.sub_id NOT IN ('15','28','34','35') AND reports.deptsel = '2'
 		GROUP BY
 		DATEPART";	
 		} else {
@@ -181,7 +181,7 @@ class dbconfig extends dbconn
 		$query= "
 		SELECT cat_desc,clr,cat_id, count(*) as ctn, date_created
 		FROM vwp 
-		WHERE deptsel = '1' AND date_created IN (".$_POST['yr'] .")
+		WHERE deptsel = '2' AND date_created IN (".$_POST['yr'] .")
 		GROUP BY cat_id ORDER BY cat_desc ASC";
 		$statement = $this->connection->prepare($query);
 		$statement-> execute();
@@ -203,7 +203,7 @@ class dbconfig extends dbconn
 
 	public function subs($id){
 
-		$query= "SELECT sub_cat, count(*) as sctn, date_created FROM vwp WHERE cat_id='".$id."' AND deptsel = '1'  AND date_created IN (".$_POST['yr'] .")  GROUP BY sub_cat ORDER BY cat_desc ASC";
+		$query= "SELECT sub_cat, count(*) as sctn, date_created FROM vwp WHERE cat_id='".$id."' AND deptsel = '2'  AND date_created IN (".$_POST['yr'] .")  GROUP BY sub_cat ORDER BY cat_desc ASC";
 
 		$statement = $this->connection->prepare($query);
 		$statement-> execute();
@@ -233,7 +233,7 @@ class dbconfig extends dbconn
 				JOIN `tbl_branch` ON ( `reports`.`store` = `tbl_branch`.`str_num` ))
 		JOIN `tbl_area` ON ( `tbl_area`.`area_num` = `tbl_branch`.`area_num` )) 
 	WHERE
-		YEAR ( `reports`.`date_created` )  IN ( ".$_POST['yr'] ." ) AND deptsel = '1'
+		YEAR ( `reports`.`date_created` )  IN ( ".$_POST['yr'] ." ) AND deptsel = '2'
 	GROUP BY
 		`tbl_branch`.`area_num`";
 		$statement = $this->connection->prepare($query);
@@ -275,7 +275,7 @@ class dbconfig extends dbconn
 		 {
 			$query="
 
-			select `reports`.`store` AS `store`,`tbl_branch`.`str_code` AS `str_dept`,`tbl_branch`.`area_num` AS `area_num`,`tbl_area`.`area_desc` AS `area_desc`,year(`reports`.`date_created`) AS `dc`,count(`reports`.`date_created`) AS `cnt_ttl` from ((`reports` join `tbl_branch` on(`reports`.`store` = `tbl_branch`.`str_num`)) join `tbl_area` on(`tbl_area`.`area_num` = `tbl_branch`.`area_num`)) WHERE YEAR(`reports`.`date_created`) IN (".$_POST['yr'] .") AND area_desc = '".$_POST['area_desc'] ."' AND deptsel = '1' group by reports.store, str_code, area_desc ORDER BY str_code ASC
+			select `reports`.`store` AS `store`,`tbl_branch`.`str_code` AS `str_dept`,`tbl_branch`.`area_num` AS `area_num`,`tbl_area`.`area_desc` AS `area_desc`,year(`reports`.`date_created`) AS `dc`,count(`reports`.`date_created`) AS `cnt_ttl` from ((`reports` join `tbl_branch` on(`reports`.`store` = `tbl_branch`.`str_num`)) join `tbl_area` on(`tbl_area`.`area_num` = `tbl_branch`.`area_num`)) WHERE YEAR(`reports`.`date_created`) IN (".$_POST['yr'] .") AND area_desc = '".$_POST['area_desc'] ."' AND deptsel = '2' group by reports.store, str_code, area_desc ORDER BY str_code ASC
 
 				";
 
@@ -327,7 +327,7 @@ $query = "
 
     $statement = $this->connection->prepare($query);
     $statement->execute([
-        ':deptsel' => '1',
+        ':deptsel' => '2',
         ':yr' => $yr
     ]);
 
@@ -493,6 +493,11 @@ ORDER BY
 		return $data;
 
 }
+
+
+
+
+
 
 public function reassign_itsup(){
 	$qry = $this->connection->prepare("SELECT * FROM tbl_reassigned");
@@ -1144,7 +1149,7 @@ WHERE
 
 		$query= "SELECT cat_desc,clr,cat_id, count(*) as ctn, date_created
 		FROM vwp 
-		WHERE deptsel = '1' AND cat_id ='3' AND date_created IN (".$_POST['yr'] .")
+		WHERE deptsel = '2' AND cat_id ='3' AND date_created IN (".$_POST['yr'] .")
 		GROUP BY cat_id ORDER BY cat_desc ASC";
 		$statement = $this->connection->prepare($query);
 		$statement-> execute();
@@ -1166,7 +1171,7 @@ WHERE
 
 	public function netsubs($id){
 
-		$query= "SELECT sub_cat, count(*) as sctn, date_created FROM vwp WHERE cat_id='".$id."' AND deptsel = '1'  AND date_created IN (".$_POST['yr'] .")  GROUP BY sub_cat ORDER BY cat_desc ASC";
+		$query= "SELECT sub_cat, count(*) as sctn, date_created FROM vwp WHERE cat_id='".$id."' AND deptsel = '2'  AND date_created IN (".$_POST['yr'] .")  GROUP BY sub_cat ORDER BY cat_desc ASC";
 
 		$statement = $this->connection->prepare($query);
 		$statement-> execute();
@@ -1192,7 +1197,7 @@ WHERE
 			FROM
 			reports
 			LEFT JOIN tbl_status ON reports.`status` = tbl_status.stat_desc
-			where `reports`.`sub_id` NOT IN ('15','28','34','35') AND `status` NOT IN ('WAITING FOR IT HELPDESK RESPONSE','NEW REPORT') AND YEAR(date_created) IN (".$_POST['yr'] .") AND reports.deptsel = '1' AND cat_id = '3'
+			where `reports`.`sub_id` NOT IN ('15','28','34','35') AND `status` NOT IN ('WAITING FOR IT HELPDESK RESPONSE','NEW REPORT') AND YEAR(date_created) IN (".$_POST['yr'] .") AND reports.deptsel = '2' AND cat_id = '3'
 			GROUP BY `status`
 			ORDER BY stat_id ASC
 		";
@@ -1228,7 +1233,7 @@ WHERE
 				JOIN `tbl_branch` ON ( `reports`.`store` = `tbl_branch`.`str_num` ))
 		JOIN `tbl_area` ON ( `tbl_area`.`area_num` = `tbl_branch`.`area_num` )) 
 	WHERE
-		YEAR ( `reports`.`date_created` )  IN ( ".$_POST['yr'] ." ) AND deptsel = '1' AND cat_id = '3'
+		YEAR ( `reports`.`date_created` )  IN ( ".$_POST['yr'] ." ) AND deptsel = '2' AND cat_id = '3'
 	GROUP BY
 		`tbl_branch`.`area_num`";
 		$statement = $this->connection->prepare($query);
@@ -1268,7 +1273,7 @@ WHERE
 		}
 		else  
 		 {
-			$query="select `reports`.`store` AS `store`,`tbl_branch`.`str_code` AS `str_dept`,`tbl_branch`.`area_num` AS `area_num`,`tbl_area`.`area_desc` AS `area_desc`,year(`reports`.`date_created`) AS `dc`,count(`reports`.`date_created`) AS `cnt_ttl` from ((`reports` join `tbl_branch` on(`reports`.`store` = `tbl_branch`.`str_num`)) join `tbl_area` on(`tbl_area`.`area_num` = `tbl_branch`.`area_num`)) WHERE YEAR(`reports`.`date_created`) IN (".$_POST['yr'] .") AND area_desc = '".$_POST['area_desc'] ."' AND deptsel = '1' AND cat_id = '3' group by reports.store, str_code, area_desc ORDER BY str_code ASC
+			$query="select `reports`.`store` AS `store`,`tbl_branch`.`str_code` AS `str_dept`,`tbl_branch`.`area_num` AS `area_num`,`tbl_area`.`area_desc` AS `area_desc`,year(`reports`.`date_created`) AS `dc`,count(`reports`.`date_created`) AS `cnt_ttl` from ((`reports` join `tbl_branch` on(`reports`.`store` = `tbl_branch`.`str_num`)) join `tbl_area` on(`tbl_area`.`area_num` = `tbl_branch`.`area_num`)) WHERE YEAR(`reports`.`date_created`) IN (".$_POST['yr'] .") AND area_desc = '".$_POST['area_desc'] ."' AND deptsel = '2' AND cat_id = '3' group by reports.store, str_code, area_desc ORDER BY str_code ASC
 
 				";
 

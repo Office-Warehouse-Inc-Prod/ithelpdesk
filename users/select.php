@@ -94,6 +94,86 @@ if ($type === 'category') {
             $stmt->close();
         } 
     } 
+    elseif ($val === '12') { //hr
+        $stmt = $conn->prepare("SELECT * FROM categories WHERE deptsel = '12' AND (old_tag IS NULL OR old_tag <> 'Y') ORDER BY order_id ASC");
+        if ($stmt->execute()) {
+            $result = $stmt->get_result();
+            if ($result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
+                    $id = $row['cat_id'];
+                    $cat = $row['cat_desc'];
+                    $data[] = array('id' => $cat, 'text' => $cat);
+                }
+            } else {
+                $data[] = array('id' => 0, 'text' => 'No Data Found');
+            }
+            $stmt->close();
+        } 
+    } 
+    elseif ($val === '13') { //hr
+        $stmt = $conn->prepare("SELECT * FROM categories WHERE deptsel = '13' AND (old_tag IS NULL OR old_tag <> 'Y') ORDER BY order_id ASC");
+        if ($stmt->execute()) {
+            $result = $stmt->get_result();
+            if ($result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
+                    $id = $row['cat_id'];
+                    $cat = $row['cat_desc'];
+                    $data[] = array('id' => $cat, 'text' => $cat);
+                }
+            } else {
+                $data[] = array('id' => 0, 'text' => 'No Data Found');
+            }
+            $stmt->close();
+        } 
+    } 
+    elseif ($val === '14') { //hr
+        $stmt = $conn->prepare("SELECT * FROM categories WHERE deptsel = '14' AND (old_tag IS NULL OR old_tag <> 'Y') ORDER BY order_id ASC");
+        if ($stmt->execute()) {
+            $result = $stmt->get_result();
+            if ($result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
+                    $id = $row['cat_id'];
+                    $cat = $row['cat_desc'];
+                    $data[] = array('id' => $cat, 'text' => $cat);
+                }
+            } else {
+                $data[] = array('id' => 0, 'text' => 'No Data Found');
+            }
+            $stmt->close();
+        } 
+    } 
+    elseif ($val === '15') { //hr
+        $stmt = $conn->prepare("SELECT * FROM categories WHERE deptsel = '15' AND (old_tag IS NULL OR old_tag <> 'Y') ORDER BY order_id ASC");
+        if ($stmt->execute()) {
+            $result = $stmt->get_result();
+            if ($result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
+                    $id = $row['cat_id'];
+                    $cat = $row['cat_desc'];
+                    $data[] = array('id' => $cat, 'text' => $cat);
+                }
+            } else {
+                $data[] = array('id' => 0, 'text' => 'No Data Found');
+            }
+            $stmt->close();
+        } 
+    } 
+    elseif ($val === '16') { //hr
+        $stmt = $conn->prepare("SELECT * FROM categories WHERE deptsel = '16' AND (old_tag IS NULL OR old_tag <> 'Y') ORDER BY order_id ASC");
+        if ($stmt->execute()) {
+            $result = $stmt->get_result();
+            if ($result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
+                    $id = $row['cat_id'];
+                    $cat = $row['cat_desc'];
+                    $data[] = array('id' => $cat, 'text' => $cat);
+                }
+            } else {
+                $data[] = array('id' => 0, 'text' => 'No Data Found');
+            }
+            $stmt->close();
+        } 
+    } 
     else {
         // Handle invalid type
         $data[] = array('id' => 0, 'text' => 'Search for Data');

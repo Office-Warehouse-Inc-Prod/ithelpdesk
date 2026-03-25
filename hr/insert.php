@@ -127,7 +127,7 @@ $ticknum = $res['ticket_no']+1;
     ':remarks' => ucfirst($_POST["remarks"]),
     ':isp_id' => '0',
     ':date_refNo' => date('Y-m-d H:i:s',strtotime($_POST["date_refNo"])),
-    ':deptsel' => '1' // it dept
+    ':deptsel' => '11' // it dept
 
     
    )

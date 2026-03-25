@@ -36,7 +36,7 @@ $regcon=new dbconfig();
 }
 
 .table thead th{
-  background-color: #2062ac;
+  background-color: #54699e;
   color:white;
   font-weight: 600;
   text-transform: uppercase;
@@ -54,7 +54,7 @@ $regcon=new dbconfig();
 }
 
 .table tbody tr:hover{
-  background-color: #2062ac !important;
+  background-color: #213456 !important;
   color:#ffffff !important;
   cursor:pointer;
   transition: all 0.2s ease;
@@ -72,7 +72,7 @@ $regcon=new dbconfig();
 }
 
 #usr_crt_modal .modal-header {
-  background-color: #2062ac;
+  background-color: #213456;
   color: #fff;
   border-top-left-radius: 15px;
   border-top-right-radius: 15px;
@@ -89,7 +89,7 @@ $regcon=new dbconfig();
 #usr_crt_modal .input-group-text {
   background-color: #f8f9fa;
   border-right: none;
-  color: #2062ac;
+  color: #213456;
 }
 
 #usr_crt_modal .form-control {
@@ -111,7 +111,7 @@ $regcon=new dbconfig();
 #btn_submit {
   background-color: #E1AD01;
   border: none;
-  color: #2062ac;
+  color: #213456;
   font-weight: 700;
   padding: 10px 40px;
   border-radius: 30px;
@@ -119,7 +119,7 @@ $regcon=new dbconfig();
 }
 
 #btn_submit:hover {
-  background-color: #2062ac;
+  background-color: #213456;
   color: #E1AD01;
   transform: translateY(-2px);
 }
@@ -154,7 +154,7 @@ $regcon=new dbconfig();
   left: 12px;
   top: 50%;
   transform: translateY(-50%);
-  color: #2062ac;
+  color: #213456;
   z-index: 1;
   opacity: 0.6;
 }
@@ -167,7 +167,7 @@ $regcon=new dbconfig();
   background-color: #ffffff !important;
   transition: all 0.3s ease;
   outline: none !important;
-  color: #2062ac;
+  color: #213456;
   margin-left: 0 !important; 
 }
 
@@ -180,7 +180,7 @@ $regcon=new dbconfig();
   background-color: #E1AD01 !important;
   border: none !important;
   border-radius: 50px !important;
-  color: #2062ac !important;
+  color: #213456 !important;
   font-weight: 700 !important;
   padding: 10px 25px !important;
   text-transform: uppercase;
@@ -196,7 +196,7 @@ $regcon=new dbconfig();
 }
 
 #crtbtnact:hover {
-  background-color: #2062ac !important;
+  background-color: #213456 !important;
   color: #ffffff !important;
   transform: translateY(-2px);
   box-shadow: 0 6px 12px rgba(33, 52, 86, 0.3);
@@ -204,7 +204,7 @@ $regcon=new dbconfig();
 
 /* Table Header Styling */
 #usermtc_table thead th {
-  background-color: #2062ac !important;
+  background-color: #213456 !important;
   color: #ffffff !important;
   border: none;
   padding: 15px;

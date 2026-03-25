@@ -425,6 +425,7 @@ select.form-control option {
 
 
 
+
 <style>
 /* =========================
    OWI HELP DESK THEME (like screenshot)
@@ -453,7 +454,7 @@ body{
   color: var(--text) !important;
 }
 
-/* ===== Top navbar (if applicable) ===== */
+/* ===== Top navbar (if applicable) =====  */
 .navbar, header, .topbar, .navbar-default{
   background: var(--navy) !important;
   border-color: rgba(255,255,255,.10) !important;
@@ -667,7 +668,281 @@ select.form-control:focus, .form-control:focus{
     background-color: #c8e6c9 !important;
     color: #237227!important;
 }
+
+/* Change Password Modal Custom Styles */
+#userModal .modal-content {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+}
+
+#userModal .modal-header {
+    background-color: #213456;
+    color: #fff;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    border-bottom: 4px solid #E1AD01; /* Your Theme Gold */
+}
+
+#userModal .modal-title {
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+}
+
+#userModal .input-group-text {
+    background-color: white;
+    border-right: none;
+    color: #213456;
+}
+
+#userModal .form-control {
+    border-left: none;
+    height: 45px;
+    border-radius: 0 8px 8px 0;
+}
+
+#userModal .form-control:focus {
+    border-color: #213456;
+    box-shadow: none;
+}
+
+#userModal .input-group:focus-within {
+    box-shadow: 0 0 0 0.2rem rgba(225, 173, 1, 0.25);
+    border-radius: 8px;
+}
+
+/* --- Right Side: Message Thread Panel --- */
+#msg_thread {
+    padding: 1rem 1.5rem;
+    background-color: #f8fafc;
+    height: 100%;
+}
+
+/* Comment Input Area */
+#addmsg {
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 1rem;
+    background: #ffffff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+/* Container for Remarks (The Thread) */
+.container_remarks {
+    background: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    height: 450px;
+    overflow-y: auto;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* Individual Message Bubbles (to be used in your JS output) */
+.chat-bubble {
+    max-width: 85%;
+    padding: 0.8rem 1rem;
+    border-radius: 15px;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    position: relative;
+}
+
+/* System/Received messages */
+.chat-left {
+    align-self: flex-start;
+    background: #f1f5f9;
+    color: #334155;
+    border-bottom-left-radius: 2px;
+}
+
+/* User/Sent messages */
+.chat-right {
+    align-self: flex-end;
+    background: #1C0770;
+    color: #ffffff;
+    border-bottom-right-radius: 2px;
+}
+
+.msg-meta {
+    font-size: 0.7rem;
+    color: #94a3b8;
+    margin-bottom: 4px;
+    display: block;
+}
+
+/* --- Action Buttons --- */
+.btn-success {
+    background-color: #1C0770 !important;
+    border: none;
+    padding: 0.6rem 2rem;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: transform 0.2s ease;
+}
+
+.btn-success:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(28, 7, 112, 0.2);
+}
+
+.btn-danger {
+    background-color: #fff;
+    border: 1px solid #e2e8f0;
+    color: #e53e3e;
+    padding: 0.6rem 1.5rem;
+    font-weight: 600;
+    border-radius: 8px;
+}
+
+.btn-danger:hover {
+    background-color: #fff5f5;
+    color: #c53030;
+}
+
+/* --- Global Theme Vars --- */
+:root {
+    --navy-primary: #213456;
+    --gold-accent: #E1AD01;
+    --chat-bg: #f4f7f9;
+}
+
+/* --- Left Side: Refined Input Panel --- */
+.m_col {
+    background: #ffffff;
+    padding: 2rem !important;
+    border-right: 1px solid #edf2f7;
+}
+
+.m_col label {
+    color: var(--navy-primary);
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+}
+
+.m_col .form-control:focus {
+    border-color: var(--gold-accent);
+    box-shadow: 0 0 0 3px rgba(225, 173, 1, 0.15);
+}
+
+/* --- Right Side: Premium Messenger Thread --- */
+#msg_thread {
+    background-color: #213456;
+
+}
+
+.container_remarks {
+    background: var(--chat-bg);
+    height: 500px;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(123, 128, 44, 0.605);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    border: none;
+}
+
+
+
+/* Received (Support/Other Users) - Navy Style */
+.msg-received {
+    align-self: flex-start;
+    background-color: var(--navy-primary);
+    color: #ffffff;
+    border-radius: 20px 20px 20px 5px;
+}
+
+/* Sent (You) - Gold Style */
+.msg-sent {
+    align-self: flex-end;
+    background-color: var(--gold-accent);
+    color: #ffffff;
+    border-radius: 20px 20px 5px 20px;
+}
+
+/* Bubble Meta Info */
+.msg-info {
+    font-size: 0.7rem;
+    margin-bottom: 4px;
+    font-weight: 600;
+    display: block;
+}
+
+.msg-received .msg-info { color: rgba(255,255,255,0.7); }
+.msg-sent .msg-info { color: #ffffff; text-align: right; }
+
+/* --- Chat Input Footer --- */
+.chat-input-box {
+    background: #ffffff;
+    padding: 20px;
+    border-top: 1px solid #e2e8f0;
+    border-radius: 0 0 12px 0;
+}
+
+#addmsg {
+    border-radius: 25px;
+    padding: 12px 20px;
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
+}
+
+#addmsg:focus {
+    background-color: #ffffff;
+    border-color: var(--gold-accent);
+    box-shadow: 0 4px 12px rgba(225, 173, 1, 0.1);
+    outline: none;
+}
+.card2 {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    background: #ffffff;
+}
+
+/* --- Header using your Navy/Gold Theme --- */
+.card2 .card-header {
+    background-color: #213456 !important; /* Your Navy */
+    color: #E1AD01 !important; /* Your Gold */
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 1.2rem 1.5rem;
+    border-bottom: 2px solid #E1AD01;
+    display: flex;
+    align-items: center;
+}
+/* Custom Scrollbar for the table container */
+#proTeamScroll::-webkit-scrollbar {
+    width: 6px;
+}
+#proTeamScroll::-webkit-scrollbar-thumb {
+    background: #cbd5e0;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+background: linear-gradient(135deg, #837031, #E1AD01);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #837031, #E1AD01);
+}
 </style>
+
 
 <div class="container-fluid">
   <div id="wrapper">
@@ -866,6 +1141,24 @@ select.form-control:focus, .form-control:focus{
         <?php } ?>
     </select> 
 </div>
+
+<div class="form-group col-6 col-md-6 col-lg-6">
+    <label>ASSIGNED DEPT</label>
+    <select class="form-control form-control-sm" name="f_deptsel" id="f_deptsel" required>
+        <option value="">Select Department...</option>  
+        <?php
+        $query = "SELECT * FROM tbl_dept WHERE dept_id <> '8'";
+        $run = $conn->prepare($query);
+        $run->execute();
+        $rs = $run->get_result();
+        while ($res = $rs->fetch_assoc()) {
+            $brcnhid = $res['dept_id'];
+            $brnchcd = $res['dept_desc'];
+        ?>
+            <option value="<?php echo $brcnhid; ?>"><?php echo $brnchcd; ?></option>
+        <?php } ?>
+    </select> 
+</div>
 <input type = "hidden" class="form-control form-control-sm" name = "ticket_no" id="ticket_no">
 
 
@@ -984,11 +1277,11 @@ style="text-transform:uppercase">
 
 <div  class="col-12 col-lg-12 mb-3">
 
-       <label style="font-weight: bold;">Add Comment:</label>
+       <label style="font-weight: bold; color:white;">Add Comment:</label>
 <textarea name="admsg" id="addmsg" class="form-control form-control-sm" placeholder="Reply to their message or give an updates regarding on this ticket..." required></textarea> 
 </div>
 <div class="col-12 col-lg-12 mt-4 mb-2 dv_msg">
-<label for="remarks_view" style="font-weight: bold;">Comment Thread:</label>
+<label for="remarks_view" style="font-weight: bold; color: white;">Comment Thread:</label>
    <hr>
 <div class="container_remarks" >
 <div id="remarks_view"></div>

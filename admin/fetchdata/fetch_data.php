@@ -54,6 +54,9 @@ switch ($mode) {
     case 'newrpt_tbl':
          $records['newrptdata']= $fn->newreporthist();
         break;
+            case 'transrpt_tbl': // transfer 
+         $records['newrptdata']= $fn->transrpt_tbl();
+        break;
     case 'usermtc_dtable':
          $records['usermtc_data']= $fn->usermtc_table();
         break;

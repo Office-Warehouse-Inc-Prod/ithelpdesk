@@ -25,7 +25,7 @@ ON
 WHERE
 `status` = 'NEW REPORT' AND
 msg_cnt = '1' AND
-deptsel = '1' AND 
+f_deptsel = '1' AND 
 store IS NOT NULL
 GROUP BY
 concern";

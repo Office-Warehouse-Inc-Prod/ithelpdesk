@@ -1,174 +1,307 @@
-<?php include 'main_ses.php'; ?>
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Login | Office Warehouse Inc.</title>
-    <link rel="icon" type="image/x-icon" href="assets/images/owilogo.jpeg">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Office Warehouse | Triplex Portals</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;800&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(rgba(34, 56, 167, 0.3), rgba(214, 216, 184, 0.27)), 
-                        url('images/bg_login.png'); 
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            margin: 0;
+        :root {
+            --sceptile: #83cd6a;
+            --sceptile-dark: #1b2e16;
+            --wartortle: #8bacf6;
+            --wartortle-dark: #161c2e;
+            --pikachu: #ffd84d; 
+            --white: #ffffff;
+            --ease: cubic-bezier(0.85, 0, 0.15, 1);
         }
 
-        .main-wrapper {
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body, html {
+            height: 100%;
+            overflow: hidden;
+            background: #d8d2d2;
+        }
+
+        .split-wrapper {
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        .sector {
+            position: relative;
             flex: 1;
             display: flex;
-            align-items: center; /* Vertical Center */
-            justify-content: center; /* Horizontal Center */
-            padding: 20px;
+            align-items: center;
+            justify-content: center;
+            transition: flex var(--ease) 0.7s, filter 0.5s ease;
+            overflow: hidden;
+            cursor: pointer;
+            text-decoration: none;
         }
 
-        .login-card {
-            background: #ffffff;
-            padding: 2.5rem;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-            width: 100%;
-            max-width: 420px; /* Fixed maximum width for the card */
-            z-index: 2;
+        .sceptile-sector {
+            background: linear-gradient(135deg, #476d39 0%, var(--sceptile-dark) 100%);
+            border-right: 1px solid rgba(131, 205, 106, 0.2);
         }
 
-        /* Responsive behavior for the branding image */
-        .side-left-img {
-            max-height: 600px;
-            width: 100%;
-            object-fit: contain;
-            border-radius: 15px;
+        .wartortle-sector {
+            background: linear-gradient(135deg, #1d263b 0%, var(--wartortle-dark) 100%);
         }
 
-        .divider-text h2 {
-            color: #213456;
+        .pikachu-sector {
+        background: linear-gradient(135deg, #d3aa18, #3a2f00);
+        --accent: var(--pikachu);
+        }
+
+        .sector:hover {
+            flex: 1.8;
+        }
+
+        .split-wrapper:has(.sector:hover) .sector:not(:hover) {
+            flex: 0.6;
+            filter: grayscale(0.8) brightness(0.4);
+        }
+
+        .bg-text {
+            position: absolute;
+            font-size: 15vw;
             font-weight: 800;
-            font-size: 2.2rem;
-            margin: 0;
+            opacity: 0.03;
+            pointer-events: none;
+            white-space: nowrap;
+            z-index: 0;
         }
 
-        .login-title {
-            font-size: 13px;
-            letter-spacing: 1px;
-            font-weight: 600;
-            color: #666;
+        .content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            padding: 0 10%;
+            max-width: 600px;
+            transition: transform 0.5s var(--ease);
         }
 
-        .form-control {
-            padding: 0.75rem 1rem;
-            border-left: none;
+        .sector:hover .content {
+            transform: scale(1.05);
         }
 
-        .input-group-text {
-            background-color: #fff;
-            color: #213456;
+        .icon-hex {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--accent);
+            transform: rotate(45deg);
+            transition: all 0.5s var(--ease);
         }
 
-        .btn-primary {
-            background: #213456;
-            border: none;
-            padding: 0.8rem;
-            font-weight: 600;
-            border-radius: 10px;
-            transition: all 0.3s ease;
+        .icon-hex svg {
+            transform: rotate(-45deg);
+            color: var(--accent);
+            width: 40px;
+            height: 40px;
         }
 
-        .btn-primary:hover {
-            background: #150556;
-            transform: translateY(-1px);
-            border-color: #E5BA41;
+        .sector:hover .icon-hex {
+            background: var(--accent);
+            transform: rotate(135deg) scale(1.1);
+            box-shadow: 0 0 30px var(--accent);
         }
 
-        /* Centering Logic for Mobile/Desktop */
-        @media (max-width: 991px) {
-            .side-left-container {
-                display: none !important; /* Hide image on smaller screens */
+        .sector:hover .icon-hex svg {
+            color: #000;
+            transform: rotate(-135deg);
+        }
+
+        h2 {
+            font-size: clamp(2rem, 4vw, 4rem);
+            font-weight: 800;
+            color: var(--white);
+            letter-spacing: -2px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        p {
+            color: rgba(255,255,255,0.6);
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 40px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s var(--ease) 0.2s;
+        }
+
+        .sector:hover p {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 100px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .sceptile-sector { --accent: var(--sceptile); }
+        .wartortle-sector { --accent: var(--wartortle); }
+
+        /* --- RESPONSIVE  --- */
+
+        /* Tablet (iPad & Small Laptops) */
+        @media (max-width: 1024px) {
+            .content {
+                padding: 0 5%;
+            }
+            
+            h2 {
+                font-size: clamp(1.5rem, 3vw, 2.5rem);
+                letter-spacing: -1px;
+            }
+
+            .icon-hex {
+                width: 80px;
+                height: 80px;
+                margin-bottom: 20px;
             }
         }
-        
-        footer {
-            background: #888787;
-            color: #213456 ;
-            padding: 10px 0;
-            text-align: center;
-            font-size: 0.8rem;
+
+        /* Mobile (Phones) */
+        @media (max-width: 768px) {
+            .split-wrapper {
+                flex-direction: column; 
+            }
+
+            .sector {
+                flex: 1;
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .sector:hover {
+                flex: 2.5; 
+            }
+
+            .split-wrapper:has(.sector:hover) .sector:not(:hover) {
+                flex: 0.5;
+            }
+
+            .content {
+                transform: scale(0.9); 
+            }
+
+            
+            p {
+                opacity: 0.7; 
+                font-size: 0.95rem;
+                transform: translateY(0);
+                margin-bottom: 20px;
+                display: -webkit-box;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+
+            h2 {
+                font-size: 1.8rem;
+                margin-bottom: 10px;
+            }
+
+            .icon-hex {
+                width: 60px;
+                height: 60px;
+                margin-bottom: 15px;
+            }
+
+            .icon-hex svg {
+                width: 25px;
+                height: 25px;
+            }
+
+            .status-badge {
+                font-size: 0.6rem;
+                padding: 4px 10px;
+                margin-bottom: 15px;
+            }
+
+            .bg-text {
+                display: none;
+            }
+        }
+
+        @media (max-height: 500px) and (orientation: landscape) {
+            .split-wrapper {
+                flex-direction: row; 
+            }
+            .icon-hex {
+                display: none; 
+            }
+            
         }
     </style>
 </head>
 <body>
 
-<div class="main-wrapper">
-    <div class="container">
-        <div class="row justify-content-center align-items-center">
-            
-            <div class="col-lg-6 d-none d-lg-block side-left-container text-end pe-5">
-                <img src="images/bg_login blue.png" class="side-left-img" alt="Branding">
+<div class="split-wrapper">
+    <a href="loginn.php?system=dts" class="sector sceptile-sector">
+        <div class="content">
+            <div class="status-badge">Digital Documents</div>
+            <div class="icon-hex">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                    <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                    <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                </svg>
             </div>
-
-            <div class="col-12 col-md-8 col-lg-5 d-flex justify-content-center">
-                <div class="login-card">
-                    <div class="text-center mb-4">
-                        <div class="divider-text">
-                            <h2>WELCOME</h2>
-                        </div>
-                        <div class="login-title text-uppercase mt-1">Log in your details</div>
-                    </div>
-
-                    <form method="post" id="report_form">
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Username</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="fas fa-user"></i></span>
-                                <input type="text" name="email" class="form-control" placeholder="Username" required>
-                            </div>
-                        </div>
-
-                        <div class="mb-4">
-                            <label class="form-label fw-bold">Password</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                                <input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
-                                <span class="input-group-text toggle-password" style="cursor:pointer;">
-                                    <i class="fas fa-eye"></i>
-                                </span>
-                            </div>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary w-100 shadow">Login</button>
-                    </form>
-                </div>
-            </div>
-
+            <h2>DATA TRACKING SYSTEM</h2>
+            <p>Track and manage data in real time with an organized platform.</p>
         </div>
-    </div>
+    </a>
+
+    <a href="owilogin.php" class="sector wartortle-sector">
+        <div class="content">
+            <div class="status-badge">Non-Inventorial Services</div>
+            <div class="icon-hex">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+            </div>
+            <h2>OWI HELPDESK</h2>
+            <p>Manage non-inventorial service requests and track reported issues..</p>
+        </div>
+    </a>
+
+    <a href="loginn.php?system=returns" class="sector pikachu-sector">
+        <div class="content">
+            <div class="status-badge">Return</div>
+
+            <div class="icon-hex">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"></path>
+                </svg>
+            </div>
+            <h2>RETURN TO SUPPLIERS</h2>
+            <p>Handle return-to-suplier requests and their status updates.</p>
+        </div>
+    </a>
 </div>
 
-
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script>
-    $(document).ready(function () {
-        $('.toggle-password').on('click', function () {
-            const passwordInput = $('#password');
-            const icon = $(this).find('i');
-            if (passwordInput.attr('type') === 'password') {
-                passwordInput.attr('type', 'text');
-                icon.removeClass('fa-eye').addClass('fa-eye-slash');
-            } else {
-                passwordInput.attr('type', 'password');
-                icon.removeClass('fa-eye-slash').addClass('fa-eye');
-            }
-        });
-    });
-</script>
 </body>
 </html>

@@ -615,7 +615,7 @@ chart.colors.list = [
 
 // Create axes
 var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
-categoryAxis.dataFields.category = "it_name";
+categoryAxis.dataFields.category = "hr_name";
 categoryAxis.renderer.grid.template.location = 0;
 categoryAxis.renderer.minGridDistance = 30;
 
@@ -628,13 +628,13 @@ valueAxis.min = 0;
 // Create series
 var series = chart.series.push(new am4charts.ColumnSeries());
 series.dataFields.valueY = "total";
-series.dataFields.categoryX = "it_name";
+series.dataFields.categoryX = "hr_name";
 series.clustered = false;
 series.tooltipText = "TOTAL REPORTS: [bold]{valueY}";
 series.columns.template.events.on("hit", function(ev) {
               
               let itVal= ev.target.dataItem.dataContext["itsup"] ;
-              let flItName = ev.target.dataItem.dataContext["it_name"];
+              let flItName = ev.target.dataItem.dataContext["hr_name"];
               let ItFullname = ev.target.dataItem.dataContext["it_desc"];
               let cmp_role = ev.target.dataItem.dataContext["cmp_role"];
               let img_name = ev.target.dataItem.dataContext["img_name"];
@@ -657,14 +657,14 @@ rpt_cntsla(count_slares.tdccl)
 
 var series2 = chart.series.push(new am4charts.ColumnSeries());
 series2.dataFields.valueY = "completed";
-series2.dataFields.categoryX = "it_name";
+series2.dataFields.categoryX = "hr_name";
 series2.clustered = false;
 series2.columns.template.width = am4core.percent(50);
 series2.tooltipText = "COMPLETED REPORTS: [bold]{valueY}";
 series2.columns.template.events.on("hit", function(ev) {
               
               let itVal= ev.target.dataItem.dataContext["itsup"] ;
-              let flItName = ev.target.dataItem.dataContext["it_name"];
+              let flItName = ev.target.dataItem.dataContext["hr_name"];
               let ItFullname = ev.target.dataItem.dataContext["it_desc"];
               let cmp_role = ev.target.dataItem.dataContext["cmp_role"];
               let img_name = ev.target.dataItem.dataContext["img_name"];
@@ -687,14 +687,14 @@ rpt_cntsla(count_slares.tdccl)
 
 var series3 = chart.series.push(new am4charts.ColumnSeries());
 series3.dataFields.valueY = "opncase";
-series3.dataFields.categoryX = "it_name";
+series3.dataFields.categoryX = "hr_name";
 series3.clustered = false;
 series3.columns.template.width = am4core.percent(50);
 series3.tooltipText = "ON PROCESS: [bold]{valueY}";
 series3.columns.template.events.on("hit", function(ev) {
               
               let itVal= ev.target.dataItem.dataContext["itsup"] ;
-              let flItName = ev.target.dataItem.dataContext["it_name"];
+              let flItName = ev.target.dataItem.dataContext["hr_name"];
               let ItFullname = ev.target.dataItem.dataContext["it_desc"];
               let cmp_role = ev.target.dataItem.dataContext["cmp_role"];
               let img_name = ev.target.dataItem.dataContext["img_name"];
@@ -717,7 +717,7 @@ rpt_cntsla(count_slares.tdccl)
 
 var series4 = chart.series.push(new am4charts.ColumnSeries());
 series4.dataFields.valueY = "opnwfxast";
-series4.dataFields.categoryX = "it_name";
+series4.dataFields.categoryX = "hr_name";
 series4.clustered = false;
 series4.columns.template.width = am4core.percent(50);
 series4.tooltipText = "PENDING (OVER SLA): [bold]{valueY}";

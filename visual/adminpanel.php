@@ -16,6 +16,20 @@ include 'sub_graph_modal.php';
 </head>
 <style>
 
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+background: linear-gradient(135deg, #837031, #E1AD01);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #837031, #E1AD01);
+}
 
 </style>
 
@@ -171,7 +185,7 @@ include 'sub_graph_modal.php';
 
           <div class="col-12 col-lg-6 mb-3">
             <div class="card card2 h-100">
-              <h5 class="card-header text-black"  style="background-color: #95a2b9b4; color:black;">I.T Support Logs</h5>
+              <h5 class="card-header text-black"  style="background-color: #95a2b9b4; color:black;">Visual Support Logs</h5>
               <div class="card-body">
                 <div id="chartdiv8"></div>
               </div>

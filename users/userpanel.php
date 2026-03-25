@@ -12,29 +12,15 @@ $con1=new dbconfig();
 ?>
 
 <style>
-  :root{
-    --bg:#f4f6fb;
-    --card:#ffffff;
-    --card2:#fbfcff;
-    --border:#e6eaf2;
-    --text:#1f2a37;
-    --muted:#6b7280;
-    --primary:#2563eb;
-    --primary2:#1d4ed8;
-    --success:#16a34a;
-    --radius:16px;
-    --shadow: 0 10px 24px rgba(16, 24, 40, .08);
-  }
-
-body{
-  background:
-    linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.85)),
-    url('../images/bg_login.png');
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  color: var(--text);
+  :root {
+  --primary-color: #E1AD01;
+  --primary-light: #F4F0FF;
+  --bg-body: #F4F5FA;
+  --sidebar-width: 260px;
+  --topbar-height: 70px;
+  --card-shadow: 0 4px 12px 0 rgba(58, 53, 65, 0.1);
 }
+
 
   /* ===== Reduce Header Height ===== */
 .navbar,
@@ -57,22 +43,7 @@ header,
 
   .container-fluid.mt-4{ padding-left:16px; padding-right:16px; }
 
-  /* cards */
-  .card{
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    overflow: hidden;
-  }
-  .card-header{
-    background: linear-gradient(180deg, var(--card2), var(--card));
-    border-bottom: 1px solid var(--border);
-    color: var(--text);
-    font-weight: 800 !important;
-    padding: 14px 16px !important;
-  }
-  .card-body{ padding: 16px !important; }
+  
 
   /* sticky form on desktop */
   @media (min-width: 992px){
@@ -96,7 +67,6 @@ header,
     background: #fff !important;
     color: var(--text) !important;
     border: 1px solid var(--border) !important;
-    border-radius: 12px !important;
     padding: 10px 12px !important;
     height: auto !important;
     transition: .15s ease;
@@ -142,7 +112,7 @@ header,
     border-color: var(--primary) !important;
     box-shadow: 0 10px 18px rgba(37,99,235,.18);
   }
-  .btn-primary:hover{ background: var(--primary2) !important; border-color: var(--primary2) !important; }
+  .btn-primary:hover{ background: #213456 !important; border-color: #E1AD01 !important; }
   .btn-success{
     background: var(--success) !important;
     border-color: var(--success) !important;
@@ -154,46 +124,6 @@ header,
     height: 1px;
     background: var(--border);
     margin: 12px 0 14px;
-  }
-
-  /* tables */
-  table.table{
-    color: var(--text);
-    border-color: var(--border) !important;
-    margin-bottom: 0;
-    background: #fff;
-  }
-  .table thead th{
-    background: #f6f8fd;
-    color: #374151;
-    border-color: var(--border) !important;
-    font-weight: 900;
-    white-space: nowrap;
-  }
-  .table td, .table th{ border-color: var(--border) !important; vertical-align: middle !important; }
-  .table.hover tbody tr:hover{ background: #f8fbff !important; }
-
-  /* datatables */
-  .dataTables_wrapper .dataTables_filter input,
-  .dataTables_wrapper .dataTables_length select{
-    background: #fff !important;
-    border: 1px solid var(--border) !important;
-    color: var(--text) !important;
-    border-radius: 10px !important;
-  }
-  .dataTables_wrapper .dataTables_info,
-  .dataTables_wrapper .dataTables_paginate{
-    color: var(--muted) !important;
-  }
-  .page-link{
-    background: #fff !important;
-    border: 1px solid var(--border) !important;
-    color: var(--text) !important;
-  }
-  .page-item.active .page-link{
-    background: var(--primary) !important;
-    border-color: var(--primary) !important;
-    color: #fff !important;
   }
 
   /* mobile */
@@ -236,15 +166,7 @@ header,
     max-width: 100%;
   }
 
-  /* Make DataTables area stable */
-  .dt-wrap{
-    width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    border-radius: 14px;
-  }
-  table.dataTable{ width: 100% !important; }
-  #reports_table, #items_table{ width: 100% !important; table-layout: auto; }
+
 
   /* Header controls: better alignment, no squeezing */
   .ticket-controls{
@@ -317,7 +239,47 @@ header,
 }
 
 
+      
+.card{
+    border-radius:10px;
+    border:none;
+    position:relative;
+    margin-bottom:0;  
+    box-shadow: 0  5px 2px #2d3c597f;
+    color: #465172;
+    overflow-x: hidden;
+    border: 2px solid transparent;
+    transition: border-color 0.3 ease, color 0.3s ease;
+    background-color: #e5e7e7;
 
+    
+}
+.card .card-header{
+  color:white;
+    border-bottom-color: #213456;
+    line-height:30px;
+    font-size:15px;
+ 
+    width:100%;
+   
+    margin-bottom:40px;
+    background-color:#213456;
+    border-bottom:1px solid rgba(0,0,0,.125);
+}
+.card-header:first-child{
+    border-radius:calc(.25rem -1px)calc(.25rem -1px)00;
+}
+
+/* Your existing hover rule */
+
+.card:hover{
+    border-color: #E5BA41;
+}
+
+.card:hover .card-header,
+.card:hover a{
+    color: #E1AD01 !important;
+}
 </style>
 
 
@@ -352,10 +314,10 @@ header,
 <input type="hidden" name="select_tos" id="select_tos" value="GENERAL"> <!-- default TOS -->
 
 
-<div class="col-md-12 d-inline-flex p-2">
+<div class="col-xl-12 d-inline-flex p-2">
 <!-- <label class="" style="font-weight: bold;">SELECT DEPARTMENT:</label> -->
 
-                            <div class="input-group mb-2">
+                            <div class="input-group xl-2">
                             <div class="input-group-prepend">
                             <div class="input-group-text">Attention To:</div>
                             </div>
@@ -367,10 +329,11 @@ header,
                             <!-- <option value="4">MERCHANDISING</option> -->
                             <option value="6">VISUAL</option>
                             <option value="11">H.R</option>
-
-
-
-
+                            <option value="12">ICG</option>
+                            <option value="13">ACCOUNTS PAYABLE</option>
+                            <option value="14">SALES ACCOUNTING</option>
+                            <option value="15">TREASURY</option>
+                            <option value="16">ACCOUNT RECEIVABLE</option>
                             </select>
                             </div>
                             </div>

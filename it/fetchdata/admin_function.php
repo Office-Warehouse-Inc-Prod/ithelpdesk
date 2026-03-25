@@ -580,7 +580,11 @@ FROM
 		tbl_notif.ticket_no = reports.ticket_no
 WHERE
 	notif_val IN ('2','3') AND
+<<<<<<< HEAD
 	reports.f_deptsel = 1 
+=======
+	reports.f_deptsel = 1
+>>>>>>> 8bb0b92 (latest build with transfer feature on the works)
 ORDER BY
 	notif_date ASC";
 	$statement = $this->connection->prepare($query);

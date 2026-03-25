@@ -359,7 +359,6 @@ hr{
 
 
           </style> -->
-
 <style>
 
 /* =========================
@@ -400,9 +399,24 @@ body{
 /* container spacing */
 .container.mt-3{ padding-top: 10px; padding-bottom: 24px; }
 
-/* ===== Wrapper / Card around table ===== */
-#new_rep_table{ width:100% !important; }
 
+
+/* ===== Top navbar (if applicable) =====  */
+.navbar, header, .topbar, .navbar-default{
+  background: var(--navy) !important;
+  border-color: rgba(255,255,255,.10) !important;
+}
+.navbar a, .navbar-brand, .navbar-nav > li > a,
+.navbar i, .navbar .fa, .navbar .fas{
+  color: #fff !important;
+}
+.navbar-nav > li.active > a,
+.navbar-nav > li > a:hover{
+  color: var(--yellow) !important;
+}
+.navbar-nav > li.active > a{
+  border-bottom: 3px solid var(--yellow);
+}
 .table-wrap{
   background: var(--card);
   border: 1px solid var(--line);
@@ -468,12 +482,12 @@ table.dataTable{
 }
 
 table.dataTable thead th{
-  color: rgba(17,24,39,.70) !important;
+  color: white !important;
   font-weight: 900;
   letter-spacing: .04em;
   text-transform: uppercase;
   border: none !important;
-  background: transparent !important;
+  background: #4667a0!important;
   padding: 14px 12px !important;
 }
 
@@ -512,7 +526,6 @@ table.dataTable tbody tr td:last-child{
 /* ===== Modal (clean light) ===== */
 .modal-content{
   border: 1px solid var(--line) !important;
-  border-radius: var(--radius) !important;
   background: #ffffff !important;
   box-shadow: 0 22px 60px rgba(17,24,39,.18);
 }
@@ -520,14 +533,14 @@ table.dataTable tbody tr td:last-child{
 .modal-header{
   border-bottom: 3px solid var(--yellow) !important;
   padding: 16px 18px !important;
-  background: linear-gradient(180deg, var(--card2), #fff) !important;
+  background: #213456 !important;
 }
 
 .modal-title{
   font-size: 16px;
   font-weight: 900;
   letter-spacing: .02em;
-  color: var(--navy);
+  color: white;
   text-transform: uppercase;
 }
 
@@ -583,11 +596,11 @@ textarea[readonly]{ opacity: .95; }
 }
 
 .btn-primary{
-  background: var(--navy) !important;
+  background: white !important;
   border-color: var(--navy) !important;
-  color: #fff !important;
+  color: #213456 !important;
 }
-.btn-primary:hover{ background: #0f1628 !important; }
+.btn-primary:hover{ background: #213456; color:white;}
 
 .btn-success{
   background: rgba(22,163,74,.14) !important;
@@ -605,7 +618,7 @@ textarea[readonly]{ opacity: .95; }
 
 /* Collapse thread card */
 #msg_thread .card.card-body{
-  background: #F8FAFF !important;
+  background: #213456 !important;
   border: 1px solid var(--line) !important;
   border-radius: var(--radius-sm) !important;
 }
@@ -617,6 +630,7 @@ textarea[readonly]{ opacity: .95; }
   border-radius: var(--radius-sm);
   padding: 12px;
   max-height: 280px;
+    box-shadow: 0 20px 60px rgba(123, 128, 44, 0.605);
   overflow: auto;
 }
 
@@ -630,6 +644,7 @@ textarea[readonly]{ opacity: .95; }
   margin-bottom: 10px;
   box-shadow: 0 10px 18px rgba(17,24,39,.06);
 }
+
 
 hr{ border-top: 1px solid var(--line) !important; }
 
@@ -676,7 +691,49 @@ hr{ border-top: 1px solid var(--line) !important; }
   background: rgba(234,170,0,.16) !important;
   color: var(--text) !important;
 }
+/* --- Buttons --- */
+.btn {  
+    background-color: white !important;
+    border: 2px solid #213456;
+      border-color: var(--gold-accent);
+    font-weight: 700;
+    color: #213456;
+}
 
+.btn:hover {
+    background-color: #16243d !important;
+    border-color: var(--gold-accent);
+    color: white;
+}
+
+/* --- Buttons --- */
+.btn-success {  
+    background-color: white !important;
+    border: 2px solid #213456;
+    font-weight: 700;
+    color: #213456;
+}
+
+.btn-success:hover {
+    background-color: #16243d !important;
+    border-color: var(--gold-accent);
+    color:white;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+background: linear-gradient(135deg, #837031, #E1AD01);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #837031, #E1AD01);
+}
 </style>
       </head>
 
@@ -703,7 +760,9 @@ hr{ border-top: 1px solid var(--line) !important; }
       <div class="row">
 
       <div class="form-group col-md-4">
+        
       <label>STORE</label>
+      
       <input type="hidden" name="store" id="store" readonly value="">
       <input type="text" class="form-control form-control-sm" name="str_desc" id="str_desc" readonly value="">
       </div>
@@ -757,7 +816,11 @@ hr{ border-top: 1px solid var(--line) !important; }
       <select class="form-control form-control-sm" name="f_deptsel" id="f_deptsel" required>
       <option value="">Assign department...</option>
       <?php
+<<<<<<< HEAD
       $query="SELECT * FROM tbl_dept WHERE dept_id <> '8' ";
+=======
+      $query="SELECT * FROM tbl_dept WHERE dept_id NOT IN ('7','8') ";
+>>>>>>> 8bb0b92 (latest build with transfer feature on the works)
       $run=$con1->prepare($query);
       $run->execute();
       $rs=$run->get_result();
@@ -790,7 +853,7 @@ hr{ border-top: 1px solid var(--line) !important; }
 
       <div class="form-group col-md-4">
       <label>PRIORITY LEVEL</label>
-      <select class="form-control form-control-sm" name="priority_level" id="priority_level" required>
+      <select class="form-control form-control-xl" name="priority_level" id="priority_level" required>
       <option value=""> &larr; PRIORITY &rarr;</option>
       <option value="4">LOW</option>
       <option value="3">NORMAL</option>
@@ -800,7 +863,7 @@ hr{ border-top: 1px solid var(--line) !important; }
       </div>
 
 
-      <div class="form-group col-md 4">
+      <div class="form-group col-xl 4">
     <label for="sla_days">Service Level Agreement (SLA)</label>
     <select name="sla_days" id="sla_days" class="form-control" required>
         <option value="">Select SLA</option>
@@ -842,7 +905,7 @@ hr{ border-top: 1px solid var(--line) !important; }
       <div class="card card-body">
       <div class="row">
       <div class="col-md-12 dv_msg">
-      <label style="font-weight: bold;">Add Message:</label>
+      <label style="font-weight: bold; color:white;">Add Message:</label>
 
       <!-- keep same POST key admsg -->
       <textarea name="admsg" id="admsg" class="form-control form-control-sm"
@@ -850,7 +913,7 @@ hr{ border-top: 1px solid var(--line) !important; }
       </div>
 
       <div class="col-md-12 mt-4 mb-2 dv_msg">
-      <label for="remarks_view" style="font-weight: bold;">Ticket Thread:</label>
+      <label for="remarks_view" style="font-weight: bold;color:white;">Ticket Thread:</label>
       <div class="container_remarks">
       <div id="remarks_view"><ul></ul></div>
       </div>

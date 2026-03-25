@@ -126,6 +126,193 @@ exit();
     color: #dc2626 !important; /* red */
     font-weight: 600;
 }
+
+
+:root {
+  --primary-color: #E1AD01;
+  --primary-light: #F4F0FF;
+  --bg-body: #F4F5FA;
+  --sidebar-width: 260px;
+  --topbar-height: 70px;
+  --card-shadow: 0 4px 12px 0 rgba(58, 53, 65, 0.1);
+}
+
+body {
+  font-family: 'Public Sans', sans-serif;
+  background-color: var(--bg-body);
+  color: #3A3541DE;
+  overflow-x: hidden;
+  background: linear-gradient(rgba(218, 219, 207, 0.3), rgba(113, 114, 136, 0.27)), 
+    url('images/bg_login.png'); 
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+}
+
+.owi-navbar {
+  background-color: #213456 !important;
+  box-shadow: 0 2px 10px 2px #66738e;
+  margin-bottom: 10px;
+}
+
+/* Make links clean + readable */
+.owi-navbar .nav-link,
+.owi-navbar .navbar-brand {
+  color: #fff !important;
+  font-weight: 600;
+  letter-spacing: .3px;
+}
+
+/* Icon spacing */
+.owi-navbar .nav-link i {
+  margin-right: 6px;
+}
+
+/* Hover states */
+.owi-navbar .nav-link:hover,
+.owi-navbar .navbar-brand:hover {
+  opacity: .92;
+}
+
+/* Dropdown */
+.owi-navbar .dropdown-menu {
+  background-color: #ffffff;
+  border: none;
+  min-width: 220px;
+  padding: .35rem;
+  box-shadow: 0 12px 24px rgba(0,0,0,0.25);
+  border-radius: 12px;
+}
+
+/* Dropdown items */
+.owi-navbar .dropdown-item {
+  color: black;
+  border-radius: 10px;
+  padding: .55rem .75rem;
+  white-space: normal; 
+}
+
+.owi-navbar .dropdown-item i {
+  margin-right: 8px;
+}
+
+
+.owi-navbar .dropdown-item:hover {
+  background-color: #54699e;
+  color: #fff;
+}
+
+.owi-navbar .dropdown-divider {
+  border-top: 1px solid rgba(255,255,255,0.2);
+}
+.notif-dropdown {
+  width: 360px;
+  max-width: 92vw;
+}
+
+@media (max-width: 576px) {
+  .notif-dropdown {
+    width: 92vw;
+  }
+}
+
+/* Badges keep visible on blue */
+.owi-navbar .badge-danger {
+  background-color: #ff4d4d;
+}
+
+.owi-navbar .badge-info {
+  background-color: #28c7ff;
+  color: #002a4a;
+  font-weight: 700;
+}
+
+/* Toggler icon visibility on blue */
+.owi-navbar .navbar-toggler {
+  border-color: rgba(255,255,255,0.35);
+}
+
+.owi-navbar .navbar-toggler-icon {
+  filter: brightness(0) invert(1);
+}
+
+/* Modern Underline Animation */
+/* Modern Underline Animation Refined */
+.owi-navbar .nav-item {
+  position: relative;
+  margin: 0 5px;
+  display: flex;
+  align-items: center;
+}
+
+.owi-navbar .nav-link {
+  position: relative;
+  padding: 0.8rem 1rem !important;
+  color: rgba(255, 255, 255, 0.8) !important;
+  transition: all 0.3s ease;
+}
+
+/* The Underline - Modernized */
+.owi-navbar .nav-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 3px;
+  bottom: 5px; /* Lifted slightly from the bottom */
+  left: 50%;
+  background-color: var(--primary-color);
+  transition: width 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), left 0.3s ease;
+  transform: translateX(-50%);
+  border-radius: 10px;
+}
+
+/* Hover State */
+.owi-navbar .nav-item:hover .nav-link {
+  color: #fff !important;
+}
+
+.owi-navbar .nav-item:hover .nav-link::after {
+  width: 70%; 
+}
+
+.owi-navbar .nav-item.active .nav-link {
+  color: var(--primary-color) !important;
+  font-weight: 700;
+}
+
+.owi-navbar .nav-item.active .nav-link::after {
+  width: 70%; 
+  background-color: var(--primary-color);
+}
+
+.owi-navbar .dropdown-menu {
+  border-top: 3px solid var(--primary-color) !important;
+  border-radius: 0 0 8px 8px !important;
+  margin-top: 0;
+}
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.4rem;
+  letter-spacing: 1px;
+}
+
+.navbar-brand img {
+  transition: transform 0.3s ease;
+}
+
+.navbar-brand:hover img {
+  transform: rotate(-10deg) scale(1.1);
+}
+
+.owi-navbar .dropdown-menu {
+  border-top: 3px solid var(--primary-color);
+  margin-top: 10px;
+}
   </style>
 
 <body>
@@ -151,6 +338,14 @@ HOME
   <span class="badge badge-danger" id="notif_newrep"></span>
 </i>
 NEW REPORTS
+</a>
+</li>
+<li class="nav-item">
+<a class="nav-link " href="admintransfer.php">
+<i class="fa fa-envelope-o">
+  <span class="badge badge-danger" id="notif_transfer"></span>
+</i>
+REQUEST TO TRANSFER
 </a>
 </li>
 <li class="nav-item">
@@ -414,5 +609,190 @@ async function getNewReportCount() {
 }
 
 
+async function getNewReportCount() {
+
+    try {
+
+        const xresponse = await fetch("fetchdata/notif_transfer.php?_=" + Date.now());
+        const xcount = (await xresponse.text()).trim();
+
+        const xbadge = document.getElementById("notif_transfer");
+
+        if (!xbadge) return;
+
+        if (xcount === "0" || xcount === "") {
+            xbadge.style.display = "none";
+        } else {
+            xbadge.style.display = "inline-block";
+            xbadge.innerHTML = xcount;
+        }
+
+    } catch (error) {
+        console.error("Notification count error:", error);
+    }
+}
+
+
 
 </script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+countnewrep();
+countNwMsg();
+
+function getdata(){
+    $.post('fetchdata/fetch_data.php', { mode: 'notif_support' }, function(data){
+        // console.log(data);
+        notifdatas(data);
+    }, 'json');
+}
+
+// Run getdata() every 1 second
+setInterval(getdata, 1000);
+
+
+var table
+function notifdatas(t){
+const dataset=t.ntfsupdata;
+table =  $("#notif_dataxx").DataTable({
+
+"dom":
+'<"pull-left"lf><"pull-right">tip',
+// stateSave: true,
+"pagingType": "full_numbers",
+"bDestroy": true,
+"responsive": true, "lengthChange": false, "autoWidth": false,
+"bInfo": false,
+"bFilter": false,
+"paging": false,
+"select": true,
+"pageLength":10,
+"language": {
+"emptyTable": "No new Notification"
+},
+"data": dataset,
+// "order": [[ 0, "Asc" ]],
+
+"columns": [
+
+{title:"NOTIFICATION", data:'notif_data',"defaultContent": ""}
+],
+"columnDefs": [
+{
+targets: 0,
+className: 'bolded'
+}
+]
+
+});
+
+$('#notif_dataxx tbody').on('click', 'tr', function () {
+    var data = table.row(this).data();
+    var ticketVal = data.ticket_no;
+
+    $('#myInput').val(ticketVal).trigger('input');
+
+    $.post('change_notif.php', { ticketVal: ticketVal }, function(data, textStatus, xhr) {
+        getdata();
+    });
+
+    // Scroll to bottom smoothly after click
+  $('html, body').animate(
+        { scrollTop: $(document).height() },
+        800,
+        'swing',
+        function () {
+            // Add highlight effect
+            let tableDiv = $('#report_data');
+            tableDiv.css('transition', 'background-color 0.8s');
+            tableDiv.css('background-color', '#ffff99'); // highlight yellow
+
+            setTimeout(() => {
+                tableDiv.css('background-color', '#ffffff'); // back to white
+            }, 800); // delay before returning to white
+        }
+    );
+});
+
+
+} // end of data table
+
+
+});
+
+
+
+function countnewrep() {
+
+
+setInterval(function(){
+
+var xhttp = new XMLHttpRequest();
+xhttp.onreadystatechange = function() {
+if (this.readyState == 4 && this.status == 200) {
+document.getElementById("notif_newrep").innerHTML = this.responseText;
+}
+};
+xhttp.open("GET", "fetchdata/notif_newrep.php", true);
+xhttp.send();
+
+},1000);
+
+
+}
+
+
+
+
+function countNwMsg() {
+
+
+setInterval(function(){
+
+var xhttp = new XMLHttpRequest();
+xhttp.onreadystatechange = function() {
+if (this.readyState == 4 && this.status == 200) {
+document.getElementById("notif_newmsg").innerHTML = this.responseText;
+}
+};
+xhttp.open("GET", "fetchdata/fetch_newmsg.php", true);
+xhttp.send();
+
+},1000);
+
+
+}
+
+// Auto-detect current page and set 'active' class
+var currentUrl = window.location.pathname.split("/").pop();
+
+// If index or empty, default to home
+if (currentUrl === "" || currentUrl === "index.php") {
+    currentUrl = "adminpanel.php"; 
+}
+
+$('.navbar-nav .nav-item').each(function() {
+    var $this = $(this);
+    var linkHref = $this.find('a').attr('href');
+
+    // Remove default 'active' class first to prevent duplicates
+    $this.removeClass('active');
+
+    // Check if the link href matches the current URL
+    if (linkHref === currentUrl) {
+        $this.addClass('active');
+    }
+    
+    // Special case for dropdown items
+    if ($this.hasClass('dropdown')) {
+        $this.find('.dropdown-item').each(function() {
+            if ($(this).attr('href') === currentUrl) {
+                $this.addClass('active'); // Highlight parent if child is active
+            }
+        });
+    }
+});
+
+</script>
+

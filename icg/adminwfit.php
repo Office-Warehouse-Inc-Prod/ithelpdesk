@@ -2,63 +2,500 @@
 include 'admin.php';
 include '../condb.php';
 
-
 $con1=new dbconfig();
 
-
-
  ?>
-
-
 <head>
-  <!-- jQuery (REQUIRED: must be loaded before DataTables) -->
-<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-
-<!-- Bootstrap DateTimePicker (Optional for your datetime fields) -->
 <link rel="stylesheet" href="../css/bootstrap-datetimepicker.min.css"/>
 <script src="../js/bootstrap-datetimepicker.min.js"></script>
-
-<!-- DataTables core CSS -->
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-
-<!-- DataTables Buttons CSS -->
-<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
-
-<!-- Your custom styles -->
+<link rel="stylesheet" href="../css/jquery.dataTables.min.css" />
 <link rel="stylesheet" href="styles.css" />
 
-<!-- DataTables core JS -->
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-
-<!-- DataTables Extensions -->
-<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.colVis.min.js"></script>
-
-<!-- Support files for Excel/PDF export -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.68/pdfmake.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.68/vfs_fonts.js"></script>
-
-<!-- Optional DataTables features -->
+<script src="../js/jquery.dataTables.min.js"></script>
 <script src="../js/dataTables.select.min.js"></script>
 <script src="../js/dataTables.responsive.min.js"></script>
 <script src="../js/fnReloadAjax.js"></script>
+</head>
+<style>
+  #new_rep_table {
+    background-color: #ffffff;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 8px;
+    overflow: hidden;
+     box-shadow: 0 10px 8px rgba(108, 108, 53, 0.4);
+    border: 1px solid #e9ecef;
+  }
 
- </head>
-<div class="col-md-12 mt-3">
+  #new_rep_table thead th {
+    background-color: #54699e;
+    color: white;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    padding: 15px;
+    border-bottom: 2px solid #dee2e6;
+  }
 
-  <table class="table table table-responsive table-condensed" id="new_rep_table"></table>
+  #new_rep_table tbody td {
+    padding: 12px 15px;
+    vertical-align: middle;
+    color: #333;
+    border-bottom: 1px solid #f1f1f1;
+  }
+
+  /* Hover Effect with requested color #213456 */
+  #new_rep_table tbody tr:hover {
+    background-color: #213456 !important;
+    color: #ffffff !important;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  /* Responsive Table Wrapper */
+  .table-responsive {
+    border-radius: 8px;
+    margin-top: 20px;
+  }
+  /* Change Password Modal Custom Styles */
+  #newrpt_Modal .modal-content {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  }
+
+  #newrpt_Modal .modal-header {
+    background-color: #213456;
+    color: #fff;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    border-bottom: 4px solid #E1AD01; /* Your Theme Gold */
+  }
+
+  #newrpt_Modal .modal-title {
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+  }
+
+  #newrpt_Modal .input-group-text {
+    background-color: #f8f9fa;
+    border-right: none;
+    color: #213456;
+  }
+
+  #newrpt_Modal .form-control {
+    border-left: none;
+    height: 45px;
+    border-radius: 0 8px 8px 0;
+  }
+
+  #newrpt_Modal .form-control:focus {
+    border-color: #ced4da;
+    box-shadow: none;
+  }
+
+  #newrpt_Modal .input-group:focus-within {
+    box-shadow: 0 0 0 0.2rem rgba(225, 173, 1, 0.25);
+    border-radius: 8px;
+  }
+
+  #msgbtn {
+    background-color: #E1AD01;
+    border: none;
+    color: #213456;
+    font-weight: 700;
+    padding: 10px 40px;
+    border-radius: 30px;
+    transition: all 0.3s ease;
+  }
+
+  #msgbtn:hover {
+    background-color: #213456;
+    color: #E1AD01;
+    transform: translateY(-2px);
+  }
+
+  
+    .dataTables_wrapper .pull-left {
+    flex-direction: row;      
+    align-items: center;      
+    justify-content: flex-start; /* Aligns both items to the left */
+    width: 100%;              
+    gap: 40px;                /* Keeps the gap between them */
+    margin-bottom: 20px; 
+  }
+
+  /* 2. Modern Search Bar Styling (Now back on the left) */
+  .dataTables_filter {
+    position: relative;
+    display: inline-block;    
+    margin: 0 !important;     
+  }
+
+  .dataTables_filter label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0;         
+  }
+
+  /* Search Icon */
+  .dataTables_filter::before {
+    content: "\f002"; 
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #213456;
+    z-index: 1;
+    opacity: 0.6;
+  }
+
+  .dataTables_filter input {
+    border: 2px solid #e0e0e0 !important;
+    border-radius: 50px !important;
+    padding: 8px 15px 8px 35px !important; 
+    width: 300px !important;
+    background-color: #ffffff !important;
+    transition: all 0.3s ease;
+    outline: none !important;
+    color: #213456;
+    margin-left: 0 !important; 
+  }
+
+  .dataTables_filter input:focus {
+    border-color: #E1AD01 !important;
+    box-shadow: 0 0 10px rgba(225, 173, 1, 0.2) !important;
+  }
+
+  :root{
+  --navy:#121C31;
+  --navy2:#1a2a4a;
+  --yellow:#EAAA00;
+
+  --bg:#EEF2F7;
+  --card:#ffffff;
+  --card2:#F8FAFF;
+  --text:#111827;
+  --muted:#6B7280;
+  --line:#E5E7EB;
+
+  --shadow: 0 14px 34px rgba(17,24,39,.10);
+  --radius:18px;
+  --radius-sm:14px;
+  --focus: 0 0 0 .2rem rgba(234,170,0,.18);
+}
+
+/* container spacing */
+.container.mt-3{ padding-top: 10px; padding-bottom: 24px; }
+
+/* ===== Wrapper / Card around table ===== */
+#new_rep_table{ width:100% !important; }
+
+.table-wrap{
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px;
+}
+
+/* If you can't add wrapper div, style DataTables container instead */
+.dataTables_wrapper{
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px;
+}
+
+/* DataTables header controls */
+.dataTables_wrapper .dataTables_length label,
+.dataTables_wrapper .dataTables_filter label,
+.dataTables_wrapper .dataTables_info{
+  color: var(--muted) !important;
+  font-weight: 600;
+}
 
 
+.dataTables_wrapper .dataTables_filter input:focus,
+.dataTables_wrapper .dataTables_length select:focus{
+  box-shadow: var(--focus) !important;
+  border-color: rgba(234,170,0,.45) !important;
+}
+
+/* Pagination */
+.dataTables_wrapper .dataTables_paginate .paginate_button{
+  border-radius: 12px !important;
+  border: 1px solid transparent !important;
+  color: var(--text) !important;
+  background: transparent !important;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover{
+  border-color: var(--line) !important;
+  background: #F8FAFC !important;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button.current{
+  background: rgba(234,170,0,.18) !important;
+  border-color: rgba(234,170,0,.35) !important;
+}
+
+/* ===== Table modern look ===== */
+table.dataTable{
+  border-collapse: separate !important;
+  border-spacing: 0 10px !important; /* row gaps */
+}
+
+table.dataTable thead th{
+  color: white !important;
+  font-weight: 900;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  border: none !important;
+  background: #5273ad !important;
+  padding: 14px 12px !important;
+}
+
+/* “Floating rows” on light mode */
+table.dataTable tbody tr{
+  background: #ffffff !important;
+  border: 1px solid var(--line) !important;
+  box-shadow: 0 10px 22px rgba(17,24,39,.08);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+table.dataTable tbody td{
+  border-top: 1px solid transparent !important;
+  border-bottom: 1px solid transparent !important;
+  color: rgba(17,24,39,.85) !important;
+  padding: 14px 12px !important;
+}
+
+table.dataTable tbody tr:hover{
+  transform: translateY(-1px);
+  transition: .15s ease;
+  background: #F8FAFF !important;
+}
+
+/* Fix the rounded row corners */
+table.dataTable tbody tr td:first-child{
+  border-top-left-radius: 14px;
+  border-bottom-left-radius: 14px;
+}
+table.dataTable tbody tr td:last-child{
+  border-top-right-radius: 14px;
+  border-bottom-right-radius: 14px;
+}
+
+/* ===== Modal (clean light) ===== */
+.modal-content{
+  border: 1px solid var(--line) !important;
+  border-radius: var(--radius) !important;
+  background: #ffffff !important;
+  box-shadow: 0 22px 60px rgba(17,24,39,.18);
+}
+
+.modal-header{
+  border-bottom: 3px solid var(--yellow) !important;
+  padding: 16px 18px !important;
+  background: #213456 !important;
+  color:white;
+}
+
+.modal-title{
+  font-size: 16px;
+  font-weight: 900;
+  letter-spacing: .02em;
+  color: white;
+  text-transform: uppercase;
+}
+
+.modal-body{ padding: 18px !important; }
+.modal-footer{
+  border-top: 1px solid var(--line) !important;
+  padding: 14px 18px !important;
+}
+
+/* Labels */
+label{
+  font-size: 11px;
+  font-weight: 900;
+  color: rgba(17,24,39,.65);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+/* Inputs / Select / Textarea */
+.form-control,
+.form-control-sm,
+select.form-control,
+textarea.form-control{
+  background: #fff !important;
+  border: 1px solid var(--line) !important;
+  color: var(--text) !important;
+  border-radius: 14px !important;
+  padding: 10px 12px !important;
+}
+
+.form-control:focus,
+.form-control-sm:focus,
+select.form-control:focus,
+textarea.form-control:focus{
+  box-shadow: var(--focus) !important;
+  border-color: rgba(234,170,0,.45) !important;
+}
+
+.form-control[readonly],
+textarea[readonly]{ opacity: .95; }
+
+/* Spacing in grid */
+.form-group{ margin-bottom: 14px !important; }
+
+/* ===== Buttons (OWI style) ===== */
+
+.btn-danger{
+  background: rgba(239,68,68,.14) !important;
+  border-color: rgba(239,68,68,.28) !important;
+  color: #991b1b !important;
+}
+.btn-danger:hover{ background: rgba(239,68,68,.18) !important; }
+
+/* Collapse thread card */
+#msg_thread .card.card-body{
+  background: #213456 !important;
+  border: 1px solid var(--line) !important;
+  border-radius: var(--radius-sm) !important;
+}
+
+/* Thread container */
+.container_remarks{
+  background: #F8FAFF;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  max-height: 280px;
+    box-shadow: 0 20px 60px rgba(123, 128, 44, 0.605);
+  overflow: auto;
+}
+
+#remarks_view ul{ list-style: none; padding-left: 0; margin: 0; }
+
+#remarks_view li{
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  background: #ffffff;
+  border-radius: 14px;
+  margin-bottom: 10px;
+  box-shadow: 0 10px 18px rgba(17,24,39,.06);
+}
+
+
+hr{ border-top: 1px solid var(--line) !important; }
+
+/* ===== Priority chips (same but readable on light bg) ===== */
+.priority-chip{
+  padding:4px 10px;
+  border-radius:999px;
+  font-weight:900;
+  font-size:11px;
+  letter-spacing:.05em;
+}
+.p-critical{ background: rgba(239,68,68,.14); color:#991b1b; border:1px solid rgba(239,68,68,.25); }
+.p-high{     background: rgba(251,146,60,.14); color:#9a3412; border:1px solid rgba(251,146,60,.25); }
+.p-medium{   background: rgba(234,170,0,.16); color:#7a5200; border:1px solid rgba(234,170,0,.30); }
+.p-low{      background: rgba(34,197,94,.14); color:#166534; border:1px solid rgba(34,197,94,.25); }
+
+/* ===== Select2 (light) ===== */
+.select2-container--default .select2-selection--single{
+  background-color: #ffffff !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 14px !important;
+  height: 42px !important;
+  display: flex !important;
+  align-items: center !important;
+  padding: 4px 10px !important;
+  color: var(--text) !important;
+}
+.select2-container--default .select2-selection--single .select2-selection__rendered{
+  color: var(--text) !important;
+}
+.select2-container--default .select2-selection--single .select2-selection__arrow{
+  height: 42px !important;
+}
+
+.select2-dropdown{
+  background-color: #ffffff !important;
+  color: var(--text) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 18px 40px rgba(17,24,39,.14);
+}
+.select2-results__option{ color: var(--text) !important; }
+.select2-results__option--highlighted{
+  background: rgba(234,170,0,.16) !important;
+  color: var(--text) !important;
+}
+/* --- Buttons --- */
+.btn {  
+    background-color: white !important;
+    border: 2px solid #213456;
+      border-color: var(--gold-accent);
+    font-weight: 700;
+    color: #213456;
+}
+
+.btn:hover {
+    background-color: #16243d !important;
+    border-color: var(--gold-accent);
+    color:white;
+}
+
+/* --- Buttons --- */
+.btn-success {  
+    background-color: #7a5200 !important;
+    border: 2px solid #213456;
+    font-weight: 700;
+    color:white;
+}
+
+.btn-success:hover {
+    background-color: #16243d !important;
+    border-color: yellow;
+    color:white;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+background: linear-gradient(135deg, #837031, #E1AD01);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #837031, #E1AD01);
+}
+</style>
+ 
+<div class="container mt-4">
+  <div class="table-responsive-xl">
+    <table class="table table-hover" id="new_rep_table">
+        </table>
+  </div>
 </div>
 
- <!-- Start of Add/Edit Modal -->
-      <script src="../js/coms.js"></script> 
- 
-
-  <div class="modal fade" id="newrpt_Modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true"
+<!-- Start of Add/Edit Modal -->
+<script src="../js/coms.js"></script> 
+ <div class="modal fade" id="newrpt_Modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true"
   data-backdrop="static"
    data-keyboard="false">
   <div class="modal-dialog modal-lg">
@@ -66,291 +503,228 @@ $con1=new dbconfig();
    <div class="modal-content">
     <div class="modal-header">
      <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-     <h4 class="modal-title" id="tick_title" value=""></h4><button class="close" id="btntop" data-dismiss="modal"><i class="fa fa-times"></i></button>
+     <h4 class="modal-title" id="tick_title" value=""></h4>
     </div>
-
-
-<div class="modal-body">
-<!-- <form> -->
-        
-  <div class="row">
-    <div class="form-group col-md-4">
-       <label>STORE</label>
-
-
-        <input type="hidden" name="store" id="store" readonly="" value="">
-        <input type="hidden" name="multitag" id="multitag">
-        <input type="text" class="form-control form-control-sm" name="str_desc" id="str_desc" readonly="" value="">
-
-    </div>
+    <div class="modal-body">
+      <!-- <form> --> 
+      <div class="row">
         <div class="form-group col-md-4">
-       <label>Created By:</label>
+        <label>STORE</label>
+        <input type="hidden" name="store" id="store" readonly="" value="">
+        <input type="text" class="form-control form-control-sm" name="str_desc" id="str_desc" readonly="" value="">
+      </div>
+    
+      <div class="form-group col-md-4">
+        <label>Created By:</label>
         <input type="text" class="form-control form-control-sm" name="crtd_by" id="crtd_by" readonly="" >
-
-    </div>
+      </div>
     
-    <input type = "hidden" class="form-control form-control-sm" name = "ticket_no" id="ticket_no">
+      <input type = "hidden" class="form-control form-control-sm" name = "ticket_no" id="ticket_no">
+      <div class="form-group col-md-4">
+        <label>DATE CREATED</label>
+        <input type="text" class="form-control form-control-sm" name="date_createdx" id="date_createdx" readonly="" value="">
+      </div>
 
-
-    <div class="form-group col-md-4">
-      
-     <label>DATE CREATED</label>
-        <input type="text" class="form-control form-control-sm" name="date_created" id="date_created" readonly="" value="">
-        <div></div>
-</div>
-
-    <div class="form-group col-md-12">
-    <label>SUBJECT</label>
-     <textarea name="concern" id="concern" class="form-control form-control-sm" placeholder="Input Concern" 
-     style="text-transform:uppercase" onkeyup="this.value = this.value;" readonly></textarea>
-     </div>
-    <div class="form-group col-md-4">
-       <label>Service Requested:</label>
-        <input type="text" class="form-control form-control-sm" name="tos" id="tos" readonly="" >
-
-    </div>
       <div class="form-group col-md-12">
-    <label>CONCERN</label>
-     <textarea name="concern" id="message" class="form-control form-control-sm" placeholder="Input Concern" 
-     style="text-transform:uppercase" onkeyup="this.value = this.value;" readonly></textarea>
-     </div>
+        <label>SUBJECT</label>
+        <textarea name="concern" id="concern" class="form-control form-control-sm" placeholder="Input Concern" style="text-transform:uppercase" onkeyup="this.value = this.value;" readonly></textarea>
+      </div>
 
+      <div class="form-group col-md-4">
+        <label>Service Requested:</label>
+        <input type="text" class="form-control form-control-sm" name="tos" id="tos" readonly="" >
+      </div>
 
-  <input type="hidden" name="via" id="via" value="SERVICE REQUEST">
-    <div class="form-group col-md-8">
-          <input type="hidden" name="itsup" id="itsup" value="22">
-          <input type="hidden" name="it_num" id="it_num" value="22">
-   </div>
+      <div class="form-group col-md-12">
+        <label>CONCERN</label>
+        <textarea name="concern" id="message" class="form-control form-control-sm" placeholder="Input Concern" 
+          style="text-transform:uppercase" onkeyup="this.value = this.value;" readonly></textarea>
+      </div>
 
-  <div class="col-md-12 ">
-  <table id="items_data" class="table table-responsive table-sm " style="width: auto;"></table>
-  </div>
+      <div class="form-group col-md-4">
+        <label>VIA</label>
+        <select class="form-control form-control-sm" name="via" id="via" required>
+        <option value=""> &larr; VIA &rarr;</option>
+        <?php
+          $query = "select * from via_main";
+          $run = $con1->prepare($query);
+          $run->execute();
+          $rs = $run->get_result();
+          while ($res = $rs->fetch_assoc()) {
+        ?>
+        <option value="<?=$res['via_desc']?>"><?=$res['via_desc']?></option>
+        <?php }?>
+        </select>
+      </div>
 
-   <div class="form-group col-md-6 shide">
-    
-<label>ALU</label>
-     
-     <input type="text" class="form form-control"  name="ALU" id="ALU" readonly="">
+      <div class="form-group col-md-8">
+        <label>ASSIGNED SUPPORT</label>
+        <input type="hidden" name="it_num" id="it_num" readonly="">
+        <select class="form-control form-control-sm" name="itsup" id="itsup">
+        <option value="">Assign support...</option>  
+          <?php
+            $query="select * from it_tech WHERE itsup NOT IN ('4','7','8','12','14') AND deptsel = '12'";
+            $run=$con1->prepare($query);
+            $run->execute();
+            $rs=$run->get_result();
+            while ($res=$rs->fetch_assoc()) {
+            $tchid = $res['itsup'];
+            $tchdesc = $res['it_desc'];
+          ?>
 
-</div>
-<div class="form-group col-md-6 shide">
-    
-    <label>DESCRIPTION</label>
-         
-         <input type="text" class="form form-control"  name="Desc1" id="Desc1" readonly="">
-    
-    </div>
-    <div class="form-group col-md-6 shide">
-    
-    <label>SERIAL NO</label>
-         
-         <input type="text" class="form form-control"  name="serial_no" id="serial_no" readonly="">
-    
-    </div>
+          <option value="<?php echo $tchid;?>"><?= $tchdesc; ?></option>
+          <?php }?>    
+        </select> 
+      </div>
+  
+      <div class="form-group col-md-6">
+        <label>CATEGORY</label>
+        <input type="hidden" name="cat_num" id="cat_num" readonly="">
+        <select class="form-control form-control-sm" name="cat" id="cat" required >
+        <option value=""> &larr; CATEGORY &rarr;</option>  
+        <?php
+          $query="select * from categories WHERE deptsel = '12' AND (old_tag IS NULL OR old_tag <> 'Y') ORDER BY order_id ASC";
+          $run=$con1->prepare($query);
+          $run->execute();
+          $rs=$run->get_result();
+          while ($res=$rs->fetch_assoc()) {
+          $supid = $res['cat_id'];
+          $suppdesc = $res['cat_desc'];
+        ?>
 
-    <div class="form-group col-md-6 phide">
+        <option value="<?php echo $supid;?>"><?= $suppdesc; ?></option>
+        <?php }?>
+        </select> 
+      </div>
 
-    <label>SUB CATEGORY</label>
-           <input type="text" name="sub_num" id="sub_num" >
+      <div class="form-group col-md-6">
+        <label>SUB CATEGORY</label>
+        <input type="hidden" name="sub_num" id="sub_num" readonly="">
+        <select class="form-control form-control-sm" name="sub" id="sub">
+        </select>
+      </div>
 
-    <input type="text" class="form form-control" name="sub" id="sub" readonly>
-    </div>
+      <div class="form-group col-md-4 hide_isp">
+        <label for="isp" id="lbl_isp">Service Provider</label>
+        <input type="hidden" name="isp_num" id="isp_num" readonly="">
+        <select class="form-control form-control-sm" name="isp" id="isp">
+          <option value="">Select Network Provider</option>  
+            <?php
+              $query="select * from tbl_isp";
+              $run=$con1->prepare($query);
+              $run->execute();
+              $rs=$run->get_result();
+              while ($res=$rs->fetch_assoc()) {
+              $ispid = $res['isp_id'];
+              $ispdesc = $res['isp_shortDesc'];
+            ?>
 
-    <div class="form-group col-md-6">
+            <option value="<?php echo $ispid;?>"><?= $ispdesc; ?></option>
+            <?php }?>
+        </select> 
+      </div> 
 
+      <div class="form-group col-md-4 hide_isp" >
+        <label id="lbl_refNo" for="refNo">Reference No:</label>
+        <input type="text" class="form-control form-control-sm" name="refNo" id="refNo">
+      </div>
 
-
-
-     <label>CATEGORY</label>
-     
-          <input type="hidden" name="cat" id="cat_num" value="15">
-          <input type="text" class="form form-control"  name="cat_nm" id="cat_nm" value="TECHNOLOGY" readonly>
-
-
-   </div>
-
-    <div class="form-group col-md-4 hide_isp">
-
-         <label for="isp" id="lbl_isp">Service Provider</label>
-          <input type="hidden" name="isp_num" id="isp_num" readonly="">
-          <select class="form-control form-control-sm" name="isp" id="isp">
-             <option value="">Select Network Provider</option>  
-                   <?php
-                            $query="select * from tbl_isp";
-                            $run=$con1->prepare($query);
-                            $run->execute();
-                            $rs=$run->get_result();
-                            while ($res=$rs->fetch_assoc()) {
-                              $ispid = $res['isp_id'];
-                              $ispdesc = $res['isp_shortDesc'];
-                            ?>
-
-                            <option value="<?php echo $ispid;?>"><?= $ispdesc; ?></option>
-                            <?php }?>
-                            ?>   
-              </select> 
-   </div>
-    <div class="form-group col-md-4 hide_isp" >
-      <label id="lbl_refNo" for="refNo">Reference No:</label>
-      <input type="text" class="form-control form-control-sm" name="refNo" id="refNo">
-    </div>
-
- 
-    <div class="form-group col-md-4 hide_isp">
-      
-     <label for="date_refNo" class="hidden" id="lbl_DtRefNo">Date of RefNo</label>
-  <div class="input-group date" id="datetimepicker3" data-target-input="nearest">
-          <input type="text" name="date_refNo" id="date_refNo" class="form-control form-control-sm datetimepicker-input" data-target="#datetimepicker3"/>
-          <div class="input-group-append" data-target="#date_created" data-toggle="datetimepicker">
+      <div class="form-group col-md-4 hide_isp">
+        <label for="date_refNo" class="hidden" id="lbl_DtRefNo">Date of RefNo</label>
+          <div class="input-group date" id="datetimepicker3" data-target-input="nearest">
+            <input type="text" name="date_refNo" id="date_refNo" class="form-control form-control-sm datetimepicker-input" data-target="#datetimepicker3"/>
+            <div class="input-group-append" data-target="#" data-toggle="datetimepicker">
+            <!-- <input type="text" class="form-control form-control-sm" name="date_created" id="date_created" readonly="" value=""> -->
             <div class="input-group-text" id="ico_cal3"><i class="fa fa-calendar"></i></div>
-    </div>
-  </div>
-</div>
+          </div>
+        </div>
+      </div>
 
-    <div class="form-group col-md-4 selected">
+      <div class="form-group col-md-4 selected">
         <label>STATUS</label>
-    <select class = "form-control form-control-sm" name= "status" id="status" required>
-    <option value=""> &larr; Status &rarr;</option>
+        <select class = "form-control form-control-sm" name= "status" id="status" required>
+        <option value=""> &larr; Status &rarr;</option>
            <?php
-                    $query="select * from status WHERE pd_module_tag = 'Y' ";
-                    $run=$con1->prepare($query);
-                    $run->execute();
-                    $rs=$run->get_result();
-                    while ($res=$rs->fetch_assoc()) {
-                    ?>
-                    <option><?=$res['stat_desc'] ?></option>
-                    <?php }?>
-                    ?>   
-    </select>
-  </div>
-
-  <div class="form-group col-md-4">
-    <!-- <label name="ctrl" id="ctrl" >CONTROL #</label> -->
-    <input  type="hidden" name="cwhtag" id="cwhtag">
-  </div>
-
-
-    <div class="form-group col-md-4">
-      <label id="dateclabel" class="hidden">DATE CLOSED</label>
-       <div class="input-group date" id="datetimepicker2" data-target-input="nearest">
+              $query="select * from status WHERE it_module_tag = 'Y' AND stat_id <> '29'";
+              $run=$con1->prepare($query);
+              $run->execute();
+              $rs=$run->get_result();
+              while ($res=$rs->fetch_assoc()) {
+            ?>
+            <option><?=$res['stat_desc'] ?></option>
+            <?php }?>
+        </select>
+      </div>
+      <div class="form-group col-md-4">
+        <label id="dateclabel" class="hidden">DATE CLOSED</label>
+        <div class="input-group date" id="datetimepicker2" data-target-input="nearest">
           <input type="text" name="date_closed" id="date_closed" class="form-control form-control-sm datetimepicker-input" data-target="#datetimepicker2" autocomplete="off" />
           <div class="input-group-append" data-target="#date_closed" autocomplete="off" data-toggle="datetimepicker">
-            <div class="input-group-text" id="ico_cal" name="ico_cal"><i class="fa fa-calendar"></i></div>
+          <div class="input-group-text" id="ico_cal" name="ico_cal"><i class="fa fa-calendar"></i></div>
+        </div>
+      </div>
     </div>
-  </div>
-     </div>
 
     <div class="form-group col-md-4">
-
-     <label id="clby_label" class="hidden">CLOSED BY</label>
-        <input type="text" name="close_by" id="close_by" value="<?php echo $_SESSION['tech_id'];?>"> 
-        <input type="text" class="form-control form-control-sm" name="cl_desc" id="cl_desc" readonly="" value="<?php echo $_SESSION['fname']. '  ' . $_SESSION['lstname'];?>">
+      <label id="clby_label" class="hidden">CLOSED BY</label>
+      <input type="text" name="close_by" id="close_by" value="<?php echo $_SESSION['tech_id'];?>">
+      <input type="text" class="form-control form-control-sm" name="cl_desc" id="cl_desc" readonly="" value="<?php echo $_SESSION['fname'].' '.$_SESSION['lstname'];?>">
     </div>
 
     <div class="form-group col-md-12">
-    <label>Work Output:</label>
-     <textarea name="remarks" id="remarks" class="form-control form-control-sm" placeholder="Your Workoutput" 
-     style="text-transform:uppercase"></textarea>
-     </div>
-<hr/>
+      <label>Work Output: </label>
+      <textarea name="remarks" id="remarks" class="form-control form-control-sm"placeholder="Your Workoutput"
+      style="text-transform:uppercase" required></textarea>
+    </div>
+    <hr/>
+
     <div class="form-group col-md-12">
-<p>
-     
-  <button class="btn btn-primary float-right mr-2" type="button" name="msgbtn" id="msgbtn" value="show">
-    Show Message Thread
-  </button>
-</p>
-
+      <p>
+        <button class="btn btn-primary float-right mr-2" type="button" name="msgbtn" id="msgbtn" value="show">
+          Show Message Thread
+        </button>
+      </p>
     </div>
-<div class="col-md-12 collapse" id="msg_thread">
-  <div class="card card-body">
 
-    <div class="row">
-            <div  class="col-md-12 dv_msg">
-                     <label style="font-weight: bold;">Add Message:</label>
-     <textarea name="admsg" id="" class="form-control form-control-sm" placeholder="Reply to their message or give an updates regarding on this ticket..."></textarea> 
+    <div class="col-md-12 collapse" id="msg_thread">
+      <div class="card card-body">
+        <div class="row">
+          <div class="col-md-12 dv_msg">
+            <label style="font-weight: bold; color:white;">Add Message:</label>
+            <textarea name="admsg" id="" required class="form-control form-control-sm"placeholder="Reply to their message or give an updates regarding on this ticket..."></textarea>
+          </div>
+          <div class="col-md-12 mt-4 mb-2 dv_msg">
+            <label for="remarks_view" style="font-weight: bold; color:white;">Ticket Thread:</label>
+            <div class="container_remarks">
+              <div id="remarks_view"><ul></ul></div>
+            </div>
+          </div>
+        </div>
+        <div clas="col-md-12">
+          <input type="submit" name="action" id="action" class="btn btn-success" value="Add"/>
+          <button type="button" name="btnClose" id="btnClose" class="btn btn-danger float-right" data-dismiss="modal">Close</button>
+        </div>
       </div>
-      <div class="col-md-12 mt-4 mb-2 dv_msg">
-            <label for="remarks_view" style="font-weight: bold;">Ticket Thread:</label>
-    <div class="container_remarks" >
-    <div id="remarks_view"><ul></ul></div>
-
-
-  </div>
-      </div>
-
     </div>
-    <div class="col-md-12">
-
-    <input type="submit" name="action" id="action" class="btn btn-success" value="Add" />
-     <button type="button" name="btnClose" id="btnClose" class="btn btn-danger float-right" data-dismiss="modal">Close</button>
-    </div>
-
   </div>
 </div>
 
-
-    </div>
-
+<div class="modal-footer">
+  <input type="hidden" name="operation" id="operation" />
+  <input type="hidden" name="u_id" value="<?php echo $_SESSION['user_id'];  ?>">
 </div>
-
-  <div class="modal-footer">
-     <input type="hidden" name="operation" id="operation" />
-     <input type="hidden" name="u_id" value="<?php echo $_SESSION['user_id'];  ?>">
-
-    </div>
-  </div>
-  </div>
-  </div>
-  </form>
+</div>
+</div>
+</div>
+</form>
 </div>
   
 
 <script type="text/javascript">
-
   $(document).ready(function(){
+
+
   
-
-idleMax = 5;// Logout after 2 minutes of IDLE
-idleTime = 0;
-
-var idleInterval = setInterval(timerIncrement, 60000); 
-    $(this).mousemove(function (e) {idleTime = 0;});
-    $(this).keypress(function (e) {idleTime = 0;});
-
-function timerIncrement() {
-    idleTime = idleTime + 1;
-    if (idleTime > idleMax) { 
-        window.location="adminpanel.php";
-        // alert("GOOD");
-    }
-  }
-
-
-
-$('#ctrl').hide();
-$('#ctrlno').hide();
-$('.phide').hide();
-
-$("#status").change(function (e) { 
-  
-  var sts = $("#status").val();  
-  
-    
-if (sts == "WAREHOUSE PULL OUT") {
-  // $('#ctrl').hide();
-  $('#cwhtag').val("Y");
-
-}
-else{
-  // $('#ctrl').hide();
-  $('#cwhtag').val("");
-}
-
-
-});
-
-
 
 // for Status Open    
 $("div.selected select").val("OPEN");
@@ -363,136 +737,89 @@ var user_id = <?= $_SESSION['user_id']; ?>
 
 function getdata(){
   $.post('fetchdata/fetch_data.php',{mode:'newrpt_tbl'},function(data){
-    console.log(data);
+    // console.log(data);
     admin_datatable(data);
   },'json');
 }
 getdata();
 
 function admin_datatable(t){
-
-const today = new Date().toLocaleDateString('en-US', {
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric'
-});
-const reportTitle = 'New Tickets as of ' + today;
-
-
-
 const dataset=t.newrptdata;
-    reptable = $("#new_rep_table").DataTable({
-  dom: '<"d-flex justify-content-between align-items-center mb-2"lfB>tip',
-  buttons: [
-    {
-      extend: 'excelHtml5',
-      text: '<i class="fas fa-file-excel"></i> Excel',
-      className: 'btn btn-success btn-sm',
-            title: reportTitle
-    },
-    {
-      extend: 'pdfHtml5',
-      text: '<i class="fas fa-file-pdf"></i> PDF',
-      className: 'btn btn-danger btn-sm',
-      orientation: 'landscape',
-      pageSize: 'A4',
-      title: reportTitle
-    },
-    {
-      extend: 'print',
-      text: '<i class="fas fa-print"></i> Print',
-      className: 'btn btn-secondary btn-sm',
-      title: reportTitle,
-    },
-    {
-      extend: 'csvHtml5',
-      text: '<i class="fas fa-file-csv"></i> CSV',
-      className: 'btn btn-info btn-sm',
-      title: reportTitle
-    },
-    {
-      extend: 'copyHtml5',
-      text: '<i class="fas fa-copy"></i> Copy',
-      className: 'btn btn-warning btn-sm'
+     reptable =  $("#new_rep_table").DataTable({
+           "dom":
+          '<"pull-left"lf><"pull-right">tip',
+           // ajax: t,
+          stateSave: true,
+          "bDestroy": true,
+          "responsive": true, "lengthChange": false, "autoWidth": false,
+          language: {
+          emptyTable: "No unassinged reports",
+          search: "_INPUT_",
+          searchPlaceholder: "Search..."
+          },
+          pageLength:5,
+          data: dataset,
+           "order": [[ 0, "Desc" ]],
+
+          columns: [
+          {title:"TicketNo", data:"ticket_no","defaultContent": ""},
+          {title:"Department/Store", data:"str_code","defaultContent": ""},
+          {title:"Created By", data:"full_name","defaultContent": ""},
+          {title:"Date Created", data:"date_created","defaultContent": ""},
+          {title:"SUBJECT", data:"concern","defaultContent": ""},
+          {title:"Types of Service", data:"service_desc","defaultContent": ""},
+          {title:"CONCERN", data:"subject","defaultContent": ""},
+          {title:"Update", data:null,"defaultContent": "<Button class='btn btn-danger' name='update'><i class='fas fa-edit'></i></Button>"}
+
+
+          ],
+              rowCallback: function(row, data, index){
+    if(data['msg_cnt'] == '1'){
+      $(row).find('td:eq(0)').css("font-weight", "bold");
+      $(row).find('td:eq(1)').css("font-weight", "bold");
+      $(row).find('td:eq(2)').css("font-weight", "bold");
+      $(row).find('td:eq(3)').css("font-weight", "bold");
+      $(row).find('td:eq(4)').css("font-weight", "bold");
+      $(row).find('td:eq(5)').css("font-weight", "bold");
+      $(row).find('td:eq(6)').css("font-weight", "bold");
+      $(row).find('td:eq(7)').css("font-weight", "bold");
+      $(row).find('td:eq(8)').css("font-weight", "bold");
+      $(row).find('td:eq(9)').css("font-weight", "bold");
+      $(row).find('td:eq(10)').css("font-weight", "bold");
+      $(row).find('td:eq(11)').css("font-weight", "bold");
+ 
     }
-  ],
-  stateSave: true,
-  bDestroy: true,
-  responsive: true,
-  lengthChange: false,
-  autoWidth: false,
-  pageLength: 10,
-  language: {
-    emptyTable: "No unassigned reports",
-    search: "_INPUT_",
-    searchPlaceholder: "Search..."
-  },
-  data: dataset,
-  order: [[0, "desc"]],
-  columns: [
-    { title: "TicketNo", data: "ticket_no", defaultContent: "" },
-    { title: "Department/Store", data: "str_code", defaultContent: "" },
-    { title: "Created By", data: "full_name", defaultContent: "" },
-    { title: "Date Created", data: "date_created", defaultContent: "" },
-    { title: "SUBJECT", data: "concern", defaultContent: "" },
-    { title: "Types of Service", data: "service_desc", defaultContent: "" },
-    { title: "CONCERN", data: "subject", defaultContent: "" },
-    // {
-    //   title: "Update",
-    //   data: null,
-    //   defaultContent: "<button class='btn btn-danger btn-sm' name='update'><i class='fas fa-edit'></i></button>"
-    // }
-  ]
-});
+
+
+  }
 
 
 
+   }); //  end of datatable
 
-//    setInterval( function () {
-//     getdata();
-//    // admin_datatable();
-// }, 60000);
+
+   setInterval( function () {
+    getdata();
+   // admin_datatable();
+}, 60000);
  $('#new_rep_table tbody').on( 'click', 'button', function () {
-  // e.preventDefault();
         var data = reptable.row( $(this).parents('tr') ).data();
 
                 $('#ticket_no').val(data['ticket_no']);
                 $('#store').val(data['store']);
                 $('#str_desc').val(data['str_code']);
                 $('#crtd_by').val(data['full_name']);
-                $('#date_created').val(data['date_created']);
+                $('#date_createdx').val(data['date_created']);
                 $('#concern').val(data['concern']);
                 $('#tos').val(data['service_desc']);
                 $('#message').val(data['subject']);
-                // $('#sub_num').val(data['sub_id']);
-                $('#ALU').val(data['ALU']);
-                $('#Desc1').val(data['Desc1']);
-                $('#serial_no').val(data['serial_no']);
-                $('#multitag').val(data['multitag']);
-
-                // alert("GOOD");
-  
-                var desc1 = $("#Desc1").val();
-                var Multitag = $('#multitag').val();
-                var TiketNo = $('#ticket_no').val();
-                // console.log(TiketNo);
-// debugger;
-if (Multitag == 'Y') {
-    GetItems(TiketNo);
-  $("#items_data").show();
-  $(".shide").hide();
-}
-else if (Multitag != 'Y'){
-  $(".shide").show();
-  $("#items_data").hide();
-}
-
+                $('#sub_num').val(data['sub_id']);
 
 
 
   $('#newrpt_Modal').modal('show');
   $('#action').val("Update");
-  $('#operation').val("Save and Reply2"); 
+  $('#operation').val("Save and Reply"); 
 
 var tid=$(this).parent().siblings(':first').html();
 $('#tick_title').text("Ticker Number: "+tid+"");
@@ -500,25 +827,15 @@ $('#tick_title').text("Ticker Number: "+tid+"");
 getinfo(tid, 'remarks', user_id);
 // console.log(tid)
 
-
-if(desc1.indexOf("PRINTER") != -1)
-{
-  $("#sub_num").val('126');
-$("#sub").val('PRINTER');
-
-}
-else if(desc1.indexOf("INKS, TONER, RIBBON, FILM") !== -1)
-{
-  $("#sub_num").val('166');
-$("#sub").val('INKS');
-
-}
-
-
+// $('#itsup').change(function(e) { 
+//     e.preventDefault();
+//     let Dataxxx = $(this).val(); // Correct way to get value in jQuery
+//     alert(Dataxxx);
+//   });
 
         });
 
-  // $('#userModal').modal({"show": true, "backdrop": 'static'});
+  $('#userModal').modal({"show": true, "backdrop": 'static'});
 
   }; //end of function 
 
@@ -526,6 +843,22 @@ $("#sub").val('INKS');
   $('#date_refNo').datetimepicker();
 
 
+  $('#cat').on('change', function() {
+      var category_id = this.value;
+      $.ajax({
+        url: "get_subcat.php",
+        type: "POST",
+        data: {
+          category_id: category_id
+        },
+        cache: false,
+        success: function(dataResult){
+          $("#sub").html(dataResult);
+        }
+      });
+    
+    
+  });
 
 
 $(function () {
@@ -559,74 +892,7 @@ $(document).on('submit', '#newrpt_form', function(event)
     }
    });
  });
-
-
-
-function GetItems(TiketNo){
-  $.post('fetchdata/fetch_data.php',{mode:'tblitems', TiketNo:TiketNo},function(data){
-    // console.log(data);
-    items_datatable(data);
-  },'json');
-}
-
-var TblItem
-function items_datatable(t){
-const dataset=t.itemspddata;
-
-// console.log(dataset);
-tblitem = $("#items_data").DataTable({
-
-"info": false,
-"pagingType": "full_numbers",
-"bDestroy": true,
-"responsive": true, "lengthChange": false, "autoWidth": false,
-// "language": {
-// "search": "_INPUT_",
-// "searchPlaceholder": "Search..."
-// },
-"searching": false,
-order: [[0, 'desc']],
-"pageLength":10,
-"data": dataset,
-
-"columns": [
-{title:"ID", data:"id","defaultContent": "","visible": false},
-{title:"ALU", data:"alu","defaultContent": "",},
-{title:"DESCRIPTION", data:"desc","defaultContent": "",},
-{title:"SERIAL:", data:"serial","defaultContent": "",},
-{title:"SUPPLIER", data:"supplier","defaultContent": "",},
-// {
-//         title: "ACTION",
-//         data: null,
-//         defaultContent: "<button class='delete-btn'>Delete</button>"
-//       }
-],
-
-
-});
-
-  // assume you have an input text field with id "search-input"
-  tblitem.rows().every(function (rowIdx, tableLoop) {
-    const rowData = tblitem.row(rowIdx).data();
-    const descx = rowData.desc;
-
-    if (descx.indexOf("PRINTER") != -1) {
-      $("#sub_num").val('126');
-      $("#sub").val('PRINTER');
-    } else if (descx.indexOf("INKS, TONER, RIBBON, FILM") !== -1) {
-      $("#sub_num").val('166');
-      $("#sub").val('INKS');
-    }
-  });
-
-} 
-
-
-
-
 }); // end of docu.ready
-
-
 
 $(document).on('click', '#msgbtn', function(){
 
@@ -635,25 +901,20 @@ $('#remarks_view').show();
 
 
 if($('#msgbtn').val() == 'show'){
-$('#action').val("Save and Reply2");
-$('#operation').val("Save and Reply2");
+$('#action').val("Save and Reply");
+$('#operation').val("Save and Reply");
 $('#msgbtn').val("hide");
 $('#msg_thread').show('slow');
 }
 else if($('#msgbtn').val() == 'hide'){
 $('#action').val("Save");
-$('#operation').val("Save and Reply2");
+$('#operation').val("Save and Reply");
 $('#msgbtn').val("show");
 $('#msg_thread').hide('slow');
 }
 
 });
 
-// $('#btntop').click(function (e) { 
-//   e.preventDefault();
-//   // alert("GOOD");
-//   $('#newrpt_Modal').modal('hide', { reset: true });
-  
-// });
+
 
 </script>

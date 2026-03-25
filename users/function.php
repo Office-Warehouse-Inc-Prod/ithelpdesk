@@ -79,29 +79,49 @@ switch ($deptselectvalue) {
       $deptabr = '';
     break;
     case '2':
-      $counter = 'admin_counter';
+      $counter = 'counter';
       $deptabr = '';
     break;
     case '3':
-      $counter = 'mktg_counter';
-      $deptabr = 'MKTG-';
+      $counter = 'counter';
+      $deptabr = '';
     break;
     case '4':
-      $counter = 'pd_counter';
-      $deptabr = 'PD-';
+      $counter = 'counter';
+      $deptabr = '';
       $Qitems = $_POST["QItems"];
     break;
     case '6':
-      $counter = 'visual_counter';
-      $deptabr = 'VISUAL-';
+      $counter = 'counter';
+      $deptabr = '';
     break;
     case '7':
-      $counter = 'ld_counter';
-      $deptabr = 'LD-';
+      $counter = 'counter';
+      $deptabr = '';
     break;
     case '11':
-      $counter = 'hr_counter';
-      $deptabr = 'HR-';
+      $counter = 'counter';
+      $deptabr = '';
+    break;
+    case '12':
+      $counter = 'counter';
+      $deptabr = '';
+    break;
+    case '13':
+      $counter = 'counter';
+      $deptabr = '';
+    break;
+    case '14':
+      $counter = 'counter';
+      $deptabr = '';
+    break;
+     case '15':
+      $counter = 'counter';
+      $deptabr = '';
+    break;
+    case '16':
+      $counter = 'counter';
+      $deptabr = '';
     break;
   default:
     # code...
@@ -321,28 +341,48 @@ WHERE
           $deptabr = '';
         break;
         case '2':
-          $counter = 'admin_counter';
+          $counter = 'counter';
           $deptabr = '';
         break;
         case '3':
-          $counter = 'mktg_counter';
-          $deptabr = 'MKTG-';
+          $counter = 'counter';
+          $deptabr = '';
         break;
         case '4':
-          $counter = 'pd_counter';
-          $deptabr = 'PD-';
+          $counter = 'counter';
+          $deptabr = '';
         break;
         case '6':
-          $counter = 'visual_counter';
-          $deptabr = 'VISUAL-';
+          $counter = 'counter';
+          $deptabr = '';
           break;
           case '7':
-            $counter = 'ld_counter';
-            $deptabr = 'LD-';
+            $counter = 'counter';
+            $deptabr = '';
             break;
           case '11':
-            $counter = 'hr_counter';
-            $deptabr = 'HR-';
+            $counter = 'counter';
+            $deptabr = '';
+            break;
+          case '12':
+            $counter = 'counter';
+            $deptabr = '';
+            break;
+          case '13':
+            $counter = 'counter';
+            $deptabr = '';
+            break;
+          case '14':
+            $counter = 'counter';
+            $deptabr = '';
+            break;
+          case '15':
+            $counter = 'counter';
+            $deptabr = '';
+            break;
+        case '16':
+            $counter = 'counter';
+            $deptabr = '';
             break;
       default:
         # code...
@@ -438,23 +478,38 @@ public function updatetickno($t){
      $counter = '`counter`';
       break;
     case '2':
-      $counter = 'admin_counter';
+      $counter = 'counter';
       break;
     case '3':
-      $counter = 'mktg_counter';
+      $counter = 'counter';
       break;
     case '4':
-      $counter = 'pd_counter';
+      $counter = 'counter';
       break;
     case '6':
-      $counter = 'visual_counter';
+      $counter = 'counter';
       break;
-      case '7':
-        $counter = 'ld_counter';
-        break;
-        case '11':
-        $counter = 'hr_counter';
-        break;
+    case '7':
+      $counter = 'counter';
+      break;
+    case '11':
+      $counter = 'counter';
+      break;
+    case '12':
+      $counter = 'counter';
+      break;
+    case '13':
+      $counter = 'counter';
+      break;
+    case '14':
+      $counter = 'counter';
+      break;
+    case '15':
+      $counter = 'counter';
+      break;
+    case '16':
+      $counter = 'counter';
+      break;
     default:
       # code...
       break;

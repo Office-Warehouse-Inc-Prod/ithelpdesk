@@ -96,7 +96,7 @@ $user = NULL;
    } 
 
    //Newly added HR
-     elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'hr-admin' ) {
+    elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'hr-admin' ) {
     $_SESSION['login'] = 'true';
     $_SESSION['user_id'] = $results['id'];
     $_SESSION['deptsel'] = $results['deptsel'];
@@ -211,6 +211,46 @@ $user = NULL;
     header("Location: generalmanager/dashboard.php");   
     exit();
    }  
+   //Newly Added ICG-Admin 
+    elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'icg-admin' ) {
+    $_SESSION['login'] = 'true';
+    $_SESSION['user_id'] = $results['id'];
+    $_SESSION['deptsel'] = $results['deptsel'];
+    header("Location: icg/adminpanel.php");
+    exit();
+   } 
+   //Newly Added Accounts Payable-Admin 
+    elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'ap-admin' ) {
+    $_SESSION['login'] = 'true';
+    $_SESSION['user_id'] = $results['id'];
+    $_SESSION['deptsel'] = $results['deptsel'];
+    header("Location: ap/adminpanel.php");
+    exit();
+   } 
+   //Newly Added Sales Accounting -Admin 
+    elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'sa-admin' ) {
+    $_SESSION['login'] = 'true';
+    $_SESSION['user_id'] = $results['id'];
+    $_SESSION['deptsel'] = $results['deptsel'];
+    header("Location: sa/adminpanel.php");
+    exit();
+   } 
+   //Newly Added Treasury-Admin 
+    elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'treasury-admin' ) {
+    $_SESSION['login'] = 'true';
+    $_SESSION['user_id'] = $results['id'];
+    $_SESSION['deptsel'] = $results['deptsel'];
+    header("Location: treasury/adminpanel.php");
+    exit();
+   } 
+   //Newly Added Accounts Recievable-Admin 
+    elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'ar-admin' ) {
+    $_SESSION['login'] = 'true';
+    $_SESSION['user_id'] = $results['id'];
+    $_SESSION['deptsel'] = $results['deptsel'];
+    header("Location: ar/adminpanel.php");
+    exit();
+   } 
    else {
     $message = 'Invalid log in credentials.';
   }

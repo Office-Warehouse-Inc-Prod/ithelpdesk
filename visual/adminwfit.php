@@ -171,6 +171,21 @@ $con1=new dbconfig();
     border-color: #E1AD01 !important;
     box-shadow: 0 0 10px rgba(225, 173, 1, 0.2) !important;
   }
+  
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+background: linear-gradient(135deg, #837031, #E1AD01);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #837031, #E1AD01);
+}
 </style>
  
 <div class="container mt-4">

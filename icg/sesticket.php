@@ -17,7 +17,7 @@ if (isset($_POST['tktval'])) {
       if (file_exists($file_path)) {
         switch ($file_extension) {
           case 'jpg':
-		  case 'JPG':
+		      case 'JPG':
           case 'jpeg':
           case 'png':
           case 'gif':

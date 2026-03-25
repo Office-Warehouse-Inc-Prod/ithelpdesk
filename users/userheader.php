@@ -58,7 +58,6 @@ session_start();
 
     <!-- Custom styles for this template -->
     <link href="../css/footer.css" rel="stylesheet">
-
 <style>
 
 :root {
@@ -72,11 +71,10 @@ session_start();
 
 body {
   font-family: 'Public Sans', sans-serif;
-  background-color: var(--bg-body);
   color: #3A3541DE;
   overflow-x: hidden;
   background: linear-gradient(rgba(218, 219, 207, 0.3), rgba(113, 114, 136, 0.27)), 
-    url('images/bg_login.png'); 
+    url('image/bg_login.png'); 
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
@@ -178,6 +176,7 @@ body {
   margin: 0 5px;
   display: flex;
   align-items: center;
+  font-size:15px;
 }
 
 .owi-navbar .nav-link {
@@ -248,95 +247,225 @@ body {
 }
 </style>
 
-</head>
+
 <body>
+<nav class="navbar navbar-expand-lg navbar-dark owi-navbar sticky-top">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="adminpanel.php">
+      <img src="../images/owi.ico" width="35" height="35" class="d-inline-block align-top" alt="OWI Logo">
+      <span>OWI <span style="color: var(--primary-color);">HELPDESK</span></span>
+    </a>
 
-<nav class="navbar navbar-icon-top navbar-expand-lg bg-warning navbar-dark">
-  <a class="navbar-brand logo" href="#">OWI <span class="logo">Helpdesk</span></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <!-- <span class="navbar-toggler-icon"></span> -->
-  </button>
-
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item active">
-        <a class="nav-link" href="userpanel.php">
-          <i class="fa fa-home text-dark"></i>
-         <span class="text-white">Home</span>
-          <span class="sr-only">(current)</span>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="userpanel.php">
+            <i class="fa fa-home"></i> HOME
           </a>
-      </li>
-      <li class="nav-item active">
-        <a class="nav-link" href="price_verifier.php" target="_blank">
-          <!-- <i class="fa fas fa-phone text-dark"> -->
-          <i class="fa fas fa-search text-dark"></i>
-            <!-- <span class="badge badge-danger"></span> -->
-          </i>
-         <span class="text-white">Price Verifier</span> 
-        </a>
-      </li>    
-      <li class="nav-item active">
-        <a class="nav-link" href="contact_us.php" target="_blank">
-          <i class="fa fas fa-phone text-dark">
-            <!-- <span class="badge badge-danger"></span> -->
-          </i>
-         <span class="text-white">Contact Us</span> 
-        </a>
-      </li>
-    </ul>
+        </li>
 
-    <form class="form-inline my-2 my-lg-0">
-        <ul class="navbar-nav mr-auto">
-                <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <li class="nav-item">
+          <a class="nav-link" href="price_verifier.php">
+            <i class="fa fas fa-search">
+              <span class="badge badge-danger" id="notif_newrep"></span>
+            </i>
+            PRICE VERIFIER
+          </a>
+        </li>
+
+         <li class="nav-item">
+          <a class="nav-link" href="contact_us.php">
+            <i class=" fa fas fa-phone">
+              <span class="badge badge-danger" id="notif_newrep"></span>
+            </i>
+            CONTACT US
+          </a>
+        </li>
+      </ul>
+
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item dropdown">
+           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <!-- <i class="fa fa-envelope-o"> -->
-           <img src="../images/users/<?= $_SESSION['imguser'];?>" alt="User Image" />
-           <span class="text-dark font-weight-bold debug "><?php  echo $_SESSION['str_code']. ' |  '  .   $_SESSION['fname']. '  ' . $_SESSION['lstname'];?></span> 
+           <img src="../images/users/<?= $_SESSION['imguser'];?>" alt="User Image" style="border-radius:30px;" />
+           <span class="text-white font-weight-bold debug "><?php  echo $_SESSION['str_code']. ' |  '  .   $_SESSION['fname']. '  ' . $_SESSION['lstname'];?></span> 
            <input type="hidden" name="lm_tag" id="lm_tag" value="<?php echo $_SESSION['SBS_NO']; ?>">
            <input type="hidden" name="lm_tag" id="lm_tag" value="<?php echo $_SESSION['PRICE_LVL']; ?>">
         </a>
-        <div class="dropdown-menu  " aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="javascript:void(0)" onclick="pager(this.id)" id="user_profile">Profile</a>
+          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+            <a class="dropdown-item" href="javascript:void(0)" onclick="pager(this.id)" id="user_profile">Profile</a>
           <a class="dropdown-item" href="change_password.php">Change Password</a>
           <a class="dropdown-item" href="../logout.php">Log Out</a>
-
-        </div>
-      </li>
-        </ul>
-    </form>
+        
+          </div>
+        </li>
+      </ul>
+    </div>
   </div>
 </nav>
 
-
-
-<!-- <div class="container p-0">
-<footer class="footer bg-warning">
-      <div class="container">
-        <span class="text-muted pull-left">Developed by: IT</span>
-      </div>
-    </footer>
-</div> -->
-</body>
-</html>
-
 <script type="text/javascript">
-  $(document).ready(function(){
-    var lmtag = $('#lm_tag').val();
-console.log(lmtag);
+$(document).ready(function(){
+countnewrep();
+countNwMsg();
 
-if (lmtag === 'Y') {
-
-  // alert('LM 4');
-  
-} else {
-  // alert('PL 1');
+function getdata(){
+    $.post('fetchdata/fetch_data.php', { mode: 'notif_support' }, function(data){
+        // console.log(data);
+        notifdatas(data);
+    }, 'json');
 }
-  });
- var debg = $('.debug').text();
 
-if (debg.includes('Undefined')) {
+// Run getdata() every 1 second
+setInterval(getdata, 1000);
 
-  window.location="logout.php";  
+
+var table
+function notifdatas(t){
+const dataset=t.ntfsupdata;
+table =  $("#notif_dataxx").DataTable({
+
+"dom":
+'<"pull-left"lf><"pull-right">tip',
+// stateSave: true,
+"pagingType": "full_numbers",
+"bDestroy": true,
+"responsive": true, "lengthChange": false, "autoWidth": false,
+"bInfo": false,
+"bFilter": false,
+"paging": false,
+"select": true,
+"pageLength":10,
+"language": {
+"emptyTable": "No new Notification"
+},
+"data": dataset,
+// "order": [[ 0, "Asc" ]],
+
+"columns": [
+
+{title:"NOTIFICATION", data:'notif_data',"defaultContent": ""}
+],
+"columnDefs": [
+{
+targets: 0,
+className: 'bolded'
 }
+]
+
+});
+
+$('#notif_dataxx tbody').on('click', 'tr', function () {
+    var data = table.row(this).data();
+    var ticketVal = data.ticket_no;
+
+    $('#myInput').val(ticketVal).trigger('input');
+
+    $.post('change_notif.php', { ticketVal: ticketVal }, function(data, textStatus, xhr) {
+        getdata();
+    });
+
+    // Scroll to bottom smoothly after click
+  $('html, body').animate(
+        { scrollTop: $(document).height() },
+        800,
+        'swing',
+        function () {
+            // Add highlight effect
+            let tableDiv = $('#report_data');
+            tableDiv.css('transition', 'background-color 0.8s');
+            tableDiv.css('background-color', '#ffff99'); // highlight yellow
+
+            setTimeout(() => {
+                tableDiv.css('background-color', '#ffffff'); // back to white
+            }, 800); // delay before returning to white
+        }
+    );
+});
+
+
+} // end of data table
+
+
+});
+
+
+
+function countnewrep() {
+
+
+setInterval(function(){
+
+var xhttp = new XMLHttpRequest();
+xhttp.onreadystatechange = function() {
+if (this.readyState == 4 && this.status == 200) {
+document.getElementById("notif_newrep").innerHTML = this.responseText;
+}
+};
+xhttp.open("GET", "fetchdata/notif_newrep.php", true);
+xhttp.send();
+
+},1000);
+
+
+}
+
+
+
+
+function countNwMsg() {
+
+
+setInterval(function(){
+
+var xhttp = new XMLHttpRequest();
+xhttp.onreadystatechange = function() {
+if (this.readyState == 4 && this.status == 200) {
+document.getElementById("notif_newmsg").innerHTML = this.responseText;
+}
+};
+xhttp.open("GET", "fetchdata/fetch_newmsg.php", true);
+xhttp.send();
+
+},1000);
+
+
+}
+
+// Auto-detect current page and set 'active' class
+var currentUrl = window.location.pathname.split("/").pop();
+
+// If index or empty, default to home
+if (currentUrl === "" || currentUrl === "index.php") {
+    currentUrl = "adminpanel.php"; 
+}
+
+$('.navbar-nav .nav-item').each(function() {
+    var $this = $(this);
+    var linkHref = $this.find('a').attr('href');
+
+    // Remove default 'active' class first to prevent duplicates
+    $this.removeClass('active');
+
+    // Check if the link href matches the current URL
+    if (linkHref === currentUrl) {
+        $this.addClass('active');
+    }
+    
+    // Special case for dropdown items
+    if ($this.hasClass('dropdown')) {
+        $this.find('.dropdown-item').each(function() {
+            if ($(this).attr('href') === currentUrl) {
+                $this.addClass('active'); // Highlight parent if child is active
+            }
+        });
+    }
+});
+
 </script>
+

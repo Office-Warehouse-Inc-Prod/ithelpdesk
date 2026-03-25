@@ -171,6 +171,330 @@ $con1=new dbconfig();
     border-color: #E1AD01 !important;
     box-shadow: 0 0 10px rgba(225, 173, 1, 0.2) !important;
   }
+
+  :root{
+  --navy:#121C31;
+  --navy2:#1a2a4a;
+  --yellow:#EAAA00;
+
+  --bg:#EEF2F7;
+  --card:#ffffff;
+  --card2:#F8FAFF;
+  --text:#111827;
+  --muted:#6B7280;
+  --line:#E5E7EB;
+
+  --shadow: 0 14px 34px rgba(17,24,39,.10);
+  --radius:18px;
+  --radius-sm:14px;
+  --focus: 0 0 0 .2rem rgba(234,170,0,.18);
+}
+
+/* container spacing */
+.container.mt-3{ padding-top: 10px; padding-bottom: 24px; }
+
+/* ===== Wrapper / Card around table ===== */
+#new_rep_table{ width:100% !important; }
+
+.table-wrap{
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px;
+}
+
+/* If you can't add wrapper div, style DataTables container instead */
+.dataTables_wrapper{
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px;
+}
+
+/* DataTables header controls */
+.dataTables_wrapper .dataTables_length label,
+.dataTables_wrapper .dataTables_filter label,
+.dataTables_wrapper .dataTables_info{
+  color: var(--muted) !important;
+  font-weight: 600;
+}
+
+/* Search + length */
+.dataTables_wrapper .dataTables_filter input,
+.dataTables_wrapper .dataTables_length select{
+  background: #fff !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 12px !important;
+  color: var(--text) !important;
+  padding: 8px 10px !important;
+  outline: none !important;
+}
+
+.dataTables_wrapper .dataTables_filter input:focus,
+.dataTables_wrapper .dataTables_length select:focus{
+  box-shadow: var(--focus) !important;
+  border-color: rgba(234,170,0,.45) !important;
+}
+
+/* Pagination */
+.dataTables_wrapper .dataTables_paginate .paginate_button{
+  border-radius: 12px !important;
+  border: 1px solid transparent !important;
+  color: var(--text) !important;
+  background: transparent !important;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover{
+  border-color: var(--line) !important;
+  background: #F8FAFC !important;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button.current{
+  background: rgba(234,170,0,.18) !important;
+  border-color: rgba(234,170,0,.35) !important;
+}
+
+/* ===== Table modern look ===== */
+table.dataTable{
+  border-collapse: separate !important;
+  border-spacing: 0 10px !important; /* row gaps */
+}
+
+table.dataTable thead th{
+  color: white !important;
+  font-weight: 900;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  border: none !important;
+  background: #5273ad !important;
+  padding: 14px 12px !important;
+}
+
+/* “Floating rows” on light mode */
+table.dataTable tbody tr{
+  background: #ffffff !important;
+  border: 1px solid var(--line) !important;
+  box-shadow: 0 10px 22px rgba(17,24,39,.08);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+table.dataTable tbody td{
+  border-top: 1px solid transparent !important;
+  border-bottom: 1px solid transparent !important;
+  color: rgba(17,24,39,.85) !important;
+  padding: 14px 12px !important;
+}
+
+table.dataTable tbody tr:hover{
+  transform: translateY(-1px);
+  transition: .15s ease;
+  background: #F8FAFF !important;
+}
+
+/* Fix the rounded row corners */
+table.dataTable tbody tr td:first-child{
+  border-top-left-radius: 14px;
+  border-bottom-left-radius: 14px;
+}
+table.dataTable tbody tr td:last-child{
+  border-top-right-radius: 14px;
+  border-bottom-right-radius: 14px;
+}
+
+/* ===== Modal (clean light) ===== */
+.modal-content{
+  border: 1px solid var(--line) !important;
+  border-radius: var(--radius) !important;
+  background: #ffffff !important;
+  box-shadow: 0 22px 60px rgba(17,24,39,.18);
+}
+
+.modal-header{
+  border-bottom: 3px solid var(--yellow) !important;
+  padding: 16px 18px !important;
+  background: #213456 !important;
+  color:white;
+}
+
+.modal-title{
+  font-size: 16px;
+  font-weight: 900;
+  letter-spacing: .02em;
+  color: white;
+  text-transform: uppercase;
+}
+
+.modal-body{ padding: 18px !important; }
+.modal-footer{
+  border-top: 1px solid var(--line) !important;
+  padding: 14px 18px !important;
+}
+
+/* Labels */
+label{
+  font-size: 11px;
+  font-weight: 900;
+  color: rgba(17,24,39,.65);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+/* Inputs / Select / Textarea */
+.form-control,
+.form-control-sm,
+select.form-control,
+textarea.form-control{
+  background: #fff !important;
+  border: 1px solid var(--line) !important;
+  color: var(--text) !important;
+  border-radius: 14px !important;
+  padding: 10px 12px !important;
+}
+
+.form-control:focus,
+.form-control-sm:focus,
+select.form-control:focus,
+textarea.form-control:focus{
+  box-shadow: var(--focus) !important;
+  border-color: rgba(234,170,0,.45) !important;
+}
+
+.form-control[readonly],
+textarea[readonly]{ opacity: .95; }
+
+/* Spacing in grid */
+.form-group{ margin-bottom: 14px !important; }
+
+/* ===== Buttons (OWI style) ===== */
+
+.btn-danger{
+  background: rgba(239,68,68,.14) !important;
+  border-color: rgba(239,68,68,.28) !important;
+  color: #991b1b !important;
+}
+.btn-danger:hover{ background: rgba(239,68,68,.18) !important; }
+
+/* Collapse thread card */
+#msg_thread .card.card-body{
+  background: #213456 !important;
+  border: 1px solid var(--line) !important;
+  border-radius: var(--radius-sm) !important;
+}
+
+/* Thread container */
+.container_remarks{
+  background: #F8FAFF;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  max-height: 280px;
+    box-shadow: 0 20px 60px rgba(123, 128, 44, 0.605);
+  overflow: auto;
+}
+
+#remarks_view ul{ list-style: none; padding-left: 0; margin: 0; }
+
+#remarks_view li{
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  background: #ffffff;
+  border-radius: 14px;
+  margin-bottom: 10px;
+  box-shadow: 0 10px 18px rgba(17,24,39,.06);
+}
+
+
+hr{ border-top: 1px solid var(--line) !important; }
+
+/* ===== Priority chips (same but readable on light bg) ===== */
+.priority-chip{
+  padding:4px 10px;
+  border-radius:999px;
+  font-weight:900;
+  font-size:11px;
+  letter-spacing:.05em;
+}
+.p-critical{ background: rgba(239,68,68,.14); color:#991b1b; border:1px solid rgba(239,68,68,.25); }
+.p-high{     background: rgba(251,146,60,.14); color:#9a3412; border:1px solid rgba(251,146,60,.25); }
+.p-medium{   background: rgba(234,170,0,.16); color:#7a5200; border:1px solid rgba(234,170,0,.30); }
+.p-low{      background: rgba(34,197,94,.14); color:#166534; border:1px solid rgba(34,197,94,.25); }
+
+/* ===== Select2 (light) ===== */
+.select2-container--default .select2-selection--single{
+  background-color: #ffffff !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 14px !important;
+  height: 42px !important;
+  display: flex !important;
+  align-items: center !important;
+  padding: 4px 10px !important;
+  color: var(--text) !important;
+}
+.select2-container--default .select2-selection--single .select2-selection__rendered{
+  color: var(--text) !important;
+}
+.select2-container--default .select2-selection--single .select2-selection__arrow{
+  height: 42px !important;
+}
+
+.select2-dropdown{
+  background-color: #ffffff !important;
+  color: var(--text) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 18px 40px rgba(17,24,39,.14);
+}
+.select2-results__option{ color: var(--text) !important; }
+.select2-results__option--highlighted{
+  background: rgba(234,170,0,.16) !important;
+  color: var(--text) !important;
+}
+/* --- Buttons --- */
+.btn {  
+    background-color: white !important;
+    border: 2px solid #213456;
+      border-color: var(--gold-accent);
+    font-weight: 700;
+    color: #213456;
+}
+
+.btn:hover {
+    background-color: #16243d !important;
+    border-color: var(--gold-accent);
+    color:white;
+}
+
+/* --- Buttons --- */
+.btn-success {  
+    background-color: #7a5200 !important;
+    border: 2px solid #213456;
+    font-weight: 700;
+    color:white;
+}
+
+.btn-success:hover {
+    background-color: #16243d !important;
+    border-color: yellow;
+    color:white;
+}
+
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+background: linear-gradient(135deg, #837031, #E1AD01);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #837031, #E1AD01);
+}
 </style>
  
 <div class="container mt-4">
@@ -266,7 +590,7 @@ $con1=new dbconfig();
   
       <div class="form-group col-md-6">
         <label>CATEGORY</label>
-        <input type="text" name="cat_num" id="cat_num" readonly="">
+        <input type="hidden" name="cat_num" id="cat_num" readonly="">
         <select class="form-control form-control-sm" name="cat" id="cat" required >
         <option value=""> &larr; CATEGORY &rarr;</option>  
         <?php
@@ -361,7 +685,7 @@ $con1=new dbconfig();
     <div class="form-group col-md-12">
       <label>Work Output: </label>
       <textarea name="remarks" id="remarks" class="form-control form-control-sm"placeholder="Your Workoutput"
-      style="text-transform:uppercase"></textarea>
+      style="text-transform:uppercase" required></textarea>
     </div>
     <hr/>
 
@@ -377,11 +701,11 @@ $con1=new dbconfig();
       <div class="card card-body">
         <div class="row">
           <div class="col-md-12 dv_msg">
-            <label style="font-weight: bold;">Add Message:</label>
-            <textarea name="admsg" id="" class="form-control form-control-sm"placeholder="Reply to their message or give an updates regarding on this ticket..."></textarea>
+            <label style="font-weight: bold; color:white;">Add Message:</label>
+            <textarea name="admsg" id="" required class="form-control form-control-sm"placeholder="Reply to their message or give an updates regarding on this ticket..."></textarea>
           </div>
           <div class="col-md-12 mt-4 mb-2 dv_msg">
-            <label for="remarks_view" style="font-weight: bold;">Ticket Thread:</label>
+            <label for="remarks_view" style="font-weight: bold; color:white;">Ticket Thread:</label>
             <div class="container_remarks">
               <div id="remarks_view"><ul></ul></div>
             </div>
