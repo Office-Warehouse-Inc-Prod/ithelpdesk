@@ -9,14 +9,14 @@
       var user_id = <?= (int)$_SESSION['user_id']; ?>;
 
       function getdata(){
-      $.post('fetchdata/fetch_data.php',{mode:'newrpt_tbl'},function(data){
+      $.post('fetchdata/fetch_data.php',{mode:'trans_tbl'},function(data){
       admin_datatable(data);
       },'json');
       }
       getdata();
 
       function admin_datatable(t){
-      const dataset = t.newrptdata || [];
+      const dataset = t.transdata || [];
 
       reptable = $("#new_rep_table").DataTable({
 "dom": '<"pull-left"f><"pull-right">tip',

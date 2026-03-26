@@ -623,7 +623,6 @@ else{
 // }
 
 
-
 if ($_POST["operation"] == "New_Report") {
 
     if (empty($_POST["ticket_no"])) {
@@ -634,7 +633,7 @@ if ($_POST["operation"] == "New_Report") {
     $ticket_no   = $_POST["ticket_no"];
     $store       = $_POST["store"] ?? '0';
     $dept        = $_POST["f_deptsel"] ?? '0';
-    $concern        = $_POST["concern"] ?? '0';
+    $concern     = $_POST["concern"] ?? '0';
     $via         = 'PENDING';
     $subject     = $_POST["subject"] ?? '0';
 
@@ -740,6 +739,7 @@ if ($_POST["operation"] == "New_Report") {
     }
 
     $fields[] = "isp_id = '0'";
+    $fields[] = "is_transfer = '0'";
 
     $sql = "UPDATE reports SET " . implode(", ", $fields) . " WHERE ticket_no = :where_ticket_no";
     $data[':where_ticket_no'] = $ticket_no;
@@ -992,7 +992,6 @@ if ($_POST["operation"] == "New_Report") {
 
                 <p style="margin-top:20px;">Please log in to the <strong>OWI Helpdesk</strong> for complete details and necessary action.</p>
 
-                <!-- BUTTON -->
                 <div style="text-align:center;margin-top:25px;">
                     <a href="https://owihelpdesk.officewarehouse.com.ph" 
                        style="background:#627bc5;

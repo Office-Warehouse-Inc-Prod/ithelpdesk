@@ -54,9 +54,6 @@ switch ($mode) {
     case 'newrpt_tbl':
          $records['newrptdata']= $fn->newreporthist();
         break;
-            case 'transrpt_tbl': // transfer 
-         $records['newrptdata']= $fn->transrpt_tbl();
-        break;
     case 'usermtc_dtable':
          $records['usermtc_data']= $fn->usermtc_table();
         break;
@@ -105,6 +102,9 @@ switch ($mode) {
         case 'dtbcat':
             $records['rptcat'] = $fn->tbl_cat();
               break;
+                  case 'trans_tbl':
+         $records['transdata']= $fn->trans_tbl();
+        break;
     default:
         break;
 

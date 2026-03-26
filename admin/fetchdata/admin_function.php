@@ -322,7 +322,7 @@ $query = "
     FROM vw6foradmin
     WHERE sub_id NOT IN ('15','28','34','35')
       AND status <> 'NEW REPORT'
-      AND YEAR(date_created) IN ($yr)
+      AND YEAR(date_created) IN ($yr) AND is_transfer = '0'
 ";
 
     $statement = $this->connection->prepare($query);
@@ -493,10 +493,6 @@ ORDER BY
 		return $data;
 
 }
-
-
-
-
 
 
 public function reassign_itsup(){
@@ -1387,6 +1383,102 @@ WHERE
 			
 			return $data;
 		}
+
+
+public function trans_tbl(){
+
+	$query="SELECT
+	reports.deptsel AS deptsel,
+	reports.ticket_no AS ticket_no,
+	reports.date_created AS date_created,
+	reports.store AS store,
+	tbl_branch.str_code AS str_code,
+	reports.concern AS concern,
+	reports.service_desc AS service_desc,
+	reports.`subject` AS `subject`,
+	reports.`status` AS `status`,
+	reports.userId AS userId,
+	reports.via AS via,
+	reports.itsup AS itsup,
+	it_tech.it_desc AS it_desc,
+	reports.cat_id AS cat_id,
+	categories.cat_desc AS cat_desc,
+	concat_ws( '-', `reports`.`cat_id`, `categories`.`cat_desc` ) AS cat_x,
+	reports.sub_id AS sub_id,
+	subcat.sub_cat AS sub_cat,
+	reports.date_closed AS date_closed,
+	reports.remarks AS remarks,
+	reports_msgcnt.msg_cnt AS msg_cnt,
+	reports_newmsg.nmsg_stat AS nmsg_stat,
+	users.fname AS fname,
+	users.lstname AS lstname,
+	concat_ws( ' ', `users`.`fname`, `users`.`lstname` ) AS full_name,
+	tbl_deptsel.dept_desc AS dept_desc,
+	reports.is_transfer
+FROM
+	(
+		(
+			(
+				(
+					(
+						(
+							( reports JOIN tbl_branch ON ( tbl_branch.str_num = reports.store ) )
+							LEFT JOIN it_tech ON ( it_tech.itsup = reports.itsup ) 
+						)
+						LEFT JOIN categories ON ( categories.cat_id = reports.cat_id ) 
+					)
+					LEFT JOIN subcat ON ( subcat.sub_id = reports.sub_id ) 
+				)
+				LEFT JOIN reports_msgcnt ON ( reports_msgcnt.ticket_no = reports.ticket_no ) 
+			)
+			LEFT JOIN reports_newmsg ON ( reports_newmsg.ticket_no = reports.ticket_no ) 
+		)
+		LEFT JOIN users ON ( users.id = reports.userId ) 
+	)
+	INNER JOIN tbl_deptsel ON reports.deptsel = tbl_deptsel.dept_id 
+WHERE
+	reports.is_transfer = '1' 
+ORDER BY
+	reports.date_created DESC";
+
+	// '1' means i ca-call niya muna sa query yung transfer ticket
+	$statement = $this->connection->prepare($query);
+	$statement-> execute();
+	$result = $statement->fetchAll();
+	$data[] = array();
+	$fetchdata = array();
+	foreach ($result as $row) {
+		$fetchdata[] = array(
+			'ticket_no' => $row["ticket_no"],
+			'store' => $row['store'],
+			'str_code'=>$row["str_code"],
+			'date_created' => date('m/d/Y H:i',strtotime($row["date_created"])), 
+			'concern'=> $row["subject"],
+			'service_desc' => $row["service_desc"],
+			'subject' => $row["concern"],
+			'via' => $row["via"],
+			'status' => $row["status"],            
+			'itsup' => $row["itsup"],
+			'it_desc' => $row["it_desc"],
+			'cat_desc' => $row["cat_desc"],
+			'sub_cat' => $row["sub_cat"],
+			'msg_cnt' => $row["msg_cnt"],
+			'full_name' => $row["full_name"],
+			'dept_desc' => $row["dept_desc"]
+
+			// 'sub_cat' => $row["sub_cat"],
+		);
+	}	
+
+	$data = array_filter($fetchdata);
+
+		return $data;
+
+}
+
+
+
+
 
 
 } // dbconfig end bracket

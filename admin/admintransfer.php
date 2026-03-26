@@ -16,7 +16,349 @@
       <script src="../js/dataTables.responsive.min.js"></script>
       <script src="../js/fnReloadAjax.js"></script>
 
+        <!-- <style>
 
+
+/* =========================
+   Modern Helpdesk UI Skin
+   Works with Bootstrap + DataTables
+   ========================= */
+
+:root{
+  --bg0:#0b1220;
+  --bg1:#0f172a;
+  --card:#101a33cc;
+  --card2:#0f1a33;
+  --text:#e5e7eb;
+  --muted:#9ca3af;
+  --line:rgba(255,255,255,.08);
+  --shadow: 0 20px 55px rgba(0,0,0,.45);
+  --radius:18px;
+  --radius-sm:14px;
+  --focus: 0 0 0 .2rem rgba(59,130,246,.25);
+}
+
+html, body{
+  height:100%;
+}
+
+body{
+  background:
+    radial-gradient(900px 600px at 15% 10%, rgba(56,189,248,.16), transparent 55%),
+    radial-gradient(700px 500px at 85% 20%, rgba(168,85,247,.14), transparent 55%),
+    radial-gradient(700px 500px at 50% 90%, rgba(34,197,94,.10), transparent 55%),
+    linear-gradient(180deg, var(--bg0), var(--bg1));
+  color: var(--text);
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+}
+
+/* container spacing */
+.container.mt-3{
+  padding-top: 10px;
+  padding-bottom: 24px;
+}
+
+/* ===== Card wrapper for table ===== */
+#new_rep_table{
+  width:100% !important;
+}
+
+.table-wrap{
+  background: rgba(16, 26, 51, .55);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px;
+  backdrop-filter: blur(10px);
+}
+
+/* If you can't add wrapper div, style DataTables container instead */
+.dataTables_wrapper{
+  background: rgba(16, 26, 51, .55);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px;
+  backdrop-filter: blur(10px);
+}
+
+/* DataTables header controls */
+.dataTables_wrapper .dataTables_length label,
+.dataTables_wrapper .dataTables_filter label,
+.dataTables_wrapper .dataTables_info{
+  color: var(--muted) !important;
+  font-weight: 500;
+}
+
+.dataTables_wrapper .dataTables_filter input,
+.dataTables_wrapper .dataTables_length select{
+  background: rgba(255,255,255,.06) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 12px !important;
+  color: var(--text) !important;
+  padding: 8px 10px !important;
+  outline: none !important;
+}
+
+.dataTables_wrapper .dataTables_filter input:focus,
+.dataTables_wrapper .dataTables_length select:focus{
+  box-shadow: var(--focus) !important;
+  border-color: rgba(59,130,246,.55) !important;
+}
+
+/* Pagination */
+.dataTables_wrapper .dataTables_paginate .paginate_button{
+  border-radius: 12px !important;
+  border: 1px solid transparent !important;
+  color: var(--text) !important;
+  background: transparent !important;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover{
+  border-color: var(--line) !important;
+  background: rgba(255,255,255,.06) !important;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button.current{
+  background: rgba(59,130,246,.20) !important;
+  border-color: rgba(59,130,246,.35) !important;
+}
+
+/* ===== Table modern look ===== */
+table.dataTable{
+  border-collapse: separate !important;
+  border-spacing: 0 10px !important; /* row gaps */
+}
+
+table.dataTable thead th{
+  color: rgba(229,231,235,.9) !important;
+  font-weight: 700;
+  letter-spacing: .02em;
+  border: none !important;
+  background: transparent !important;
+  padding: 14px 12px !important;
+}
+
+table.dataTable tbody tr{
+  background: rgba(15, 26, 51, .70) !important;
+  border: 1px solid var(--line);
+  box-shadow: 0 8px 18px rgba(0,0,0,.25);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+table.dataTable tbody td{
+  border-top: 1px solid transparent !important;
+  border-bottom: 1px solid transparent !important;
+  color: rgba(229,231,235,.92) !important;
+  padding: 14px 12px !important;
+}
+
+table.dataTable tbody tr:hover{
+  transform: translateY(-1px);
+  transition: .15s ease;
+  background: rgba(17, 32, 62, .78) !important;
+}
+
+/* Fix the rounded row corners */
+table.dataTable tbody tr td:first-child{
+  border-top-left-radius: 14px;
+  border-bottom-left-radius: 14px;
+}
+table.dataTable tbody tr td:last-child{
+  border-top-right-radius: 14px;
+  border-bottom-right-radius: 14px;
+}
+
+/* ===== Modal modern glass ===== */
+.modal-content{
+  border: 1px solid var(--line) !important;
+  border-radius: var(--radius) !important;
+  background: rgba(12, 18, 35, .88) !important;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(12px);
+}
+
+.modal-header{
+  border-bottom: 1px solid var(--line) !important;
+  padding: 16px 18px !important;
+}
+
+.modal-title{
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: .02em;
+  color: var(--text);
+}
+
+.modal-body{
+  padding: 18px !important;
+}
+
+.modal-footer{
+  border-top: 1px solid var(--line) !important;
+  padding: 14px 18px !important;
+}
+
+label{
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(229,231,235,.78);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+/* Inputs / Select / Textarea */
+.form-control,
+.form-control-sm,
+select.form-control,
+textarea.form-control{
+  background: rgba(255,255,255,.06) !important;
+  border: 1px solid var(--line) !important;
+  color: var(--text) !important;
+  border-radius: 14px !important;
+  padding: 10px 12px !important;
+}
+
+.form-control:focus,
+.form-control-sm:focus,
+select.form-control:focus,
+textarea.form-control:focus{
+  box-shadow: var(--focus) !important;
+  border-color: rgba(59,130,246,.55) !important;
+}
+
+.form-control[readonly],
+textarea[readonly]{
+  opacity: .95;
+}
+
+/* Spacing in grid */
+.form-group{
+  margin-bottom: 14px !important;
+}
+
+/* ===== Buttons ===== */
+.btn{
+  border-radius: 14px !important;
+  padding: 10px 14px !important;
+  font-weight: 700 !important;
+  letter-spacing: .02em;
+  border: 1px solid transparent !important;
+}
+
+.btn-primary{
+  background: rgba(59,130,246,.22) !important;
+  border-color: rgba(59,130,246,.35) !important;
+}
+.btn-primary:hover{
+  background: rgba(59,130,246,.32) !important;
+}
+
+.btn-success{
+  background: rgba(34,197,94,.22) !important;
+  border-color: rgba(34,197,94,.35) !important;
+}
+.btn-success:hover{
+  background: rgba(34,197,94,.32) !important;
+}
+
+.btn-danger{
+  background: rgba(239,68,68,.22) !important;
+  border-color: rgba(239,68,68,.35) !important;
+}
+.btn-danger:hover{
+  background: rgba(239,68,68,.32) !important;
+}
+
+/* Collapse thread card */
+#msg_thread .card.card-body{
+  background: rgba(255,255,255,.04) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: var(--radius-sm) !important;
+}
+
+/* Thread container */
+.container_remarks{
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  max-height: 280px;
+  overflow: auto;
+}
+
+#remarks_view ul{
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+#remarks_view li{
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  background: rgba(15, 26, 51, .65);
+  border-radius: 14px;
+  margin-bottom: 10px;
+}
+
+hr{
+  border-top: 1px solid var(--line) !important;
+}
+
+
+.priority-chip{
+  padding:4px 10px;
+  border-radius:999px;
+  font-weight:700;
+  font-size:11px;
+  letter-spacing:.05em;
+}
+
+.p-critical{
+  background: rgba(239,68,68,.18);
+  color:#f87171;
+  border:1px solid rgba(239,68,68,.35);
+}
+
+.p-high{
+  background: rgba(251,146,60,.18);
+  color:#fb923c;
+  border:1px solid rgba(251,146,60,.35);
+}
+
+.p-medium{
+  background: rgba(250,204,21,.18);
+  color:#facc15;
+  border:1px solid rgba(250,204,21,.35);
+}
+
+.p-low{
+  background: rgba(34,197,94,.18);
+  color:#4ade80;
+  border:1px solid rgba(34,197,94,.35);
+}
+
+
+
+.select2-container--default .select2-selection--single {
+    background-color: #1e293b;
+    border: 1px solid #334155;
+    color: #fff;
+}
+
+.select2-dropdown {
+    background-color: #1e293b;
+    color: #fff;
+}
+
+.select2-results__option {
+    color: #fff;
+}
+
+
+
+
+          </style> -->
 <style>
 
 /* =========================
@@ -594,4 +936,4 @@ background: linear-gradient(135deg, #837031, #E1AD01);
       </div>
       </div>
 
-<?php include 'adminwfit_obj.php'; ?>
+<?php include 'admintransfer_obj.php'; ?>
