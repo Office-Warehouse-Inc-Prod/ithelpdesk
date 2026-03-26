@@ -400,7 +400,13 @@ Start of Add/Edit Modal
                   <input type="hidden" name="sub_num" id="sub_num" readonly>
                   <select class="form-control form-control-sm" name="sub" id="sub"></select>
                 </div>
-
+<div class="form-group col-12 col-md-4">
+  <label style="font-weight: bold;">TRANSFER REQUEST</label>
+  <div>
+    <input type="checkbox" name="is_transfer" id="is_transfer" value="1">
+    <label for="is_transfer"> Mark as Transfer Request</label>
+  </div>
+</div>
                 <div class="form-group col-12 col-md-4 hide_isp">
                   <label for="isp" id="lbl_isp">Service Provider</label>
                   <input type="hidden" name="isp_num" id="isp_num" readonly>

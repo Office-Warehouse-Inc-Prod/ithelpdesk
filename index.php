@@ -12,6 +12,7 @@
             --wartortle: #8bacf6;
             --wartortle-dark: #161c2e;
             --pikachu: #ffd84d; 
+            --charmander: #de5239;
             --white: #ffffff;
             --ease: cubic-bezier(0.85, 0, 0.15, 1);
         }
