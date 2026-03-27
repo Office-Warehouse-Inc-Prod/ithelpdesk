@@ -329,9 +329,9 @@ header,
                             <!-- <option value="4">MERCHANDISING</option> -->
                             <option value="6">VISUAL</option>
                             <option value="11">H.R</option>
-                            <option value="12">ICG</option>
+                            <!-- <option value="12">ICG</option> -->
                             <option value="13">ACCOUNTS PAYABLE</option>
-                            <option value="14">SALES ACCOUNTING</option>
+                            <!-- <option value="14">SALES ACCOUNTING</option> -->
                             <option value="15">TREASURY</option>
                             <option value="16">ACCOUNT RECEIVABLE</option>
                             </select>

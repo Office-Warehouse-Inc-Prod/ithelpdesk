@@ -420,23 +420,55 @@ $('#notif_dataxx tbody').on('click', 'tr', function () {
 
 
 
-function countnewrep() {
+// function countnewrep() {
 
 
-setInterval(function(){
+// setInterval(function(){
 
-var xhttp = new XMLHttpRequest();
-xhttp.onreadystatechange = function() {
-if (this.readyState == 4 && this.status == 200) {
-document.getElementById("notif_newrep").innerHTML = this.responseText;
-}
-};
-xhttp.open("GET", "fetchdata/notif_newrep.php", true);
-xhttp.send();
+// var xhttp = new XMLHttpRequest();
+// xhttp.onreadystatechange = function() {
+// if (this.readyState == 4 && this.status == 200) {
+// document.getElementById("notif_newrep").innerHTML = this.responseText;
+// }
+// };
+// xhttp.open("GET", "fetchdata/notif_newrep.php", true);
+// xhttp.send();
 
-},1000);
+// },1000);
 
 
+// }
+
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    getNewReportCount();      // run immediately
+    // getTransferCount();
+    setInterval(getNewReportCount, 5000); // every 5 seconds (DO NOT use 1s)
+
+});
+
+async function getNewReportCount() {
+
+    try {
+
+        const response = await fetch("fetchdata/notif_newrep.php?_=" + Date.now());
+        const count = (await response.text()).trim();
+
+        const badge = document.getElementById("notif_newrep");
+
+        if (!badge) return;
+
+        if (count === "0" || count === "") {
+            badge.style.display = "none";
+        } else {
+            badge.style.display = "inline-block";
+            badge.innerHTML = count;
+        }
+
+    } catch (error) {
+        console.error("Notification count error:", error);
+    }
 }
 
 

@@ -580,7 +580,8 @@ xhttp.send();
 document.addEventListener("DOMContentLoaded", function () {
 
     getNewReportCount();      // run immediately
-    setInterval(getNewReportCount, 5000); // every 5 seconds (DO NOT use 1s)
+    getTransferCount();
+    setInterval(getNewReportCount,getTransferCount, 5000); // every 5 seconds (DO NOT use 1s)
 
 });
 
@@ -609,7 +610,7 @@ async function getNewReportCount() {
 }
 
 
-async function getNewReportCount() {
+async function getTransferCount() {
 
     try {
 

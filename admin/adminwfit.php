@@ -816,7 +816,7 @@ background: linear-gradient(135deg, #837031, #E1AD01);
       <select class="form-control form-control-sm" name="f_deptsel" id="f_deptsel" required>
       <option value="">Assign department...</option>
       <?php
-      $query="SELECT * FROM tbl_dept WHERE dept_id NOT IN ('7','8') ";
+      $query="SELECT * FROM tbl_dept WHERE dept_id NOT IN ('7','8','12','14') ";
       $run=$con1->prepare($query);
       $run->execute();
       $rs=$run->get_result();
