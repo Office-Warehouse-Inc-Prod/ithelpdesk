@@ -261,7 +261,7 @@
 <body>
 
 <div class="split-wrapper">
-    <a href="loginn.php?system=dts" class="sector sceptile-sector">
+    <a href="#" class="sector sceptile-sector">
         <div class="content">
             <div class="status-badge">Digital Documents</div>
             <div class="icon-hex">
@@ -289,7 +289,7 @@
         </div>
     </a>
 
-    <a href="loginn.php?system=returns" class="sector pikachu-sector">
+    <a href="#" class="sector pikachu-sector">
         <div class="content">
             <div class="status-badge">Return</div>
 
