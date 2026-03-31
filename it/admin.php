@@ -442,7 +442,7 @@ $('#notif_dataxx tbody').on('click', 'tr', function () {
 
 document.addEventListener("DOMContentLoaded", function () {
 
-    getNewReportCount();      // run immediately
+    // getNewReportCount();      // run immediately
     // getTransferCount();
     setInterval(getNewReportCount, 5000); // every 5 seconds (DO NOT use 1s)
 
@@ -467,7 +467,7 @@ async function getNewReportCount() {
         }
 
     } catch (error) {
-        console.error("Notification count error:", error);
+        console.error("Notification count dev error:", error);
     }
 }
 

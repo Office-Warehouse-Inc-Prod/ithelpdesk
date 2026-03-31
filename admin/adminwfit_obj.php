@@ -274,7 +274,7 @@ $(document).on('change', '#f_deptsel', function () {
             data: { dept_id: dept_id },
             success: function (response) {
                 $('#contactNumber').val(response);
-                console.log(response)
+                // console.log(response)
             },
             error: function () {
                 $('#contactNumber').val('');
