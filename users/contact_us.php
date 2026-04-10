@@ -388,7 +388,10 @@ $withEmailCount = count(array_filter($departments, function ($department) {
     align-items: center;
     gap: 10px;
     color: var(--navy-deep);
-    font-weight: 800;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
     text-decoration: none !important;
     word-break: break-word;
   }
