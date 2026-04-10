@@ -318,12 +318,16 @@ public function admin_data_table_res(){
 $yr = preg_replace('/[^0-9,]/', '', $yr);
 
 $query = "
-    SELECT *
-    FROM vw6foradmin
-    WHERE sub_id NOT IN ('15','28','34','35')
-      AND status <> 'NEW REPORT'
-      AND YEAR(date_created) IN ($yr) AND is_transfer = '0'
+  SELECT *
+FROM vw6foradmin
+WHERE sub_id NOT IN ('15','28','34','35')
+  AND status <> 'NEW REPORT'
+  AND YEAR(date_created) IN ($yr)
+  AND (is_transfer = '0' OR is_transfer IS NULL);
 ";
+
+
+
 
     $statement = $this->connection->prepare($query);
     $statement->execute([
