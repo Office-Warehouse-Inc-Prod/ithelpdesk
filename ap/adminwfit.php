@@ -470,7 +470,6 @@ hr{ border-top: 1px solid var(--line) !important; }
     color:white;
 }
 
-
 ::-webkit-scrollbar {
   width: 8px;
 }

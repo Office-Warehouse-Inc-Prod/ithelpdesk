@@ -4,6 +4,7 @@ if ($_SESSION['login']!='true'){
 header("Location: index.php");
 exit();
 }
+ date_default_timezone_set('Asia/Manila');
 
 ?>
 
@@ -23,7 +24,7 @@ exit();
 <link rel="stylesheet" type="text/css" href="../dist/fontawesome/css/fontawesome.min.css" />
 <script src="https://kit.fontawesome.com/426b4bab4c.js" crossorigin="anonymous"></script> 
 <script src="../js/jquery.timeago.js"></script>
-<script src="../js/helpdesk.js"></script> 
+<script src="../js/adminhelpdesk.js"></script> 
 <script src="../js/coms.js"></script> 
 <script src="../js/amcharts/core.js"></script>
 <script src="../js/amcharts/charts.js"></script>
@@ -38,7 +39,7 @@ exit();
 <link rel="stylesheet" href="../assets/Date-Time-Picker-Bootstrap-4/src/sass/bootstrap-datetimepicker-build.css" />
 <link href="https://fonts.googleapis.com/css2?family=Edu+NSW+ACT+Foundation&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
-<!-- <link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css' rel='stylesheet' /> -->
+<link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css' rel='stylesheet' />
 
 <script src="../assets/Date-Time-Picker-Bootstrap-4/src/js/bootstrap-datetimepicker.js"></script>
 <!-- <link rel="stylesheet" href="styles.css" /> -->
@@ -48,16 +49,83 @@ exit();
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.js"></script>
 <script src="../js/ellipsis.js"></script>
-<!-- <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script> -->
-
-
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
-
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 <style>
+
+#notif_newrep{
+    margin-left:6px;
+    font-size:11px;
+    padding:4px 6px;
+}
+
+
+
+/* Change Password */
+.change-pass {
+    color: #1e3a8a !important; /* navy blue */
+    font-weight: 500;
+}
+
+.change-pass:hover {
+    background-color: #f1f5ff;
+    color: #1e3a8a !important;
+}
+
+/* Logout */
+.logout-btn {
+    color: #dc2626 !important; /* red */
+    font-weight: 600;
+}
+
+.logout-btn:hover {
+    background-color: #ffe5e5;
+    color: #dc2626 !important;
+}
+
+
+/* Force dropdown text color */
+.dropdown-menu .dropdown-item {
+    color: #1f2937 !important; /* dark gray */
+}
+
+/* Change Password */
+.dropdown-menu .change-pass {
+    color: #1e3a8a !important; /* navy */
+}
+
+/* Logout */
+.dropdown-menu .logout-btn {
+    color: #dc2626 !important; /* red */
+    font-weight: 600;
+}
+
+/* Hover behavior */
+.dropdown-menu .dropdown-item:hover {
+    background-color: #f3f4f6;
+    color: inherit !important;
+}
+
+/* Make icons visible and aligned */
+.dropdown-menu .dropdown-item i {
+    width: 18px;
+    margin-right: 8px;
+    color: inherit !important;
+}
+
+/* Change Password */
+.change-pass {
+    color: #1e40af !important; /* navy */
+}
+
+/* Logout */
+.logout-btn {
+    color: #dc2626 !important; /* red */
+    font-weight: 600;
+}
+
 
 :root {
   --primary-color: #E1AD01;
@@ -244,94 +312,137 @@ body {
   border-top: 3px solid var(--primary-color);
   margin-top: 10px;
 }
-</style>
-
+  </style>
 
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark owi-navbar sticky-top">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="adminpanel.php">
-      <img src="../images/owi.ico" width="35" height="35" class="d-inline-block align-top" alt="OWI Logo">
-      <span>OWI <span style="color: var(--primary-color);">HELPDESK</span></span>
+  
+<nav class="navbar navbar-icon-top navbar-expand-lg navbar-dark bg-dark">
+<a class="navbar-brand" href="#">OWI HELPDESK</a>
+<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+<span class="navbar-toggler-icon"></span>
+</button>
+
+<div class="collapse navbar-collapse" id="navbarSupportedContent">
+<ul class="navbar-nav mr-auto">
+<li class="nav-item active">
+<a class="nav-link" href="adminpanel.php">
+<i class="fa fa-home"></i>
+HOME
+<span class="sr-only">(current)</span>
+</a>
+</li>
+<li class="nav-item">
+<a class="nav-link " href="adminwfit.php">
+<i class="fa fa-envelope-o">
+  <span class="badge badge-danger" id="notif_newrep"></span>
+</i>
+NEW REPORTS
+</a>
+</li>
+<li class="nav-item">
+<a class="nav-link " href="admintransfer.php">
+<i class="fa fa-envelope-o">
+  <span class="badge badge-danger" id="notif_transfer"></span>
+</i>
+REQUEST TO TRANSFER
+</a>
+</li>
+<li class="nav-item">
+
+</li>
+<!-- <li class="nav-item">
+<a class="nav-link " href="adminwfit.php">
+<i class="fa fa-file-signature">
+  <span class="badge badge-danger" id="">2</span>
+</i>
+NEW SUPPLIES REQUEST
+</a>
+</li> -->
+<li class="nav-item dropdown">
+<a class="nav-link" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+<i class="fa fa-chart-line"></i>
+</i>
+GENERATE REPORT
+</a>
+<div class="dropdown-menu" aria-labelledby="navbarDropdown" style="background-color: rgb(52,58,64);">
+<!-- <a class="dropdown-item text-white"  href="genreports.php"><i class="fa fa-calendar-day"></i> Generate Report By Area</a> -->
+<a class="dropdown-item text-white" href="genrep_bycat.php"><i class="fa fa-calendar-day"></i>Generate By Categories</a>
+<div class="dropdown-divider"></div>
+<!-- <a class="dropdown-item" href="#">Something else here</a> -->
+</div>
+</li>
+
+</ul>
+<ul class="navbar-nav ml-auto"> 
+<!-- <li class="nav-item">
+  <a class="nav-link" href="networkpanel.php" >
+    <i class="fa-solid fa-ethernet"></i>
+    <span>Network Maintenance</span>
+  </a>
+</li> -->
+<!-- Changed mr-auto to ml-auto for right alignment -->
+  <li class="nav-item dropdown">
+    <a class="nav-link" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <i class="fa fa-sliders-h"></i>
+      Maintenance
     </a>
-
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item active">
-          <a class="nav-link" href="adminpanel.php">
-            <i class="fa fa-home"></i> HOME
-          </a>
-        </li>
-
-        <li class="nav-item">
-          <a class="nav-link" href="adminwfit.php">
-            <i class="fa fa-envelope-o">
-              <span class="badge badge-danger" id="notif_newrep"></span>
-            </i>
-            NEW REPORTS
-          </a>
-        </li>
-
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="genReportDrop" role="button" data-toggle="dropdown">
-            <i class="fa fa-chart-line"></i> REPORTS
-          </a>
-          <div class="dropdown-menu" aria-labelledby="genReportDrop">
-            <a class="dropdown-item" href="genrep_bycat.php">
-              <i class="fa fa-calendar-day"></i> By Categories
-            </a>
-          </div>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="maintDrop" role="button" data-toggle="dropdown">
-            <i class="fa fa-sliders-h"></i> MAINTENANCE
-          <div class="dropdown-menu" aria-labelledby="maintDrop">
-            <a class="dropdown-item" href="user_maintenance.php"><i class="fas fa-user-cog"></i> User Maintenance</a>
-            <a class="dropdown-item" href="store_maintenance.php"><i class="fas fa-store"></i> Store Maintenance</a>
-          </div>
-        </li>
-      </ul>
-
-      <ul class="navbar-nav ml-auto">
-        
-
-        <li class="nav-item dropdown">
-          <a class="nav-link" href="#" id="notifDrop" role="button" data-toggle="dropdown">
-            <i class="fa fa-bell">
-              <span class="badge badge-info" id="notif_newmsg"></span>
-            </i>
-          </a>
-          <div class="dropdown-menu dropdown-menu-right notif-dropdown" aria-labelledby="notifDrop">
-            <div class="px-2 py-2">
-               <h6 class="dropdown-header text-dark">Recent Notifications</h6>
-              <table id="notif_dataxx" class="table table-sm mb-0" style="width:100%;"></table>
-            </div>
-          </div>
-        </li>
-
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-toggle="dropdown">
-            <img class="rounded-circle border border-light" src="../images/users/<?= $_SESSION['imguser'];?>"
-              alt="User" style="width: 30px; height: 30px; object-fit: cover;">
-            <span class="ml-2 d-none d-lg-inline">
-            <?php echo $_SESSION['fname'].' '.$_SESSION['lstname']; ?>
-            </span>
-          </a>
-          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
-            <a class="dropdown-item" href="change_password.php"><i class="fas fa-key mr-2"></i>Change Password</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item text-danger" href="../logout.php"><i class="fas fa-sign-out-alt mr-2"></i>Log Out</a>
-          </div>
-        </li>
-      </ul>
+    <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="background-color: rgb(52,58,64);">
+      <a class="dropdown-item text-white" href="user_maintenance.php">
+        <i class="fas fa-user-cog"></i> User Maintenance
+      </a>
+      <a class="dropdown-item text-white" href="store_maintenance.php">
+        <i class="fas fa-store"></i> Store Maintenance
+      </a>
     </div>
-  </div>
+  </li>
+  
+  <li class="nav-item dropdown">
+    <a class="nav-link" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <i class="fa fa-bell">
+        <span class="badge badge-info" id="notif_newmsg"></span>
+      </i>
+      Notification
+    </a>
+    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+      <div class="col-md-12 col-xs-12">
+        <table id="notif_dataxx" class="table text-dark table-dark table-responsive table-sm bg-dark" style="width: auto;"></table>
+      </div>
+    </div>
+  </li>
+  
+  <li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <img class="rounded-circle" src="../images/users/<?= $_SESSION['imguser'];?>" alt="User Image" style="width: 35px; height: 35px; object-fit: cover;">
+      <span class="ml-2 d-none d-lg-inline"><?php echo $_SESSION['fname'].' '.$_SESSION['lstname']; ?></span>
+    </a>
+    <!-- <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+      <a class="dropdown-item" href="change_password.php">
+        <i class="fas fa-key mr-2"></i>Change Password
+      </a>
+      <div class="dropdown-divider"></div>
+      <a class="dropdown-item" href="../logout.php">
+        <i class="fas fa-sign-out-alt mr-2"></i>Log Out
+      </a>
+    </div> -->
+
+    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+  
+  <a class="dropdown-item change-pass" href="change_password.php">
+    <i class="fas fa-key mr-2"></i>Change Password
+  </a>
+
+  <div class="dropdown-divider"></div>
+
+  <a class="dropdown-item logout-btn" href="../logout.php">
+    <i class="fas fa-sign-out-alt mr-2"></i>Log Out
+  </a>
+
+</div>
+  </li>
+</ul>
+</div>
 </nav>
+
 
 <script type="text/javascript">
 $(document).ready(function(){
@@ -441,10 +552,9 @@ $('#notif_dataxx tbody').on('click', 'tr', function () {
 
 
 document.addEventListener("DOMContentLoaded", function () {
-
-    // getNewReportCount();      // run immediately
-    // getTransferCount();
-    setInterval(getNewReportCount, 5000); // every 5 seconds (DO NOT use 1s)
+    getNewReportCount();      
+    getTransferCount();
+    setInterval(getNewReportCount,getTransferCount, 5000); // every 5 seconds (DO NOT use 1s)
 
 });
 
@@ -496,24 +606,7 @@ async function getTransferCount() {
     }
 }
 
-function countnewrep() {
 
-
-setInterval(function(){
-
-var xhttp = new XMLHttpRequest();
-xhttp.onreadystatechange = function() {
-if (this.readyState == 4 && this.status == 200) {
-document.getElementById("notif_newrep").innerHTML = this.responseText;
-}
-};
-xhttp.open("GET", "fetchdata/notif_newrep.php", true);
-xhttp.send();
-
-},1000);
-
-
-}
 
 function countNwMsg() {
 

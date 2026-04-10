@@ -227,10 +227,10 @@ table = $("#report_data").DataTable({
         const s = (data || "").toUpperCase();
         let cls = "badge bg-secondary";
 
-        if (s === "ON PROCESS") cls = "badge bg-warning text-dark";
+        if (s === "ON PROCESS") cls = "badge bg-warning";
         else if (s === "CLOSED") cls = "badge bg-success";
         else if (s === "SUBJECT FOR CLOSING") cls = "badge bg-primary";
-        else if (s === "ATTENDED WITH FIX ASSET") cls = "badge bg-info text-dark";
+        else if (s === "PENDING") cls = "badge bg-danger";
 
         return `<span class="${cls} px-2 py-1">${data}</span>`;
       }
@@ -304,12 +304,12 @@ table = $("#report_data").DataTable({
 
   rowCallback: function (row, data) {
     // reset classes
-    $(row).removeClass('status-open status-closed status-subject-closing status-fixed');
+    $(row).removeClass('status-open status-closed status-subject-closing status-pending');
 
     const s = (data['status'] || "").toUpperCase();
 
     if (s === 'ON PROCESS') $(row).addClass('status-open');
-    else if (s === 'ATTENDED WITH FIX ASSET') $(row).addClass('status-fixed');
+    else if (s === 'PENDING') $(row).addClass('status-pending');
     else if (s === 'CLOSED') $(row).addClass('status-closed');
     else if (s === 'SUBJECT FOR CLOSING') $(row).addClass('status-subject-closing');
   }
@@ -587,14 +587,12 @@ return false;
 });
 
 
-
-$(document).on("submit", "#report_form", function (e) {
+  $(document).on("submit", "#report_form", function (e) {
     e.preventDefault();
-
     var TicketNumber = $("#ticket_no").val();
     var Store = $("#store").val();
     var DateCreated = $("#date_created").val();
-    var Concern = $("#subjct").val();
+    var Concern = $("#concern").val();
     var Status = $("#status").val();
     var Via = $("#via").val();
     var ItSupport = $("#itsup").val();
@@ -604,136 +602,63 @@ $(document).on("submit", "#report_form", function (e) {
     var CloseBy = $("#close_by").val();
     var remarks = $("#remarks").val();
     var addmsgx = $("#addmsg").val();
-    var is_transfer = $("#is_transfer").is(":checked") ? 1 : 0;
-
     var today = new Date();
     DateCreated = new Date(DateCreated);
     DateClosed = new Date(DateClosed);
-
     if (DateCreated > today) {
-        alert("Invalid date");
-        return false;
+      alert("Invalid date");
+      return false;
     }
-    else if (Status == 'OPEN') {
-        if (DateClosed < DateCreated) {
-            alert("Date closed should be greater than date created!");
-            return false;
+    else if (Status == 'OPEN'){
+        if (DateClosed < DateCreated ){
+      alert("Date closed should be greater than date created!");
+      return false;
+    }
+
         }
-    }
-    else if (DateClosed > today) {
-        alert("Invalid Closed_Date");
-        return false;
+    else if (DateClosed > today ){
+      alert("Invalid Closed_Date");
+      return false;
     }
 
     if (
-        Store != "" &&
-        DateCreated != "" &&
-        Concern != "" &&
-        Status != "" &&
-        Via != "" &&
-        ItSupport != "" &&
-        cat_id != "" &&
-        sub_id != ""
+      Store != "" &&
+      DateCreated != "" &&
+      Concern != "" &&
+      Status != "" &&
+      Via != "" &&
+      ItSupport != "" &&
+      cat_id != "" &&
+      sub_id != ""
     ) {
-        $.ajax({
-            url: "insert.php",
-            method: "POST",
-            data: new FormData(this),
-            contentType: false,
-            processData: false,
-            success: function (data) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Your work has been saved',
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-
-                $("#userModal").modal("hide");
-                getdata(yr);
-                get_card_data(yr);
-            }
-        });
+      $.ajax({
+        url: "insert.php",
+        method: "POST",
+        data: new FormData(this),
+        contentType: false,
+        processData: false,
+        success: function (data) {
+          // alert(addmsgx);
+          // $("#report_form")[0].reset();
+          Swal.fire({
+             icon: 'success',
+             title: 'Your work has been saved',
+             showConfirmButton: false,
+             timer: 1500
+          });
+          $("#userModal").modal("hide");
+                  getdata(yr);
+                  get_card_data(yr);
+      //     setTimeout(function(){// wait for 5 secs(2)
+      //      location.reload(); // then reload the page.(3)
+      // }, 2000); 
+        },
+      });
     } else {
-        alert("All Fields are Required");
+      alert("All Fields are Required");
     }
-});
-
-
-
-
-  // $(document).on("submit", "#report_form", function (e) {
-  //   e.preventDefault();
-  //   var TicketNumber = $("#ticket_no").val();
-  //   var Store = $("#store").val();
-  //   var DateCreated = $("#date_created").val();
-  //   var Concern = $("#concern").val();
-  //   var Status = $("#status").val();
-  //   var Via = $("#via").val();
-  //   var ItSupport = $("#itsup").val();
-  //   var cat_id = $("#cat").val();
-  //   var sub_id = $("#sub").val();
-  //   var DateClosed = $("#date_closed").val();
-  //   var CloseBy = $("#close_by").val();
-  //   var remarks = $("#remarks").val();
-  //   var addmsgx = $("#addmsg").val();
-  //   var today = new Date();
-  //   DateCreated = new Date(DateCreated);
-  //   DateClosed = new Date(DateClosed);
-  //   if (DateCreated > today) {
-  //     alert("Invalid date");
-  //     return false;
-  //   }
-  //   else if (Status == 'OPEN'){
-  //       if (DateClosed < DateCreated ){
-  //     alert("Date closed should be greater than date created!");
-  //     return false;
-  //   }
-
-  //       }
-  //   else if (DateClosed > today ){
-  //     alert("Invalid Closed_Date");
-  //     return false;
-  //   }
-
-  //   if (
-  //     Store != "" &&
-  //     DateCreated != "" &&
-  //     Concern != "" &&
-  //     Status != "" &&
-  //     Via != "" &&
-  //     ItSupport != "" &&
-  //     cat_id != "" &&
-  //     sub_id != ""
-  //   ) {
-  //     $.ajax({
-  //       url: "insert.php",
-  //       method: "POST",
-  //       data: new FormData(this),
-  //       contentType: false,
-  //       processData: false,
-  //       success: function (data) {
-  //         // alert(addmsgx);
-  //         // $("#report_form")[0].reset();
-  //         Swal.fire({
-  //            icon: 'success',
-  //            title: 'Your work has been saved',
-  //            showConfirmButton: false,
-  //            timer: 1500
-  //         });
-  //         $("#userModal").modal("hide");
-  //                 getdata(yr);
-  //                 get_card_data(yr);
-  //     //     setTimeout(function(){// wait for 5 secs(2)
-  //     //      location.reload(); // then reload the page.(3)
-  //     // }, 2000); 
-  //       },
-  //     });
-  //   } else {
-  //     alert("All Fields are Required");
-  //   }
-  //   //  clearconsole();
-  // });
+    //  clearconsole();
+  });
 
 // $(document).on('click', '#dtbsecond', function(){
 

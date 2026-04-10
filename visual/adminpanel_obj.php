@@ -227,10 +227,10 @@ table = $("#report_data").DataTable({
         const s = (data || "").toUpperCase();
         let cls = "badge bg-secondary";
 
-        if (s === "ON PROCESS") cls = "badge bg-warning text-dark";
+        if (s === "ON PROCESS") cls = "badge bg-warning";
         else if (s === "CLOSED") cls = "badge bg-success";
         else if (s === "SUBJECT FOR CLOSING") cls = "badge bg-primary";
-        else if (s === "ATTENDED WITH FIX ASSET") cls = "badge bg-info text-dark";
+        else if (s === "PENDING") cls = "badge bg-danger";
 
         return `<span class="${cls} px-2 py-1">${data}</span>`;
       }
@@ -304,12 +304,12 @@ table = $("#report_data").DataTable({
 
   rowCallback: function (row, data) {
     // reset classes
-    $(row).removeClass('status-open status-closed status-subject-closing status-fixed');
+    $(row).removeClass('status-open status-closed status-subject-closing status-pending');
 
     const s = (data['status'] || "").toUpperCase();
 
     if (s === 'ON PROCESS') $(row).addClass('status-open');
-    else if (s === 'ATTENDED WITH FIX ASSET') $(row).addClass('status-fixed');
+    else if (s === 'PENDING') $(row).addClass('status-pending');
     else if (s === 'CLOSED') $(row).addClass('status-closed');
     else if (s === 'SUBJECT FOR CLOSING') $(row).addClass('status-subject-closing');
   }

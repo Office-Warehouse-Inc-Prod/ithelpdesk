@@ -49,7 +49,6 @@ exit();
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.js"></script>
 <script src="../js/ellipsis.js"></script>
-<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
 </head>
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
@@ -189,6 +188,8 @@ body {
 /* Dropdown items */
 .owi-navbar .dropdown-item {
   color: black;
+  
+  background-color: #ffffff;
   border-radius: 10px;
   padding: .55rem .75rem;
   white-space: normal; 
@@ -447,198 +448,6 @@ GENERATE REPORT
 
 <script type="text/javascript">
 $(document).ready(function(){
-// countnewrep();
-countNwMsg();
-
-function getdata(){
-    $.post('fetchdata/fetch_data.php', { mode: 'notif_support' }, function(data){
-        // console.log(data);
-        notifdatas(data);
-    }, 'json');
-}
-
-// Run getdata() every 1 second
-setInterval(getdata, 1000);
-
-
-var table
-function notifdatas(t){
-const dataset=t.ntfsupdata;
-table =  $("#notif_dataxx").DataTable({
-
-"dom":
-'<"pull-left"lf><"pull-right">tip',
-// stateSave: true,
-"pagingType": "full_numbers",
-"bDestroy": true,
-"responsive": true, "lengthChange": false, "autoWidth": false,
-"bInfo": false,
-"bFilter": false,
-"paging": false,
-"select": true,
-"pageLength":10,
-"language": {
-"emptyTable": "No new Notification"
-},
-"data": dataset,
-// "order": [[ 0, "Asc" ]],
-
-"columns": [
-
-{title:"NOTIFICATION", data:'notif_data',"defaultContent": ""}
-],
-"columnDefs": [
-{
-targets: 0,
-className: 'bolded'
-}
-]
-
-});
-
-$('#notif_dataxx tbody').on('click', 'tr', function () {
-    var data = table.row(this).data();
-    var ticketVal = data.ticket_no;
-
-    $('#myInput').val(ticketVal).trigger('input');
-
-    $.post('change_notif.php', { ticketVal: ticketVal }, function(data, textStatus, xhr) {
-        getdata();
-    });
-
-    // Scroll to bottom smoothly after click
-  $('html, body').animate(
-        { scrollTop: $(document).height() },
-        800,
-        'swing',
-        function () {
-            // Add highlight effect
-            let tableDiv = $('#report_data');
-            tableDiv.css('transition', 'background-color 0.8s');
-            tableDiv.css('background-color', '#ffff99'); // highlight yellow
-
-            setTimeout(() => {
-                tableDiv.css('background-color', '#ffffff'); // back to white
-            }, 800); // delay before returning to white
-        }
-    );
-});
-
-
-} // end of data table
-
-
-});
-
-
-
-
-// function countnewrep() {
-
-
-// setInterval(function(){
-
-// var xhttp = new XMLHttpRequest();
-// xhttp.onreadystatechange = function() {
-// if (this.readyState == 4 && this.status == 200) {
-// document.getElementById("notif_newrep").innerHTML = this.responseText;
-// }
-// };
-// xhttp.open("GET", "fetchdata/notif_newrep.php", true);
-// xhttp.send();
-
-// },1000);
-
-
-// }
-
-
-
-
-function countNwMsg() {
-
-
-setInterval(function(){
-
-var xhttp = new XMLHttpRequest();
-xhttp.onreadystatechange = function() {
-if (this.readyState == 4 && this.status == 200) {
-document.getElementById("notif_newmsg").innerHTML = this.responseText;
-}
-};
-xhttp.open("GET", "fetchdata/fetch_newmsg.php", true);
-xhttp.send();
-
-},1000);
-
-
-}
-
-
-
-
-document.addEventListener("DOMContentLoaded", function () {
-
-    getNewReportCount();      // run immediately
-    getTransferCount();
-    setInterval(getNewReportCount,getTransferCount, 5000); // every 5 seconds (DO NOT use 1s)
-
-});
-
-
-async function getNewReportCount() {
-
-    try {
-
-        const response = await fetch("fetchdata/notif_newrep.php?_=" + Date.now());
-        const count = (await response.text()).trim();
-
-        const badge = document.getElementById("notif_newrep");
-
-        if (!badge) return;
-
-        if (count === "0" || count === "") {
-            badge.style.display = "none";
-        } else {
-            badge.style.display = "inline-block";
-            badge.innerHTML = count;
-        }
-
-    } catch (error) {
-        console.error("Notification count error:", error);
-    }
-}
-
-
-async function getTransferCount() {
-
-    try {
-
-        const xresponse = await fetch("fetchdata/notif_transfer.php?_=" + Date.now());
-        const xcount = (await xresponse.text()).trim();
-
-        const xbadge = document.getElementById("notif_transfer");
-
-        if (!xbadge) return;
-
-        if (xcount === "0" || xcount === "") {
-            xbadge.style.display = "none";
-        } else {
-            xbadge.style.display = "inline-block";
-            xbadge.innerHTML = xcount;
-        }
-
-    } catch (error) {
-        console.error("Notification count error:", error);
-    }
-}
-
-
-
-</script>
-
-<script type="text/javascript">
-$(document).ready(function(){
 countnewrep();
 countNwMsg();
 
@@ -724,6 +533,82 @@ $('#notif_dataxx tbody').on('click', 'tr', function () {
 
 
 
+// function countnewrep() {
+
+
+// setInterval(function(){
+
+// var xhttp = new XMLHttpRequest();
+// xhttp.onreadystatechange = function() {
+// if (this.readyState == 4 && this.status == 200) {
+// document.getElementById("notif_newrep").innerHTML = this.responseText;
+// }
+// };
+// xhttp.open("GET", "fetchdata/notif_newrep.php", true);
+// xhttp.send();
+
+// },1000);
+
+
+// }
+
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    getNewReportCount();      // run immediately
+    getTransferCount();
+    setInterval(getNewReportCount, 5000); // every 5 seconds (DO NOT use 1s)
+
+});
+
+async function getNewReportCount() {
+
+    try {
+
+        const response = await fetch("fetchdata/notif_newrep.php?_=" + Date.now());
+        const count = (await response.text()).trim();
+
+        const badge = document.getElementById("notif_newrep");
+
+        if (!badge) return;
+
+        if (count === "0" || count === "") {
+            badge.style.display = "none";
+        } else {
+            badge.style.display = "inline-block";
+            badge.innerHTML = count;
+        }
+
+    } catch (error) {
+        console.error("Notification count dev error:", error);
+    }
+}
+
+
+
+async function getTransferCount() {
+
+    try {
+
+        const xresponse = await fetch("fetchdata/notif_transfer.php?_=" + Date.now());
+        const xcount = (await xresponse.text()).trim();
+
+        const xbadge = document.getElementById("notif_transfer");
+
+        if (!xbadge) return;
+
+        if (xcount === "0" || xcount === "") {
+            xbadge.style.display = "none";
+        } else {
+            xbadge.style.display = "inline-block";
+            xbadge.innerHTML = xcount;
+        }
+
+    } catch (error) {
+        console.error("Notification count error:", error);
+    }
+}
+
 function countnewrep() {
 
 
@@ -743,9 +628,6 @@ xhttp.send();
 
 }
 
-
-
-
 function countNwMsg() {
 
 
@@ -764,6 +646,8 @@ xhttp.send();
 
 
 }
+
+
 
 // Auto-detect current page and set 'active' class
 var currentUrl = window.location.pathname.split("/").pop();
@@ -796,4 +680,3 @@ $('.navbar-nav .nav-item').each(function() {
 });
 
 </script>
-
