@@ -235,6 +235,15 @@ $user = NULL;
     header("Location: sa/adminpanel.php");
     exit();
    } 
+
+   //Admin Admin Support
+    elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'admin-admin-support' ) {
+    $_SESSION['login'] = 'true';
+    $_SESSION['user_id'] = $results['id'];
+    $_SESSION['deptsel'] = $results['deptsel'];
+    header("Location: admin-admin-support/adminpanel.php");
+    exit();
+   } 
    //Newly Added Treasury-Admin 
     elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'treasury-admin' ) {
     $_SESSION['login'] = 'true';
