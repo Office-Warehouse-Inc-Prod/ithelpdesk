@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     foreach ($files['name'] as $index => $name) {
         $fileTmp = $files['tmp_name'][$index];
         $filename = $files['name'][$index];
-        $filePath = '../users/image/'. $name;
+        $filePath = 'image/'. $name;
 
         $sql = "INSERT INTO images(files_tmp, files_name, uploaded_on, ticket_no) VALUE ('$fileTmp',' $filename', NOW(), '$tktnum') ";
 

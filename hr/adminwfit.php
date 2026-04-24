@@ -222,7 +222,6 @@ $con1=new dbconfig();
 }
 
 
-
 .dataTables_wrapper .dataTables_filter input:focus,
 .dataTables_wrapper .dataTables_length select:focus{
   box-shadow: var(--focus) !important;

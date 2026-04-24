@@ -111,47 +111,7 @@ table = $("#report_data").DataTable({
     "<'dt-bottom d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-2'ip>",
 
   buttons: [
-    {
-      text: '<i class="fas fa-plus"></i> <span class="d-none d-md-inline">Add Report</span>',
-      attr: {
-        title: 'Add Report',
-        id: 'add_button',
-        class: 'btn btn-danger btn-sm rounded-pill px-3 shadow-sm'
-      },
-      action: function (e, dt, node, config) {
-        $('#remarks_view').empty();
-        $('#userModal').modal({ show: true, backdrop: 'static' });
-        $('.modal-title').text("ADD REPORT");
-
-        $('#action').val("Add");
-        $('#operation').val("Add");
-        $('#report_form').trigger('reset');
-
-        $(':input[type="submit"]').prop('disabled', false);
-        $('#date_created').attr('readonly', false);
-        $('#date_refNo').attr('readonly', false);
-        $('#date_closed').attr('readonly', false);
-
-        $('#store').prop("disabled", false);
-        $('#via').prop("disabled", false);
-        $('#status').prop("disabled", false);
-
-        // ✅ new dept field support (fallback if you still use #itsup)
-        if ($('#f_deptsel').length) $('#f_deptsel').prop("disabled", false);
-        if ($('#itsup').length) $('#itsup').prop("disabled", false);
-
-        $('#cat').prop("disabled", false);
-        $('#sub').prop("disabled", false);
-        $('#isp').prop("disabled", false);
-        $('#remarks').attr('readonly', false);
-
-        $('#img').empty();
-        admin_hideshowforms();
-        unilayout_netshowmodalform();
-
-        $('#addmsg').removeAttr('required');
-      }
-    },
+   
     {
       extend: 'excelHtml5',
       text: '<i class="fas fa-file-excel"></i> <span class="d-none d-md-inline">Export</span>',

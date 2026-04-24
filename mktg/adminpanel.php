@@ -16,6 +16,7 @@ include 'sub_graph_modal.php';
 </head>
 <style>
 
+
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -30,7 +31,6 @@ background: linear-gradient(135deg, #837031, #E1AD01);
 ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(135deg, #837031, #E1AD01);
 }
-
 </style>
 
 <!-- =========================
@@ -127,7 +127,7 @@ background: linear-gradient(135deg, #837031, #E1AD01);
           </div>
 
           <div class="col-xl-3 col-lg-6 col-md-6">
-            <div class="card h-100 dashcard-clickable" data-filter="ATTENDED WITH FIX ASSET" style="border-radius: 15px; cursor:pointer;">
+            <div class="card h-100 dashcard-clickable" data-filter="PENDING" style="border-radius: 15px; cursor:pointer;">
               <div class="card-body p-4">
                 <div class="d-flex align-items-center justify-content-between mb-3">
                   <div class="bg-danger bg-opacity-10 p-3 rounded-circle text-danger" style="color: #D25353;">
@@ -333,6 +333,9 @@ Start of Add/Edit Modal
 
                 <input type="hidden" class="form-control form-control-sm" name="ticket_no" id="ticket_no">
 
+                
+
+
                 <div class="form-group col-12">
                   <label>SUBJECT/CONCERN</label>
                   <textarea name="subjct" id="subjct" class="form-control form-control-sm"
@@ -381,7 +384,7 @@ Start of Add/Edit Modal
                   <select class="form-control form-control-sm" name="cat" id="cat" required>
                     <option value=""> &larr; CATEGORY &rarr;</option>
                     <?php
-                      // $query="select * from category WHERE deptsel = '3'";
+                      // $query="select * from category WHERE deptsel = '1'";
                           $query="select * from categories WHERE deptsel = '3'";
                       $run=$conn->prepare($query);
                       $run->execute();

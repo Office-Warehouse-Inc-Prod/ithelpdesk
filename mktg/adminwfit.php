@@ -221,16 +221,6 @@ $con1=new dbconfig();
   font-weight: 600;
 }
 
-/* Search + length */
-.dataTables_wrapper .dataTables_filter input,
-.dataTables_wrapper .dataTables_length select{
-  background: #fff !important;
-  border: 1px solid var(--line) !important;
-  border-radius: 12px !important;
-  color: var(--text) !important;
-  padding: 8px 10px !important;
-  outline: none !important;
-}
 
 .dataTables_wrapper .dataTables_filter input:focus,
 .dataTables_wrapper .dataTables_length select:focus{
@@ -479,7 +469,6 @@ hr{ border-top: 1px solid var(--line) !important; }
     border-color: yellow;
     color:white;
 }
-
 
 ::-webkit-scrollbar {
   width: 8px;

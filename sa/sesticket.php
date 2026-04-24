@@ -17,34 +17,34 @@ if (isset($_POST['tktval'])) {
       if (file_exists($file_path)) {
         switch ($file_extension) {
           case 'jpg':
-		      case 'JPG':
+		  case 'JPG':
           case 'jpeg':
           case 'png':
           case 'gif':
             $output.= "<br />\n";
-            $output.= "<a href='". $file_path. "' target='_blank'><img src='". $file_path. "' width='900'></a><br>";
+            $output.= "<a href='". $file_path. "' target='_blank'><img src='". $file_path. "' style='width: 470px; height: 300px;' ></a><br>";
             break;
           case 'pdf':
             $output.= "<br />\n";
 			$output.= "file name: ". $filename . "<br>"; // to show file name
-            $output.= "<a href='". $file_path. "' target='_blank'><img src='../icons/pdf.png' width='100' height='100' alt='Open PDF'></a><br>";
+            $output.= "<a href='". $file_path. "' target='_blank'><img src='../icons/pdf.png' width='200' height='100' alt='Open PDF'></a><br>";
             break;
 		case 'txt':
 			$output.= "<br />\n";
 			$output.= "file name: ". $filename . "<br>"; // to show file name
-			$output.= "<a href='". $file_path. "' target='_blank'><img src='../icons/text.png' width='100' height='100' alt='Open TEXT'></a><br>";
+			$output.= "<a href='". $file_path. "' target='_blank'><img src='../icons/text.png' width='200' height='100' alt='Open TEXT'></a><br>";
 			break;
           case 'doc':
           case 'docx':
             $output.= "<br />\n";
 			$output.= "file name: ". $filename . "<br>"; // to show file name
-            $output.= "<a href='". $file_path. "' target='_blank'><img src='../icons/word.png' width='100' height='100' alt='Open Word Document'></a><br>";
+            $output.= "<a href='". $file_path. "' target='_blank'><img src='../icons/word.png' width='200' height='100' alt='Open Word Document'></a><br>";
             break;
           case 'xls':
           case 'xlsx':
             $output.= "<br />\n";
 			$output.= "file name: ". $filename . "<br>"; // to show file name
-            $output.= "<a href='". $file_path. "' target='_blank'><img src='../icons/excel.png' width='100' height='100' alt='Open Excel Spreadsheet'></a><br>";
+            $output.= "<a href='". $file_path. "' target='_blank'><img src='../icons/excel.png' width='200' height='100' alt='Open Excel Spreadsheet'></a><br>";
             break;
           default:
             $output.= "<br />\n";

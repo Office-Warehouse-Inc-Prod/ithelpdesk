@@ -130,7 +130,7 @@ $con1=new dbconfig();
           <select class="form-control form-control-sm" name="cat" id="cat" required >
              <option value=""> &larr; CATEGORY &rarr;</option>  
                    <?php
-                            $query="select * from category WHERE deptsel = '1'";
+                            $query="select * from category WHERE deptsel = '1'"
                             $run=$con1->prepare($query);
                             $run->execute();
                             $rs=$run->get_result();

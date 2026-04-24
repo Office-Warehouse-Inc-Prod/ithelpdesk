@@ -143,273 +143,158 @@ textarea.form-control-sm {
 
 
 <div class="modal-body">
- <div class="row">
-<!-- <form> -->
-<div class= "m_col col-6 col-md-6 col-lg-6">
-<div class="row">
-<div class="form-group col-6 col-md-6 col-lg-6">
-<label>STORE</label>
-<input type="hidden" name="str_num" id="str_num" readonly="" value="">
-<select class="form-control form-control-sm" name="store" id="store" required>
-<option value="">Select Store...</option>  
-     <?php
-              $query="select * from tbl_branch ";
-              $run=$conn->prepare($query);
-              $run->execute();
-              $rs=$run->get_result();
-              while ($res=$rs->fetch_assoc()) {
-                $brcnhid = $res['str_num'];
-                $brnchcd = $res['str_code'].' | '.$res['str_name'];
-              ?>
+  <div class="card w-100">
+        <div class="card-header">
+          <div class="section-title">
+            <span>Create Ticket</span>
+            <small>Unified Helpdesk</small>
+          </div>
+        </div>
 
-              <option value="<?php echo $brcnhid;?>"><?= $brnchcd; ?></option>
-              <?php }?>
-              ?>   
-  </select> 
-</div>
-<input type = "hidden" class="form-control form-control-sm" name = "ticket_no" id="ticket_no">
+        <div class="card-body">
+          <form method="post" id="report_form" enctype="multipart/form-data">
+            <div class="row">
 
+              <div class="form-group col-12">
 
-<div class="form-group col-6 col-md-6 col-lg-6">
+              
 
-<label>DATE CREATED</label>
-<div class="input-group date" id="datetimepicker1" data-target-input="nearest">
-<input type="text" name="date_created" id="date_created" class="form-control form-control-sm datetimepicker-input" data-target="#datetimepicker1" value="<?php echo $datetime->format('m/d/Y g:i A');?>" />
-<div class="input-group-append" data-target="#date_created" data-toggle="datetimepicker">
-<div class="input-group-text"><i class="fa fa-calendar"></i></div>
-</div>
-</div>
-</div>
-
-<div class="form-group col-12 col-md-12 col-lg-12">
-<label>SUBJECT/CONCERN</label>
-<textarea name="subjct" id="subjct" class="form-control form-control-sm" placeholder="Input Concern" 
-style="text-transform:uppercase" onkeyup="this.value = this.value;"></textarea>
-</div>
-
-<div class="form-group col-3 col-md-3 col-lg-3">
-<label>VIA</label>
-<select class="form-control form-control-sm" name="via" id="via" required>
-<option value=""> &larr; VIA &rarr;</option>
-<?php
-      $query="select * from via_main";
-      $run=$conn->prepare($query);
-      $run->execute();
-      $rs=$run->get_result();
-      while ($res=$rs->fetch_assoc()) {
-      ?>
-      <option><?=$res['via_desc'] ?></option>
-      <?php }?>
-      ?>   
-</select>
-</div>
-<div class="form-group col-9 col-md-9 col-lg-9">
-<label>I.T SUPPORT</label>
-<input type="hidden" name="it_num" id="it_num" readonly="">
-<select class="form-control form-control-sm" name="itsup" id="itsup" required>
-<option value="">Assign support...</option>  
-     <?php
-              $query="select * from it_tech WHERE deptsel = '1' AND itsup NOT IN ('4','7','8','12','14')";
-              $run=$conn->prepare($query);
-              $run->execute();
-              $rs=$run->get_result();
-              while ($res=$rs->fetch_assoc()) {
-                $tchid = $res['itsup'];
-                $tchdesc = $res['it_desc'];
-              ?>
-
-              <option value="<?php echo $tchid;?>"><?= $tchdesc; ?></option>
-              <?php }?>
-              ?>   
-  </select> 
-</div>
-<div class="form-group col-4 col-md-4 col-lg-4">
-
-<label>CATEGORY</label>
-<input type="hidden" name="cat_num" id="cat_num" readonly="">
-<select class="form-control form-control-sm" name="cat" id="cat" required >
-<option value=""> &larr; CATEGORY &rarr;</option>  
-     <?php
-              $query="select * from category WHERE deptsel = '1'";
-              $run=$conn->prepare($query);
-              $run->execute();
-              $rs=$run->get_result();
-              while ($res=$rs->fetch_assoc()) {
-                $supid = $res['id'];
-                $suppdesc = $res['category_name'];
-              ?>
-
-              <option value="<?php echo $supid;?>"><?= $suppdesc; ?></option>
-              <?php }?>
-              ?>   
-</select> 
-</div>
-<div class="form-group col-4 col-md-4 col-lg-4">
-
-<label>SUB CATEGORY</label>
-<input type="hidden" name="sub_num" id="sub_num" readonly>
+                <input type="hidden" name="ticket_no" id="ticket_no">
+                <input type="hidden" name="rars_no" id="rars_no">
+                <input type="hidden" name="sesstr_num" id="sesstr_num" value="<?php echo $_SESSION['str_num'];?>">
+                <input type="hidden" name="str_code" id="str_code" value="<?php echo $_SESSION['str_code'];?>">
+                <input type="hidden" name="str_adrs" id="str_adrs" value="<?php echo $_SESSION['str_adrs'];?>">
+                <input type="hidden" name="str_contact" id="str_contact" value="<?php echo $_SESSION['str_contact'];?>">
+<!-- <input type="hidden" name="deptsel" id="deptsel" value="2">       1=IT default (change if needed) -->
+<input type="hidden" name="select_tos" id="select_tos" value="GENERAL"> <!-- default TOS -->
 
 
-<select class="form-control form-control-sm" name="sub" id="sub">
-</select>
-</div>
-<div class="form-group col-4 col-md-4 col-lg-4 hide_isp">
+<div class="col-xl-12 d-inline-flex p-2">
+<!-- <label class="" style="font-weight: bold;">SELECT DEPARTMENT:</label> -->
 
-<label for="isp" id="lbl_isp">Service Provider</label>
-<input type="hidden" name="isp_num" id="isp_num" readonly="">
-<select class="form-control form-control-sm" name="isp" id="isp">
-<option value="">Select Network Provider</option>  
-     <?php
-              $query="select * from tbl_isp";
-              $run=$conn->prepare($query);
-              $run->execute();
-              $rs=$run->get_result();
-              while ($res=$rs->fetch_assoc()) {
-                $ispid = $res['isp_id'];
-                $ispdesc = $res['isp_shortDesc'];
-              ?>
+                            <div class="input-group xl-2">
+                            <div class="input-group-prepend">
+                            <div class="input-group-text">Attention To:</div>
+                            </div>
+                            <select class="form-control"  name="deptsel" id="deptsel" required>
+                            <option value="" selected disabled >Select Here</option>
+                            <option value="1" >IT</option>
+                            <option value="2" >ADMIN</option>
+                            <option value="3">MARKETING</option>
+                            <!-- <option value="4">MERCHANDISING</option> -->
+                            <option value="6">VISUAL</option>
+                            <option value="11">H.R</option>
+                            <!-- <option value="12">ICG</option> -->
+                            <option value="13">ACCOUNTS PAYABLE</option>
+                            <!-- <option value="14">SALES ACCOUNTING</option> -->
+                            <option value="15">TREASURY</option>
+                            <option value="16">ACCOUNT RECEIVABLE</option>
+                            </select>
+                            </div>
+                            </div>
 
-              <option value="<?php echo $ispid;?>"><?= $ispdesc; ?></option>
-              <?php }?>
-              ?>   
-</select> 
-</div>
-<div class="form-group col-4 col-md-4 col-lg-4 hide_isp">
-<label id="lbl_refNo" for="refNo">Reference No:</label>
-<input type="text" class="form-control form-control-sm" name="refNo" id="refNo">
-</div>
+                <!-- SUBJECT -->
+                <label><i class="fas fa-envelope"></i> Subject</label>
+                <select class="form-control" id="subject" name="subject" required>
+                    <option value='' selected disabled>---Select Category---</option>
+                  </select>
+                <!-- <input type="text" class="form-control" name="subject" id="subject"
+                       style="font-size: 12px; text-transform: uppercase;"
+                       minlength="5" maxlength="35" autocomplete="off"
+                       placeholder="Type subject (optional if selecting below)"> -->
+                <div class="mt-2">
+                  <select class="form-control selectpicker" name="subjectimp" id="subjectimp"
+                          style="font-size: 12px; text-transform: uppercase;">
+                    <option selected disabled>Select Subject</option>
+                    <option value="OSS">OSS</option>
+                    <option value="FURNITURE">FURNITURE</option>
+                    <option value="TECHNOLOGY">TECHNOLOGY</option>
+                  </select>
+                </div>
 
+                <div class="soft-divider"></div>
 
-<div class="form-group col-4 col-md-4 col-lg-4 hide_isp">
+                <!-- ITEMS -->
+                <label name="Qitem" id="Qitem">Quantity of Items</label>
+                <select class="form-control selectpicker" name="QItems" id="QItems" style="font-size:12px;">
+                  <option selected disabled>Select Here</option>
+                  <option value="SINGLE">SINGLE ITEM</option>
+                  <option value="MULTIPLE">MULTIPLE ITEM</option>
+                </select>
 
-<label for="date_refNo" class="hidden" id="lbl_DtRefNo">Date of RefNo</label>
-<div class="input-group date" id="datetimepicker3" data-target-input="nearest">
-<input type="text" name="date_refNo" id="date_refNo" class="form-control form-control-sm datetimepicker-input" data-target="#datetimepicker3"/>
-<div class="input-group-append" data-target="#date_created" data-toggle="datetimepicker">
-<div class="input-group-text" id="ico_cal3"><i class="fa fa-calendar"></i></div>
-</div>
-</div>
-</div>
+                <div class="mt-3">
+                  <label name="AluN" id="AluN">ALU</label>
+                  <input type="text" name="Alu" id="Alu" class="form-control" placeholder="Enter ALU">
+                </div>
 
-<div class="form-group col-4 col-md-4 col-lg-4">
-<label>STATUS</label>
-<select class = "form-control form-control-sm" name= "status" id="status" required>
-<option value=""> &larr; Status &rarr;</option>
-<?php
-      $query="select * from status  WHERE it_module_tag = 'Y'";
-      $run=$conn->prepare($query);
-      $run->execute();
-      $rs=$run->get_result();
-      while ($res=$rs->fetch_assoc()) {
-      ?>
-      <option><?=$res['stat_desc'] ?></option>
-      
-      <?php }?>
-      ?>   
-      <option value="CLOSED" readonly>CLOSED</option>
+                <div class="mt-3">
+                  <label name="DescN" id="DescN">Description</label>
+                  <input type="text" name="Desc" id="Desc" class="form-control" readonly placeholder="Auto-filled description">
+                </div>
 
-</select>
-</div>
-<div class="form-group col-4 col-md-4 col-lg-4 hide_cl">
-<label id="dateclabel" class="hidden">DATE CLOSED</label>
-<div class="input-group date" id="datetimepicker2" data-target-input="nearest">
-<input type="text" name="date_closed" id="date_closed" class="form-control form-control-sm datetimepicker-input" data-target="#datetimepicker2" autocomplete="off" />
-<div class="input-group-append" data-target="#date_closed" autocomplete="off" data-toggle="datetimepicker">
-<div class="input-group-text" id="ico_cal" name="ico_cal"><i class="fa fa-calendar"></i></div>
-</div>
-</div>
-</div>
+                <div class="mt-3">
+                  <label name="SerialLbl" id="SerialLbl">Serial No</label>
+                  <input type="text" name="SerialNo" id="SerialNo" class="form-control" placeholder="Optional">
+                </div>
 
-<div class="form-group col-4 col-md-4 col-lg-4 hide_cl">
+                <div class="mt-3">
+                  <label name="DefectLbl" id="DefectLbl">Nature of Defect</label>
+                  <input type="text" name="Defect" id="Defect" class="form-control" placeholder="Describe the issue">
+                </div>
 
-<label id="clby_label" class="hidden">CLOSED BY</label>
-<input type="hidden" name="close_by" id="close_by" value="<?php echo $_SESSION['tech_id'];?>"> 
-<input type="text" class="form-control form-control-sm" name="cl_desc" id="cl_desc" readonly="" value="<?php echo $_SESSION['fname']. '  ' . $_SESSION['lstname'];?>">
-</div>
+                <div class="mt-3">
+                  <label name="SupplierLbl" id="SupplierLbl">Supplier</label>
+                  <input type="text" name="Supplier" id="Supplier" class="form-control" placeholder="Optional">
+                </div>
 
-<div class="form-group col-lg-12">
-<label>Work Output:</label>
-<textarea name="remarks" id="remarks" class="form-control form-control-sm" placeholder="Your Workoutput" ></textarea>
-</div>
-</div>
+                <div class="mt-3 text-right">
+                  <input type="button" name="Additem" id="Additem" class="btn btn-success" value="Add Item" />
+                </div>
 
+                <div class="mt-3">
+                  <label name="TypesUnit" id="TypesUnit">Classification</label>
+                  <select class="form-control selectpicker" name="TypesOfUnit" id="TypesOfUnit" style="font-size:12px;">
+                    <option selected disabled>Select Here</option>
+                    <option value="1">Store Unit</option>
+                    <option value="2">Costumer Stock</option>
+                  </select>
+                </div>
 
-<div class="col-md-12">
-<label style="font-weight: bold;">Attached File:</label>
-<p>
-<input id="file-input" type="file" name="file" Multiple>
-</p>
-</div>
-<hr/>
-<div class="row">
-    
-<div class=" col-6 col-md-8">
-<input type="submit" name="action" id="action" class="btn btn-success" value="Add" />   
-</div>
-<div class=" col-6 col-md-4 ">
-<button type="button" name="btnClose" id="btnClose" class="btn btn-danger float-right" data-dismiss="modal">Close</button>  
-</div>
-</div>
+                <div class="soft-divider"></div>
 
-<hr/>
+                <input type="hidden" id="status" name="status" value="NEW REPORT">
 
-<div class="card" id="img" name="img">
+                <!-- CONCERN -->
+                <label style="font-weight: bold;" id="titleconcern">Concern</label>
+                <p class="mb-2">
+                  <textarea class="cttxtarea" id="concern" name="concern" minlength="10" maxlength="1000"
+                            row="2" placeholder="Input your message here"></textarea>
+                </p>
 
+                <!-- FILE -->
+                <label style="font-weight: bold;">Attached File</label>
+                <p class="mb-3">
+                  <input id="file-input" type="file" name="file" Multiple>
+                </p>
 
-</div>
+                <!-- SUBMIT -->
+                <div class="row">
+                  <div class="col-12">
+                    <input type="submit" name="action" id="action"
+                           class="btn btn-primary w-100 w-100-mobile"
+                           value="Save Ticket"/>
+                  </div>
+                </div>
 
-<div class="form-group col-lg-12">
-<p>
+              </div>
+            </div>
 
+            <input type="hidden" name="uId" id="uId" value="<?php echo $_SESSION['user_id'];?>" />
+            <input type="hidden" name="operation" id="operation" value="Add" />
+          </form>
 
-
-</p>
-</div>
-
-</div>
-
-</p>
-
-
-
-
-<div class="col-6 col-md-6 col-lg-6">
-
-  
-<div id="msg_thread">
-  <label>Add Comment:</label>
-  <textarea name="admsg" id="addmsg" class="form-control form-control-sm" placeholder="Reply to their message or give an updates regarding on this ticket..." required></textarea>
-
-  <label class="mt-4">Comment Thread:</label>
-  <div class="container_remarks">
-    <div id="remarks_view">
-      <!-- Dynamically add comment divs here -->
-      <!-- Example: <div class="comment">User comment text here</div> -->
-    </div>
-  </div>
-</div>
-
-
-
-
-
-</div>
-
-</div>
-
-
-</div>
-
-</div>
-</div> 
-</div>
-
-<div class="modal-footer">
-<input type="hidden" name="operation" id="operation" value="Add" />
-<input type="hidden" name="u_id" value="<?php echo $_SESSION['user_id'];  ?>">
-
-</div>
-</form>
+        </div>
+      </div>
 </div>
 </div>
 </div>

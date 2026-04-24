@@ -267,6 +267,14 @@ body {
             <i class="fa fa-home"></i> HOME
           </a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link" href="userpanel.php">
+            <i class="fa-solid fa-circle-plus">
+              <span class="badge badge-danger" id="userpanel"></span>
+            </i>
+            ADD REPORT
+          </a>
+        </li>
 
         <li class="nav-item">
           <a class="nav-link" href="adminwfit.php">
@@ -442,7 +450,7 @@ $('#notif_dataxx tbody').on('click', 'tr', function () {
 
 document.addEventListener("DOMContentLoaded", function () {
 
-    getNewReportCount();      // run immediately
+    // getNewReportCount();      // run immediately
     // getTransferCount();
     setInterval(getNewReportCount, 5000); // every 5 seconds (DO NOT use 1s)
 
@@ -467,12 +475,53 @@ async function getNewReportCount() {
         }
 
     } catch (error) {
-        console.error("Notification count error:", error);
+        console.error("Notification count dev error:", error);
     }
 }
 
 
 
+async function getTransferCount() {
+
+    try {
+
+        const xresponse = await fetch("fetchdata/notif_transfer.php?_=" + Date.now());
+        const xcount = (await xresponse.text()).trim();
+
+        const xbadge = document.getElementById("notif_transfer");
+
+        if (!xbadge) return;
+
+        if (xcount === "0" || xcount === "") {
+            xbadge.style.display = "none";
+        } else {
+            xbadge.style.display = "inline-block";
+            xbadge.innerHTML = xcount;
+        }
+
+    } catch (error) {
+        console.error("Notification count error:", error);
+    }
+}
+
+function countnewrep() {
+
+
+setInterval(function(){
+
+var xhttp = new XMLHttpRequest();
+xhttp.onreadystatechange = function() {
+if (this.readyState == 4 && this.status == 200) {
+document.getElementById("notif_newrep").innerHTML = this.responseText;
+}
+};
+xhttp.open("GET", "fetchdata/notif_newrep.php", true);
+xhttp.send();
+
+},1000);
+
+
+}
 
 function countNwMsg() {
 
@@ -492,6 +541,8 @@ xhttp.send();
 
 
 }
+
+
 
 // Auto-detect current page and set 'active' class
 var currentUrl = window.location.pathname.split("/").pop();

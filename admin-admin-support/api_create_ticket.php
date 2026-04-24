@@ -29,7 +29,7 @@ try {
     // ====== 2) Insert ticket header ======
     // Adjust table/columns to match your system
     $created_by = $_POST["uId"] ?? ($_SESSION["user_id"] ?? null);
-    $deptsel = 4; // merchandising forced
+    $deptsel = 2; // merchandising forced
     $subject = trim($_POST["subject"] ?? "");
     $concern = trim($_POST["concern"] ?? "");
     $status = "NEW REPORT";

@@ -127,7 +127,7 @@ background: linear-gradient(135deg, #837031, #E1AD01);
           </div>
 
           <div class="col-xl-3 col-lg-6 col-md-6">
-            <div class="card h-100 dashcard-clickable" data-filter="ATTENDED WITH FIX ASSET" style="border-radius: 15px; cursor:pointer;">
+            <div class="card h-100 dashcard-clickable" data-filter="PENDING" style="border-radius: 15px; cursor:pointer;">
               <div class="card-body p-4">
                 <div class="d-flex align-items-center justify-content-between mb-3">
                   <div class="bg-danger bg-opacity-10 p-3 rounded-circle text-danger" style="color: #D25353;">
@@ -332,6 +332,9 @@ Start of Add/Edit Modal
                 </div>
 
                 <input type="hidden" class="form-control form-control-sm" name="ticket_no" id="ticket_no">
+
+                
+
 
                 <div class="form-group col-12">
                   <label>SUBJECT/CONCERN</label>
