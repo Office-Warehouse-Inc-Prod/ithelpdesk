@@ -210,6 +210,7 @@ $regcon=new dbconfig();
   padding: 15px;
   font-size: 13px;
 }
+
 </style>
 
 

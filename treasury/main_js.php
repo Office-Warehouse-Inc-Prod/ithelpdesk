@@ -263,14 +263,14 @@ table =  $("#report_data").DataTable({
 
 rowCallback: function(row, data, index) {
   // Remove previous styling classes
-  $(row).removeClass('status-open status-open-msg status-closed status-subject-closing status-fixed');
+  $(row).removeClass('status-open status-open-msg status-closed status-subject-closing status-pending');
 
   if (data['status'] === "ON PROCESS") {
     if (data['msg_cnt'] === '1' || data['msg_cnt'] === '0') {
       $(row).addClass('status-open');
     }
-  } else if (data['status'] === 'ATTENDED WITH FIX ASSET') {
-    $(row).addClass('status-fixed');
+  } else if (data['status'] === 'PENDING') {
+    $(row).addClass('status-pending');
     $(row).find('td:eq(11)').html(' '); // Clear cell 11 if needed
   } else if (data['status'] === 'CLOSED') {
     $(row).addClass('status-closed');

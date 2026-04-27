@@ -1,59 +1,46 @@
 <?php
-session_start();
-include('db.php');
+
 include('function.php');
-$query = '';
-$output = array();
-$query = "SELECT * FROM vw_wfittable
- ";
 
- 
-if(isset($_POST["order"]))
-{
- $query .= 'ORDER BY '.$_POST['order']['0']['column'].' '.$_POST['order']['0']['dir'].' ';
-}
-else
-{
- $query .= 'ORDER BY ticket_no + 0 DESC ';
-}
-if($_POST["length"] != -1)
-{
- $query .= 'LIMIT ' . $_POST['start'] . ', ' . $_POST['length'];
-}
-$statement = $connection->prepare($query);
-$statement->execute();
-$result = $statement->fetchAll();
-$data = array();
-$filtered_rows = $statement->rowCount();
-foreach($result as $row)
-{
+$fn = new dbconfig();
+$mode = $_POST['operation'];
+;
 
- $sub_array = array();
- // $sub_array[] = $image;
- $sub_array[] = $row["ticket_no"];
- $sub_array[] = date('m/d/Y H:i:s',strtotime($row["date_created"]));
- $sub_array[] = $row["str_code"];
- $sub_array[] = $row["concern"];
- $sub_array[] = $row["service_desc"];
- $sub_array[] = $row["subject"];
- $sub_array[] = $row["via"];
- $sub_array[] = $row["status"];              
- $sub_array[] = $row["it_desc"];;
- $sub_array[] = $row["cat_desc"];
- $sub_array[] = $row["sub_cat"];
- $sub_array[] = '<button type="button" name="update" id="'.$row["ticket_no"].'" class="btn btn-warning btn-xs update"><i class="far fa-comments"></i></button>';
- // $sub_array[] = '<input type="text" name="msgcntid" id="'.$row["ticket_no"].'" class="form-control msgcnt" value ="'.$row["msg_cnt"].'">';
- $sub_array[] = $row["msg_cnt"];
- $sub_array[] = $row["nmsg_stat"];
-
-
- $data[] = $sub_array;
+switch ($mode) {
+        case 'Add':
+            $output['insertdata'] =$fn->inserdata();
+        break;
+        case 'changepass':
+            $output['changepass'] =$fn->user_change_password();
+            break;
+        case 'remarks':
+            $output['msgs'] =$fn->getmsgs();
+        break;
+        case 'Addcomment':
+            $output['cmmnt'] =$fn->insertcomm();
+        break;
+        case 'search_desc':
+            $output= $fn->search_desc();
+            break;
+        case 'search_tkt':
+            $output= $fn->search_tkt();
+            break;
+        case 'pditems':
+            $output['rptpd']=$fn->pditems();
+        break;
+        default:
+            $output['rptdata']=$fn->getstrreports();
+        break;
+        case 'get_tos':
+            $output= $fn->get_tos();
+            break;
+        case 'pv_res':
+            $output= $fn->pv_res();
+            break;
+        case 'rars_count':
+            $output= $fn->rars_count();
+            break;
 }
-$output = array(
- "draw"    => intval($_POST["draw"]),
- "recordsTotal"  =>  $filtered_rows,
- "recordsFiltered" => $filtered_rows,
- "data"    => $data
-);
 echo json_encode($output);
+
 ?>

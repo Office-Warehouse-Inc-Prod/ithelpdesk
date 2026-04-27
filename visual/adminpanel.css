@@ -237,6 +237,7 @@ body.dark-mode .form-control::placeholder {
   border-collapse: separate;
   border-spacing: 0 6px;
   background: #213456; 
+  color: #ccc;
   font-family: 'Poppins', Tahoma, Geneva, Verdana, sans-serif;
   border-radius: 8px;
   overflow: hidden;
@@ -245,6 +246,7 @@ body.dark-mode .form-control::placeholder {
 
 #report_data thead tr {
   background:#213456;
+  color: #666; 
   text-transform: uppercase;
   letter-spacing: 1px;
   font-weight: 700; 
@@ -291,11 +293,11 @@ body.dark-mode .form-control::placeholder {
 }
 
 .status-open td {
-  color: yellow !important;
-  border: 1px solid yellow;
+  color: red !important;
+  border: 1px solid red;
 }
 
-.status-pending td {
+.status-fixed td {
   color: red !important;
   border: 1px solid red;
 }
@@ -1072,6 +1074,7 @@ body.dark-mode .toggle-label-text {
     vertical-align: middle;
     border-top: 1px solid #edf2f7;
     border-bottom: 1px solid #edf2f7;
+    color: #4a5568;
 }
 
 /* --- Status Badge Styles (Apply these in your HTML/PHP logic) --- */

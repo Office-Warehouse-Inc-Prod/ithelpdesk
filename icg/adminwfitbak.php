@@ -109,7 +109,7 @@ $con1=new dbconfig();
           <select class="form-control form-control-sm" name="itsup" id="itsup" required>
              <option value="">Assign support...</option>  
                    <?php
-                            $query="select * from it_tech WHERE itsup NOT IN ('4','7','8','12','14','15','32','43') AND deptsel = '1'";
+                            $query="select * from it_tech WHERE itsup NOT IN ('4','7','8','12','14','15','32','43') AND deptsel = '12'";
                             $run=$con1->prepare($query);
                             $run->execute();
                             $rs=$run->get_result();
@@ -130,7 +130,7 @@ $con1=new dbconfig();
           <select class="form-control form-control-sm" name="cat" id="cat" required >
              <option value=""> &larr; CATEGORY &rarr;</option>  
                    <?php
-                            $query="select * from category WHERE deptsel = '1'";
+                            $query="select * from category WHERE deptsel = '12'"
                             $run=$con1->prepare($query);
                             $run->execute();
                             $rs=$run->get_result();

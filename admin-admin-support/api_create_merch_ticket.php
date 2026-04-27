@@ -4,7 +4,7 @@ session_start();
 header("Content-Type: application/json");
 
 try {
-    $deptsel_id = 4; // MERCH
+    $deptsel_id = 2; // MERCH
     $subject = trim($_POST["subject"] ?? "");
     $concern = trim($_POST["concern"] ?? "");
     $created_by = $_POST["uId"] ?? ($_SESSION["user_id"] ?? null);
@@ -15,7 +15,7 @@ try {
 
     $connection->beginTransaction();
 
-    // 1) LOCK the counter row for deptsel_id=4
+    // 1) LOCK the counter row for deptsel_id=2
     $stmt = $connection->prepare("
         SELECT ticket_no
         FROM tbl_ticket_counter

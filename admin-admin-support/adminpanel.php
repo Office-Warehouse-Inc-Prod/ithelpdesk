@@ -364,7 +364,7 @@ Start of Add/Edit Modal
                   <select class="form-control form-control-sm" name="cat" id="cat" required>
                     <option value=""> &larr; CATEGORY &rarr;</option>
                     <?php
-                      // $query="select * from category WHERE deptsel = '1'";
+                      // $query="select * from category WHERE deptsel = '2'";
                           $query="select * from categories WHERE deptsel = '2'";
                       $run=$conn->prepare($query);
                       $run->execute();

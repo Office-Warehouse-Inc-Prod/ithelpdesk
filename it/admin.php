@@ -267,6 +267,14 @@ body {
             <i class="fa fa-home"></i> HOME
           </a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link" href="userpanel.php">
+            <i class="fa-solid fa-circle-plus">
+              <span class="badge badge-danger" id="userpanel"></span>
+            </i>
+            ADD REPORT
+          </a>
+        </li>
 
         <li class="nav-item">
           <a class="nav-link" href="adminwfit.php">

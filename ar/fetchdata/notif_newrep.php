@@ -8,7 +8,7 @@ if ($conn->connect_error) {
 $sql = "SELECT COUNT(*) as total
         FROM reports
         WHERE status = 'ASSIGNED'
-        AND f_deptsel = '16'
+        AND deptsel = '16'
         AND store IS NOT NULL";
 
 $result = $conn->query($sql);
