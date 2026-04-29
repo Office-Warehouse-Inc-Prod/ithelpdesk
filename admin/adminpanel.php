@@ -14,6 +14,7 @@ include 'sub_graph_modal.php';
 
 
 ?>
+
 <!-- <style>
 /* =========================
    MODERN DASHBOARD UI (Drop-in)
@@ -940,6 +941,170 @@ background: linear-gradient(135deg, #837031, #E1AD01);
 }
 ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(135deg, #837031, #E1AD01);
+}
+
+
+.owi-navbar {
+  background-color: #213456 !important;
+  box-shadow: 0 2px 10px 2px #66738e;
+  margin-bottom: 10px;
+}
+
+/* Make links clean + readable */
+.owi-navbar .nav-link,
+.owi-navbar .navbar-brand {
+  color: #fff !important;
+  font-weight: 600;
+  letter-spacing: .3px;
+}
+
+/* Icon spacing */
+.owi-navbar .nav-link i {
+  margin-right: 6px;
+}
+
+/* Hover states */
+.owi-navbar .nav-link:hover,
+.owi-navbar .navbar-brand:hover {
+  opacity: .92;
+}
+
+/* Dropdown */
+.owi-navbar .dropdown-menu {
+  background-color: #ffffff;
+  border: none;
+  min-width: 220px;
+  padding: .35rem;
+  box-shadow: 0 12px 24px rgba(0,0,0,0.25);
+  border-radius: 12px;
+}
+
+/* Dropdown items */
+.owi-navbar .dropdown-item {
+  color: black;
+  border-radius: 10px;
+  padding: .55rem .75rem;
+  white-space: normal; 
+}
+
+.owi-navbar .dropdown-item i {
+  margin-right: 8px;
+}
+
+
+.owi-navbar .dropdown-item:hover {
+  background-color: #54699e;
+  color: #fff;
+}
+
+.owi-navbar .dropdown-divider {
+  border-top: 1px solid rgba(255,255,255,0.2);
+}
+.notif-dropdown {
+  width: 360px;
+  max-width: 92vw;
+}
+
+@media (max-width: 576px) {
+  .notif-dropdown {
+    width: 92vw;
+  }
+}
+
+/* Badges keep visible on blue */
+.owi-navbar .badge-danger {
+  background-color: #ff4d4d;
+}
+
+.owi-navbar .badge-info {
+  background-color: #28c7ff;
+  color: #002a4a;
+  font-weight: 700;
+}
+
+/* Toggler icon visibility on blue */
+.owi-navbar .navbar-toggler {
+  border-color: rgba(255,255,255,0.35);
+}
+
+.owi-navbar .navbar-toggler-icon {
+  filter: brightness(0) invert(1);
+}
+
+/* Modern Underline Animation */
+/* Modern Underline Animation Refined */
+.owi-navbar .nav-item {
+  position: relative;
+  margin: 0 5px;
+  display: flex;
+  align-items: center;
+}
+
+.owi-navbar .nav-link {
+  position: relative;
+  padding: 0.8rem 1rem !important;
+  color: rgba(255, 255, 255, 0.8) !important;
+  transition: all 0.3s ease;
+}
+
+/* The Underline - Modernized */
+.owi-navbar .nav-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 3px;
+  bottom: 5px; /* Lifted slightly from the bottom */
+  left: 50%;
+  background-color: var(--primary-color);
+  transition: width 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), left 0.3s ease;
+  transform: translateX(-50%);
+  border-radius: 10px;
+}
+
+/* Hover State */
+.owi-navbar .nav-item:hover .nav-link {
+  color: #fff !important;
+}
+
+.owi-navbar .nav-item:hover .nav-link::after {
+  width: 70%; 
+}
+
+.owi-navbar .nav-item.active .nav-link {
+  color: var(--primary-color) !important;
+  font-weight: 700;
+}
+
+.owi-navbar .nav-item.active .nav-link::after {
+  width: 70%; 
+  background-color: var(--primary-color);
+}
+
+.owi-navbar .dropdown-menu {
+  border-top: 3px solid var(--primary-color) !important;
+  border-radius: 0 0 8px 8px !important;
+  margin-top: 0;
+}
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.4rem;
+  letter-spacing: 1px;
+}
+
+.navbar-brand img {
+  transition: transform 0.3s ease;
+}
+
+.navbar-brand:hover img {
+  transform: rotate(-10deg) scale(1.1);
+}
+
+.owi-navbar .dropdown-menu {
+  border-top: 3px solid var(--primary-color);
+  margin-top: 10px;
 }
 </style>
 
