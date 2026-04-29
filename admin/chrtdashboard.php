@@ -326,16 +326,10 @@ pieSeries.slices.template.events.on("hit", function(ev){
 });
 
 
-
-// pieSeries.alignLabels = false;
-// pieSeries.labels.template.text = "{type}: {value}";
-// pieSeries.slices.template.tooltipText = "{type}:{value}";
 pieSeries.labels.template.text = "{type}: {value.value} | {value.percent.formatNumber('.##')}%";
 pieSeries.slices.template.tooltipText = "{type}: {value.value} | {value.percent.formatNumber('.##')}%";
 
 
-
-// This creates initial animation
 pieSeries.hiddenState.properties.opacity = 6;
 pieSeries.hiddenState.properties.endAngle = -180;
 pieSeries.hiddenState.properties.startAngle = -180;
