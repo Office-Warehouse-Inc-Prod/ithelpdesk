@@ -289,7 +289,7 @@
         </div>
     </a>
 
-    <a href="#" class="sector pikachu-sector">
+    <a href="CLP_SYSTEM/index.php" class="sector pikachu-sector">
         <div class="content">
             <div class="status-badge">Return</div>
 
@@ -298,8 +298,8 @@
                     <path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"></path>
                 </svg>
             </div>
-            <h2>RETURN TO SUPPLIERS</h2>
-            <p>Handle return-to-suplier requests and their status updates.</p>
+            <h2>CLP POINTS VALIDATION</h2>
+            <p>CLP POINTS VALIDATION SYSTEM.</p>
         </div>
     </a>
 </div>
