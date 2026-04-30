@@ -7,57 +7,6 @@
   margin-left: 12px;
   width: 100%;
   height: 400px; 
-
-  
-}
-
-.ampopup {
-  overflow: visible;
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 2000
-}
-
-.ampopup-curtain {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 2001;
-  background: #fff;
-  opacity: 0.5
-}
-
-.ampopup-title {
-  font-weight: bold;
-  font-size: 120%
-}
-
-.ampopup-content {
-  padding: 1em 2em;
-  background: rgb(255, 255, 255);
-  background-color: rgba(255, 255, 255, 0.8);
-  display: inline-block;
-  position: absolute;
-  max-width: 90%;
-  max-height: 90%;
-  overflow: auto;
-  z-index: 2002
-}
-
-.ampopup-close {
-  display: block;
-  position: absolute;
-  top: 0.3em;
-  right: 0.3em;
-  background-color: rgb(100, 100, 100);
-  background: rgba(100, 100, 100, 0.1) url(data:image/svg+xml;charset=utf-8;base64,PHN2ZyBoZWlnaHQ9IjUxMiIgdmVyc2lvbj0iMSIgdmlld0JveD0iMCAwIDUxMiA1MTIiIHdpZHRoPSI1MTIiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTQ0NS4yIDEwOS4ybC00Mi40LTQyLjRMMjU2IDIxMy42IDEwOS4yIDY2LjhsLTQyLjQgNDIuNEwyMTMuNiAyNTYgNjYuOCA0MDIuOGw0Mi40IDQyLjRMMjU2IDI5OC40bDE0Ni44IDE0Ni44IDQyLjQtNDIuNEwyOTguNCAyNTYiLz48L3N2Zz4=) no-repeat center;
-  background-size: 80%;
-  width: 1.2em;
-  height: 1.2em;
-  cursor: pointer
 }
 
 </style>
@@ -186,7 +135,7 @@ var types = $.ajax({
             return am4core.color("#9EC9F7"); // fallback pastel blue
         }
       }
-     
+      return fill;
 
       
     });
@@ -228,17 +177,12 @@ var types = $.ajax({
           : undefined;
       chart.data = generateChartData();
       
-      
        pieSeries.ticks.template.events.on("ready", hideSmall);
 pieSeries.ticks.template.events.on("visibilitychanged", hideSmall);
 pieSeries.labels.template.events.on("ready", hideSmall);
 pieSeries.labels.template.events.on("visibilitychanged", hideSmall);
 
 
-       pieSeries.ticks.template.events.on("ready", showSmall);
-pieSeries.ticks.template.events.on("visibilitychanged", showSmall);
-pieSeries.labels.template.events.on("ready", showSmall);
-pieSeries.labels.template.events.on("visibilitychanged", showSmall);
 
  pieSeries.slices.template.adapter.add("fill", function (fill, target) {
 
@@ -301,60 +245,52 @@ label.fontSize = 20;
         }
       }else{
       
-      chart.data = generateChartData();
-      chart.dataSource.url = "/data/chrtdashboard.php";
+      return fill;
       }
       
     });
+
+
 
 
 function hideSmall(ev) {
   if (ev.target.dataItem && (ev.target.dataItem.category === "IT" 
   || ev.target.dataItem.category === "ADMIN" 
   || ev.target.dataItem.category === "MARKETING"
-  || ev.target.dataItem.category === "MERCHANDISING"
-  || ev.target.dataItem.category === "PURCHASING"
-  || ev.target.dataItem.category === "VISUAL"
-  || ev.target.dataItem.category === "HUMAN RESOURCES"
-  || ev.target.dataItem.category === "INVENTORY CONTROL GROUP"
-  || ev.target.dataItem.category === "ACCOUNTS PAYABLE"
-  || ev.target.dataItem.category === "SALES ACCOUNTING"
-  || ev.target.dataItem.category === "TREASURY"
-  || ev.target.dataItem.category === "ACCOUNTS RECIEVABLE"
+    || ev.target.dataItem.category === "MERCHANDISING"
+    || ev.target.dataItem.category === "PURCHASING"
+    || ev.target.dataItem.category === "VISUAL"
+    || ev.target.dataItem.category === "HUMAN RESOURCES"
+    || ev.target.dataItem.category === "INVENTORY CONTROL GROUP"
+    || ev.target.dataItem.category === "ACCOUNTS PAYABLE"
+    || ev.target.dataItem.category === "SALES ACCOUNTING"
+    || ev.target.dataItem.category === "TREASURY"
+    || ev.target.dataItem.category === "ACCOUNTS RECIEVABLE"
+
 
   )) {
-     ev.target.hide();
-     
+    
+    ev.target.hide();
   }
   else {  
-    ev.target.show();
-    series.slices.template.events.on("over", function(){
-  console.log("hover");
-  
+chart.dataSource.url = "/data/myData.php";
+chart.dataSource.parser = new am4core.JSONParser();
+
+
+     
     
-});
-
-
-// override tooltipText so tooltipHTML is actually used
-series.slices.template.tooltipHTML = "something...";
-series.slices.template.adapter.add("tooltipHTML", function(tooltipHTML) {
-  
-
-  console.log("adapter");
-  return tooltipHTML;
-});
-
-
-// Set innerRadius to make it a donut chart
-chart.innerRadius = am4core.percent(50);
-
-
   }
 }
+return fill; 
 
-});
+
+    });
 
 
+ // Animation on load
+    pieSeries.hiddenState.properties.opacity = 1;
+    pieSeries.hiddenState.properties.endAngle = -90;
+    pieSeries.hiddenState.properties.startAngle = -90;
 
     am4core.options.autoDispose = true;
     
@@ -364,9 +300,6 @@ chart.innerRadius = am4core.percent(50);
     
   });
 
-  
- 
-   
 }
 
 

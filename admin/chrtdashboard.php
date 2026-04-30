@@ -135,8 +135,6 @@ var types = $.ajax({
             return am4core.color("#9EC9F7"); // fallback pastel blue
         }
       }
-      return _catpie(curyr2);
-
       
     });
 
@@ -169,6 +167,7 @@ var types = $.ajax({
 
     //  Click event to drill down
     pieSeries.slices.template.events.on("hit", function (event) {
+      
 
       selected =
         event.target.dataItem.dataContext.id !== undefined
@@ -191,10 +190,12 @@ chart.innerRadius = am4core.percent(50);
 
 // Add label inside the donut
 let label = pieSeries.createChild(am4core.Label);
-label.text = (selected !== undefined) ? types[selected].type : "Department";
+label.text = (selected !== undefined) ? types[selected].type : "Department" ;
 label.horizontalCenter = "middle";
 label.verticalCenter = "middle";
 label.fontSize = 20;
+
+
 
       
       if (target.dataItem) {
@@ -243,8 +244,8 @@ label.fontSize = 20;
             return am4core.color("#9EC9F7"); // fallback pastel blue
         }
       }else{
-      
-      return _catpie(curyr2);
+      chart.data = generateChartData();
+      chart.dataSource.url = "/data/chrtdashboard.php";
       }
       
     });
@@ -268,20 +269,45 @@ function hideSmall(ev) {
 
 
   )) {
-    
     ev.target.hide();
+    return fill;
+
+      chart.dataSource.url = "/data/chrtdashboard.php";
+
+
   }
-  else {  
-    ev.target.show();
+
+
+  else {
+
+   return fill;
+// override tooltipText so tooltipHTML is actually used
+series.slices.template.tooltipHTML = "something...";
+series.slices.template.adapter.add("tooltipHTML", function(tooltipHTML) {
+  
+
+  console.log("adapter");
+  return tooltipHTML;
+});
+
+
+
+       series.slices.template.events.on("over", function(){
+  console.log("hover");
+  
+  
     
-  }
+});
+
+   }
 }
+});
 
 
-
-    });
-
-
+ // Animation on load
+    pieSeries.hiddenState.properties.opacity = 1;
+    pieSeries.hiddenState.properties.endAngle = -90;
+    pieSeries.hiddenState.properties.startAngle = -90;
 
     am4core.options.autoDispose = true;
     
@@ -291,10 +317,9 @@ function hideSmall(ev) {
     
   });
 
-  
- 
-   
 }
+
+
 
 
 
@@ -403,7 +428,7 @@ function hideSmall(ev) {
       return fill;
     });
 
-    //  Animation on load
+    //  Animation   on load
     pieSeries.hiddenState.properties.opacity = 1;
     pieSeries.hiddenState.properties.endAngle = -90;
     pieSeries.hiddenState.properties.startAngle = -90;
