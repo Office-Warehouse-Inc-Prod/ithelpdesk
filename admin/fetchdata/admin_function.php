@@ -9,21 +9,18 @@ $cur_time = date("H:i:s");
 class dbconfig extends dbconn
 {
 	public function fetch_cards_result(){
-
-	$yr = $_POST['yr'];
 		$query = '';
 		$output = array();
 		$query = "SELECT 
         YEAR(date_created) as date_created,
         COUNT(reports.`status`) AS t_all,
-        COUNT(CASE WHEN reports.`status` = 'ASSIGNED' then 1 else NULL end ) as t_open,
-        COUNT(CASE WHEN reports.`status` = 'ON PROCESS' then 1 else NULL end) as t_owfa,
+        COUNT(CASE WHEN reports.`status` = 'ON PROCESS' then 1 else NULL end ) as t_open,
+        COUNT(CASE WHEN reports.`status` = 'PENDING' then 1 else NULL end) as t_owfa,
         COUNT(CASE WHEN reports.`status` = 'CLOSED' then 1 else NULL end) as t_close,
-		COUNT(CASE WHEN reports.`status` = 'SUBJECT FOR CLOSING' then 1 else NULL END) AS t_day,
-		COUNT(CASE WHEN reports.`status` = 'PENDING' then 1 else NULL END) AS t_pending
+		COUNT(CASE WHEN reports.`status` = 'SUBJECT FOR CLOSING' then 1 else NULL END) AS t_day
 		-- COUNT(CASE WHEN reports.`status` = 'CLOSED' AND DATE(reports.date_closed) = CURRENT_DATE THEN 1 else NULL END) AS t_day
         FROM
-        reports WHERE sub_id NOT IN ('15','28','34','35') AND `status` NOT IN ('WAITING FOR IT HELDESK RESPONSE','NEW REPORT') AND YEAR(date_created) IN ($yr)";
+        reports WHERE sub_id NOT IN ('15','28','34','35') AND `status` NOT IN ('WAITING FOR IT HELDESK RESPONSE','NEW REPORT') AND YEAR(date_created) IN (".$_POST['yr'] .") AND reports.f_deptsel = '1'";
 
         $statement = $this->connection->prepare($query);
         $statement-> execute();
@@ -36,9 +33,7 @@ class dbconfig extends dbconn
         		'open_res' => $row["t_open"], 
         		'owfa_res' => $row["t_owfa"], 
         		'cls_res' => $row["t_close"],
-        		't_res' => $row["t_day"],
-        		't_pending' => $row["t_pending"],
-
+        		't_res' => $row["t_day"]
 
         	);
         }
@@ -59,7 +54,7 @@ class dbconfig extends dbconn
 			FROM
 			reports
 			LEFT JOIN tbl_status ON reports.`status` = tbl_status.stat_desc
-			where `reports`.`sub_id` NOT IN ('15','28','34','35') AND `status` NOT IN ('WAITING FOR IT HELPDESK RESPONSE','NEW REPORT') AND YEAR(date_created) IN (".$_POST['yr'] .") AND reports.deptsel = '2'
+			where `reports`.`sub_id` NOT IN ('15','28','34','35') AND `status` NOT IN ('WAITING FOR IT HELPDESK RESPONSE','NEW REPORT') AND YEAR(date_created) IN (".$_POST['yr'] .") AND reports.f_deptsel IN ('1','2','3','4','5','6','7','11','12','13','14','15','16')
 			GROUP BY `status`
 			ORDER BY stat_id ASC
 
@@ -93,14 +88,14 @@ class dbconfig extends dbconn
 				Count(reports.itsup) AS total,
 				reports.`status`,
 				Count( CASE reports.`status` when 'CLOSED' then 1 else null end) as completed,
-				Count( CASE reports.`status` when 'OPEN' then 1 else null end) as openrep,
-				Count( CASE reports.`status` when 'OPEN WITH FIX ASSET' then 1 else null end) as opnwfxast
+				Count( CASE reports.`status` when 'ON PROCESS' then 1 else null end) as openrep,
+				Count( CASE reports.`status` when 'PENDING' then 1 else null end) as opnwfxast
 				FROM
 				it_tech
 				LEFT JOIN reports ON reports.itsup = it_tech.itsup
 				INNER JOIN users ON users.tech_id = it_tech.itsup
 				WHERE
-				reports.sub_id NOT IN (15,28,34,35) AND reports.itsup NOT IN ('8') AND reports.deptsel = '2' and
+				reports.sub_id NOT IN (15,28,34,35) AND reports.itsup NOT IN ('8') AND reports.f_deptsel = '1' and
 				YEAR(reports.date_created) IN (".$_POST['yr'].")
 				GROUP BY
 				reports.itsup
@@ -145,7 +140,7 @@ class dbconfig extends dbconn
 		FROM
 		reports
 		WHERE
-		year(date_created) BETWEEN '".$_POST['yr'] ."' AND '".$_POST['yr'] ."' and reports.sub_id NOT IN ('15','28','34','35') AND reports.deptsel = '2'
+		year(date_created) BETWEEN '".$_POST['yr'] ."' AND '".$_POST['yr'] ."' and reports.sub_id NOT IN ('15','28','34','35') AND reports.f_deptsel = '1'
 		GROUP BY
 		DATEPART";	
 		} else {
@@ -177,12 +172,12 @@ class dbconfig extends dbconn
 	}
 
 	public function pie(){
-
+// exclude from changing deptsel to f_deptsel
 		$query= "
-		SELECT cat_desc,clr,cat_id, count(*) as ctn, date_created
-		FROM vwp 
-		WHERE deptsel = '2' AND date_created IN (".$_POST['yr'] .")
-		GROUP BY cat_id ORDER BY cat_desc ASC";
+		SELECT dept_desc,dept_id, count(*) as ctn, date_created
+		FROM tbl_deptsel
+		INNER JOIN reports ON reports.f_deptsel = tbl_deptsel.dept_id 
+		GROUP BY dept_id ORDER BY dept_desc ASC";
 		$statement = $this->connection->prepare($query);
 		$statement-> execute();
 		$result = $statement->fetchAll();
@@ -190,10 +185,9 @@ class dbconfig extends dbconn
 
 		foreach ($result as $row) {
 		$data[] = array(
-		'type' => $row["cat_desc"], 
+		'type' => $row["dept_desc"], 
 		'percent' => $row["ctn"],
-		'color' => $row["clr"],
-		'subs' => $this->subs($row['cat_id'])
+		'subs' => $this->subs($row['dept_id'])
 
 			);
 		}
@@ -201,9 +195,10 @@ class dbconfig extends dbconn
 
 	}
 
-	public function subs($id){
-
-		$query= "SELECT sub_cat, count(*) as sctn, date_created FROM vwp WHERE cat_id='".$id."' AND deptsel = '2'  AND date_created IN (".$_POST['yr'] .")  GROUP BY sub_cat ORDER BY cat_desc ASC";
+public function subs($id){
+// exclude from changing deptsel to f_deptsel
+		$query= "SELECT status,YEAR(date_created) AS yr, COUNT(*) AS ttl FROM reports WHERE f_deptsel IN (".$id.") AND `reports`.`sub_id` NOT IN ('15','28','34','35') AND `status` NOT IN ('WAITING FOR IT HELPDESK RESPONSE','NEW REPORT') AND YEAR (date_created) IN (".$_POST['yr'] .") GROUP BY status";
+		
 
 		$statement = $this->connection->prepare($query);
 		$statement-> execute();
@@ -212,11 +207,12 @@ class dbconfig extends dbconn
 
 		foreach($result as $row)
 		{
-		$data[] = array('type' => $row['sub_cat'],'percent' => $row['sctn']);
+		$data[] = array('type' => $row['status'],'percent' => $row['ttl']);
 
 		}
 		return $data;
 	}
+
 
 	public function area_grph(){
 
@@ -233,7 +229,7 @@ class dbconfig extends dbconn
 				JOIN `tbl_branch` ON ( `reports`.`store` = `tbl_branch`.`str_num` ))
 		JOIN `tbl_area` ON ( `tbl_area`.`area_num` = `tbl_branch`.`area_num` )) 
 	WHERE
-		YEAR ( `reports`.`date_created` )  IN ( ".$_POST['yr'] ." ) AND deptsel = '2'
+		YEAR ( `reports`.`date_created` )  IN ( ".$_POST['yr'] ." ) AND f_deptsel = '1'
 	GROUP BY
 		`tbl_branch`.`area_num`";
 		$statement = $this->connection->prepare($query);
@@ -275,7 +271,7 @@ class dbconfig extends dbconn
 		 {
 			$query="
 
-			select `reports`.`store` AS `store`,`tbl_branch`.`str_code` AS `str_dept`,`tbl_branch`.`area_num` AS `area_num`,`tbl_area`.`area_desc` AS `area_desc`,year(`reports`.`date_created`) AS `dc`,count(`reports`.`date_created`) AS `cnt_ttl` from ((`reports` join `tbl_branch` on(`reports`.`store` = `tbl_branch`.`str_num`)) join `tbl_area` on(`tbl_area`.`area_num` = `tbl_branch`.`area_num`)) WHERE YEAR(`reports`.`date_created`) IN (".$_POST['yr'] .") AND area_desc = '".$_POST['area_desc'] ."' AND deptsel = '2' group by reports.store, str_code, area_desc ORDER BY str_code ASC
+			select `reports`.`store` AS `store`,`tbl_branch`.`str_code` AS `str_dept`,`tbl_branch`.`area_num` AS `area_num`,`tbl_area`.`area_desc` AS `area_desc`,year(`reports`.`date_created`) AS `dc`,count(`reports`.`date_created`) AS `cnt_ttl` from ((`reports` join `tbl_branch` on(`reports`.`store` = `tbl_branch`.`str_num`)) join `tbl_area` on(`tbl_area`.`area_num` = `tbl_branch`.`area_num`)) WHERE YEAR(`reports`.`date_created`) IN (".$_POST['yr'] .") AND area_desc = '".$_POST['area_desc'] ."' AND f_deptsel = '1' group by reports.store, str_code, area_desc ORDER BY str_code ASC
 
 				";
 
@@ -298,113 +294,64 @@ class dbconfig extends dbconn
 
 	}
 
-public function admin_data_table_res(){
+	public function admin_data_table_res(){
 
-    // // ✅ sanitize year (avoid SQL injection and broken query)
-    // $yr = isset($_POST['yr']) ? (int)$_POST['yr'] : (int)date('Y');
+	// $query="
+	// Select * from vw6 WHERE 
+	// vw6.sub_id NOT IN ('15','28','34','35') AND status <> 'WAITING FOR IT HELPDESK RESPONSE' AND YEAR(vw6.date_created) IN (2022)";
 
-    // // ✅ Use parameter binding
-    // $query = "
-    //     SELECT *
-    //     FROM vw6foradmin
-    //     WHERE  sub_id NOT IN ('15','28','34','35')
-    //       AND status <> 'NEW REPORT'
-    //       AND YEAR(date_created) IN ({$yr})
-    // "; // old code
+//exclude from deptsel migration to f_deptsel since vw6 f_deptsel  AS "dept_sel"
 
-	$yr = isset($_POST['yr']) ? $_POST['yr'] : date('Y');
+	$query="
+	Select * from vw6 WHERE vw6.deptsel = '1' AND
+	vw6.sub_id NOT IN ('15','28','34','35') AND status <> 'NEW REPORT' AND YEAR(vw6.date_created) IN (".$_POST['yr'] .")";
+	
+	$statement = $this->connection->prepare($query);
+	$statement-> execute();
+	$result = $statement->fetchAll();
+	$data[] = array();
+	// $fetchdata[] = array();
 
-/* sanitize: allow only numbers and commas */
-$yr = preg_replace('/[^0-9,]/', '', $yr);
+		foreach($result as $row)
+				{
+				$fetchdata[] = array(
+					'ticket_no' => $row['ticket_no'],
+					'store' => $row['store'],
+					'str_code' => $row['str_code'],
+					'date_created' => date('m/d/Y H:i',strtotime($row["date_created"])),
+					'subject' => $row['subject'],
+					'concern' => $row['concern'],
+					'via' => $row['via'],
+					'status' => $row['status'],
+					'itsup' => $row['itsup'],
+					'it_desc' => $row['it_desc'],
+					'it_sel' => $row['it_sel'],
+					'cat_id' => $row['cat_id'],
+					'category' => $row['category'],
+					'sub_id' => $row['sub_id'],
+					'sub_category' => $row['sub_category'],
+					'date_closed' => ($row['status'] == 'OPEN') ? " ": date('m/d/Y H:i',strtotime($row["date_closed"])),
+					'tdc' => ($row['status'] == 'OPEN') ? $row["dtdf"]." "."Days Unresolved": $row['tdc'],
+					'crdt' => $row['crdt'],
+					'dtdf' => $row['dtdf'],
+					'years' => $row['years'],
+					'close_by' => $row['close_by'],
+					'clusers' => $row['clusers'],
+					'remarks' => $row['remarks'],
+					'isp_id' => $row['isp_id'],
+					'isp_shortDesc' => $row['isp_shortDesc'],
+					'refNo' => $row['refNo'],
+					'date_refNo' => date('m/d/Y H:i',strtotime($row["date_refNo"])),
+					'msg_cnt' => $row['msg_cnt'],
 
-$query = "
-  SELECT *
-FROM vw6foradmin
-WHERE sub_id NOT IN ('15','28','34','35')
-  AND status <> 'NEW REPORT'
-  AND YEAR(date_created) IN ($yr)
-  AND (is_transfer = '0' OR is_transfer IS NULL);
-";
 
+				);
 
+				}
+			$data = array_filter($fetchdata);
+				return $data;
 
-
-    $statement = $this->connection->prepare($query);
-    $statement->execute([
-        ':deptsel' => '2',
-        ':yr' => $yr
-    ]);
-
-    $result = $statement->fetchAll(PDO::FETCH_ASSOC);
-
-    $fetchdata = []; // ✅ init always
-
-    foreach($result as $row){
-
-        // ✅ Support BOTH old (itsup) and new (f_deptsel/dept_desc) view outputs
-        $assigned_id   = $row['f_deptsel'] ?? ($row['itsup'] ?? '');
-        $assigned_desc = $row['dept_desc'] ?? ($row['it_desc'] ?? '');
-        $assigned_sel  = $row['dept_sel'] ?? ($row['it_sel'] ?? ''); // optional if you added something similar
-
-        // ✅ Safe date parsing
-        $date_created = !empty($row["date_created"]) ? date('m/d/Y H:i', strtotime($row["date_created"])) : "";
-        $date_closed  = (!empty($row["date_closed"]) && strtoupper($row['status']) !== 'OPEN')
-                        ? date('m/d/Y H:i', strtotime($row["date_closed"]))
-                        : "";
-
-        $date_refNo = !empty($row["date_refNo"]) ? date('m/d/Y H:i', strtotime($row["date_refNo"])) : "";
-
-        $fetchdata[] = array(
-            'ticket_no' => $row['ticket_no'] ?? '',
-            'store' => $row['store'] ?? '',
-            'str_code' => $row['str_code'] ?? '',
-            'date_created' => $date_created,
-
-            'subject' => $row['subject'] ?? '',
-            'concern' => $row['concern'] ?? '',
-            'via' => $row['via'] ?? '',
-            'status' => $row['status'] ?? '',
-			'contactNumber' => $row['contactNumber'] ?? '',
-			'dept_email' => $row['dept_email'] ?? '',
-            // ✅ new unified fields (department)
-            'f_deptsel' => $assigned_id,
-            'dept_desc' => $assigned_desc,
-            'dept_sel'  => $row['dept_sel'],
-
-            'cat_id' => $row['cat_id'] ?? '',
-            'category' => $row['category'] ?? '',
-            'sub_id' => $row['sub_id'] ?? '',
-            'sub_category' => $row['sub_category'] ?? '',
-
-            'date_closed' => $date_closed,
-
-            'tdc' => (strtoupper($row['status'] ?? '') === 'OPEN')
-                        ? (($row["dtdf"] ?? '') . " Days Unresolved")
-                        : ($row['tdc'] ?? ''),
-
-            'crdt' => $row['crdt'] ?? '',
-            'dtdf' => $row['dtdf'] ?? '',
-            'years' => $row['years'] ?? '',
-
-            'close_by' => $row['close_by'] ?? '',
-            'clusers' => $row['clusers'] ?? '',
-            'remarks' => $row['remarks'] ?? '',
-
-            'isp_id' => $row['isp_id'] ?? '',
-            'isp_shortDesc' => $row['isp_shortDesc'] ?? '',
-
-            'refNo' => $row['refNo'] ?? '',
-            'date_refNo' => $date_refNo,
-
-            'msg_cnt' => $row['msg_cnt'] ?? '0',
-            'priority_desc' => $row['priority_desc'] ?? '0',
-			'contactNumber' => $row['contactNumber'] ?? ''
-        );
-    }
-
-    return $fetchdata;
-}
-
+	}
 
 
 
@@ -413,57 +360,48 @@ WHERE sub_id NOT IN ('15','28','34','35')
 public function newreporthist(){
 
 	$query="SELECT
-	reports.deptsel AS deptsel,
-	reports.ticket_no AS ticket_no,
-	reports.date_created AS date_created,
-	reports.store AS store,
-	tbl_branch.str_code AS str_code,
-	reports.concern AS concern,
-	reports.service_desc AS service_desc,
-	reports.`subject` AS `subject`,
-	reports.`status` AS `status`,
-	reports.userId AS userId,
-	reports.via AS via,
-	reports.itsup AS itsup,
-	it_tech.it_desc AS it_desc,
-	reports.cat_id AS cat_id,
-	categories.cat_desc AS cat_desc,
-	concat_ws( '-', `reports`.`cat_id`, `categories`.`cat_desc` ) AS cat_x,
-	reports.sub_id AS sub_id,
-	subcat.sub_cat AS sub_cat,
-	reports.date_closed AS date_closed,
-	reports.remarks AS remarks,
-	reports_msgcnt.msg_cnt AS msg_cnt,
-	reports_newmsg.nmsg_stat AS nmsg_stat,
-	users.fname AS fname,
-	users.lstname AS lstname,
-	concat_ws( ' ', `users`.`fname`, `users`.`lstname` ) AS full_name,
-	tbl_deptsel.dept_desc AS dept_desc
+	reports.f_deptsel AS deptsel,
+	`reports`.`ticket_no` AS `ticket_no`,
+	`reports`.`date_created` AS `date_created`,
+	`reports`.`store` AS `store`,
+	`tbl_branch`.`str_name` AS `str_code`,
+	`reports`.`concern` AS `concern`,
+	`reports`.`service_desc` AS `service_desc`,
+	`reports`.`subject` AS `subject`,
+	`reports`.`status` AS `status`,
+	`reports`.`userId` AS `userId`,
+	`reports`.`via` AS `via`,
+	`reports`.`itsup` AS `itsup`,
+	`it_tech`.`it_desc` AS `it_desc`,
+	`reports`.`cat_id` AS `cat_id`,
+	`categories`.`cat_desc` AS `cat_desc`,
+	concat_ws( '-', `reports`.`cat_id`, `categories`.`cat_desc` ) AS `cat_x`,
+	`reports`.`sub_id` AS `sub_id`,
+	`subcat`.`sub_cat` AS `sub_cat`,
+	`reports`.`date_closed` AS `date_closed`,
+	`reports`.`remarks` AS `remarks`,
+	`reports_msgcnt`.`msg_cnt` AS `msg_cnt`,
+	`reports_newmsg`.`nmsg_stat` AS `nmsg_stat`,
+	`users`.`fname` AS `fname`,
+	`users`.`lstname` AS `lstname`,
+	concat_ws( ' ', `users`.`fname`, `users`.`lstname` ) AS `full_name` 
 FROM
-	(
-		(
-			(
-				(
-					(
-						(
-							( reports JOIN tbl_branch ON ( tbl_branch.str_num = reports.store ) )
-							LEFT JOIN it_tech ON ( it_tech.itsup = reports.itsup ) 
-						)
-						LEFT JOIN categories ON ( categories.cat_id = reports.cat_id ) 
-					)
-					LEFT JOIN subcat ON ( subcat.sub_id = reports.sub_id ) 
-				)
-				LEFT JOIN reports_msgcnt ON ( reports_msgcnt.ticket_no = reports.ticket_no ) 
-			)
-			LEFT JOIN reports_newmsg ON ( reports_newmsg.ticket_no = reports.ticket_no ) 
-		)
-		LEFT JOIN users ON ( users.id = reports.userId ) 
-	)
-	INNER JOIN tbl_deptsel ON reports.deptsel = tbl_deptsel.dept_id 
+	(((((((
+								`reports`
+								JOIN `tbl_branch` ON ( `tbl_branch`.`str_num` = `reports`.`store` ))
+							LEFT JOIN `it_tech` ON ( `it_tech`.`itsup` = `reports`.`itsup` ))
+						LEFT JOIN `categories` ON ( `categories`.`cat_id` = `reports`.`cat_id` ))
+					LEFT JOIN `subcat` ON ( `subcat`.`sub_id` = `reports`.`sub_id` ))
+				LEFT JOIN `reports_msgcnt` ON ( `reports_msgcnt`.`ticket_no` = `reports`.`ticket_no` ))
+			LEFT JOIN `reports_newmsg` ON ( `reports_newmsg`.`ticket_no` = `reports`.`ticket_no` ))
+	LEFT JOIN `users` ON ( `users`.`id` = `reports`.`userId` )) 
 WHERE
-	reports.`status` = 'NEW REPORT' 
+	`reports`.`status` = 'ASSIGNED' 
+	AND reports.f_deptsel = '1'
+	GROUP BY
+	concern
 ORDER BY
-	reports.date_created DESC";
+	`reports`.`date_created` DESC";
 	$statement = $this->connection->prepare($query);
 	$statement-> execute();
 	$result = $statement->fetchAll();
@@ -485,9 +423,7 @@ ORDER BY
 			'cat_desc' => $row["cat_desc"],
 			'sub_cat' => $row["sub_cat"],
 			'msg_cnt' => $row["msg_cnt"],
-			'full_name' => $row["full_name"],
-			'dept_desc' => $row["dept_desc"]
-
+			'full_name' => $row["full_name"]
 			// 'sub_cat' => $row["sub_cat"],
 		);
 	}	
@@ -497,7 +433,6 @@ ORDER BY
 		return $data;
 
 }
-
 
 public function reassign_itsup(){
 	$qry = $this->connection->prepare("SELECT * FROM tbl_reassigned");
@@ -646,7 +581,7 @@ FROM
 		tbl_notif.ticket_no = reports.ticket_no
 WHERE
 	notif_val IN ('2','3') AND
-	reports.deptsel = 2 
+	reports.f_deptsel = 1
 ORDER BY
 	notif_date ASC";
 	$statement = $this->connection->prepare($query);
@@ -1111,8 +1046,8 @@ FROM
 	ON 
 		reports.sub_id = subcat.sub_id
 WHERE
-	reports.deptsel = '2' AND
-	reports.date_created LIKE '%2024%'
+	reports.deptsel = '1' AND
+	reports.date_created LIKE '%2026%'
 	";
 	
 	$statement = $this->connection->prepare($query);
@@ -1149,7 +1084,7 @@ WHERE
 
 		$query= "SELECT cat_desc,clr,cat_id, count(*) as ctn, date_created
 		FROM vwp 
-		WHERE deptsel = '2' AND cat_id ='3' AND date_created IN (".$_POST['yr'] .")
+		WHERE deptsel = '1' AND cat_id ='3' AND date_created IN (".$_POST['yr'] .")
 		GROUP BY cat_id ORDER BY cat_desc ASC";
 		$statement = $this->connection->prepare($query);
 		$statement-> execute();
@@ -1171,7 +1106,7 @@ WHERE
 
 	public function netsubs($id){
 
-		$query= "SELECT sub_cat, count(*) as sctn, date_created FROM vwp WHERE cat_id='".$id."' AND deptsel = '2'  AND date_created IN (".$_POST['yr'] .")  GROUP BY sub_cat ORDER BY cat_desc ASC";
+		$query= "SELECT sub_cat, count(*) as sctn, date_created FROM vwp WHERE cat_id='".$id."' AND deptsel = '1'  AND date_created IN (".$_POST['yr'] .")  GROUP BY sub_cat ORDER BY cat_desc ASC";
 
 		$statement = $this->connection->prepare($query);
 		$statement-> execute();
@@ -1197,7 +1132,7 @@ WHERE
 			FROM
 			reports
 			LEFT JOIN tbl_status ON reports.`status` = tbl_status.stat_desc
-			where `reports`.`sub_id` NOT IN ('15','28','34','35') AND `status` NOT IN ('WAITING FOR IT HELPDESK RESPONSE','NEW REPORT') AND YEAR(date_created) IN (".$_POST['yr'] .") AND reports.deptsel = '2' AND cat_id = '3'
+			where `reports`.`sub_id` NOT IN ('15','28','34','35') AND `status` NOT IN ('WAITING FOR IT HELPDESK RESPONSE','NEW REPORT') AND YEAR(date_created) IN (".$_POST['yr'] .") AND reports.deptsel = '1' AND cat_id = '3'
 			GROUP BY `status`
 			ORDER BY stat_id ASC
 		";
@@ -1233,7 +1168,7 @@ WHERE
 				JOIN `tbl_branch` ON ( `reports`.`store` = `tbl_branch`.`str_num` ))
 		JOIN `tbl_area` ON ( `tbl_area`.`area_num` = `tbl_branch`.`area_num` )) 
 	WHERE
-		YEAR ( `reports`.`date_created` )  IN ( ".$_POST['yr'] ." ) AND deptsel = '2' AND cat_id = '3'
+		YEAR ( `reports`.`date_created` )  IN ( ".$_POST['yr'] ." ) AND deptsel = '1' AND cat_id = '3'
 	GROUP BY
 		`tbl_branch`.`area_num`";
 		$statement = $this->connection->prepare($query);
@@ -1273,7 +1208,7 @@ WHERE
 		}
 		else  
 		 {
-			$query="select `reports`.`store` AS `store`,`tbl_branch`.`str_code` AS `str_dept`,`tbl_branch`.`area_num` AS `area_num`,`tbl_area`.`area_desc` AS `area_desc`,year(`reports`.`date_created`) AS `dc`,count(`reports`.`date_created`) AS `cnt_ttl` from ((`reports` join `tbl_branch` on(`reports`.`store` = `tbl_branch`.`str_num`)) join `tbl_area` on(`tbl_area`.`area_num` = `tbl_branch`.`area_num`)) WHERE YEAR(`reports`.`date_created`) IN (".$_POST['yr'] .") AND area_desc = '".$_POST['area_desc'] ."' AND deptsel = '2' AND cat_id = '3' group by reports.store, str_code, area_desc ORDER BY str_code ASC
+			$query="select `reports`.`store` AS `store`,`tbl_branch`.`str_code` AS `str_dept`,`tbl_branch`.`area_num` AS `area_num`,`tbl_area`.`area_desc` AS `area_desc`,year(`reports`.`date_created`) AS `dc`,count(`reports`.`date_created`) AS `cnt_ttl` from ((`reports` join `tbl_branch` on(`reports`.`store` = `tbl_branch`.`str_num`)) join `tbl_area` on(`tbl_area`.`area_num` = `tbl_branch`.`area_num`)) WHERE YEAR(`reports`.`date_created`) IN (".$_POST['yr'] .") AND area_desc = '".$_POST['area_desc'] ."' AND deptsel = '1' AND cat_id = '3' group by reports.store, str_code, area_desc ORDER BY str_code ASC
 
 				";
 
@@ -1300,7 +1235,7 @@ WHERE
 	public function admin_data_table_resnet(){
 
 		$query="
-		Select * from vw6 WHERE vw6.deptsel = '2' AND cat_id = '3' AND
+		Select * from vw6 WHERE vw6.deptsel = '1' AND cat_id = '3' AND
 		vw6.sub_id NOT IN ('15','28','34','35') AND status <> 'NEW REPORT' AND YEAR(vw6.date_created) IN ('2025')";
 		
 		$statement = $this->connection->prepare($query);
@@ -1387,102 +1322,6 @@ WHERE
 			
 			return $data;
 		}
-
-
-public function trans_tbl(){
-
-	$query="SELECT
-	reports.deptsel AS deptsel,
-	reports.ticket_no AS ticket_no,
-	reports.date_created AS date_created,
-	reports.store AS store,
-	tbl_branch.str_code AS str_code,
-	reports.concern AS concern,
-	reports.service_desc AS service_desc,
-	reports.`subject` AS `subject`,
-	reports.`status` AS `status`,
-	reports.userId AS userId,
-	reports.via AS via,
-	reports.itsup AS itsup,
-	it_tech.it_desc AS it_desc,
-	reports.cat_id AS cat_id,
-	categories.cat_desc AS cat_desc,
-	concat_ws( '-', `reports`.`cat_id`, `categories`.`cat_desc` ) AS cat_x,
-	reports.sub_id AS sub_id,
-	subcat.sub_cat AS sub_cat,
-	reports.date_closed AS date_closed,
-	reports.remarks AS remarks,
-	reports_msgcnt.msg_cnt AS msg_cnt,
-	reports_newmsg.nmsg_stat AS nmsg_stat,
-	users.fname AS fname,
-	users.lstname AS lstname,
-	concat_ws( ' ', `users`.`fname`, `users`.`lstname` ) AS full_name,
-	tbl_deptsel.dept_desc AS dept_desc,
-	reports.is_transfer
-FROM
-	(
-		(
-			(
-				(
-					(
-						(
-							( reports JOIN tbl_branch ON ( tbl_branch.str_num = reports.store ) )
-							LEFT JOIN it_tech ON ( it_tech.itsup = reports.itsup ) 
-						)
-						LEFT JOIN categories ON ( categories.cat_id = reports.cat_id ) 
-					)
-					LEFT JOIN subcat ON ( subcat.sub_id = reports.sub_id ) 
-				)
-				LEFT JOIN reports_msgcnt ON ( reports_msgcnt.ticket_no = reports.ticket_no ) 
-			)
-			LEFT JOIN reports_newmsg ON ( reports_newmsg.ticket_no = reports.ticket_no ) 
-		)
-		LEFT JOIN users ON ( users.id = reports.userId ) 
-	)
-	INNER JOIN tbl_deptsel ON reports.deptsel = tbl_deptsel.dept_id 
-WHERE
-	reports.is_transfer = '1' 
-ORDER BY
-	reports.date_created DESC";
-
-	// '1' means i ca-call niya muna sa query yung transfer ticket
-	$statement = $this->connection->prepare($query);
-	$statement-> execute();
-	$result = $statement->fetchAll();
-	$data[] = array();
-	$fetchdata = array();
-	foreach ($result as $row) {
-		$fetchdata[] = array(
-			'ticket_no' => $row["ticket_no"],
-			'store' => $row['store'],
-			'str_code'=>$row["str_code"],
-			'date_created' => date('m/d/Y H:i',strtotime($row["date_created"])), 
-			'concern'=> $row["subject"],
-			'service_desc' => $row["service_desc"],
-			'subject' => $row["concern"],
-			'via' => $row["via"],
-			'status' => $row["status"],            
-			'itsup' => $row["itsup"],
-			'it_desc' => $row["it_desc"],
-			'cat_desc' => $row["cat_desc"],
-			'sub_cat' => $row["sub_cat"],
-			'msg_cnt' => $row["msg_cnt"],
-			'full_name' => $row["full_name"],
-			'dept_desc' => $row["dept_desc"]
-
-			// 'sub_cat' => $row["sub_cat"],
-		);
-	}	
-
-	$data = array_filter($fetchdata);
-
-		return $data;
-
-}
-
-
-
-
 
 
 } // dbconfig end bracket
