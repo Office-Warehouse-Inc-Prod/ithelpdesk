@@ -197,7 +197,7 @@ class dbconfig extends dbconn
 
 public function subs($id){
 // exclude from changing deptsel to f_deptsel
-		$query= "SELECT status,YEAR(date_created) AS yr, COUNT(*) AS ttl FROM reports WHERE f_deptsel= 1 AND YEAR (date_created) IN (".$_POST['yr'] .") GROUP BY status";
+		$query= "SELECT status,YEAR(date_created) AS yr, COUNT(*) AS ttl FROM reports WHERE f_deptsel IN (".$id.") AND `reports`.`sub_id` NOT IN ('15','28','34','35') AND `status` NOT IN ('WAITING FOR IT HELPDESK RESPONSE','NEW REPORT') AND YEAR (date_created) IN (".$_POST['yr'] .") GROUP BY status";
 		
 
 		$statement = $this->connection->prepare($query);
