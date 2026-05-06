@@ -290,7 +290,7 @@ class dbconfig extends dbconn
 		$data[] = array(
 			'str_code' => $row['str_dept'],
 			'cnt_ttl' => $row['cnt_ttl']
-
+//github
 		);
 
 		}
