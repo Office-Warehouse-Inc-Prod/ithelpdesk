@@ -195,7 +195,7 @@ class dbconfig extends dbconn
 
 		}
 		return $data;
-	}
+	}*/
 
 
 	public function area_grph(){
@@ -233,7 +233,51 @@ class dbconfig extends dbconn
 
 		}
 		return $data;
-	}*/
+	}
+
+
+	public function strs_grph(){
+		if ($_POST['area_desc'] == "CENTRAL") {
+			$query=" SELECT
+					count(reports.ticket_no) as cnt_ttl,
+					tbl_branch.str_code,
+					tbl_dept.dept_desc as str_dept,
+					reports.store
+					FROM
+					reports
+					INNER JOIN users ON reports.userId = users.id AND reports.store = users.str_num
+					INNER JOIN tbl_dept ON tbl_dept.dept_id = users.dept_id
+					INNER JOIN tbl_branch ON reports.store = tbl_branch.str_num
+					where reports.store ='201' AND YEAR(`reports`.`date_created`) IN (".$_POST['yr'] .") 
+					GROUP BY tbl_dept.dept_id 
+";
+		}
+		else  
+		 {
+			$query="
+
+			select `reports`.`store` AS `store`,`tbl_branch`.`str_code` AS `str_dept`,`tbl_branch`.`area_num` AS `area_num`,`tbl_area`.`area_desc` AS `area_desc`,year(`reports`.`date_created`) AS `dc`,count(`reports`.`date_created`) AS `cnt_ttl` from ((`reports` join `tbl_branch` on(`reports`.`store` = `tbl_branch`.`str_num`)) join `tbl_area` on(`tbl_area`.`area_num` = `tbl_branch`.`area_num`)) WHERE YEAR(`reports`.`date_created`) IN (".$_POST['yr'] .") AND area_desc = '".$_POST['area_desc'] ."' AND f_deptsel IN ('1','2','3','4','5','6','7','11','12','13','14','15','16') group by reports.store, str_code, area_desc ORDER BY str_code ASC
+
+				";
+
+		}
+		$statement = $this->connection->prepare($query);
+		$statement-> execute();
+		$result = $statement->fetchAll();
+		$data[] = array();
+
+		foreach($result as $row)
+		{
+		$data[] = array(
+			'str_code' => $row['str_dept'],
+			'cnt_ttl' => $row['cnt_ttl']
+
+		);
+
+		}
+		return $data;
+
+	}
 
 public function str_grph(){
     $query = "SELECT 
@@ -263,6 +307,36 @@ public function str_grph(){
     }
 
     return $data;
+}
+
+
+public function cat_grph(){
+    if ($_POST['mode'] == 'table_by_category') {
+
+    $cat_id = $_POST['cat_id'];
+
+    $query = "SELECT 
+        r.ticket_no,
+        r.date_created,
+	    r.cat_id,
+        r.subject,
+        r.via,
+        r.status,
+        c.cat_desc AS category,
+        r.date_closed,
+        r.remarks
+    FROM reports r
+    LEFT JOIN categories c ON c.cat_id = r.cat_id
+    WHERE r.cat_id = 1";
+
+    $statement = $this->connection->prepare($query);
+    $statement->execute();
+    $result = $statement->fetchAll();
+
+    $data = array();
+
+	return $data;
+}
 }
 
 

@@ -283,6 +283,16 @@ body {
             </div>
           </div>
 
+
+          <div class="col-12 mb-3">
+            <div class="card card2">
+              <h5 class="card-header text-black"  style="background-color: #95a2b9b4; color:black;">Number of Escalated Reports Per Area</h5>
+              <div class="card-body">
+                <div id="chart_area"></div>
+              </div>
+            </div>
+          </div>
+
             
 
           
