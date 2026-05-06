@@ -1000,8 +1000,7 @@ series.name = "fyr";
 series.columns.template.tooltipText = "{categoryX}: [bold]{valueY}[/]";
 series.columns.template.fillOpacity = .8;
 series.columns.template.events.on("hit", function(ev) {
-               
-              let s_area = ev.target.dataItem.dataContext["area_desc"] ;
+              let s_area = ev.target.dataItem.dataContext["area_desc"];
               let syr = ev.target.dataItem.dataContext["fyr"];
 
  // alert(syr); 

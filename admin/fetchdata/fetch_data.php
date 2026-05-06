@@ -102,9 +102,6 @@ switch ($mode) {
         case 'dtbcat':
             $records['rptcat'] = $fn->tbl_cat();
               break;
-                  case 'trans_tbl':
-         $records['transdata']= $fn->trans_tbl();
-        break;
     default:
         break;
 

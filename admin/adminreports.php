@@ -283,16 +283,9 @@ body {
             </div>
           </div>
 
-             <div class="col-12 col-lg-6 mb-3">
-            <div class="card card2 h-100">
-              <h5 class="card-header" style="background-color: #95a2b9b4; color:black;">Department Tickets</h5>
-              <div class="card-body">
-                <div id="chartdiv3"></div>
-              </div>
-            </div>
-          </div>
+            
 
-         
+          
 
 
         

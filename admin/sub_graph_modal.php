@@ -6,6 +6,84 @@ $timezone = new DateTimeZone('Asia/Manila');
 $datetime->setTimezone($timezone);
 
  ?>
+
+ <style>
+  #store_graph_modal .modal-dialog{
+  max-width: 1100px; /* desktop width */
+  margin: 1.25rem auto;
+}
+
+#store_graph_modal .modal-content{
+  border-radius: 16px;
+  border: 1px solid rgba(0,0,0,0.08);
+  overflow: hidden;
+}
+
+/* Header with hierarchy */
+#store_graph_modal .modal-header{
+  background: linear-gradient(180deg, rgba(79,70,229,0.08), rgba(255,255,255,0));
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+  padding: 16px 18px;
+}
+
+#store_graph_modal_header{
+  font-weight: 700;
+  font-size: 18px;
+  margin: 0;
+}
+
+/* Body spacing */
+#store_graph_modal .modal-body{
+  padding: 16px 18px;
+}
+
+/* Section cards inside modal */
+.modal-section{
+  background: rgba(255,255,255,0.75);
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.04);
+}
+
+/* Section title */
+.modal-section-title{
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: .6px;
+  text-transform: uppercase;
+  color: rgba(0,0,0,0.55);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.modal-section-title:before{
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  background: rgba(79,70,229,0.55);
+}
+
+/* Make inputs feel “premium” */
+#store_graph_modal .form-control,
+#store_graph_modal select,
+#store_graph_modal textarea{
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.12);
+  background: white;
+}
+
+#store_graph_modal label{
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: .4px;
+  text-transform: uppercase;
+  color: #213456;
+}
+ </style>
 <div class="modal fade bd-example-modal-lg" id="genModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
@@ -114,7 +192,11 @@ $datetime->setTimezone($timezone);
   </div>
 </div>
 
-
+<div class="table-responsive">
+    <table id="dtbl_itsup" class="table table-bordered table-striped" style="width:100%">
+    
+    </table>
+</div>
 
 <!-- Sub-Piegraph modal -->
 <div class="modal fade" id="piegraphModal" tabindex="-1" role="dialog" aria-labelledby="piegraphModal" aria-hidden="true">
@@ -138,8 +220,8 @@ $datetime->setTimezone($timezone);
 <div class="modal fade" id="store_graph_modal" tabindex="-1" role="dialog" aria-labelledby="store_graph_modal" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">Per Store</h5>
+      <div class="modal-header" style="background: #465c81;">
+        <h5 class="modal-title" id="exampleModalLongTitle" style="color:white;">CATEGORIES</h5>
         <button type="button" class="close" id="substr_clsbtn" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -166,6 +248,8 @@ $datetime->setTimezone($timezone);
     </div>
   </div>
 </div>
+
+
 
 
 <!-- I.T Bar modal -->

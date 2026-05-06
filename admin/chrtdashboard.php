@@ -1,6 +1,4 @@
 
-
-<!-- Styles -->
 <style>
 #chartdiv2 {
     margin-top: 12px;
@@ -47,16 +45,20 @@ var types = $.ajax({
     var selected;
     chart.data = generateChartData();
 
-    
-
     //  Series
     var pieSeries = chart.series.push(new am4charts.PieSeries());
     pieSeries.dataFields.value = "percent";
     pieSeries.dataFields.category = "type";
     pieSeries.slices.template.propertyFields.fill = "color";
-    pieSeries.slices.template.propertyFields.isActive = "pulled";
     pieSeries.slices.template.strokeWidth = 0;
-    
+
+     //  Legend styling
+    chart.legend = new am4charts.Legend();
+    chart.legend.position = "bottom";
+    chart.legend.valign = "bottom";
+    chart.legend.labels.template.fill = am4core.color("#444");
+    chart.legend.labels.template.fontSize = 10;
+    chart.legend.labels.template.text = "[bold {color}]{name}[/]";
 
     //  Label styling
     pieSeries.labels.template.maxWidth = 130;
@@ -65,8 +67,6 @@ var types = $.ajax({
     pieSeries.labels.template.fill = am4core.color("#444");
     pieSeries.labels.template.text = "[bold]{type}[/]\n{value.value} ({value.percent.formatNumber('.##')}%)";
     
-
-
     //  Tooltip styling
     pieSeries.slices.template.tooltipText =
       "{type}: {value.value} | {value.percent.formatNumber('.##')}%";
@@ -82,64 +82,38 @@ var types = $.ajax({
     hs.properties.scale = 1.08;
     hs.properties.shiftRadius = 0.03;
     
+pieSeries.slices.template.events.on("hit", function(ev) {
+
+    let data = ev.target.dataItem.dataContext;
+    selected = ev.target.dataItem.index;
     
+    chart.data = generateChartData();
+    let dept_id = data.dept_id;
+    _storegraph(dept_id);
+
+}, this);
 
 
-     //  Custom pastel colors based on category
-    pieSeries.slices.template.adapter.add("fill", function (fill, target) {
-      
-      
-      if (target.dataItem) {
-       
-        
-        switch (target.dataItem.category) {
-           case "IT":
-            return am4core.color("#E1D0B3"); 
-           case "ADMIN":
-            return am4core.color("#B7BDF7"); 
-           case "MARKETING":
-            return am4core.color("#F9B2D7"); 
-           case "MERCHANDISING":
-            return am4core.color("#6594B1"); 
-           case "PURCHASING":
-            return am4core.color("#AAB99A"); 
-           case "VISUAL":
-            return am4core.color("#FF7444"); 
-           case "HUMAN RESOURCES":
-            return am4core.color("#A98B76"); 
-           case "INVENTORY CONTROL GROUP":
-            return am4core.color("#853953"); 
-          case "ACCOUNTS PAYABLE":
-            return am4core.color("#612D53"); 
-          case "SALES ACCOUNTING":
-            return am4core.color("#DA4848");
-          case "TREASURY":
-            return am4core.color("#DA4848");  
+// end am4core.ready()
 
-          case "ACCOUNTS RECIEVABLE":
-            return am4core.color("#DA4848");  
+function _storegraph(dept_id){
+  $.ajax({
+    url:"fetchdata/fetch_data.php",
+    method:'POST',
+    data:{dept_id:dept_id, mode:'str_grph'},
+    success:function(fdata){
+      var objstorearea = JSON.parse(fdata);
 
-        
-        
-          case "PENDING":
-            return am4core.color("#FF7A7A"); 
-          case "ON PROCESS":
-            return am4core.color("#F2A65A"); // soft yellow
-          case "CLOSED":
-            return am4core.color("#578f63"); // soft green
-             case "closed":
-            return am4core.color("#578f63"); // soft green
-          case "SUBJECT FOR CLOSING":
-            return am4core.color("#b667eb"); // soft purple
-          default:
-            return am4core.color("#9EC9F7"); // fallback pastel blue
-        }
-      }
-      
-    });
+      _plot_store_graph(objstorearea);
 
+      $('#store_graph_modal').modal({
+        show: true,
+        backdrop: 'static'
+      });
+    }
+  });
+}
 
-    chart.exporting.menu = new am4core.ExportMenu();
 
     function generateChartData() {
       let chartData = [];
@@ -150,6 +124,7 @@ var types = $.ajax({
               type: types[i].subs[x].type,
               percent: types[i].subs[x].percent,
               color: types[i].color,
+              dept_id: types[i].dept_id,
               pulled: true,
             });
           }
@@ -158,6 +133,8 @@ var types = $.ajax({
             type: types[i].type,
             percent: types[i].percent,
             color: types[i].color,
+
+      dept_id: types[i].dept_id,
             id: i,
           });
         }
@@ -166,167 +143,269 @@ var types = $.ajax({
     }
 
     //  Click event to drill down
-    pieSeries.slices.template.events.on("hit", function (event) {
-      
-
-      selected =
-        event.target.dataItem.dataContext.id !== undefined
-          ? event.target.dataItem.dataContext.id
-          : undefined;
-      chart.data = generateChartData();
-      
-       pieSeries.ticks.template.events.on("ready", hideSmall);
-pieSeries.ticks.template.events.on("visibilitychanged", hideSmall);
-pieSeries.labels.template.events.on("ready", hideSmall);
-pieSeries.labels.template.events.on("visibilitychanged", hideSmall);
-
-
-
- pieSeries.slices.template.adapter.add("fill", function (fill, target) {
-
-
-// Set innerRadius to make it a donut chart
-chart.innerRadius = am4core.percent(50);
-
-// Add label inside the donut
-let label = pieSeries.createChild(am4core.Label);
-label.text = (selected !== undefined) ? types[selected].type : "Department" ;
-label.horizontalCenter = "middle";
-label.verticalCenter = "middle";
-label.fontSize = 20;
-
-
-
-      
-      if (target.dataItem) {
-       
-        
-        switch (target.dataItem.category) {
-           case "IT":
-            return am4core.color("#D3DAD9"); 
-           case "ADMIN":
-            return am4core.color("#D3DAD9"); 
-           case "MARKETING":
-            return am4core.color("#D3DAD9"); 
-           case "MERCHANDISING":
-            return am4core.color("#D3DAD9"); 
-           case "PURCHASING":
-            return am4core.color("#D3DAD9"); 
-           case "VISUAL":
-            return am4core.color("#D3DAD9"); 
-           case "HUMAN RESOURCES":
-            return am4core.color("#D3DAD9"); 
-           case "INVENTORY CONTROL GROUP":
-            return am4core.color("#D3DAD9"); 
-          case "ACCOUNTS PAYABLE":
-            return am4core.color("#D3DAD9"); 
-          case "SALES ACCOUNTING":
-            return am4core.color("#D3DAD9");
-          case "TREASURY":
-            return am4core.color("#D3DAD9");  
-
-          case "ACCOUNTS RECIEVABLE":
-            return am4core.color("#D3DAD9");  
-
-        
-        
-          case "PENDING":
-            return am4core.color("#FF7A7A"); 
-          case "ON PROCESS":
-            return am4core.color("#F2A65A"); // soft yellow
-          case "CLOSED":
-            return am4core.color("#578f63"); // soft green
-          case "closed":
-            return am4core.color("#578f63"); // soft green
-          case "SUBJECT FOR CLOSING":
-            return am4core.color("#b667eb"); // soft purple
-          default:
-            return am4core.color("#9EC9F7"); // fallback pastel blue
-        }
-      }else{
-      chart.data = generateChartData();
-      chart.dataSource.url = "/data/chrtdashboard.php";
-      }
-      
-    });
-
-
-
-
-function hideSmall(ev) {
-  if (ev.target.dataItem && (ev.target.dataItem.category === "IT" 
-  || ev.target.dataItem.category === "ADMIN" 
-  || ev.target.dataItem.category === "MARKETING"
-    || ev.target.dataItem.category === "MERCHANDISING"
-    || ev.target.dataItem.category === "PURCHASING"
-    || ev.target.dataItem.category === "VISUAL"
-    || ev.target.dataItem.category === "HUMAN RESOURCES"
-    || ev.target.dataItem.category === "INVENTORY CONTROL GROUP"
-    || ev.target.dataItem.category === "ACCOUNTS PAYABLE"
-    || ev.target.dataItem.category === "SALES ACCOUNTING"
-    || ev.target.dataItem.category === "TREASURY"
-    || ev.target.dataItem.category === "ACCOUNTS RECIEVABLE"
-
-
-  )) {
-    ev.target.hide();
-    return fill;
-
-      chart.dataSource.url = "/data/chrtdashboard.php";
-
-
-  }
-
-
-  else {
-
-   return fill;
-// override tooltipText so tooltipHTML is actually used
-series.slices.template.tooltipHTML = "something...";
-series.slices.template.adapter.add("tooltipHTML", function(tooltipHTML) {
-  
-
-  console.log("adapter");
-  return tooltipHTML;
-});
-
-
-
-       series.slices.template.events.on("over", function(){
-  console.log("hover");
-  
-  
-    
-});
-
-   }
-}
-});
-
-
- // Animation on load
-    pieSeries.hiddenState.properties.opacity = 1;
+        pieSeries.hiddenState.properties.opacity = 1;
     pieSeries.hiddenState.properties.endAngle = -90;
     pieSeries.hiddenState.properties.startAngle = -90;
 
     am4core.options.autoDispose = true;
-    
-    
-    
-
-    
   });
 
 }
+</script>
+
+
+<!-- Styles -->
+<style>
+#store_graph {
+  width: 100%;
+  height: 500px;
+}
+
+</style>
+
+<script>
+
+  function _storegraph_bycat(cat_id) {
+    $.ajax({
+        url: "fetchdata/fetch_data.php", 
+        method: 'POST',
+        data: { 
+            cat_id: cat_id, 
+            mode: 'table_by_category' 
+        },
+        success: function(response) {
+            try {
+                var obj = JSON.parse(response);
+                itsup_datatables({ itsuptbldata: obj });
+            } catch (e) {
+                console.error("Error parsing JSON: ", e);
+            }
+        }
+    });
+}
+
+function _plot_store_graph(strdata){
+
+  am4core.ready(function() {
+
+    // Themes begin
+    am4core.useTheme(am4themes_animated);
+
+    // Create chart instance
+    var chart = am4core.create("store_graph", am4charts.XYChart);
+    chart.scrollbarX = new am4core.Scrollbar();
+
+    // Add data
+    chart.data = strdata;
+
+    // Create axes
+    var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+    categoryAxis.dataFields.category = "cat_desc";
+    categoryAxis.renderer.grid.template.location = 0;
+    categoryAxis.renderer.minGridDistance = 30;
+    categoryAxis.renderer.labels.template.wrap = true;
+    categoryAxis.renderer.labels.template.fontSize = 12;
+    categoryAxis.renderer.minHeight = 90;
+
+    var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+    valueAxis.renderer.minWidth = 30;
+
+    // Create series
+    var series = chart.series.push(new am4charts.ColumnSeries());
+    series.sequencedInterpolation = true;
+    series.dataFields.valueY = "ctn";
+    series.dataFields.categoryX = "cat_desc";
+    series.tooltipText = "[{categoryX}: bold]{valueY}";
+    series.tooltip.pointerOrientation = "vertical";
+
+   series.columns.template.events.on("hit", function(ev) {
+    // Get the category description (or cat_id) from the clicked bar
+    let category = ev.target.dataItem.dataContext.cat_desc;
+    let cat_id = ev.target.dataItem.dataContext.cat_id;
+    
+    console.log("Clicked category: " + category);
+    
+    // Call function to fetch table data based on this category
+    _storegraph_bycat(cat_id); 
+}, this);
+
+    var series4 = chart.series.push(new am4charts.ColumnSeries());
+series4.dataFields.valueY = "status";
+series4.dataFields.categoryX = "ticket_no";
+series4.clustered = false;
+series4.columns.template.width = am4core.percent(50);
+
+chart.cursor = new am4charts.XYCursor();
+chart.cursor.lineX.disabled = true;
+chart.cursor.lineY.disabled = true;
+
+var bullet = series.bullets.push(new am4charts.LabelBullet());
+bullet.label.verticalCenter = "bottom";
+bullet.label.dy = -10;
+bullet.label.fontSize = 15;
+bullet.label.truncate = false;
+
+chart.exporting.menu = new am4core.ExportMenu();
+
+    var valueLabel = series.bullets.push(new am4charts.LabelBullet());
+    valueLabel.label.text = "{valueY}"; 
+    valueLabel.label.fontSize = 14;
+    valueLabel.label.verticalCenter = "bottom";
+    valueLabel.label.dy = -10;
+    valueLabel.label.truncate = false;
+    valueLabel.label.hideOversized = false;
+
+    var table
+function itsup_datatables(t){
+const dataset=t.itsuptbldata;
+table =  $("#dtbl_itsup").DataTable({
+
+"dom":
+'<"pull-left"lf><"pull-right">tip',
+// stateSave: true,
+"pagingType": "full_numbers",
+"bDestroy": true,
+"responsive": true, "lengthChange": false, "autoWidth": false,
+language: {
+search: "_INPUT_",
+searchPlaceholder: "Search..."
+},
+pageLength:10,
+data: dataset,
+"order": [[ 5, "Desc" ]],
+
+columns: [
+
+{title:"TicketNo", data:"ticket_no","defaultContent": ""},
+{title:"  Store", data:"str_code","defaultContent": ""},
+{title:"Date Created", data:"date_created","defaultContent": ""},
+{title:"Subject", data:"subject","defaultContent": ""},
+// {title:"Concern", data:"concern","defaultContent": ""},
+{title:"Via", data:"via","defaultContent": ""},
+{title:"STATUS", data:"status","defaultContent": ""},
+{title:"Assigned Support", data:"it_desc","defaultContent": ""},
+{title:"CATEGORY", data:"category","defaultContent": ""},
+{title:"SUBCATEGORY", data:"sub_category","defaultContent": ""},
+{title:"DATE CLOSED", data:"date_closed","defaultContent": ""},
+{title:"DAYS COMPLETION", data:"tdc","defaultContent": ""},
+{title:"WORKOUTPUT", data:"remarks","defaultContent": ""}
+
+
+],
+"columnDefs": [
+{ 
+
+  targets: [9,10],
+  "width": "2%",
+  render: function ( data, type, row) {
+      if(type === 'display'){
+          if(data == '1 Days Unresolved'){
+            data = '1 Day Unresolved'
+          }
+         else if(data == '01/01/1970 01:00'){
+            data = 'ATTENDED WITH FIX ASSET'
+          }
+         else if(data == '01/01/1970 08:00'){
+            data = 'ATTENDED WITH FIX ASSET'
+          }
+          else if(data<0){
+            data =   ''
+          }
+          else if(data == 0){
+            data = 'Solve Immediately'
+          }
+          else if(data == '0 Days Unresolved'){
+            data = ''
+          }
+  }
+  return data;
+}
+}
+],
+
+
+rowCallback: function(row, data, index){
+if(data['status'] == 'OPEN'){
+$(row).find('td:eq(0)').css('color', 'red');
+$(row).find('td:eq(1)').css('color', 'red');
+$(row).find('td:eq(2)').css('color', 'red');
+$(row).find('td:eq(3)').css('color', 'red');
+$(row).find('td:eq(4)').css('color', 'red');
+$(row).find('td:eq(5)').css('color', 'red');
+$(row).find('td:eq(6)').css('color', 'red');
+$(row).find('td:eq(7)').css('color', 'red');
+$(row).find('td:eq(8)').css('color', 'red');
+$(row).find('td:eq(9)').css('color', 'red');
+$(row).find('td:eq(10)').css('color', 'red');
+$(row).find('td:eq(11)').css('color', 'red');
+$(row).find('td:eq(12)').css('color', 'red');
+}
+else if (data['status'] == 'OPEN WITH FIX ASSET'){
+$(row).find('td:eq(0)').css('color', 'red');
+$(row).find('td:eq(1)').css('color', 'red');
+$(row).find('td:eq(2)').css('color', 'red');
+$(row).find('td:eq(3)').css('color', 'red');
+$(row).find('td:eq(4)').css('color', 'red');
+$(row).find('td:eq(5)').css('color', 'red');
+$(row).find('td:eq(6)').css('color', 'red');
+$(row).find('td:eq(7)').css('color', 'red');
+$(row).find('td:eq(8)').css('color', 'red');
+$(row).find('td:eq(9)').css('color', 'red');
+$(row).find('td:eq(10)').css('color', 'red');
+$(row).find('td:eq(11)').css('color', 'red');
+$(row).find('td:eq(12)').css('color', 'red');
+}
+else if (data['status'] == 'CLOSED'){
+$(row).find('td:eq(0)').css('color', 'green');
+$(row).find('td:eq(1)').css('color', 'green');
+$(row).find('td:eq(2)').css('color', 'green');
+$(row).find('td:eq(3)').css('color', 'green');
+$(row).find('td:eq(4)').css('color', 'green');
+$(row).find('td:eq(5)').css('color', 'green');
+$(row).find('td:eq(6)').css('color', 'green');
+$(row).find('td:eq(7)').css('color', 'green');
+$(row).find('td:eq(8)').css('color', 'green');
+$(row).find('td:eq(9)').css('color', 'green');
+$(row).find('td:eq(10)').css('color', 'green');
+$(row).find('td:eq(11)').css('color', 'green');
+$(row).find('td:eq(12)').css('color', 'green');
+$(row).find('td:eq(13)').css('color', 'green');
+}
+else if (data['status'] == 'SUBJECT FOR CLOSING'){
+$(row).find('td:eq(0)').css('color', '#890188');
+$(row).find('td:eq(1)').css('color', '#890188');
+$(row).find('td:eq(2)').css('color', '#890188');
+$(row).find('td:eq(3)').css('color', '#890188');
+$(row).find('td:eq(4)').css('color', '#890188');
+$(row).find('td:eq(5)').css('color', '#890188');
+$(row).find('td:eq(6)').css('color', '#890188');
+$(row).find('td:eq(7)').css('color', '#890188');
+$(row).find('td:eq(8)').css('color', '#890188');
+$(row).find('td:eq(9)').css('color', '#890188');
+$(row).find('td:eq(10)').css('color', '#890188');
+$(row).find('td:eq(11)').css('color', '#890188');
+$(row).find('td:eq(12)').css('color', '#890188');
+$(row).find('td:eq(13)').css('color', '#890188');
+}
+},
+
+});
 
 
 
-
+} 
+    
+    
+  }); // end am4core.ready()
+}
 
 
 
 
 </script>
+</style>
+
+
 
 <!-- Styles -->
 <style>
@@ -382,6 +461,8 @@ series.slices.template.adapter.add("tooltipHTML", function(tooltipHTML) {
     chart.legend.labels.template.text = "[bold {color}]{name}[/]";
 
     chart.data = grphdata;
+
+    
 
     //  Series
     var pieSeries = chart.series.push(new am4charts.PieSeries());
