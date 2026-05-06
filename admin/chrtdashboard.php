@@ -49,6 +49,7 @@ var types = $.ajax({
     var pieSeries = chart.series.push(new am4charts.PieSeries());
     pieSeries.dataFields.value = "percent";
     pieSeries.dataFields.category = "type";
+    pieSeries.dataFields.dept_id = "dept_id";
     pieSeries.slices.template.propertyFields.fill = "color";
     pieSeries.slices.template.strokeWidth = 0;
 
@@ -84,11 +85,19 @@ var types = $.ajax({
     
 pieSeries.slices.template.events.on("hit", function(ev) {
 
-    let data = ev.target.dataItem.dataContext;
+    if (!ev.target.dataItem) {
+        console.log("Walang laman");
+        return false;
+    }
+
+    let dept_id = ev.target.dataItem.dept_id;
+
+    console.log("Clicked Type:", dept_id);
+
     selected = ev.target.dataItem.index;
-    
+
     chart.data = generateChartData();
-    let dept_id = data.dept_id;
+
     _storegraph(dept_id);
 
 }, this);
@@ -100,7 +109,7 @@ function _storegraph(dept_id){
   $.ajax({
     url:"fetchdata/fetch_data.php",
     method:'POST',
-    data:{dept_id:dept_id, mode:'str_grph'},
+    data:{mode:'str_grph',dept_id:dept_id},
     success:function(fdata){
       var objstorearea = JSON.parse(fdata);
 
@@ -520,4 +529,3 @@ $(row).find('td:eq(13)').css('color', '#890188');
 
 
 </script>
-
