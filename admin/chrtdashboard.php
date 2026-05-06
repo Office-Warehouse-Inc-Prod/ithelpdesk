@@ -47,8 +47,6 @@ var types = $.ajax({
     var selected;
     chart.data = generateChartData();
 
-    
-
     //  Series
     var pieSeries = chart.series.push(new am4charts.PieSeries());
     pieSeries.dataFields.value = "percent";
@@ -65,7 +63,6 @@ var types = $.ajax({
     pieSeries.labels.template.fill = am4core.color("#444");
     pieSeries.labels.template.text = "[bold]{type}[/]\n{value.value} ({value.percent.formatNumber('.##')}%)";
     
-
 
     //  Tooltip styling
     pieSeries.slices.template.tooltipText =
@@ -94,17 +91,17 @@ var types = $.ajax({
         
         switch (target.dataItem.category) {
            case "IT":
-            return am4core.color("#E1D0B3"); 
+            return am4core.color("#934761"); 
            case "ADMIN":
-            return am4core.color("#B7BDF7"); 
+            return am4core.color("#744577"); 
            case "MARKETING":
             return am4core.color("#F9B2D7"); 
            case "MERCHANDISING":
-            return am4core.color("#6594B1"); 
+            return am4core.color("#8A7650"); 
            case "PURCHASING":
-            return am4core.color("#AAB99A"); 
+            return am4core.color("#468432"); 
            case "VISUAL":
-            return am4core.color("#FF7444"); 
+            return am4core.color("#B5E18B"); 
            case "HUMAN RESOURCES":
             return am4core.color("#A98B76"); 
            case "INVENTORY CONTROL GROUP":
@@ -135,7 +132,7 @@ var types = $.ajax({
             return am4core.color("#9EC9F7"); // fallback pastel blue
         }
       }
-      
+      return fill;
     });
 
 
@@ -167,36 +164,19 @@ var types = $.ajax({
 
     //  Click event to drill down
     pieSeries.slices.template.events.on("hit", function (event) {
-      
 
       selected =
         event.target.dataItem.dataContext.id !== undefined
           ? event.target.dataItem.dataContext.id
           : undefined;
       chart.data = generateChartData();
-      
        pieSeries.ticks.template.events.on("ready", hideSmall);
 pieSeries.ticks.template.events.on("visibilitychanged", hideSmall);
 pieSeries.labels.template.events.on("ready", hideSmall);
 pieSeries.labels.template.events.on("visibilitychanged", hideSmall);
 
-
-
  pieSeries.slices.template.adapter.add("fill", function (fill, target) {
-
-
-// Set innerRadius to make it a donut chart
-chart.innerRadius = am4core.percent(50);
-
-// Add label inside the donut
-let label = pieSeries.createChild(am4core.Label);
-label.text = (selected !== undefined) ? types[selected].type : "Department" ;
-label.horizontalCenter = "middle";
-label.verticalCenter = "middle";
-label.fontSize = 20;
-
-
-
+      
       
       if (target.dataItem) {
        
@@ -236,18 +216,15 @@ label.fontSize = 20;
             return am4core.color("#F2A65A"); // soft yellow
           case "CLOSED":
             return am4core.color("#578f63"); // soft green
-          case "closed":
+             case "closed":
             return am4core.color("#578f63"); // soft green
           case "SUBJECT FOR CLOSING":
             return am4core.color("#b667eb"); // soft purple
           default:
             return am4core.color("#9EC9F7"); // fallback pastel blue
         }
-      }else{
-      chart.data = generateChartData();
-      chart.dataSource.url = "/data/chrtdashboard.php";
       }
-      
+      return  generateChartData;
     });
 
 
@@ -267,62 +244,157 @@ function hideSmall(ev) {
     || ev.target.dataItem.category === "TREASURY"
     || ev.target.dataItem.category === "ACCOUNTS RECIEVABLE"
 
-
   )) {
     ev.target.hide();
-    return fill;
-
-      chart.dataSource.url = "/data/chrtdashboard.php";
-
-
   }
-
-
   else {
-
-   return fill;
-// override tooltipText so tooltipHTML is actually used
-series.slices.template.tooltipHTML = "something...";
-series.slices.template.adapter.add("tooltipHTML", function(tooltipHTML) {
-  
-
-  console.log("adapter");
-  return tooltipHTML;
-});
-
-
-
-       series.slices.template.events.on("over", function(){
-  console.log("hover");
-  
-  
-    
-});
-
-   }
+    ev.target.show();
+  }
 }
-});
-
-
- // Animation on load
-    pieSeries.hiddenState.properties.opacity = 1;
-    pieSeries.hiddenState.properties.endAngle = -90;
-    pieSeries.hiddenState.properties.startAngle = -90;
+    });
 
     am4core.options.autoDispose = true;
-    
     
     
 
     
   });
-
+  
+      return  generateChartData;
 }
 
 
 
+ function newgrph(data){
+// console.log(data)
+
+am4core.ready(function() {
+
+// Themes begin
+am4core.useTheme(am4themes_animated);
+// Themes end
+
+// Create chart instance
+
+var chart = am4core.create("chartdiv2", am4charts.PieChart);
 
 
+// legend
+// chart.legend = new am4charts.Legend();
+// chart.legend.scrollable = true;
+chart.innerRadius = am4core.percent(40);
+chart.legend.labels.template.text = "[bold {color}]{name}[/]";
+// series1.legendSettings.value = "{points}";
+// Add data
+chart.data = data;
+
+
+
+
+// Add and configure Series
+var pieSeries = chart.series.push(new am4charts.PieSeries());
+pieSeries.dataFields.value = "percent";
+pieSeries.dataFields.category = "type";
+// pieSeries.dataFields.subs = "subs";
+pieSeries.slices.template.stroke = am4core.color("#050505"); //outline
+pieSeries.slices.template.strokeWidth = 2;
+pieSeries.slices.template.strokeOpacity = 1;
+pieSeries.slices.template.tooltipPosition = "pointer";
+pieSeries.labels.template.maxWidth = 130;
+pieSeries.labels.template.wrap = true;
+pieSeries.labels.template.fontSize = 2;
+pieSeries.labels.template.disabled = true;
+pieSeries.ticks.template.disabled = true;
+pieSeries.slices.template.tooltipText = "";
+
+
+pieSeries.slices.template.events.on("hit", function(ev){
+  pieSeries.slices.template.adapter.add("hidden", hideSmall);
+  
+
+
+  // let srchvalx = ev.target.dataItem.category;
+  let srchsubsx = ev.target.dataItem.category;
+  // alert(srchsubsx);
+  // var table = $("#table_cat").DataTable();
+  // alert(srchval);
+  tablecat.search(srchsubsx).draw()
+  $('#piegraphModal, body').animate({
+        scrollTop: $("#table_cat").offset().top
+    }, 6000);
+    
+});
+
+
+pieSeries.labels.template.text = "{type}: {value.value} | {value.percent.formatNumber('.##')}%";
+pieSeries.slices.template.tooltipText = "{type}: {value.value} | {value.percent.formatNumber('.##')}%";
+
+
+pieSeries.hiddenState.properties.opacity = 6;
+pieSeries.hiddenState.properties.endAngle = -180;
+pieSeries.hiddenState.properties.startAngle = -180;
+let as = pieSeries.slices.template.states.getKey("active");
+
+as.properties.shiftRadius = 0;
+
+
+
+am4core.options.autoDispose = true;
+
+}); // end am4core.ready()
+
+
+
+$('#piegraphModal').modal({"show": true, "backdrop": 'static'});
+
+
+function getcategories(){
+  $.post('fetchdata/fetch_data.php',{mode:'dtbcat'},function(data){
+    console.log(data);
+    datatable_categories(data)
+  },'json');
+}
+
+
+getcategories();
+
+var tablecat
+function datatable_categories(t){
+const dataset=t.rptcat;
+
+
+tablecat = $("#table_cat").DataTable({
+
+"dom":
+'<"pull-left"lf><"pull-right">tip',
+
+"info": true,
+"pagingType": "full_numbers",
+"bDestroy": true,
+"responsive": true, "lengthChange": false, "autoWidth": false,
+"language": {
+"search": "_INPUT_",
+"searchPlaceholder": "Search..."
+},
+order: [[0, 'desc']],
+"pageLength":10,
+"data": dataset,
+
+"columns": [
+{title:"TICKET", data:"ticket","defaultContent": "",},
+{title:"BRANCH", data:"store","defaultContent": "",},
+{title:"CATEGORY", data:"category","defaultContent": "",},
+{title:"SUBCATEGORY", data:"subcat","defaultContent": "",},
+
+],
+
+
+});
+
+}
+
+ 
+}
 
 
 
@@ -428,7 +500,7 @@ series.slices.template.adapter.add("tooltipHTML", function(tooltipHTML) {
       return fill;
     });
 
-    //  Animation   on load
+    //  Animation on load
     pieSeries.hiddenState.properties.opacity = 1;
     pieSeries.hiddenState.properties.endAngle = -90;
     pieSeries.hiddenState.properties.startAngle = -90;
