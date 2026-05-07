@@ -42,6 +42,9 @@ switch ($mode) {
     case 'str_grph':
         $records= $fn->str_grph();
         break;
+            case 'str_grphnew':
+        $records= $fn->str_grphnew();
+        break;
     case 'polled_store':
         $records= $fn->polled_store();
             break;

@@ -246,7 +246,7 @@ $query = "
 				JOIN `tbl_branch` ON ( `reports`.`store` = `tbl_branch`.`str_num` ))
 		JOIN `tbl_area` ON ( `tbl_area`.`area_num` = `tbl_branch`.`area_num` )) 
 	WHERE
-		YEAR ( `reports`.`date_created` )  IN ( ".$_POST['yr'] ." ) AND deptsel = '2'
+		YEAR ( `reports`.`date_created` )  IN ( ".$_POST['yr'] ." ) 
 	GROUP BY
 		`tbl_branch`.`area_num`";
 		$statement = $this->connection->prepare($query);
@@ -307,6 +307,50 @@ $dept_id = $_POST['dept_id'];
 
     return $data;
 }
+
+
+	public function str_grphnew(){
+		if ($_POST['area_desc'] == "CENTRAL") {
+			$query=" SELECT
+					count(reports.ticket_no) as cnt_ttl,
+					tbl_branch.str_code,
+					tbl_dept.dept_desc as str_dept,
+					reports.store
+					FROM
+					reports
+					INNER JOIN users ON reports.userId = users.id AND reports.store = users.str_num
+					INNER JOIN tbl_dept ON tbl_dept.dept_id = users.dept_id
+					INNER JOIN tbl_branch ON reports.store = tbl_branch.str_num
+					where reports.store ='201' AND YEAR(`reports`.`date_created`) IN (".$_POST['yr'] .")
+					GROUP BY tbl_dept.dept_id 
+";
+		}
+		else  
+		 {
+			$query="
+
+			select `reports`.`store` AS `store`,`tbl_branch`.`str_code` AS `str_dept`,`tbl_branch`.`area_num` AS `area_num`,`tbl_area`.`area_desc` AS `area_desc`,year(`reports`.`date_created`) AS `dc`,count(`reports`.`date_created`) AS `cnt_ttl` from ((`reports` join `tbl_branch` on(`reports`.`store` = `tbl_branch`.`str_num`)) join `tbl_area` on(`tbl_area`.`area_num` = `tbl_branch`.`area_num`)) WHERE YEAR(`reports`.`date_created`) IN (".$_POST['yr'] .") AND area_desc = '".$_POST['area_desc'] ."' group by reports.store, str_code, area_desc ORDER BY str_code ASC
+
+				";
+
+		}
+		$statement = $this->connection->prepare($query);
+		$statement-> execute();
+		$result = $statement->fetchAll();
+		$data[] = array();
+
+		foreach($result as $row)
+		{
+		$data[] = array(
+			'str_code' => $row['str_dept'],
+			'cnt_ttl' => $row['cnt_ttl']
+
+		);
+
+		}
+		return $data;
+
+	}
 
 public function admin_data_table_res(){
 

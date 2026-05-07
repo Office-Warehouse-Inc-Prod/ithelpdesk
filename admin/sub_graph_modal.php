@@ -134,6 +134,33 @@ $datetime->setTimezone($timezone);
   </div>
 </div>
 
+
+
+<!-- Sub-Storegraph modal -->
+<div class="modal fade" id="dept_graph_modal" tabindex="-1" role="dialog" aria-labelledby="dept_graph_modal" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Per Department</h5>
+        <button type="button" class="close" id="substr_clsbtn" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12">
+       <div id="dept_graph"></div>
+          </div>
+          <div class="col-md-12">
+             <table class="table table-striped" id="tbl_deptbreak"></table>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Sub-Storegraph modal -->
 <div class="modal fade" id="store_graph_modal" tabindex="-1" role="dialog" aria-labelledby="store_graph_modal" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg" role="document">

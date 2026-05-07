@@ -98,14 +98,14 @@ pieSeries.slices.template.events.on("hit", function(ev) {
 
     chart.data = generateChartData();
 
-    _storegraph(dept_id);
+    _deptgraph(dept_id);
 
 }, this);
 
 
 // end am4core.ready()
 
-function _storegraph(dept_id){
+function _deptgraph(dept_id){
   $.ajax({
     url:"fetchdata/fetch_data.php",
     method:'POST',
@@ -113,9 +113,9 @@ function _storegraph(dept_id){
     success:function(fdata){
       var objstorearea = JSON.parse(fdata);
 
-      _plot_store_graph(objstorearea);
+      _plot_dept_graph(objstorearea);
 
-      $('#store_graph_modal').modal({
+      $('#dept_graph_modal').modal({
         show: true,
         backdrop: 'static'
       });
@@ -193,7 +193,7 @@ function _storegraph(dept_id){
     });
 }
 
-function _plot_store_graph(strdata){
+function _plot_dept_graph(strdata){
 
   am4core.ready(function() {
 
@@ -525,6 +525,194 @@ $(row).find('td:eq(13)').css('color', '#890188');
 
     am4core.options.autoDispose = true;
   });
+}
+
+
+</script>
+
+
+<!-- Styles -->
+<style>
+#chart_area {
+  width: 100%;
+  height: 350px;
+}
+
+</style>
+
+
+<!-- Chart code -->
+<script>
+  const curdatez = new Date();
+  const curyrz = g=curdatez.getFullYear();
+
+_areagraph(curyrz);
+
+  function _areagraph(curyrz){
+
+ $.ajax({
+    url:"fetchdata/fetch_data.php",
+    method:'POST',
+     data:{yr:curyrz,mode:'area_grph'},
+
+    success:function(data)
+    {
+
+      var objarea = JSON.parse(data);
+      // console.log(objarea)
+       _plotareagrph(objarea);
+      
+    }
+   });
+
+  }
+
+function _plotareagrph(grphdata){
+
+am4core.ready(function() {
+
+// Themes begin
+am4core.useTheme(am4themes_animated);
+// Themes end
+
+// Create chart instance
+var chart = am4core.create("chart_area", am4charts.XYChart);
+
+// Add data
+chart.data = grphdata
+// Create axes
+chart.colors.list = [
+  am4core.color("#6594B1")
+];
+
+var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+categoryAxis.dataFields.category = "area_desc";
+categoryAxis.renderer.grid.template.location = 0;
+categoryAxis.renderer.minGridDistance = 30;
+
+categoryAxis.renderer.labels.template.adapter.add("dy", function(dy, target) {
+  if (target.dataItem && target.dataItem.index & 2 == 2) {
+    return dy + 25;
+  }
+  return dy;
+});
+
+var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+// valueAxis.min = 0;
+// valueAxis.max = 300 ;
+
+// Create series
+var series = chart.series.push(new am4charts.ColumnSeries());
+series.dataFields.valueY = "cntarea";
+series.dataFields.categoryX = "area_desc";
+series.name = "fyr";
+series.columns.template.tooltipText = "{categoryX}: [bold]{valueY}[/]";
+series.columns.template.fillOpacity = .8;
+series.columns.template.events.on("hit", function(ev) {
+               
+              let s_area = ev.target.dataItem.dataContext["area_desc"] ;
+              let syr = ev.target.dataItem.dataContext["fyr"];
+
+ // alert(syr); 
+
+ _storegraph(s_area,syr);
+
+
+}, this);
+
+var columnTemplate = series.columns.template;
+columnTemplate.strokeWidth = 2;
+columnTemplate.strokeOpacity = 1;
+
+var bullet = series.bullets.push(new am4charts.LabelBullet());
+bullet.label.text = "{cntarea} Reports";
+bullet.label.verticalCenter = "bottom";
+bullet.label.dy = -10;
+bullet.label.fontSize = 15;
+bullet.label.truncate = false;
+
+}); // end am4core.ready()
+
+function _storegraph(s_area,syr){
+                          $.ajax({
+                  url:"fetchdata/fetch_data.php",
+                  method:'POST',
+                   data:{area_desc:s_area,yr:syr,mode:'str_grphnew'},
+
+                  success:function(fdata)
+                  {
+                    var objstorearea = JSON.parse(fdata);
+                    console.log(objstorearea);
+                    _plot_store_graph(objstorearea);
+                    $('#store_graph_modal').modal({"show": true, "backdrop": 'static'});
+                  }
+                 });
+}
+
+
+
+}
+</script>
+
+
+<!-- Styles -->
+<style>
+#store_graph {
+  width: 100%;
+  height: 500px;
+}
+
+</style>
+
+<!-- Chart code -->
+<script>
+
+function _plot_store_graph(strdata){
+
+am4core.ready(function() {
+
+// Themes begin
+am4core.useTheme(am4themes_animated);
+// Themes end
+
+// Create chart instance
+var chart = am4core.create("store_graph", am4charts.XYChart);
+
+// Add data
+chart.data = strdata
+
+// Create axes
+
+var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+categoryAxis.dataFields.category = "str_code";
+categoryAxis.renderer.grid.template.location = 0;
+categoryAxis.renderer.minGridDistance = 30;
+
+categoryAxis.renderer.labels.template.adapter.add("dy", function(dy, target) {
+  if (target.dataItem && target.dataItem.index & 2 == 2) {
+    return dy + 25;
+  }
+  return dy;
+});
+
+var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+// valueAxis.min = 0;
+// valueAxis.max = 300;
+
+// Create series
+var series = chart.series.push(new am4charts.ColumnSeries());
+series.dataFields.valueY = "cnt_ttl";
+series.dataFields.categoryX = "str_code";
+series.name = "cnt_ttl";
+series.columns.template.tooltipText = "{categoryX}: [bold]{valueY}[/]";
+series.columns.template.fillOpacity = .8;
+
+var columnTemplate = series.columns.template;
+columnTemplate.strokeWidth = 2;
+columnTemplate.strokeOpacity = 1;
+
+}); // end am4core.ready()
+
 }
 
 
