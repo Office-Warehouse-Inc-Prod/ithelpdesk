@@ -271,7 +271,7 @@
                     <line x1="12" y1="22.08" x2="12" y2="12"></line>
                 </svg>
             </div>
-            <h2>DATA TRACKING SYSTEM</h2>
+            <h2>DATA TRACKING SYSTEM (DTS)</h2>
             <p>Track and manage data in real time with an organized platform.</p>
         </div>
     </a>

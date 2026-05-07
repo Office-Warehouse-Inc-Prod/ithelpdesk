@@ -360,19 +360,14 @@ REQUEST TO TRANSFER
 NEW SUPPLIES REQUEST
 </a>
 </li> -->
-<li class="nav-item dropdown">
-<a class="nav-link" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-<i class="fa fa-chart-line"></i>
-</i>
-GENERATE REPORT
-</a>
-<div class="dropdown-menu" aria-labelledby="navbarDropdown" style="background-color: rgb(52,58,64);">
-<!-- <a class="dropdown-item text-white"  href="genreports.php"><i class="fa fa-calendar-day"></i> Generate Report By Area</a> -->
-<a class="dropdown-item text-white" href="genrep_bycat.php"><i class="fa fa-calendar-day"></i>Generate By Categories</a>
-<div class="dropdown-divider"></div>
-<!-- <a class="dropdown-item" href="#">Something else here</a> -->
-</div>
-</li>
+        <li class="nav-item">
+          <a class="nav-link" href="adminreports.php">
+            <i class="fa-solid fa-chart-bar">
+              <span class="badge badge-danger" id="admin_reports"></span>
+            </i>
+            REPORTS
+          </a>
+        </li>
 
 </ul>
 <ul class="navbar-nav ml-auto"> 
