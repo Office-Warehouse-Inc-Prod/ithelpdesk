@@ -841,13 +841,15 @@ function _categorypie_all(yr, dept_id) {
             console.log(xhr.responseText);
         }
     });
-}
+} 
 
 // end of code
 
-
+var selectedCategoryStatus = "";
 
 function _categorypie(yr, dept_id, status) {
+    selectedCategoryStatus = status;
+
     $.ajax({
         url: "fetchdata/fetch_data.php",
         method: "POST",
@@ -859,9 +861,8 @@ function _categorypie(yr, dept_id, status) {
         },
         success: function (data) {
             try {
-           
                 let objcat = JSON.parse(data);
-                   console.log(objcat)
+                console.log(objcat);
                 _plotcategorypie(objcat);
             } catch (e) {
                 console.log("JSON Parse Error:", e);
@@ -909,6 +910,27 @@ function _plotcategorypie(grphdata) {
         pieSeries.slices.template.tooltipText =
             "{category}: {value.value} Reports ({value.percent.formatNumber('.##')}%)";
 
+pieSeries.slices.template.events.on("hit", function (ev) {
+    let row = ev.target.dataItem.dataContext;
+
+    let yr = $("#yearpicker").val() || curyrs;
+    let dept_id = $("#dept_id").val();
+    let status = selectedCategoryStatus;
+    let cat_desc = row.cat_desc;
+
+    $("#categoryTicketModalLabel").html(
+        "Ticket Details - " + cat_desc + " / " + status
+    );
+
+    _category_ticket_dt(yr, dept_id, status, cat_desc);
+
+    $("#category_ticket_modal").modal({
+        show: true,
+        backdrop: "static"
+    });
+});
+
+
         let shadow = pieSeries.slices.template.filters.push(new am4core.DropShadowFilter());
         shadow.blur = 6;
         shadow.color = am4core.color("#999");
@@ -929,6 +951,60 @@ function _plotcategorypie(grphdata) {
         pieSeries.hiddenState.properties.opacity = 1;
         pieSeries.hiddenState.properties.endAngle = -90;
         pieSeries.hiddenState.properties.startAngle = -90;
+    });
+}
+
+
+function _category_ticket_dt(yr, dept_id, status, cat_desc) {
+    $.ajax({
+        url: "fetchdata/fetch_data.php",
+        method: "POST",
+        data: {
+            yr: yr,
+            dept_id: dept_id,
+            status: status,
+            cat_desc: cat_desc,
+            mode: "category_ticket_dt"
+        },
+        success: function (data) {
+            try {
+                let obj = JSON.parse(data);
+                console.log(obj);
+                category_ticket_datatable(obj);
+            } catch (e) {
+                console.log("Category Ticket JSON Parse Error:", e);
+                console.log("Returned Data:", data);
+            }
+        }
+    });
+}
+
+
+function category_ticket_datatable(data) {
+    if ($.fn.DataTable.isDataTable("#tbl_category_tickets")) {
+        $("#tbl_category_tickets").DataTable().clear().destroy();
+    }
+
+    $("#tbl_category_tickets").DataTable({
+        data: data,
+        responsive: true,
+        autoWidth: false,
+        pageLength: 10,
+        order: [[2, "desc"]],
+        columns: [
+            { data: "ticket_no" },
+            { data: "str_code" },
+            { data: "date_created" },
+            { data: "concern" },
+            { data: "via" },
+            { data: "status" },
+            { data: "dtdf" },
+            { data: "f_deptsel" },
+            { data: "category" },
+            { data: "sub_category" },
+            { data: "date_closed" },
+            { data: "remarks" }
+        ]
     });
 }
 
@@ -972,109 +1048,158 @@ function _areagraph(curyrz) {
         }
     });
 }
+var areaChart = null;
 
-function _plotareagrph(grphdata){
+function _plotareagrph(grphdata) {
+    am4core.ready(function () {
+        am4core.useTheme(am4themes_animated);
 
-am4core.ready(function() {
-
-// Themes begin
-am4core.useTheme(am4themes_animated);
-// Themes end
-
-// Create chart instance
-var chart = am4core.create("chart_area", am4charts.XYChart);
-
-// Add data
-chart.data = grphdata
-
-// Default load for Category Breakdown on page load
-
-
-
-// Create axes
-chart.colors.list = [
-  am4core.color("#6594B1")
-];
-
-var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
-categoryAxis.dataFields.category = "area_desc";
-categoryAxis.renderer.grid.template.location = 0;
-categoryAxis.renderer.minGridDistance = 30;
-
-categoryAxis.renderer.labels.template.adapter.add("dy", function(dy, target) {
-  if (target.dataItem && target.dataItem.index & 2 == 2) {
-    return dy + 25;
-  }
-  return dy;
-});
-
-var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
-// valueAxis.min = 0;
-// valueAxis.max = 300 ;
-
-// Create series
-var series = chart.series.push(new am4charts.ColumnSeries());
-series.dataFields.valueY = "cntarea";
-series.dataFields.categoryX = "area_desc";
-series.name = "fyr";
-series.columns.template.tooltipText = "{categoryX}: [bold]{valueY}[/]";
-series.columns.template.fillOpacity = .8;
-series.columns.template.events.on("hit", function(ev) {
-               
-              let s_area = ev.target.dataItem.dataContext["area_desc"] ;
-              let syr = ev.target.dataItem.dataContext["fyr"];
-
- // alert(syr); 
-
- _storegraph(s_area,syr);
-
-
-}, this);
-
-var columnTemplate = series.columns.template;
-columnTemplate.strokeWidth = 2;
-columnTemplate.strokeOpacity = 1;
-
-var bullet = series.bullets.push(new am4charts.LabelBullet());
-bullet.label.text = "{cntarea} Reports";
-bullet.label.verticalCenter = "bottom";
-bullet.label.dy = -10;
-bullet.label.fontSize = 15;
-bullet.label.truncate = false;
-
-}); // end am4core.ready()
-
-function _storegraph(s_area,syr){
-$.ajax({
-    url: "fetchdata/fetch_data.php",
-    method: "POST",
-    data: {
-        area_desc: s_area,
-        yr: syr,
-        dept_id: $('#dept_id').val(),
-        mode: 'str_grphnew'
-    },
-    success: function (fdata) {
-        try {
-            var objstorearea = JSON.parse(fdata);
-            console.log(objstorearea);
-
-            _plot_store_graph(objstorearea);
-
-            $('#store_graph_modal').modal({
-                show: true,
-                backdrop: 'static'
-            });
-        } catch (e) {
-            console.log("JSON Parse Error:", e);
-            console.log("Returned Data:", fdata);
+        if (areaChart) {
+            areaChart.dispose();
         }
-    }
-});
+
+        var chart = am4core.create("chart_area", am4charts.XYChart);
+        areaChart = chart;
+
+        chart.fontFamily = "Segoe UI, Roboto, sans-serif";
+        chart.data = grphdata;
+
+        chart.legend = new am4charts.Legend();
+        chart.legend.position = "bottom";
+        chart.legend.labels.template.fontSize = 12;
+
+        var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+        categoryAxis.dataFields.category = "area_desc";
+        categoryAxis.renderer.grid.template.location = 0;
+        categoryAxis.renderer.minGridDistance = 30;
+
+        categoryAxis.renderer.labels.template.adapter.add("dy", function (dy, target) {
+            if (target.dataItem && target.dataItem.index & 2 == 2) {
+                return dy + 25;
+            }
+            return dy;
+        });
+
+        var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+        valueAxis.min = 0;
+        valueAxis.title.text = "No. of Reports";
+        valueAxis.title.fontWeight = "600";
+
+        function createSeries(field, name, color, widthPercent, opacity) {
+            let hasData = chart.data.some(function (row) {
+                return Number(row[field]) > 0;
+            });
+
+            // If buong series ay zero, huwag na gumawa ng legend/bar
+            if (!hasData) {
+                return null;
+            }
+
+            var series = chart.series.push(new am4charts.ColumnSeries());
+
+            series.dataFields.valueY = field;
+            series.dataFields.categoryX = "area_desc";
+            series.name = name;
+            series.clustered = false;
+
+            series.columns.template.width = am4core.percent(widthPercent);
+            series.columns.template.fill = am4core.color(color);
+            series.columns.template.stroke = am4core.color(color);
+            series.columns.template.fillOpacity = opacity;
+            series.columns.template.strokeOpacity = 1;
+
+            // Tooltip
+            series.columns.template.tooltipText =
+                "[bold]{categoryX}[/]\n" + name + ": [bold]{valueY}[/] Reports";
+
+            // Hide tooltip kapag zero yung specific bar
+            series.columns.template.adapter.add("tooltipText", function (text, target) {
+                if (target.dataItem && Number(target.dataItem.valueY) <= 0) {
+                    return "";
+                }
+                return text;
+            });
+
+            // Hide zero-value columns
+            series.columns.template.adapter.add("visible", function (visible, target) {
+                if (target.dataItem && Number(target.dataItem.valueY) <= 0) {
+                    return false;
+                }
+                return visible;
+            });
+
+            // Clean tooltip style
+            series.tooltip.getFillFromObject = false;
+            series.tooltip.background.fill = am4core.color("#ffffff");
+            series.tooltip.background.stroke = am4core.color(color);
+            series.tooltip.background.strokeWidth = 2;
+            series.tooltip.label.fill = am4core.color("#000000");
+            series.tooltip.label.fontSize = 13;
+            series.tooltip.pointerOrientation = "vertical";
+
+            series.columns.template.cursorOverStyle = am4core.MouseCursorStyle.pointer;
+
+            series.columns.template.events.on("hit", function (ev) {
+                let s_area = ev.target.dataItem.dataContext["area_desc"];
+                let syr = ev.target.dataItem.dataContext["dc"];
+
+                _storegraph(s_area, syr);
+            });
+
+            return series;
+        }
+
+        // Back to front layering
+        createSeries("cntarea", "TOTAL", "#b8c2cc", 90, 0.25);
+        createSeries("closed", "CLOSED", "#578f63", 75, 0.85);
+        createSeries("pending", "PENDING", "#FF7A7A", 62, 0.85);
+        createSeries("on_process", "ON PROCESS", "#F2A65A", 50, 0.9);
+        createSeries("subject_for_closing", "SUBJECT FOR CLOSING", "#b667eb", 38, 0.9);
+        createSeries("assigned", "ASSIGNED", "#9EC9F7", 26, 0.95);
+
+        // IMPORTANT:
+        // Do not add XYCursor here.
+        // It causes multiple tooltips on layered/overlapping columns.
+    });
 }
 
 
+function _storegraph(s_area, syr) {
+    $.ajax({
+        url: "fetchdata/fetch_data.php",
+        method: "POST",
+        data: {
+            area_desc: s_area,
+            yr: syr,
+            dept_id: $('#dept_id').val(),
+            mode: 'str_grphnew'
+        },
+        success: function (fdata) {
+            try {
+                var objstorearea = JSON.parse(fdata);
+                console.log(objstorearea);
 
+                $("#store_ticket_section").hide();
+
+                if ($.fn.DataTable.isDataTable("#tbl_store_tickets")) {
+                    $("#tbl_store_tickets").DataTable().clear().destroy();
+                }
+
+                $('#store_graph_modal').modal({
+                    show: true,
+                    backdrop: 'static'
+                });
+
+                setTimeout(function () {
+                    _plot_store_graph(objstorearea);
+                }, 300);
+
+            } catch (e) {
+                console.log("JSON Parse Error:", e);
+                console.log("Returned Data:", fdata);
+            }
+        }
+    });
 }
 </script>
 
@@ -1091,53 +1216,172 @@ $.ajax({
 <!-- Chart code -->
 <script>
 
-function _plot_store_graph(strdata){
 
-am4core.ready(function() {
+var storeChart = null;
 
-// Themes begin
-am4core.useTheme(am4themes_animated);
-// Themes end
+function _plot_store_graph(strdata) {
+    am4core.ready(function () {
+        am4core.useTheme(am4themes_animated);
 
-// Create chart instance
-var chart = am4core.create("store_graph", am4charts.XYChart);
+        if (storeChart) {
+            storeChart.dispose();
+        }
 
-// Add data
-chart.data = strdata
+        var chart = am4core.create("store_graph", am4charts.XYChart);
+        storeChart = chart;
 
-// Create axes
+        chart.fontFamily = "Segoe UI, Roboto, sans-serif";
+        chart.data = strdata;
 
-var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
-categoryAxis.dataFields.category = "str_code";
-categoryAxis.renderer.grid.template.location = 0;
-categoryAxis.renderer.minGridDistance = 30;
+        var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+        categoryAxis.dataFields.category = "str_code";
+        categoryAxis.renderer.grid.template.location = 0;
+        categoryAxis.renderer.minGridDistance = 25;
+        categoryAxis.renderer.labels.template.rotation = 0;
+        categoryAxis.renderer.labels.template.fontSize = 12;
 
-categoryAxis.renderer.labels.template.adapter.add("dy", function(dy, target) {
-  if (target.dataItem && target.dataItem.index & 2 == 2) {
-    return dy + 25;
-  }
-  return dy;
-});
+        categoryAxis.renderer.labels.template.adapter.add("dy", function (dy, target) {
+            if (target.dataItem && target.dataItem.index & 2 == 2) {
+                return dy + 18;
+            }
+            return dy;
+        });
 
-var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
-// valueAxis.min = 0;
-// valueAxis.max = 300;
+        var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+        valueAxis.min = 0;
+        valueAxis.title.text = "No. of Reports";
+        valueAxis.title.fontWeight = "600";
 
-// Create series
-var series = chart.series.push(new am4charts.ColumnSeries());
-series.dataFields.valueY = "cnt_ttl";
-series.dataFields.categoryX = "str_code";
-series.name = "cnt_ttl";
-series.columns.template.tooltipText = "{categoryX}: [bold]{valueY}[/]";
-series.columns.template.fillOpacity = .8;
+        chart.legend = new am4charts.Legend();
+        chart.legend.position = "bottom";
+        chart.legend.labels.template.fontSize = 12;
 
-var columnTemplate = series.columns.template;
-columnTemplate.strokeWidth = 2;
-columnTemplate.strokeOpacity = 1;
+        function createSeries(field, name, color, widthPercent, opacity) {
+            let hasData = chart.data.some(function (row) {
+                return Number(row[field]) > 0;
+            });
 
-}); // end am4core.ready()
+            if (!hasData) {
+                return null;
+            }
 
+            var series = chart.series.push(new am4charts.ColumnSeries());
+
+            series.dataFields.valueY = field;
+            series.dataFields.categoryX = "str_code";
+            series.name = name;
+            series.clustered = false;
+
+            series.columns.template.width = am4core.percent(widthPercent);
+            series.columns.template.fill = am4core.color(color);
+            series.columns.template.stroke = am4core.color(color);
+            series.columns.template.fillOpacity = opacity;
+            series.columns.template.strokeOpacity = 1;
+
+            series.columns.template.tooltipText =
+                "[bold]{categoryX}[/]\n" + name + ": [bold]{valueY}[/] Reports";
+
+            series.columns.template.adapter.add("tooltipText", function (text, target) {
+                if (target.dataItem && Number(target.dataItem.valueY) <= 0) {
+                    return "";
+                }
+                return text;
+            });
+
+            series.columns.template.adapter.add("visible", function (visible, target) {
+                if (target.dataItem && Number(target.dataItem.valueY) <= 0) {
+                    return false;
+                }
+                return visible;
+            });
+
+            series.tooltip.getFillFromObject = false;
+            series.tooltip.background.fill = am4core.color("#ffffff");
+            series.tooltip.background.stroke = am4core.color(color);
+            series.tooltip.background.strokeWidth = 2;
+            series.tooltip.label.fill = am4core.color("#000000");
+            series.tooltip.label.fontSize = 13;
+            series.tooltip.pointerOrientation = "vertical";
+
+            series.columns.template.cursorOverStyle = am4core.MouseCursorStyle.pointer;
+
+            series.columns.template.events.on("hit", function (ev) {
+                let row = ev.target.dataItem.dataContext;
+
+                let store = row.store;
+                let str_code = row.str_code;
+                let yr = row.dc || $("#yearpicker").val() || curyrs;
+                let dept_id = $("#dept_id").val();
+
+                $("#store_ticket_section").show();
+                $("#storeTicketTableTitle").html("Store Ticket Details - " + str_code);
+
+                _store_ticket_dt(yr, dept_id, store);
+            });
+
+            return series;
+        }
+// Layer order: biggest/back layer first, smaller/front layer after
+createSeries("cnt_ttl", "TOTAL", "#b8c2cc", 90, 0.35);
+createSeries("closed", "CLOSED", "#578f63", 75, 0.85);
+createSeries("pending", "PENDING", "#FF7A7A", 62, 0.85);
+createSeries("on_process", "ON PROCESS", "#F2A65A", 50, 0.9);
+createSeries("subject_for_closing", "SUBJECT FOR CLOSING", "#b667eb", 38, 0.9);
+createSeries("assigned", "ASSIGNED", "#9EC9F7", 26, 0.95);
+
+        // No XYCursor to avoid overlapping tooltips.
+    });
 }
 
+function _store_ticket_dt(yr, dept_id, store) {
+    $.ajax({
+        url: "fetchdata/fetch_data.php",
+        method: "POST",
+        data: {
+            yr: yr,
+            dept_id: dept_id,
+            store: store,
+            mode: "store_ticket_dt"
+        },
+        success: function (data) {
+            try {
+                let obj = JSON.parse(data);
+                console.log(obj);
+                store_ticket_datatable(obj);
+            } catch (e) {
+                console.log("Store Ticket JSON Parse Error:", e);
+                console.log("Returned Data:", data);
+            }
+        }
+    });
+}
+
+function store_ticket_datatable(data) {
+    if ($.fn.DataTable.isDataTable("#tbl_store_tickets")) {
+        $("#tbl_store_tickets").DataTable().clear().destroy();
+    }
+
+    $("#tbl_store_tickets").DataTable({
+        data: data,
+        responsive: true,
+        autoWidth: false,
+        pageLength: 10,
+        order: [[2, "desc"]],
+        columns: [
+            { data: "ticket_no" },
+            { data: "str_code" },
+            { data: "date_created" },
+            { data: "concern" },
+            { data: "via" },
+            { data: "status" },
+            { data: "dtdf" },
+            { data: "f_deptsel" },
+            { data: "category" },
+            { data: "sub_category" },
+            { data: "date_closed" },
+            { data: "remarks" }
+        ]
+    });
+}
 
 </script>

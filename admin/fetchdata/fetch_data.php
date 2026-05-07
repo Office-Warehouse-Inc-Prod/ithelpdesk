@@ -114,8 +114,14 @@ case 'dept_ticket_datatable':
 case 'category_status_grph':
     $records = $fn->category_status_grph();
     break;
-case 'category_all_grph':
-    $records = $fn->category_all_grph();
+// case 'category_all_grph':
+//     $records = $fn->category_all_grph();
+
+case 'category_ticket_dt':
+    $records = $fn->category_ticket_dt();
+    break;
+    case 'store_ticket_dt':
+    $records = $fn->store_ticket_dt();
     break;
     default:
         break;

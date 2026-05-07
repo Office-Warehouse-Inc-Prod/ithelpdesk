@@ -746,7 +746,7 @@ background: linear-gradient(135deg, #837031, #E1AD01);
 
                       <div class="col-12 col-lg-12 col-md-12 mb-3">
             <div class="card card2 h-100">
-              <h5 class="card-header" style="background-color: #95a2b9b4; color:black;">Concerns Per Area</h5>
+              <h5 class="card-header" style="background-color: #95a2b9b4; color:black;">Tickets Per Area</h5>
               <div class="card-body">
                 <div id="chart_area"></div>
               </div>

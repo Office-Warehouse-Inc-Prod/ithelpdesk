@@ -51,6 +51,48 @@ $datetime->setTimezone($timezone);
 }
 
 
+#store_graph_modal .modal-dialog {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    margin: 0 !important;
+}
+
+#store_graph_modal .modal-content {
+    width: 100vw !important;
+    height: 100vh !important;
+    border-radius: 0 !important;
+    border: none !important;
+}
+
+#store_graph_modal .modal-header {
+    height: 56px;
+    padding: 12px 20px;
+    background: #ffffff;
+    border-bottom: 1px solid #ddd;
+}
+
+#store_graph_modal .modal-body {
+    height: calc(100vh - 56px) !important;
+    padding: 18px 24px !important;
+    overflow-y: auto !important;
+}
+
+#store_graph {
+    width: 100% !important;
+    height: 520px !important;
+    min-height: 520px !important;
+}
+
+#store_ticket_section {
+    margin-top: 18px;
+}
+
+#tbl_store_tickets {
+    font-size: 12px;
+}
+
 </style>
 
 <div class="modal fade bd-example-modal-lg" id="genModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -217,36 +259,58 @@ $datetime->setTimezone($timezone);
 
 <!-- Sub-Storegraph modal -->
 <div class="modal fade" id="store_graph_modal" tabindex="-1" role="dialog" aria-labelledby="store_graph_modal" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">Per Store</h5>
-        <button type="button" class="close" id="substr_clsbtn" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-       <div id="store_graph"></div>
-      </div>
+    <div class="modal-dialog modal-dialog-centered modal-dept-wide" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Per Store</h5>
+                <button type="button" class="close" id="substr_clsbtn" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+
+                <!-- Store Graph -->
+                <div id="store_graph"></div>
+
+                <hr>
+
+                <!-- Store Ticket Table -->
+                <div id="store_ticket_section" style="display:none;">
+                    <h5 id="storeTicketTableTitle" style="font-weight:700; margin-bottom:12px;">
+                        Store Ticket Details
+                    </h5>
+
+                    <div class="table-responsive">
+                        <table id="tbl_store_tickets" class="table table-bordered table-striped table-sm" style="width:100%;">
+                            <thead>
+                                <tr>
+                                    <th>Ticket No</th>
+                                    <th>Store</th>
+                                    <th>Date Created</th>
+                                    <th>Concern</th>
+                                    <th>Via</th>
+                                    <th>Status</th>
+                                    <th>DTDF</th>
+                                    <th>Department</th>
+                                    <th>Category</th>
+                                    <th>Sub Category</th>
+                                    <th>Date Closed</th>
+                                    <th>Remarks</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
     </div>
-  </div>
 </div>
 
-<div class="modal fade" id="storenet_graph_modal" tabindex="-1" role="dialog" aria-labelledby="storenet_graph_modal" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">Per Store</h5>
-        <button type="button" class="close" id="substr_clsbtn" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-       <div id="storenet_graph"></div>
-      </div>
-    </div>
-  </div>
-</div>
 
 
 <!-- I.T Bar modal -->
@@ -329,4 +393,45 @@ $datetime->setTimezone($timezone);
     </div>
   </div>
 </div>
+</div>
+
+
+
+<div class="modal fade" id="category_ticket_modal" tabindex="-1" role="dialog" aria-labelledby="categoryTicketModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document" style="max-width:95vw;">
+        <div class="modal-content">
+
+            <div class="modal-header" style="background:#1f375c; color:#ffc400;">
+                <h5 class="modal-title" id="categoryTicketModalLabel">
+                    Category Ticket Details
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color:white;">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <table id="tbl_category_tickets" class="table table-bordered table-striped table-sm" style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th>Ticket No</th>
+                            <th>Store</th>
+                            <th>Date Created</th>
+                            <th>Concern</th>
+                            <th>Via</th>
+                            <th>Status</th>
+                            <th>DTDF</th>
+                            <th>Department</th>
+                            <th>Category</th>
+                            <th>Sub Category</th>
+                            <th>Date Closed</th>
+                            <th>Remarks</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
 </div>

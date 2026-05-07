@@ -300,43 +300,101 @@ if (empty($dept_ids_array)) {
 
 $dept_ids_clean = implode(',', $dept_ids_array);
 
+// $query = " old query no breakdown
+//     SELECT
+//         B.area_num AS area_num,
+//         A.area_desc AS area_desc,
+//         YEAR(R.date_created) AS dc,
+//         COUNT(R.date_created) AS cntarea
+//     FROM reports R
+//     JOIN tbl_branch B 
+//         ON R.store = B.str_num
+//     JOIN tbl_area A 
+//         ON A.area_num = B.area_num
+//     WHERE YEAR(R.date_created) = {$yr}
+//       AND R.f_deptsel IN ({$dept_ids_clean})
+//     GROUP BY
+//         B.area_num,
+//         A.area_desc,
+//         YEAR(R.date_created)
+//     ORDER BY
+//         B.area_num ASC
+// ";
+
+
 $query = "
     SELECT
         B.area_num AS area_num,
         A.area_desc AS area_desc,
         YEAR(R.date_created) AS dc,
-        COUNT(R.date_created) AS cntarea
+
+        COUNT(R.ticket_no) AS cntarea,
+
+        SUM(CASE 
+            WHEN UPPER(TRIM(R.status)) = 'ASSIGNED' 
+            THEN 1 ELSE 0 
+        END) AS assigned,
+
+        SUM(CASE 
+            WHEN UPPER(TRIM(R.status)) = 'ON PROCESS' 
+            THEN 1 ELSE 0 
+        END) AS on_process,
+
+        SUM(CASE 
+            WHEN UPPER(TRIM(R.status)) = 'PENDING' 
+            THEN 1 ELSE 0 
+        END) AS pending,
+
+        SUM(CASE 
+            WHEN UPPER(TRIM(R.status)) = 'SUBJECT FOR CLOSING' 
+            THEN 1 ELSE 0 
+        END) AS subject_for_closing,
+
+        SUM(CASE 
+            WHEN UPPER(TRIM(R.status)) = 'CLOSED' 
+            THEN 1 ELSE 0 
+        END) AS closed
+
     FROM reports R
     JOIN tbl_branch B 
         ON R.store = B.str_num
     JOIN tbl_area A 
         ON A.area_num = B.area_num
+
     WHERE YEAR(R.date_created) = {$yr}
       AND R.f_deptsel IN ({$dept_ids_clean})
+      AND R.sub_id NOT IN ('15','28','34','35')
+      AND R.status NOT IN ('WAITING FOR IT HELPDESK RESPONSE','NEW REPORT')
+
     GROUP BY
         B.area_num,
         A.area_desc,
         YEAR(R.date_created)
+
     ORDER BY
         B.area_num ASC
 ";
-		$statement = $this->connection->prepare($query);
-		$statement-> execute();
-		$result = $statement->fetchAll();
-		$data[] = array();
+$statement = $this->connection->prepare($query);
+$statement->execute();
+$result = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-		foreach($result as $row)
-		{
-		$data[] = array(
-			'area_id' => $row['area_num'],
-			'area_desc' => $row['area_desc'],
-			'cntarea' => $row['cntarea'],
-			'fyr' => $row['dc']
+$data = array();
 
-		);
+foreach ($result as $row) {
+    $data[] = array(
+        'area_num'            => $row['area_num'],
+        'area_desc'           => $row['area_desc'],
+        'dc'                  => $row['dc'],
+        'cntarea'             => (int)$row['cntarea'],
+        'assigned'            => (int)$row['assigned'],
+        'on_process'          => (int)$row['on_process'],
+        'pending'             => (int)$row['pending'],
+        'subject_for_closing' => (int)$row['subject_for_closing'],
+        'closed'              => (int)$row['closed']
+    );
+}
 
-		}
-		return $data;
+return $data;
 	}
 
 public function str_grph(){
@@ -379,7 +437,6 @@ $dept_id = $_POST['dept_id'];
     return $data;
 }
 
-
 public function str_grphnew()
 {
     $yr = isset($_POST['yr']) ? intval($_POST['yr']) : date('Y');
@@ -406,75 +463,146 @@ public function str_grphnew()
 
         $query = "
             SELECT
-                COUNT(reports.ticket_no) AS cnt_ttl,
-                tbl_branch.str_code,
-                tbl_dept.dept_desc AS str_dept,
-                reports.store
-            FROM reports
-            INNER JOIN users 
-                ON reports.userId = users.id 
-                AND reports.store = users.str_num
-            INNER JOIN tbl_dept 
-                ON tbl_dept.dept_id = users.dept_id
-            INNER JOIN tbl_branch 
-                ON reports.store = tbl_branch.str_num
-            WHERE reports.store = '201'
-              AND YEAR(reports.date_created) = {$yr}
-              AND reports.f_deptsel IN ({$dept_ids_clean})
+                R.store AS store,
+                YEAR(R.date_created) AS dc,
+                D.dept_desc AS str_code,
+                D.dept_desc AS str_dept,
+
+                COUNT(R.ticket_no) AS cnt_ttl,
+
+                SUM(CASE 
+                    WHEN UPPER(TRIM(R.status)) = 'ASSIGNED' 
+                    THEN 1 ELSE 0 
+                END) AS assigned,
+
+                SUM(CASE 
+                    WHEN UPPER(TRIM(R.status)) = 'ON PROCESS' 
+                    THEN 1 ELSE 0 
+                END) AS on_process,
+
+                SUM(CASE 
+                    WHEN UPPER(TRIM(R.status)) = 'PENDING' 
+                    THEN 1 ELSE 0 
+                END) AS pending,
+
+                SUM(CASE 
+                    WHEN UPPER(TRIM(R.status)) = 'SUBJECT FOR CLOSING' 
+                    THEN 1 ELSE 0 
+                END) AS subject_for_closing,
+
+                SUM(CASE 
+                    WHEN UPPER(TRIM(R.status)) = 'CLOSED' 
+                    THEN 1 ELSE 0 
+                END) AS closed
+
+            FROM reports R
+            INNER JOIN users U 
+                ON R.userId = U.id 
+                AND R.store = U.str_num
+            INNER JOIN tbl_dept D 
+                ON D.dept_id = U.dept_id
+            INNER JOIN tbl_branch B 
+                ON R.store = B.str_num
+
+            WHERE R.store = '201'
+              AND YEAR(R.date_created) = {$yr}
+              AND R.f_deptsel IN ({$dept_ids_clean})
+              AND R.sub_id NOT IN ('15','28','34','35')
+              AND R.status NOT IN ('WAITING FOR IT HELPDESK RESPONSE','NEW REPORT')
+
             GROUP BY 
-                tbl_dept.dept_id,
-                tbl_dept.dept_desc,
-                tbl_branch.str_code,
-                reports.store
+                D.dept_id,
+                D.dept_desc,
+                R.store,
+                YEAR(R.date_created)
+
             ORDER BY 
-                tbl_dept.dept_id ASC
+                D.dept_id ASC
         ";
 
     } else {
 
         $query = "
             SELECT
-                reports.store AS store,
-                tbl_branch.str_code AS str_dept,
-                tbl_branch.area_num AS area_num,
-                tbl_area.area_desc AS area_desc,
-                YEAR(reports.date_created) AS dc,
-                COUNT(reports.date_created) AS cnt_ttl
-            FROM reports
-            JOIN tbl_branch 
-                ON reports.store = tbl_branch.str_num
-            JOIN tbl_area 
-                ON tbl_area.area_num = tbl_branch.area_num
-            WHERE YEAR(reports.date_created) = {$yr}
-              AND tbl_area.area_desc = '{$area_desc_clean}'
-              AND reports.f_deptsel IN ({$dept_ids_clean})
+                R.store AS store,
+                B.str_code AS str_code,
+                B.area_num AS area_num,
+                A.area_desc AS area_desc,
+                YEAR(R.date_created) AS dc,
+
+                COUNT(R.ticket_no) AS cnt_ttl,
+
+                SUM(CASE 
+                    WHEN UPPER(TRIM(R.status)) = 'ASSIGNED' 
+                    THEN 1 ELSE 0 
+                END) AS assigned,
+
+                SUM(CASE 
+                    WHEN UPPER(TRIM(R.status)) = 'ON PROCESS' 
+                    THEN 1 ELSE 0 
+                END) AS on_process,
+
+                SUM(CASE 
+                    WHEN UPPER(TRIM(R.status)) = 'PENDING' 
+                    THEN 1 ELSE 0 
+                END) AS pending,
+
+                SUM(CASE 
+                    WHEN UPPER(TRIM(R.status)) = 'SUBJECT FOR CLOSING' 
+                    THEN 1 ELSE 0 
+                END) AS subject_for_closing,
+
+                SUM(CASE 
+                    WHEN UPPER(TRIM(R.status)) = 'CLOSED' 
+                    THEN 1 ELSE 0 
+                END) AS closed
+
+            FROM reports R
+            JOIN tbl_branch B 
+                ON R.store = B.str_num
+            JOIN tbl_area A 
+                ON A.area_num = B.area_num
+
+            WHERE YEAR(R.date_created) = {$yr}
+              AND A.area_desc = '{$area_desc_clean}'
+              AND R.f_deptsel IN ({$dept_ids_clean})
+              AND R.sub_id NOT IN ('15','28','34','35')
+              AND R.status NOT IN ('WAITING FOR IT HELPDESK RESPONSE','NEW REPORT')
+
             GROUP BY 
-                reports.store,
-                tbl_branch.str_code,
-                tbl_branch.area_num,
-                tbl_area.area_desc,
-                YEAR(reports.date_created)
+                R.store,
+                B.str_code,
+                B.area_num,
+                A.area_desc,
+                YEAR(R.date_created)
+
             ORDER BY 
-                tbl_branch.str_code ASC
+                B.str_code ASC
         ";
     }
-		$statement = $this->connection->prepare($query);
-		$statement-> execute();
-		$result = $statement->fetchAll();
-		$data[] = array();
 
-		foreach($result as $row)
-		{
-		$data[] = array(
-			'str_code' => $row['str_dept'],
-			'cnt_ttl' => $row['cnt_ttl']
+    $statement = $this->connection->prepare($query);
+    $statement->execute();
+    $result = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-		);
+    $data = array();
 
-		}
-		return $data;
+    foreach ($result as $row) {
+        $data[] = array(
+            'store'               => $row['store'],
+            'str_code'            => $row['str_code'],
+            'dc'                  => $row['dc'],
+            'cnt_ttl'             => (int)$row['cnt_ttl'],
+            'assigned'            => (int)$row['assigned'],
+            'on_process'          => (int)$row['on_process'],
+            'pending'             => (int)$row['pending'],
+            'subject_for_closing' => (int)$row['subject_for_closing'],
+            'closed'              => (int)$row['closed']
+        );
+    }
 
-	}
+    return $data;
+}
 
 public function admin_data_table_res(){
 
@@ -1322,213 +1450,6 @@ WHERE
 
 
 
-
-	public function netpie(){
-
-		$query= "SELECT cat_desc,clr,cat_id, count(*) as ctn, date_created
-		FROM vwp 
-		WHERE deptsel = '2' AND cat_id ='3' AND date_created IN (".$_POST['yr'] .")
-		GROUP BY cat_id ORDER BY cat_desc ASC";
-		$statement = $this->connection->prepare($query);
-		$statement-> execute();
-		$result = $statement->fetchAll();
-		$data[] = array();
-
-		foreach ($result as $row) {
-		$data[] = array(
-		'type' => $row["cat_desc"], 
-		'percent' => $row["ctn"],
-		'color' => $row["clr"],
-		'subs' => $this->netsubs($row['cat_id'])
-
-			);
-		}
-		return($data);
-
-	}
-
-	public function netsubs($id){
-
-		$query= "SELECT sub_cat, count(*) as sctn, date_created FROM vwp WHERE cat_id='".$id."' AND deptsel = '2'  AND date_created IN (".$_POST['yr'] .")  GROUP BY sub_cat ORDER BY cat_desc ASC";
-
-		$statement = $this->connection->prepare($query);
-		$statement-> execute();
-		$result = $statement->fetchAll();
-		$data[] = array();
-
-		foreach($result as $row)
-		{
-		$data[] = array('type' => $row['sub_cat'],'percent' => $row['sctn']);
-
-		}
-		return $data;
-	}
-
-
-	public function overallnet_res(){
-
-		$query="SELECT
-			reports.`status` AS stat_name,
-			Count(reports.`status`) AS points,
-			YEAR(date_created) AS yr,
-			tbl_status.stat_id
-			FROM
-			reports
-			LEFT JOIN tbl_status ON reports.`status` = tbl_status.stat_desc
-			where `reports`.`sub_id` NOT IN ('15','28','34','35') AND `status` NOT IN ('WAITING FOR IT HELPDESK RESPONSE','NEW REPORT') AND YEAR(date_created) IN (".$_POST['yr'] .") AND reports.deptsel = '2' AND cat_id = '3'
-			GROUP BY `status`
-			ORDER BY stat_id ASC
-		";
-
-        $statement = $this->connection->prepare($query);
-        $statement-> execute();
-        $result = $statement->fetchAll();
-        $data = array();
-
-		foreach ($result as $row) {
-		$data[] = array(
-		'stat_name' => $row["stat_name"], 
-		'points' => $row["points"]
-
-			);
-		}
-        return $data;
-	}
-
-
-	public function areanet_grph(){
-
-		$query="SELECT
-		`reports`.`store` AS `store`,
-		`tbl_branch`.`str_code` AS `str_code`,
-		`tbl_branch`.`area_num` AS `area_num`,
-		`tbl_area`.`area_desc` AS `area_desc`,
-		YEAR ( `reports`.`date_created` ) AS `dc`,
-		count( `reports`.`date_created` ) AS `cntarea` 
-	FROM
-		((
-				`reports`
-				JOIN `tbl_branch` ON ( `reports`.`store` = `tbl_branch`.`str_num` ))
-		JOIN `tbl_area` ON ( `tbl_area`.`area_num` = `tbl_branch`.`area_num` )) 
-	WHERE
-		YEAR ( `reports`.`date_created` )  IN ( ".$_POST['yr'] ." ) AND deptsel = '2' AND cat_id = '3'
-	GROUP BY
-		`tbl_branch`.`area_num`";
-		$statement = $this->connection->prepare($query);
-		$statement-> execute();
-		$result = $statement->fetchAll();
-		$data[] = array();
-
-		foreach($result as $row)
-		{
-		$data[] = array(
-			'area_id' => $row['area_num'],
-			'area_desc' => $row['area_desc'],
-			'cntarea' => $row['cntarea'],
-			'fyr' => $row['dc']
-
-		);
-
-		}
-		return $data;
-	}
-
-	public function strnet_grph(){
-		if ($_POST['area_desc'] == "CENTRAL") {
-			$query=" SELECT
-					count(reports.ticket_no) as cnt_ttl,
-					tbl_branch.str_code,
-					tbl_dept.dept_desc as str_dept,
-					reports.store
-					FROM
-					reports
-					INNER JOIN users ON reports.userId = users.id AND reports.store = users.str_num
-					INNER JOIN tbl_dept ON tbl_dept.dept_id = users.dept_id
-					INNER JOIN tbl_branch ON reports.store = tbl_branch.str_num
-					where reports.store ='201' AND YEAR(`reports`.`date_created`) IN (".$_POST['yr'] .")
-					GROUP BY tbl_dept.dept_id 
-";
-		}
-		else  
-		 {
-			$query="select `reports`.`store` AS `store`,`tbl_branch`.`str_code` AS `str_dept`,`tbl_branch`.`area_num` AS `area_num`,`tbl_area`.`area_desc` AS `area_desc`,year(`reports`.`date_created`) AS `dc`,count(`reports`.`date_created`) AS `cnt_ttl` from ((`reports` join `tbl_branch` on(`reports`.`store` = `tbl_branch`.`str_num`)) join `tbl_area` on(`tbl_area`.`area_num` = `tbl_branch`.`area_num`)) WHERE YEAR(`reports`.`date_created`) IN (".$_POST['yr'] .") AND area_desc = '".$_POST['area_desc'] ."' AND deptsel = '2' AND cat_id = '3' group by reports.store, str_code, area_desc ORDER BY str_code ASC
-
-				";
-
-		}
-		$statement = $this->connection->prepare($query);
-		$statement-> execute();
-		$result = $statement->fetchAll();
-		$data[] = array();
-
-		foreach($result as $row)
-		{
-		$data[] = array(
-			'str_code' => $row['str_dept'],
-			'cnt_ttl' => $row['cnt_ttl']
-
-		);
-
-		}
-		return $data;
-
-	}
-
-
-	public function admin_data_table_resnet(){
-
-		$query="
-		Select * from vw6 WHERE vw6.deptsel = '2' AND cat_id = '3' AND
-		vw6.sub_id NOT IN ('15','28','34','35') AND status <> 'NEW REPORT' AND YEAR(vw6.date_created) IN ('2025')";
-		
-		$statement = $this->connection->prepare($query);
-		$statement-> execute();
-		$result = $statement->fetchAll();
-		$data[] = array();
-		// $fetchdata[] = array();
-	
-			foreach($result as $row)
-					{
-					$fetchdata[] = array(
-						'ticket_no' => $row['ticket_no'],
-						'store' => $row['store'],
-						'str_code' => $row['str_code'],
-						'date_created' => date('m/d/Y H:i',strtotime($row["date_created"])),
-						'subject' => $row['subject'],
-						'concern' => $row['concern'],
-						'via' => $row['via'],
-						'status' => $row['status'],
-						'itsup' => $row['itsup'],
-						'it_desc' => $row['it_desc'],
-						'it_sel' => $row['it_sel'],
-						'cat_id' => $row['cat_id'],
-						'category' => $row['category'],
-						'sub_id' => $row['sub_id'],
-						'sub_category' => $row['sub_category'],
-						'date_closed' => ($row['status'] == 'OPEN') ? " ": date('m/d/Y H:i',strtotime($row["date_closed"])),
-						'tdc' => ($row['status'] == 'OPEN') ? $row["dtdf"]." "."Days Unresolved": $row['tdc'],
-						'crdt' => $row['crdt'],
-						'dtdf' => $row['dtdf'],
-						'years' => $row['years'],
-						'close_by' => $row['close_by'],
-						'clusers' => $row['clusers'],
-						'remarks' => $row['remarks'],
-						'isp_id' => $row['isp_id'],
-						'isp_shortDesc' => $row['isp_shortDesc'],
-						'refNo' => $row['refNo'],
-						'date_refNo' => date('m/d/Y H:i',strtotime($row["date_refNo"])),
-						'msg_cnt' => $row['msg_cnt'],
-	
-	
-					);
-	
-					}
-				$data = array_filter($fetchdata);
-					return $data;
-	
-		}
-
-
 		public function polled_store(){
 			$start_date = $_POST['fromPolled'];
 			$end_date = $_POST['toPolled'];
@@ -1658,7 +1579,7 @@ ORDER BY
 
 }
 
-public function dept_ticket_datatable($dept_id) {
+public function dept_ticket_datatable($dept_id) { // for reference from now on in reporting
 
     $query = "SELECT
             ticket_no, 
@@ -1742,7 +1663,6 @@ public function category_status_grph()
         INNER JOIN tbl_branch B 
             ON B.str_num = R.store
         WHERE R.f_deptsel IN ({$dept_ids_clean})
-          AND C.cat_desc <> 'GENERAL'
           AND R.status = '{$status_clean}'
           AND YEAR(R.date_created) = {$yr}
           AND R.sub_id NOT IN ('15','28','34','35')
@@ -1773,9 +1693,73 @@ return $data;
 
 
 
-public function category_all_grph()
+// public function category_all_grph()
+// {
+//     $yr = isset($_POST['yr']) ? intval($_POST['yr']) : date('Y');
+
+//     $dept_ids = isset($_POST['dept_id'])
+//         ? $_POST['dept_id']
+//         : '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17';
+
+//     $dept_ids_array = array_filter(array_map('intval', explode(',', $dept_ids)));
+
+//     if (empty($dept_ids_array)) {
+//         $dept_ids_array = range(1, 17);
+//     }
+
+//     $dept_ids_clean = implode(',', $dept_ids_array);
+
+//     $query = "
+//         SELECT
+//             C.cat_id AS cat_id,
+//             C.cat_desc AS cat_desc,
+//             COUNT(R.ticket_no) AS points,
+//             C.clr AS clr
+//         FROM reports R
+//         INNER JOIN categories C 
+//             ON C.cat_id = R.cat_id
+//         INNER JOIN subcat SC 
+//             ON SC.sub_id = R.sub_id 
+//             AND SC.cat_id = R.cat_id
+//         INNER JOIN tbl_branch B 
+//             ON B.str_num = R.store
+//         WHERE C.cat_desc <> 'GENERAL'
+//           AND YEAR(R.date_created) = $yr
+//           AND R.f_deptsel IN ($dept_ids_clean)
+//           AND R.sub_id NOT IN ('15','28','34','35')
+//           AND R.status NOT IN ('WAITING FOR IT HELPDESK RESPONSE','NEW REPORT')
+//         GROUP BY
+//             C.cat_id,
+//             C.cat_desc,
+//             C.clr
+//         ORDER BY
+//               COUNT(R.ticket_no) DESC
+//     ";
+
+//     $statement = $this->connection->prepare($query);
+//     $statement->execute();
+//     $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+//     $data = array();
+
+//     foreach ($result as $row) {
+//         $data[] = array(
+//             'cat_id'   => $row["cat_id"],
+//             'cat_desc' => $row["cat_desc"],
+//             'points'   => $row["points"],
+//             'clr'      => $row["clr"]
+//         );
+//     }
+
+//     return $data;
+// }
+
+public function category_ticket_dt()
 {
     $yr = isset($_POST['yr']) ? intval($_POST['yr']) : date('Y');
+
+    $status = isset($_POST['status']) ? trim($_POST['status']) : '';
+    $cat_desc = isset($_POST['cat_desc']) ? trim($_POST['cat_desc']) : '';
 
     $dept_ids = isset($_POST['dept_id'])
         ? $_POST['dept_id']
@@ -1791,43 +1775,123 @@ public function category_all_grph()
 
     $query = "
         SELECT
-            C.cat_id AS cat_id,
-            C.cat_desc AS cat_desc,
-            COUNT(R.ticket_no) AS points,
-            C.clr AS clr
-        FROM reports R
-        INNER JOIN categories C 
-            ON C.cat_id = R.cat_id
-        INNER JOIN subcat SC 
-            ON SC.sub_id = R.sub_id 
-            AND SC.cat_id = R.cat_id
-        INNER JOIN tbl_branch B 
-            ON B.str_num = R.store
-        WHERE C.cat_desc <> 'GENERAL'
-          AND YEAR(R.date_created) = $yr
-          AND R.f_deptsel IN ($dept_ids_clean)
-          AND R.sub_id NOT IN ('15','28','34','35')
-          AND R.status NOT IN ('WAITING FOR IT HELPDESK RESPONSE','NEW REPORT')
-        GROUP BY
-            C.cat_id,
-            C.cat_desc,
-            C.clr
-        ORDER BY
-              COUNT(R.ticket_no) DESC
+            ticket_no, 
+            str_code, 
+            date_created, 
+            concern, 
+            via, 
+            `status`, 
+            dtdf,
+            f_deptsel, 
+            category, 
+            sub_category, 
+            date_closed, 
+            remarks
+        FROM vw6foradmin
+        WHERE f_deptsel IN ($dept_ids_clean)
+          AND YEAR(date_created) = :yr
+          AND UPPER(TRIM(`status`)) = UPPER(TRIM(:status))
+          AND category = :cat_desc
+          AND sub_id NOT IN ('15','28','34','35')
+          AND status <> 'NEW REPORT'
+        ORDER BY date_created DESC
     ";
 
     $statement = $this->connection->prepare($query);
+    $statement->bindValue(':yr', $yr, PDO::PARAM_INT);
+    $statement->bindValue(':status', $status, PDO::PARAM_STR);
+    $statement->bindValue(':cat_desc', $cat_desc, PDO::PARAM_STR);
     $statement->execute();
+
     $result = $statement->fetchAll(PDO::FETCH_ASSOC);
 
     $data = array();
 
     foreach ($result as $row) {
         $data[] = array(
-            'cat_id'   => $row["cat_id"],
-            'cat_desc' => $row["cat_desc"],
-            'points'   => $row["points"],
-            'clr'      => $row["clr"]
+            'ticket_no'    => $row['ticket_no'],
+            'str_code'     => $row['str_code'],
+            'date_created' => $row['date_created'],
+            'concern'      => $row['concern'],
+            'via'          => $row['via'],
+            'status'       => $row['status'],
+            'dtdf'         => $row['dtdf'],
+            'f_deptsel'    => $row['f_deptsel'],
+            'category'     => $row['category'],
+            'sub_category' => $row['sub_category'],
+            'date_closed'  => $row['date_closed'],
+            'remarks'      => $row['remarks']
+        );
+    }
+
+    return $data;
+}
+
+
+public function store_ticket_dt()
+{
+    $yr = isset($_POST['yr']) ? intval($_POST['yr']) : date('Y');
+
+    $store = isset($_POST['store']) ? trim($_POST['store']) : '';
+
+    $dept_ids = isset($_POST['dept_id'])
+        ? $_POST['dept_id']
+        : '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17';
+
+    $dept_ids_array = array_filter(array_map('intval', explode(',', $dept_ids)));
+
+    if (empty($dept_ids_array)) {
+        $dept_ids_array = range(1, 17);
+    }
+
+    $dept_ids_clean = implode(',', $dept_ids_array);
+
+    $query = "
+        SELECT
+            ticket_no, 
+            str_code, 
+            date_created, 
+            concern, 
+            via, 
+            `status`, 
+            dtdf,
+            f_deptsel, 
+            category, 
+            sub_category, 
+            date_closed, 
+            remarks
+        FROM vw6foradmin
+        WHERE store = :store
+          AND f_deptsel IN ($dept_ids_clean)
+          AND YEAR(date_created) = :yr
+          AND sub_id NOT IN ('15','28','34','35')
+          AND status <> 'NEW REPORT'
+        ORDER BY date_created DESC
+    ";
+
+    $statement = $this->connection->prepare($query);
+    $statement->bindValue(':store', $store, PDO::PARAM_STR);
+    $statement->bindValue(':yr', $yr, PDO::PARAM_INT);
+    $statement->execute();
+
+    $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+    $data = array();
+
+    foreach ($result as $row) {
+        $data[] = array(
+            'ticket_no'    => $row['ticket_no'],
+            'str_code'     => $row['str_code'],
+            'date_created' => $row['date_created'],
+            'concern'      => $row['concern'],
+            'via'          => $row['via'],
+            'status'       => $row['status'],
+            'dtdf'         => $row['dtdf'],
+            'f_deptsel'    => $row['f_deptsel'],
+            'category'     => $row['category'],
+            'sub_category' => $row['sub_category'],
+            'date_closed'  => $row['date_closed'],
+            'remarks'      => $row['remarks']
         );
     }
 
