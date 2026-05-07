@@ -108,6 +108,15 @@ switch ($mode) {
                   case 'trans_tbl':
          $records['transdata']= $fn->trans_tbl();
         break;
+case 'dept_ticket_datatable':
+    $records = $fn->dept_ticket_datatable($_POST['dept_id']);
+    break;
+case 'category_status_grph':
+    $records = $fn->category_status_grph();
+    break;
+case 'category_all_grph':
+    $records = $fn->category_all_grph();
+    break;
     default:
         break;
 

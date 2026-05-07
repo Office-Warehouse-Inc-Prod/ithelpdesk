@@ -6,6 +6,53 @@ $timezone = new DateTimeZone('Asia/Manila');
 $datetime->setTimezone($timezone);
 
  ?>
+<style>
+/* =========================
+   DEPARTMENT MODAL LAYOUT
+========================= */
+
+#dept_graph_modal .modal-dialog.modal-dept-wide {
+    width: 96vw !important;
+    max-width: 96vw !important;
+    margin: 1rem auto !important;
+}
+
+#dept_graph_modal .modal-content {
+    width: 100% !important;
+    border-radius: 0.5rem;
+}
+
+#dept_graph_modal .modal-header {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #dee2e6;
+}
+
+#dept_graph_modal .modal-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+#dept_graph_modal .modal-body {
+    max-height: 86vh;
+    overflow-y: auto;
+    padding: 1rem;
+}
+
+
+/* =========================
+   CHART AREA
+========================= */
+
+#dept_graph {
+    width: 100% !important;
+    height: 38vh !important;
+    min-height: 18rem;
+    margin-bottom: 1rem;
+}
+
+
+</style>
+
 <div class="modal fade bd-example-modal-lg" id="genModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
@@ -136,27 +183,34 @@ $datetime->setTimezone($timezone);
 
 
 
-<!-- Sub-Storegraph modal -->
 <div class="modal fade" id="dept_graph_modal" tabindex="-1" role="dialog" aria-labelledby="dept_graph_modal" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+  <div class="modal-dialog modal-dialog-centered modal-dept-wide" role="document">
     <div class="modal-content">
+
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLongTitle">Per Department</h5>
         <button type="button" class="close" id="substr_clsbtn" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
+
       <div class="modal-body">
+
         <div class="row">
           <div class="col-md-12">
-       <div id="dept_graph"></div>
+            <div id="dept_graph"></div>
           </div>
-          <div class="col-md-12">
-             <table class="table table-striped" id="tbl_deptbreak"></table>
-          </div>
-
+<div class="col-md-12 mt-3">
+  <div class="table-responsive dept-table-wrapper">
+<div class="table-responsive dept-table-wrapper">
+    <table class="table table-striped table-bordered table-hover" id="tbl_deptbreak" style="width:100%;"></table>
+</div>
+  </div>
+</div>
         </div>
+
       </div>
+
     </div>
   </div>
 </div>

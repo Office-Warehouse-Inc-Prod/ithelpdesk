@@ -32,7 +32,7 @@ var types = $.ajax({
 
 
 
- function grhp(types) {
+ function grhp(types) { // dept graph
   am4core.ready(function () {
     am4core.useTheme(am4themes_animated);
 
@@ -83,6 +83,25 @@ var types = $.ajax({
     hs.properties.scale = 1.08;
     hs.properties.shiftRadius = 0.03;
     
+// pieSeries.slices.template.events.on("hit", function(ev) {
+
+//     if (!ev.target.dataItem) {
+//         console.log("Walang laman");
+//         return false;
+//     }
+
+//     let dept_id = ev.target.dataItem.dept_id;
+
+//     console.log("Clicked Type:", dept_id);
+
+//     selected = ev.target.dataItem.index;
+
+//     chart.data = generateChartData();
+
+//     _deptgraph(dept_id);
+
+// }, this);
+
 pieSeries.slices.template.events.on("hit", function(ev) {
 
     if (!ev.target.dataItem) {
@@ -90,19 +109,243 @@ pieSeries.slices.template.events.on("hit", function(ev) {
         return false;
     }
 
-    let dept_id = ev.target.dataItem.dept_id;
+    let dept_id = ev.target.dataItem.dataContext.dept_id;
 
-    console.log("Clicked Type:", dept_id);
+    console.log("Clicked Dept ID:", dept_id);
 
     selected = ev.target.dataItem.index;
-
     chart.data = generateChartData();
 
     _deptgraph(dept_id);
+    _loadDeptBreakdownTable(dept_id);
 
 }, this);
 
+var deptBreakTable;
 
+function _loadDeptBreakdownTable(dept_id) {
+
+    if ($.fn.DataTable.isDataTable('#tbl_deptbreak')) {
+        $('#tbl_deptbreak').DataTable().clear().destroy();
+        $('#tbl_deptbreak').empty();
+    }
+
+    deptBreakTable = $("#tbl_deptbreak").DataTable({
+        dom:
+            "<'dt-top d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-2'" +
+                "<'dt-left d-flex align-items-center gap-2'l<f>>" +
+                "<'dt-right d-flex align-items-center gap-2'B>" +
+            ">" +
+            "<'dt-table'rt>" +
+            "<'dt-bottom d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-2'ip>",
+
+        buttons: [
+            {
+                extend: 'excelHtml5',
+                text: '<i class="fas fa-file-excel"></i> <span class="d-none d-md-inline">Export</span>',
+                attr: {
+                    title: 'Export to Excel',
+                    class: 'btn btn-success btn-sm rounded-pill px-3 shadow-sm'
+                }
+            }
+        ],
+
+        ajax: {
+            url: "fetchdata/fetch_data.php",
+            type: "POST",
+            data: {
+                mode: "dept_ticket_datatable",
+                dept_id: dept_id
+            },
+            dataSrc: ""
+        },
+
+        pagingType: "simple_numbers",
+        bDestroy: true,
+        responsive: {
+            details: {
+                type: 'inline',
+                target: 'tr'
+            }
+        },
+
+        lengthChange: false,
+        autoWidth: false,
+        scrollX: false,
+        ordering: true,
+        pageLength: 10,
+
+        language: {
+            search: "",
+            searchPlaceholder: "Search tickets…",
+            zeroRecords: "No matching tickets found",
+            info: "Showing _START_ to _END_ of _TOTAL_ tickets",
+            infoEmpty: "No tickets to show"
+        },
+
+        order: [[2, "desc"]],
+
+        columns: [
+            {
+                title: "Ticket No",
+                data: "ticket_no",
+                defaultContent: ""
+            },
+            {
+                title: "Store Code",
+                data: "str_code",
+                defaultContent: ""
+            },
+            {
+                title: "Date Created",
+                data: "date_created",
+                defaultContent: "",
+                render: function(data, type, row) {
+                    if (!data) return "";
+
+                    if (type === 'sort' || type === 'type') {
+                        let parts = data.split(" ");
+                        let date = parts[0].split("/");
+                        let time = parts[1] || "00:00";
+
+                        return date[2] + "-" + date[0] + "-" + date[1] + " " + time;
+                    }
+
+                    return data;
+                }
+            },
+            {
+                title: "Concern",
+                data: "concern",
+                defaultContent: "",
+                className: "dept-concern",
+                render: function(data, type, row) {
+                    if (type !== 'display') return data;
+                    if (!data) return "";
+
+                    const txt = String(data);
+                    return txt.length > 120 ? txt.slice(0, 120) + "…" : txt;
+                }
+            },
+            {
+                title: "Via",
+                data: "via",
+                defaultContent: ""
+            },
+            {
+                title: "Status",
+                data: "status",
+                defaultContent: "",
+                render: function(data, type, row) {
+                    if (type !== 'display') return data;
+
+                    const s = (data || "").toUpperCase();
+                    let cls = "badge bg-secondary text-white";
+
+                    if (
+                        s === "CLOSED" ||
+                        s === "CLOSE" ||
+                        s === "RESOLVED" ||
+                        s === "SUBJECT FOR CLOSING"
+                    ) {
+                        cls = "badge bg-success text-white";
+                    } else if (
+                        s === "ON PROCESS" ||
+                        s === "IN PROCESS" ||
+                        s === "IN PROGRESS" ||
+                        s.indexOf("ATTENDED") !== -1
+                    ) {
+                        cls = "badge bg-warning text-dark";
+                    } else if (
+                        s === "PENDING" ||
+                        s.indexOf("PENDING") !== -1
+                    ) {
+                        cls = "badge bg-danger text-white";
+                    } else if (
+                        s === "NEW REPORT" ||
+                        s === "NEW"
+                    ) {
+                        cls = "badge bg-purple text-white";
+                    }
+
+                    return `<span class="${cls} px-2 py-1">${data}</span>`;
+                }
+            },
+            {
+                title: "DTDF",
+                data: "dtdf",
+                defaultContent: "",
+                responsivePriority: 10001
+            },
+            {
+                title: "Category",
+                data: "category",
+                defaultContent: "",
+                responsivePriority: 10002
+            },
+            {
+                title: "Sub Category",
+                data: "sub_category",
+                defaultContent: "",
+                responsivePriority: 10003
+            },
+            {
+                title: "Date Closed",
+                data: "date_closed",
+                defaultContent: "",
+                responsivePriority: 10004,
+                render: function(data, type, row) {
+                    if (type !== 'display') return data;
+
+                    if (!data) return "";
+                    if (data === "01/01/1970 01:00" || data === "01/01/1970 08:00") return "";
+
+                    return data;
+                }
+            },
+            {
+                title: "Remarks",
+                data: "remarks",
+                defaultContent: "",
+                responsivePriority: 10005,
+                render: function(data, type, row) {
+                    if (type !== 'display') return data;
+                    if (!data) return "";
+
+                    const txt = String(data);
+                    return txt.length > 80 ? txt.slice(0, 80) + "…" : txt;
+                }
+            }
+        ],
+
+        rowCallback: function(row, data) {
+            $(row).removeClass('status-row-pending status-row-closed status-row-process status-row-new');
+
+            const s = (data.status || "").toUpperCase();
+
+            if (s === "CLOSED" || s === "CLOSE" || s === "RESOLVED") {
+                $(row).addClass('status-row-closed');
+            } else if (s === "ON PROCESS" || s === "IN PROGRESS" || s.indexOf("ATTENDED") !== -1) {
+                $(row).addClass('status-row-process');
+            } else if (s.indexOf("PENDING") !== -1) {
+                $(row).addClass('status-row-pending');
+            } else if (s === "NEW REPORT" || s === "NEW") {
+                $(row).addClass('status-row-new');
+            }
+        }
+    });
+
+    $('#dept_graph_modal').modal({
+        show: true,
+        backdrop: 'static'
+    });
+
+    $('#dept_graph_modal').on('shown.bs.modal', function () {
+        if ($.fn.DataTable.isDataTable('#tbl_deptbreak')) {
+            $('#tbl_deptbreak').DataTable().columns.adjust().responsive.recalc();
+        }
+    });
+}
 // end am4core.ready()
 
 function _deptgraph(dept_id){
@@ -418,7 +661,13 @@ $(row).find('td:eq(13)').css('color', '#890188');
 
 <!-- Styles -->
 <style>
-#chartdiv1 {
+#chartdiv1 { 
+/*   margin-top: 2px;
+  margin-left: 18px;*/
+  width: 100%;
+  height:400px;
+}
+#chartdiv_category { 
 /*   margin-top: 2px;
   margin-left: 18px;*/
   width: 100%;
@@ -429,104 +678,259 @@ $(row).find('td:eq(13)').css('color', '#890188');
 
 <!-- Chart code -->
 <script>
- const curdates = new Date();
-  const curyrs = g=curdates.getFullYear();
+const curdates = new Date();
+const curyrs = curdates.getFullYear();
 
-  _overallpie(curyrs);
-  function _overallpie(curyrs){
+let overallChart = null;
 
- $.ajax({
-    url:"fetchdata/fetch_data.php",
-    method:'POST',
-     data:{yr:curyrs,mode:'overallgrph'},
+// Initial load
+_overallpie(curyrs, $('#dept_id').val());
 
-    success:function(data5)
-    {
 
-      var obj5 = JSON.parse(data5);
-      // console.log(obj5)
-       _plotovpie(obj5)
-      
-    }
-   });
 
-}
- function _plotovpie(grphdata) {
-  am4core.ready(function () {
-    am4core.useTheme(am4themes_animated);
-
-    //  Create chart
-    var chart = am4core.create("chartdiv1", am4charts.PieChart);
-    chart.innerRadius = am4core.percent(40);
-    chart.fontFamily = "Segoe UI, Roboto, sans-serif";
-    chart.background.fill = am4core.color("#f8faff");
-
-    //  Legend styling
-    chart.legend = new am4charts.Legend();
-    chart.legend.position = "bottom";
-    chart.legend.valign = "bottom";
-    chart.legend.labels.template.fill = am4core.color("#444");
-    chart.legend.labels.template.fontSize = 12;
-    chart.legend.labels.template.text = "[bold {color}]{name}[/]";
-
-    chart.data = grphdata;
-
-    
-
-    //  Series
-    var pieSeries = chart.series.push(new am4charts.PieSeries());
-    pieSeries.dataFields.value = "points";
-    pieSeries.dataFields.category = "stat_name";
-    pieSeries.labels.template.maxWidth = 140;
-    pieSeries.labels.template.wrap = true;
-    pieSeries.labels.template.fontSize = 12;
-    pieSeries.labels.template.fill = am4core.color("#444");
-    pieSeries.labels.template.text =
-      "[bold]{category}[/]\n{value.value} Reports ({value.percent.formatNumber('.##')}%)";
-    pieSeries.slices.template.tooltipText =
-      "{category}: {value.value} Reports ({value.percent.formatNumber('.##')}%)";
-
-    //  Glow effect
-    let shadow = pieSeries.slices.template.filters.push(new am4core.DropShadowFilter());
-    shadow.blur = 6;
-    shadow.color = am4core.color("#999");
-    shadow.opacity = 0.4;
-
-    //  Hover animation
-    let hs = pieSeries.slices.template.states.create("hover");
-    hs.properties.scale = 1.08;
-    hs.properties.shiftRadius = 0.03;
-
-    //  Custom pastel colors based on category
-    pieSeries.slices.template.adapter.add("fill", function (fill, target) {
-      if (target.dataItem) {
-        switch (target.dataItem.category) {
-          case "PENDING":
-            return am4core.color("#FF7A7A"); // soft red
-          case "ON PROCESS":
-            return am4core.color("#F2A65A"); // soft yellow
-          case "CLOSED":
-            return am4core.color("#578f63"); // soft green
-             case "closed":
-            return am4core.color("#578f63"); // soft green
-          case "SUBJECT FOR CLOSING":
-            return am4core.color("#b667eb"); // soft purple
-          default:
-            return am4core.color("#9EC9F7"); // fallback pastel blue
+function _overallpie(curyrs, dept_id) {
+    $.ajax({
+        url: "fetchdata/fetch_data.php",
+        method: "POST",
+        data: {
+            yr: curyrs,
+            dept_id: dept_id,
+            mode: "overallgrph"
+        },
+        success: function (data5) {
+            try {
+                var obj5 = JSON.parse(data5);
+                _plotovpie(obj5);
+            } catch (e) {
+                console.log("JSON Parse Error:", e);
+                console.log("Returned Data:", data5);
+            }
         }
-      }
-      return fill;
     });
-
-    //  Animation   on load
-    pieSeries.hiddenState.properties.opacity = 1;
-    pieSeries.hiddenState.properties.endAngle = -90;
-    pieSeries.hiddenState.properties.startAngle = -90;
-
-    am4core.options.autoDispose = true;
-  });
 }
 
+let categoryChart = null;
+
+function _plotovpie(grphdata) {
+    am4core.ready(function () {
+        am4core.useTheme(am4themes_animated);
+
+        // Dispose old chart before creating new chart
+        if (overallChart) {
+            overallChart.dispose();
+        }
+
+        // Create chart
+        var chart = am4core.create("chartdiv1", am4charts.PieChart);
+        overallChart = chart;
+
+        chart.innerRadius = am4core.percent(40);
+        chart.fontFamily = "Segoe UI, Roboto, sans-serif";
+        chart.background.fill = am4core.color("#f8faff");
+
+        chart.data = grphdata;
+if (grphdata && grphdata.length > 0) {
+    let defaultStatus = grphdata[1].stat_name;
+    let selectedYear = $("#yearpicker").val() || curyrs;
+    let selectedDept = $("#dept_id").val();
+
+    $("#selected_status_title").html(" - " + defaultStatus);
+
+    _categorypie(selectedYear, selectedDept, defaultStatus);
+}
+        // Legend styling
+        chart.legend = new am4charts.Legend();
+        chart.legend.position = "bottom";
+        chart.legend.valign = "bottom";
+        chart.legend.labels.template.fill = am4core.color("#444");
+        chart.legend.labels.template.fontSize = 12;
+        chart.legend.labels.template.text = "[bold {color}]{name}[/]";
+
+        // Series
+        var pieSeries = chart.series.push(new am4charts.PieSeries());
+        pieSeries.dataFields.value = "points";
+        pieSeries.dataFields.category = "stat_name";
+
+        pieSeries.labels.template.maxWidth = 140;
+        pieSeries.labels.template.wrap = true;
+        pieSeries.labels.template.fontSize = 12;
+        pieSeries.labels.template.fill = am4core.color("#444");
+        pieSeries.labels.template.text =
+            "[bold]{category}[/]\n{value.value} Reports ({value.percent.formatNumber('.##')}%)";
+
+        pieSeries.slices.template.tooltipText =
+            "{category}: {value.value} Reports ({value.percent.formatNumber('.##')}%)";
+
+pieSeries.slices.template.events.on("hit", function (ev) {
+    let status = ev.target.dataItem.category;
+    let yr = $("#yearpicker").val() || curyrs;
+    let dept_id = $("#dept_id").val();
+
+    $("#selected_status_title").html(" - " + status);
+
+    _categorypie(yr, dept_id, status);
+});
+
+
+        // Glow effect
+        let shadow = pieSeries.slices.template.filters.push(new am4core.DropShadowFilter());
+        shadow.blur = 6;
+        shadow.color = am4core.color("#999");
+        shadow.opacity = 0.4;
+
+        // Hover animation
+        let hs = pieSeries.slices.template.states.create("hover");
+        hs.properties.scale = 1.08;
+        hs.properties.shiftRadius = 0.03;
+
+        // Custom colors
+        pieSeries.slices.template.adapter.add("fill", function (fill, target) {
+            if (target.dataItem) {
+                let category = String(target.dataItem.category).toUpperCase();
+
+                switch (category) {
+                    case "PENDING":
+                        return am4core.color("#FF7A7A");
+
+                    case "ON PROCESS":
+                        return am4core.color("#F2A65A");
+
+                    case "CLOSED":
+                        return am4core.color("#578f63");
+
+                    case "SUBJECT FOR CLOSING":
+                        return am4core.color("#b667eb");
+
+                    case "ASSIGNED":
+                        return am4core.color("#9EC9F7");
+
+                    default:
+                        return am4core.color("#9EC9F7");
+                }
+            }
+
+            return fill;
+        });
+
+        // Animation on load
+        pieSeries.hiddenState.properties.opacity = 1;
+        pieSeries.hiddenState.properties.endAngle = -90;
+        pieSeries.hiddenState.properties.startAngle = -90;
+        
+    });
+}
+
+// all load
+
+function _categorypie_all(yr, dept_id) {
+    $.ajax({
+        url: "fetchdata/fetch_data.php",
+        method: "POST",
+        dataType: "json",
+        data: {
+            yr: yr,
+            dept_id: dept_id,
+            mode: "category_all_grph"
+        },
+        success: function (data) {
+            $("#selected_status_title").html(" - All Status");
+            _plotcategorypie(data);
+        },
+        error: function (xhr) {
+            console.log("Category All AJAX Error:");
+            console.log(xhr.responseText);
+        }
+    });
+}
+
+// end of code
+
+
+
+function _categorypie(yr, dept_id, status) {
+    $.ajax({
+        url: "fetchdata/fetch_data.php",
+        method: "POST",
+        data: {
+            yr: yr,
+            dept_id: dept_id,
+            status: status,
+            mode: "category_status_grph"
+        },
+        success: function (data) {
+            try {
+           
+                let objcat = JSON.parse(data);
+                   console.log(objcat)
+                _plotcategorypie(objcat);
+            } catch (e) {
+                console.log("JSON Parse Error:", e);
+                console.log("Returned Data:", data);
+            }
+        }
+    });
+}
+
+function _plotcategorypie(grphdata) {
+    am4core.ready(function () {
+        am4core.useTheme(am4themes_animated);
+
+        if (categoryChart) {
+            categoryChart.dispose();
+        }
+
+        let chart = am4core.create("chartdiv_category", am4charts.PieChart);
+        categoryChart = chart;
+
+        chart.innerRadius = am4core.percent(35);
+        chart.fontFamily = "Segoe UI, Roboto, sans-serif";
+        chart.background.fill = am4core.color("#f8faff");
+
+        chart.data = grphdata;
+
+        chart.legend = new am4charts.Legend();
+        chart.legend.position = "bottom";
+        chart.legend.valign = "bottom";
+        chart.legend.labels.template.fill = am4core.color("#444");
+        chart.legend.labels.template.fontSize = 12;
+
+        let pieSeries = chart.series.push(new am4charts.PieSeries());
+        pieSeries.dataFields.value = "points";
+        pieSeries.dataFields.category = "cat_desc";
+
+        pieSeries.labels.template.maxWidth = 150;
+        pieSeries.labels.template.wrap = true;
+        pieSeries.labels.template.fontSize = 12;
+        pieSeries.labels.template.fill = am4core.color("#444");
+
+        pieSeries.labels.template.text =
+            "[bold]{category}[/]\n{value.value} Reports ({value.percent.formatNumber('.##')}%)";
+
+        pieSeries.slices.template.tooltipText =
+            "{category}: {value.value} Reports ({value.percent.formatNumber('.##')}%)";
+
+        let shadow = pieSeries.slices.template.filters.push(new am4core.DropShadowFilter());
+        shadow.blur = 6;
+        shadow.color = am4core.color("#999");
+        shadow.opacity = 0.4;
+
+        let hs = pieSeries.slices.template.states.create("hover");
+        hs.properties.scale = 1.08;
+        hs.properties.shiftRadius = 0.03;
+
+        pieSeries.slices.template.adapter.add("fill", function (fill, target) {
+            if (target.dataItem && target.dataItem.dataContext.clr) {
+                return am4core.color(target.dataItem.dataContext.clr);
+            }
+
+            return fill;
+        });
+
+        pieSeries.hiddenState.properties.opacity = 1;
+        pieSeries.hiddenState.properties.endAngle = -90;
+        pieSeries.hiddenState.properties.startAngle = -90;
+    });
+}
 
 </script>
 
@@ -548,24 +952,26 @@ $(row).find('td:eq(13)').css('color', '#890188');
 
 _areagraph(curyrz);
 
-  function _areagraph(curyrz){
-
- $.ajax({
-    url:"fetchdata/fetch_data.php",
-    method:'POST',
-     data:{yr:curyrz,mode:'area_grph'},
-
-    success:function(data)
-    {
-
-      var objarea = JSON.parse(data);
-      // console.log(objarea)
-       _plotareagrph(objarea);
-      
-    }
-   });
-
-  }
+function _areagraph(curyrz) {
+    $.ajax({
+        url: "fetchdata/fetch_data.php",
+        method: "POST",
+        data: {
+            yr: curyrz,
+            dept_id: $('#dept_id').val(),
+            mode: "area_grph"
+        },
+        success: function (data) {
+            try {
+                var objarea = JSON.parse(data);
+                _plotareagrph(objarea);
+            } catch (e) {
+                console.log("JSON Parse Error:", e);
+                console.log("Returned Data:", data);
+            }
+        }
+    });
+}
 
 function _plotareagrph(grphdata){
 
@@ -580,6 +986,11 @@ var chart = am4core.create("chart_area", am4charts.XYChart);
 
 // Add data
 chart.data = grphdata
+
+// Default load for Category Breakdown on page load
+
+
+
 // Create axes
 chart.colors.list = [
   am4core.color("#6594B1")
@@ -634,19 +1045,32 @@ bullet.label.truncate = false;
 }); // end am4core.ready()
 
 function _storegraph(s_area,syr){
-                          $.ajax({
-                  url:"fetchdata/fetch_data.php",
-                  method:'POST',
-                   data:{area_desc:s_area,yr:syr,mode:'str_grphnew'},
+$.ajax({
+    url: "fetchdata/fetch_data.php",
+    method: "POST",
+    data: {
+        area_desc: s_area,
+        yr: syr,
+        dept_id: $('#dept_id').val(),
+        mode: 'str_grphnew'
+    },
+    success: function (fdata) {
+        try {
+            var objstorearea = JSON.parse(fdata);
+            console.log(objstorearea);
 
-                  success:function(fdata)
-                  {
-                    var objstorearea = JSON.parse(fdata);
-                    console.log(objstorearea);
-                    _plot_store_graph(objstorearea);
-                    $('#store_graph_modal').modal({"show": true, "backdrop": 'static'});
-                  }
-                 });
+            _plot_store_graph(objstorearea);
+
+            $('#store_graph_modal').modal({
+                show: true,
+                backdrop: 'static'
+            });
+        } catch (e) {
+            console.log("JSON Parse Error:", e);
+            console.log("Returned Data:", fdata);
+        }
+    }
+});
 }
 
 

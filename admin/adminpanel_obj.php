@@ -6,8 +6,33 @@ $( document ).ready(function() {
 
 
 
+function reload_dashboard() {
+    const yr = $("#yearpicker").val();
+    const dept_id = $("#dept_id").val();
 
-  
+    getdata(yr);
+    get_card_data(yr);
+    _overallpie(yr, dept_id);
+    _areagraph(yr);
+
+    // default category chart on load
+    _categorypie_all(yr, dept_id);
+    // Uncomment kapag kailangan mo na rin i-refresh ito
+    // _techgraph(yr);
+    // _dbline(yr);
+    // _catpie(yr);
+    // bargrph_tech_res(yr);
+    // itsupdata(yr);
+    // _storegraph(yr);
+}
+ 
+$("#yearpicker").on("change", function () {
+    reload_dashboard();
+});
+
+$("#dept_id").on("change", function () {
+    reload_dashboard();
+}); 
 
 
 
@@ -49,13 +74,31 @@ $('#myInput').on( 'input', function () {
 } );
 
 
-function getdata(yr){
-$.post('fetchdata/fetch_data.php',{yr:yr, mode:'dtb'},function(data){
-// console.log(data);
-admin_datatable(data);
-},'json');
+function getdata(yr) {
+    $.post(
+        'fetchdata/fetch_data.php',
+        {
+            yr: yr,
+            dept_id: $('#dept_id').val(),
+            mode: 'dtb'
+        },
+        function (data) {
+            admin_datatable(data);
+        },
+        'json'
+    );
 }
-getdata();
+
+// Reload chart when department changes
+// $('#dept_id').on('change', function () {
+//     const selectedDept = $(this).val();
+//     _overallpie(curyrs, selectedDept);
+//       _areagraph(curyrs);
+//        getdata(curyrs);
+//          get_card_data(curyrs);
+// });
+
+// getdata();
 
 var table
 function admin_datatable(t){
@@ -494,43 +537,34 @@ admin_hideshowforms();
 const yr =$("#yearpicker").val();
 getdata(yr)
 get_card_data(yr)
-function get_card_data(yr){
-$.post('fetchdata/fetch_data.php',{yr:yr,mode:'yearch'}, function(data) {
-/*optional stuff to do after success */
-// console.log(yr)
-let card_data = jQuery.parseJSON(data); 
-const a = card_data;
-// console.log(a)
-$('#count_total').html(a[0].owfa_res);
-$('#count_open').html(a[0].open_res);
-$('#count_owfa').html(a[0].t_pending);
-$('#count_closed').html(a[0].cls_res);
-$('#today_closed').html(a[0].t_res);
+function get_card_data(yr) {
+    $.post(
+        'fetchdata/fetch_data.php',
+        {
+            yr: yr,
+            dept_id: $('#dept_id').val(),
+            mode: 'yearch'
+        },
+        function (data) {
+            let card_data = jQuery.parseJSON(data);
+            const a = card_data;
 
-
-});
+            $('#count_total').html(a[0].owfa_res);
+            $('#count_open').html(a[0].open_res);
+            $('#count_owfa').html(a[0].t_pending);
+            $('#count_closed').html(a[0].cls_res);
+            $('#today_closed').html(a[0].t_res);
+        }
+    );
 }
 
 $(function () {
 $('#datetimepicker1, #datetimepicker2, #datetimepicker3').datetimepicker()
 });
 
-$("#yearpicker").on('change',function(){
-const yr =$("#yearpicker").val()
-// console.log(yr);
-// reports_total(this.value);
-getdata(yr);
-get_card_data(this.value);
-// _techgraph(yr);
-// _overallpie(yr);
-// _dbline(yr); 
-// _catpie(yr);
-// _areagraph(yr);
-// bargrph_tech_res(yr);
-// itsupdata(yr);
-// _storegraph(yr);
-
-});
+// $("#yearpicker").on("change", function () {
+//     reload_dashboard();
+// });
 
 $('#cat').on('change', function() {
 var category_id = this.value;

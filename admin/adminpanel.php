@@ -530,6 +530,57 @@ background: linear-gradient(135deg, #837031, #E1AD01);
 ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(135deg, #837031, #E1AD01);
 }
+
+.overall-status-header {
+    background-color: #1f375c !important;
+    color: #ffc400 !important;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 14px 18px;
+    border-bottom: 3px solid #ffc400;
+}
+
+.overall-title {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    white-space: nowrap;
+    line-height: 1.1;
+}
+
+.overall-filter {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+}
+
+.dept-label {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #ffc400;
+    white-space: nowrap;
+}
+
+.dept-select {
+    height: 38px;
+    font-size: 15px;
+    border-radius: 4px;
+    border: 1px solid #b5a13a;
+    box-shadow: none;
+    flex: 1;
+    min-width: 220px;
+}
+
+#chartdiv1 {
+    width: 100%;
+    height: 400px;
+}
+
+
 </style>
 
 
@@ -641,23 +692,57 @@ background: linear-gradient(135deg, #837031, #E1AD01);
 
         <div class="row" id="ovrall">
 
-          <div class="col-12 col-lg-6 mb-3">
-            <div class="card card2 h-100">
-              <h5 class="card-header" style="background-color: #95a2b9b4; color:black;">Overall Status</h5>
-              <div class="card-body">
-                <div id="chartdiv1"></div>
-              </div>
-            </div>
-          </div>
+<div class="col-12 col-lg-6 mb-3">
+    <div class="card card2 h-100">
 
-            <div class="col-12 col-lg-6 mb-3">
-            <div class="card card2 h-100">
-              <h5 class="card-header" style="background-color: #95a2b9b4; color:black;">Department Tickets</h5>
-              <div class="card-body">
-                <div id="chartdiv2"></div>
-              </div>
+        <div class="card-header overall-status-header">
+            <div class="overall-title">
+                Overall Status
             </div>
-          </div>
+
+            <div class="overall-filter">
+                <label for="dept_id" class="dept-label">Department</label>
+                <select name="dept_id" id="dept_id" class="form-control dept-select">
+                    <option value="1,2,3,6,11,13,15,16" selected>All</option>
+                    <option value="1">I.T DEPT</option>
+                    <option value="2">ADMIN DEPARTMENT</option>
+                    <option value="3">MARKETING DEPARTMENT</option>
+                    <!-- <option value="4">MERCHANDISING DEPARTMENT</option>
+                    <option value="5">MERCHANDISING DEPARTMENT - OFFICE FURNITURE</option> -->
+                    <option value="6">VISUAL</option>
+                    <!-- <option value="7">HUMAN RESOURCES</option> -->
+                    <!-- <option value="8">VISUAL</option> -->
+                    <!-- <option value="9">LOGISTIC DEPARTMENT</option> -->
+                    <!-- <option value="10">STORE OPERATION</option> -->
+                    <option value="11">HUMAN RESOURCES</option>
+                    <!-- <option value="12">INVENTORY CONTROL GROUP</option> -->
+                    <option value="13">ACCOUNTS PAYABLE</option>
+                    <!-- <option value="14">SALES ACCOUNTING</option> -->
+                    <option value="15">TREASURY</option>
+                    <option value="16">ACCOUNTS RECEIVABLE</option>
+                    <!-- <option value="17">MANAGEMENT SYSTEM SERVICES</option> -->
+                </select>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div id="chartdiv1"></div>
+        </div>
+ 
+    </div>
+</div>
+<div class="col-12 col-lg-6 mb-3">
+    <div class="card card2 h-100">
+        <div class="card-header" style="background-color:#1f375c; color:#ffc400; font-weight:700;">
+            Category Breakdown
+            <span id="selected_status_title" style="color:white; font-size:14px;"></span>
+        </div>
+
+        <div class="card-body">
+            <div id="chartdiv_category" style="width:100%; height:400px;"></div>
+        </div>
+    </div>
+</div>
 
                       <div class="col-12 col-lg-12 col-md-12 mb-3">
             <div class="card card2 h-100">
