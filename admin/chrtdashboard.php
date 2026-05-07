@@ -165,7 +165,7 @@ function _deptgraph(dept_id){
 
 <!-- Styles -->
 <style>
-#store_graph {
+#dept_graph {
   width: 100%;
   height: 500px;
 }
@@ -201,7 +201,7 @@ function _plot_dept_graph(strdata){
     am4core.useTheme(am4themes_animated);
 
     // Create chart instance
-    var chart = am4core.create("store_graph", am4charts.XYChart);
+    var chart = am4core.create("dept_graph", am4charts.XYChart);
     chart.scrollbarX = new am4core.Scrollbar();
 
     // Add data

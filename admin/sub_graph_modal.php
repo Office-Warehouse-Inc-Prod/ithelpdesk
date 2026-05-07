@@ -213,7 +213,7 @@ $datetime->setTimezone($timezone);
                           <img class="img-responsive" id="tech_img" src="" alt="User Image" width="300" height="250"/>
                       </div>
 
-                      <div class="col-md-9" style="">
+                      <div class="col-md-9">
                               <h5 class="" id="ITName"></h5>
                               <span style="font-size: 14px;" class="" id="cmprole"></span>
                               <hr style="border: 1px solid;">
