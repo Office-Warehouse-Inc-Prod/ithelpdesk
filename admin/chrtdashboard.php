@@ -979,6 +979,30 @@ function _category_ticket_dt(yr, dept_id, status, cat_desc) {
     });
 }
 
+function formatDateTime(value) {
+    if (!value || value === "0000-00-00 00:00:00" || value === "null") {
+        return "";
+    }
+
+    // Remove microseconds if meron
+    let cleanValue = String(value).split(".")[0];
+
+    // Convert MySQL datetime to JS-compatible format
+    let date = new Date(cleanValue.replace(" ", "T"));
+
+    if (isNaN(date.getTime())) {
+        return value;
+    }
+
+    return date.toLocaleString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "2-digit",
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true
+    });
+}
 
 function category_ticket_datatable(data) {
     if ($.fn.DataTable.isDataTable("#tbl_category_tickets")) {
@@ -991,18 +1015,81 @@ function category_ticket_datatable(data) {
         autoWidth: false,
         pageLength: 10,
         order: [[2, "desc"]],
-        columns: [
+      columns: [
             { data: "ticket_no" },
             { data: "str_code" },
-            { data: "date_created" },
+          {
+    data: "date_created",
+    render: function (data, type, row) {
+        if (type !== "display") {
+            return data;
+        }
+
+        return formatDateTime(data);
+    }
+},
             { data: "concern" },
             { data: "via" },
-            { data: "status" },
-            { data: "dtdf" },
-            { data: "f_deptsel" },
+
+            {
+                data: "status",
+                className: "text-center",
+                render: function (data, type, row) {
+                    if (type !== "display") {
+                        return data;
+                    }
+
+                    let statusRaw = data || "";
+                    let status = String(statusRaw).trim().toUpperCase();
+
+                    let badgeClass = "status-default";
+
+                    if (status === "ASSIGNED") {
+                        badgeClass = "status-assigned";
+                    } else if (status === "ON PROCESS") {
+                        badgeClass = "status-onprocess";
+                    } else if (status === "PENDING") {
+                        badgeClass = "status-pending";
+                    } else if (status === "SUBJECT FOR CLOSING") {
+                        badgeClass = "status-subject";
+                    } else if (status === "CLOSED") {
+                        badgeClass = "status-closed";
+                    } else if (status === "TRANSFERRED") {
+                        badgeClass = "status-transferred";
+                    }
+
+                    return '<span class="dt-status-badge ' + badgeClass + '">' + statusRaw + '</span>';
+                }
+            },
+
+        
+            {
+                data: "dtdf",
+                className: "text-center",
+                render: function (data, type, row) {
+                    let status = row.status ? String(row.status).trim().toUpperCase() : "";
+
+                    if (status === "CLOSED") {
+                        return 0;
+                    }
+
+                    return data;
+                }
+            },
+
+            { data: "dept_desc" },
             { data: "category" },
             { data: "sub_category" },
-            { data: "date_closed" },
+       {
+    data: "date_closed",
+    render: function (data, type, row) {
+        if (type !== "display") {
+            return data;
+        }
+
+        return formatDateTime(data);
+    }
+},
             { data: "remarks" }
         ]
     });
@@ -1356,6 +1443,32 @@ function _store_ticket_dt(yr, dept_id, store) {
     });
 }
 
+function formatDateTime(value) {
+    if (!value || value === "0000-00-00 00:00:00" || value === "null") {
+        return "";
+    }
+
+    // Remove microseconds if meron
+    let cleanValue = String(value).split(".")[0];
+
+    // Convert MySQL datetime to JS-compatible format
+    let date = new Date(cleanValue.replace(" ", "T"));
+
+    if (isNaN(date.getTime())) {
+        return value;
+    }
+
+    return date.toLocaleString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "2-digit",
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true
+    });
+}
+
+
 function store_ticket_datatable(data) {
     if ($.fn.DataTable.isDataTable("#tbl_store_tickets")) {
         $("#tbl_store_tickets").DataTable().clear().destroy();
@@ -1370,15 +1483,78 @@ function store_ticket_datatable(data) {
         columns: [
             { data: "ticket_no" },
             { data: "str_code" },
-            { data: "date_created" },
+          {
+    data: "date_created",
+    render: function (data, type, row) {
+        if (type !== "display") {
+            return data;
+        }
+
+        return formatDateTime(data);
+    }
+},
             { data: "concern" },
             { data: "via" },
-            { data: "status" },
-            { data: "dtdf" },
-            { data: "f_deptsel" },
+
+            {
+                data: "status",
+                className: "text-center",
+                render: function (data, type, row) {
+                    if (type !== "display") {
+                        return data;
+                    }
+
+                    let statusRaw = data || "";
+                    let status = String(statusRaw).trim().toUpperCase();
+
+                    let badgeClass = "status-default";
+
+                    if (status === "ASSIGNED") {
+                        badgeClass = "status-assigned";
+                    } else if (status === "ON PROCESS") {
+                        badgeClass = "status-onprocess";
+                    } else if (status === "PENDING") {
+                        badgeClass = "status-pending";
+                    } else if (status === "SUBJECT FOR CLOSING") {
+                        badgeClass = "status-subject";
+                    } else if (status === "CLOSED") {
+                        badgeClass = "status-closed";
+                    } else if (status === "TRANSFERRED") {
+                        badgeClass = "status-transferred";
+                    }
+
+                    return '<span class="dt-status-badge ' + badgeClass + '">' + statusRaw + '</span>';
+                }
+            },
+
+        
+            {
+                data: "dtdf",
+                className: "text-center",
+                render: function (data, type, row) {
+                    let status = row.status ? String(row.status).trim().toUpperCase() : "";
+
+                    if (status === "CLOSED") {
+                        return 0;
+                    }
+
+                    return data;
+                }
+            },
+
+            { data: "dept_desc" },
             { data: "category" },
             { data: "sub_category" },
-            { data: "date_closed" },
+       {
+    data: "date_closed",
+    render: function (data, type, row) {
+        if (type !== "display") {
+            return data;
+        }
+
+        return formatDateTime(data);
+    }
+},
             { data: "remarks" }
         ]
     });

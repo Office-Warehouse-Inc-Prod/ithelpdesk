@@ -93,6 +93,61 @@ $datetime->setTimezone($timezone);
     font-size: 12px;
 }
 
+.dt-status-badge {
+    display: inline-block !important;
+    min-width: 95px !important;
+    padding: 5px 10px !important;
+    border-radius: 20px !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    text-align: center !important;
+    line-height: 1.2 !important;
+    white-space: nowrap !important;
+    letter-spacing: 0.3px !important;
+}
+
+.status-assigned {
+    background: #dceeff !important;
+    color: #1f5f99 !important;
+    border: 1px solid #9ec9f7 !important;
+}
+
+.status-onprocess {
+    background: #fff1d8 !important;
+    color: #9a5a00 !important;
+    border: 1px solid #f2a65a !important;
+}
+
+.status-pending {
+    background: #ffe1e1 !important;
+    color: #a82424 !important;
+    border: 1px solid #ff7a7a !important;
+}
+
+.status-subject {
+    background: #f0ddff !important;
+    color: #6d2fa3 !important;
+    border: 1px solid #b667eb !important;
+}
+
+.status-closed {
+    background: #dff0e3 !important;
+    color: #2d6b3a !important;
+    border: 1px solid #578f63 !important;
+}
+
+.status-transferred {
+    background: #e8e8e8 !important;
+    color: #555 !important;
+    border: 1px solid #aaa !important;
+}
+
+.status-default {
+    background: #f2f2f2 !important;
+    color: #555 !important;
+    border: 1px solid #ccc !important;
+}
+
 </style>
 
 <div class="modal fade bd-example-modal-lg" id="genModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -292,7 +347,7 @@ $datetime->setTimezone($timezone);
                                     <th>Concern</th>
                                     <th>Via</th>
                                     <th>Status</th>
-                                    <th>DTDF</th>
+                                    <th>No. Days</th>
                                     <th>Department</th>
                                     <th>Category</th>
                                     <th>Sub Category</th>
@@ -420,7 +475,7 @@ $datetime->setTimezone($timezone);
                             <th>Concern</th>
                             <th>Via</th>
                             <th>Status</th>
-                            <th>DTDF</th>
+                            <th>No. of Days</th>
                             <th>Department</th>
                             <th>Category</th>
                             <th>Sub Category</th>

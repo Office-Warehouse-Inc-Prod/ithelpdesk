@@ -49,21 +49,32 @@ let val = '';
 $('#card_totalval').click(function(e) {
 e.preventDefault();
 val =  $(this).attr("value");
-
+    $('html, body').animate({
+        scrollTop: $('#report_data').offset().top - 80
+    }, 600);
 });
 $('#card_openval').click(function(e) {
 e.preventDefault();
 val =  $(this).attr("value");
 // console.log(val)
+    $('html, body').animate({
+        scrollTop: $('#report_data').offset().top - 80
+    }, 600);
 });
 
 $('#card_openwfaval').click(function(e) {
 e.preventDefault();
 val =  $(this).attr("value");
+    $('html, body').animate({
+        scrollTop: $('#report_data').offset().top - 80
+    }, 600);
 });
 $('#card_closedval').click(function(e) {
 e.preventDefault();
 val =  $(this).attr("value");
+    $('html, body').animate({
+        scrollTop: $('#report_data').offset().top - 80
+    }, 600);
 });
 // $('.clcktxt').click(function(e) {
 // e.preventDefault();
