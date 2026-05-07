@@ -263,7 +263,7 @@ body {
 
    
         <!-- CHARTS -->
-        <div class="row" id="ovrall">
+        <!-- <div class="row" id="ovrall">
 
           <div class="col-12 col-lg-6 mb-3">
             <div class="card card2 h-100">
@@ -281,7 +281,7 @@ body {
                 <div id="chartdiv2"></div>
               </div>
             </div>
-          </div>
+          </div> -->
 
             
 

@@ -271,21 +271,7 @@ style="text-transform:uppercase" onkeyup="this.value = this.value;"></textarea>
 
 <label>CATEGORY</label>
 <input type="hidden" name="cat_num" id="cat_num" readonly="">
-<select class="form-control form-control-sm" name="cat" id="cat" required >
-<option value=""> &larr; CATEGORY &rarr;</option>  
-     <?php
-              $query="select * from category WHERE deptsel = '1'";
-              $run=$conn->prepare($query);
-              $run->execute();
-              $rs=$run->get_result();
-              while ($res=$rs->fetch_assoc()) {
-                $supid = $res['id'];
-                $suppdesc = $res['category_name'];
-              ?>
-
-              <option value="<?php echo $supid;?>"><?= $suppdesc; ?></option>
-              <?php }?>
-              ?>   
+<select class="form-control form-control-sm" name="cat" id="cat">             
 </select> 
 </div>
 <div class="form-group col-4 col-md-4 col-lg-4">
@@ -299,24 +285,8 @@ style="text-transform:uppercase" onkeyup="this.value = this.value;"></textarea>
 </div>
 <div class="form-group col-4 col-md-4 col-lg-4 hide_isp">
 
-<label for="isp" id="lbl_isp">Service Provider</label>
+<!-- <label for="isp" id="lbl_isp">Service Provider</label> -->
 <input type="hidden" name="isp_num" id="isp_num" readonly="">
-<select class="form-control form-control-sm" name="isp" id="isp">
-<option value="">Select Network Provider</option>  
-     <?php
-              $query="select * from tbl_isp";
-              $run=$conn->prepare($query);
-              $run->execute();
-              $rs=$run->get_result();
-              while ($res=$rs->fetch_assoc()) {
-                $ispid = $res['isp_id'];
-                $ispdesc = $res['isp_shortDesc'];
-              ?>
-
-              <option value="<?php echo $ispid;?>"><?= $ispdesc; ?></option>
-              <?php }?>
-              ?>   
-</select> 
 </div>
 <div class="form-group col-4 col-md-4 col-lg-4 hide_isp">
 <label id="lbl_refNo" for="refNo">Reference No:</label>
@@ -584,11 +554,12 @@ $('#status').val(data['status']);
 $('#it_num').val(data['itsup']);
 $('#itsup').val(data['it_desc']);
 $('#cat_num').val(data['cat_id']);
-$('#cat').val(data['cat_id']);
+$('#cat').val(data['category']);
+// $('#cat').val(data['category']).triggerHandler('change');
 $('#sub_num').val(data['sub_id']);
 $('#sub').val(data['sub_id']);
 $('#isp_num').val(data['isp_id']);
-$('#isp').val(data['isp_id']);
+// $('#isp').val(data['isp_id']);
 $('#refNo').val(data['refNo']);
 $('#date_refNo').val(data['date_refNo']);
 admin_hideshowforms();
@@ -639,14 +610,22 @@ option.value=0;
 option.id='tmpsubid';
 option.selected='selected';
 option.text = $(this).parent().siblings(':nth-of-type(9)').html();
-sst.add(option);   
+sst.add(option);
+
+var sst2 = document.querySelector("#cat");  
+var option2 = document.createElement("option");
+option2.value=0;
+// option2.id='tmpsubid';
+option2.selected='selected';
+option2.text = $(this).parent().siblings(':nth-of-type(8)').html();
+sst2.add(option2);  
 
 // console.log(user_id)
 getinfo(tid, 'remarks', user_id);
 
 gtsub_id();
 
-$('.modal-title').text("Ticker Number: "+tid+"");
+$('.modal-title').text("Ticket Number: "+tid+"");
 $('#action').val("Save and Reply");
 $('#operation').val("Save and Reply"); 
 $('#userModal').modal({"show": true, "backdrop": 'static'});
@@ -796,7 +775,7 @@ location.reload();
 
 });
 
-_insert_data();
+// _insert_data();
 
 
 $(document).on('click', '#dtbsecond', function(){
@@ -862,25 +841,17 @@ $('#substr_clsbtn').empty();
 
 });
 
+
+
 });//document ready close
 
-
-
-
-// $('#action').click(function(event) {
-//   alert("Updated Successfully")
-//   location.reload();
-// });
-
-
-function _insert_data() {
-  $(document).on("submit", "#report_form", function (e) {
+$(document).on("submit", "#report_form", function (e) {
     // alert("1");
     e.preventDefault();
     var TicketNumber = $("#ticket_no").val();
     var Store = $("#store").val();
     var DateCreated = $("#date_created").val();
-    var Concern = $("#concern").val();
+    var Concern = $("#subjct").val();
     var Status = $("#status").val();
     var Via = $("#via").val();
     var ItSupport = $("#itsup").val();
@@ -946,7 +917,88 @@ function _insert_data() {
     }
      clearconsole();
   });
-}
+
+
+// $('#action').click(function(event) {
+//   alert("Updated Successfully")
+//   location.reload();
+// });
+
+
+// function _insert_data() {
+//   $(document).on("submit", "#report_form", function (e) {
+//     // alert("1");
+//     e.preventDefault();
+//     var TicketNumber = $("#ticket_no").val();
+//     var Store = $("#store").val();
+//     var DateCreated = $("#date_created").val();
+//     var Concern = $("#concern").val();
+//     var Status = $("#status").val();
+//     var Via = $("#via").val();
+//     var ItSupport = $("#itsup").val();
+//     var cat_id = $("#cat").val();
+//     var sub_id = $("#sub").val();
+//     var DateClosed = $("#date_closed").val();
+//     var CloseBy = $("#close_by").val();
+//     var remarks = $("#remarks").val();
+
+//     var today = new Date();
+//     DateCreated = new Date(DateCreated);
+//     DateClosed = new Date(DateClosed);
+//     if (DateCreated > today) {
+//       alert("Invalid date");
+//       return false;
+//     }
+//     // else if (Status == 'ON PROCESS')
+//     // {
+//     //   if (DateClosed < DateCreated ){
+//     //   alert("Date closed should be greater than date created!");
+//     //   return false;
+//     // }
+//     // }
+
+//     else if (DateClosed > today ){
+//       alert("Invalid Closed_Date");
+//       return false;
+//     }
+
+//     if (
+//       Store != "" &&
+//       DateCreated != "" &&
+//       Concern != "" &&
+//       Status != "" &&
+//       Via != "" &&
+//       ItSupport != "" &&
+//       cat_id != "" &&
+//       sub_id != ""
+//     ) {
+//       $.ajax({
+//         url: "insert.php",
+//         method: "POST",
+//         data: new FormData(this),
+//         contentType: false,
+//         processData: false,
+//         success: function (data) {
+//           // alert(data);
+//           // $("#report_form")[0].reset();
+//           Swal.fire({
+//              icon: 'success',
+//              title: 'Your work has been saved',
+//              showConfirmButton: false,
+//              timer: 1500
+//           });
+//           $("#userModal").modal("hide");
+//       //     setTimeout(function(){// wait for 5 secs(2)
+//       //      location.reload(); // then reload the page.(3)
+//       // }, 2000); 
+//         },
+//       });
+//     } else {
+//       alert("All Fields are Required");
+//     }
+//      clearconsole();
+//   });
+// }
 
 </script>
 

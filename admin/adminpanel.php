@@ -1050,7 +1050,25 @@ background: linear-gradient(135deg, #837031, #E1AD01);
 
 </div>
 
+        <div class="row" id="ovrall">
 
+          <div class="col-12 col-lg-6 mb-3">
+            <div class="card card2 h-100">
+              <h5 class="card-header" style="background-color: #95a2b9b4; color:black;">Overall Status</h5>
+              <div class="card-body">
+                <div id="chartdiv1"></div>
+              </div>
+            </div>
+          </div>
+
+            <div class="col-12 col-lg-6 mb-3">
+            <div class="card card2 h-100">
+              <h5 class="card-header" style="background-color: #95a2b9b4; color:black;">Department Tickets</h5>
+              <div class="card-body">
+                <div id="chartdiv2"></div>
+              </div>
+            </div>
+          </div>
 <div class="row">
 
 
@@ -1317,7 +1335,8 @@ style="text-transform:uppercase">
 
 
 
-
-
+<?php
+include 'chrtdashboard.php';
+?>
  
 

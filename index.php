@@ -271,7 +271,7 @@
                     <line x1="12" y1="22.08" x2="12" y2="12"></line>
                 </svg>
             </div>
-            <h2>DATA TRACKING SYSTEM</h2>
+            <h2>DATA TRACKING SYSTEM (DTS)</h2>
             <p>Track and manage data in real time with an organized platform.</p>
         </div>
     </a>
@@ -289,7 +289,7 @@
         </div>
     </a>
 
-    <a href="CLP_SYSTEM/index.php" class="sector pikachu-sector">
+    <a href="#" class="sector pikachu-sector">
         <div class="content">
             <div class="status-badge">Return</div>
 
@@ -298,8 +298,8 @@
                     <path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"></path>
                 </svg>
             </div>
-            <h2>CLP POINTS VALIDATION</h2>
-            <p>CLP POINTS VALIDATION SYSTEM.</p>
+            <h2>RETURN TO SUPPLIERS</h2>
+            <p>Handle return-to-suplier requests and their status updates.</p>
         </div>
     </a>
 </div>

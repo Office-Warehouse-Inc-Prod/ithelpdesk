@@ -9,7 +9,7 @@ if ($_SESSION['login']!='true'){
 
 include('db.php');
 include('function.php');
-$msgcnt = '0'; //admin
+$msgcnt = '1'; //admin
 
   $msgcntres = $connection->prepare("
    UPDATE reports_newmsg
@@ -20,7 +20,7 @@ $msgcnt = '0'; //admin
     array(
 
       ':ticket_no' => $_POST["tickno"],
-      ':nmsg_stat' => '0'
+      ':nmsg_stat' => '1'
 
     ));
   // echo $_POST["tickno"];
