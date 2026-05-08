@@ -822,7 +822,7 @@ background: linear-gradient(135deg, #837031, #E1AD01);
               <option value="<?php echo $brcnhid;?>"><?= $brnchcd; ?></option>
               <?php }?>
               ?>   
-  </select> s
+  </select> 
 </div>
 
 <div class="form-group col-6 col-md-6 col-lg-6">
@@ -843,23 +843,6 @@ background: linear-gradient(135deg, #837031, #E1AD01);
     </select> 
 </div>
 
-<div class="form-group col-6 col-md-6 col-lg-6">
-    <label>ASSIGNED DEPT</label>
-    <select class="form-control form-control-sm" name="f_deptsel" id="f_deptsel" required>
-        <option value="">Select Department...</option>  
-        <?php
-        $query = "SELECT * FROM tbl_dept WHERE dept_id <> '8'";
-        $run = $conn->prepare($query);
-        $run->execute();
-        $rs = $run->get_result();
-        while ($res = $rs->fetch_assoc()) {
-            $brcnhid = $res['dept_id'];
-            $brnchcd = $res['dept_desc'];
-        ?>
-            <option value="<?php echo $brcnhid; ?>"><?php echo $brnchcd; ?></option>
-        <?php } ?>
-    </select> 
-</div>
 <input type = "hidden" class="form-control form-control-sm" name = "ticket_no" id="ticket_no">
 
 
