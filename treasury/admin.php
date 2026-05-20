@@ -303,7 +303,7 @@ body {
         </li>
         <li class="nav-item">
           <a class="nav-link" href="adminpanel.php?create=true" id="navCreateReport">
-            <i class="fa fa-plus-circle" style="color: var(--primary-color);"></i> CREATE REPORT
+            <i class="fa fa-plus-circle" style="color: var(--primary-color);"></i> CREATE TICKET
           </a>
         </li>
       </ul>
