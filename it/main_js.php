@@ -369,13 +369,13 @@
           $('#date_createdx').attr('readonly', false);
           $('#date_refNo').attr('readonly', false);
           $('#date_closed').attr('readonly', false);
-          $('#subjct').attr('readonly', true);
-          $('#store').prop("disabled", true);
-          $('#via').prop("disabled", true);
-          $('#status').prop("disabled", true);
-          $('#itsup').prop("disabled", true);
-          $('#cat').prop("disabled", true);
-          $('#sub').prop("disabled", true);
+          $('#subjct').attr('readonly', false);
+          $('#store').prop("disabled", false);
+          $('#via').prop("disabled", false);
+          $('#status').prop("disabled", false);
+          $('#itsup').prop("disabled", false);
+          $('#cat').prop("disabled", false);
+          $('#sub').prop("disabled", false);
           $('#isp').prop("disabled", false);
           $('#remarks').attr('readonly', false);
         }

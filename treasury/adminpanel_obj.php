@@ -380,13 +380,13 @@ $('#report_data tbody').on('dblclick', 'tr', function () {
     $('#date_createdx').attr('readonly', false);
     $('#date_refNo').attr('readonly', false);
     $('#date_closed').attr('readonly', false);
-    $('#store').prop("disabled", false);
-    $('#via').prop("disabled", false);
-    $('#status').prop("disabled", false);
-    $('#itsup').prop("disabled", false);
-    $('#cat').prop("disabled", false);
-    $('#sub').prop("disabled", false);
-    $('#isp').prop("disabled", false);
+    $('#store').prop("readonly", false);
+    $('#via').prop("readonly", false);
+    $('#status').prop("readonly", false);
+    $('#itsup').prop("readonly", false);
+    $('#cat').prop("readonly", false);
+    $('#sub').prop("readonly", false);
+    $('#isp').prop("readonly", false);
     $('#remarks').attr('readonly', false);
   }
 
