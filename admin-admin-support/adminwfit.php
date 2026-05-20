@@ -821,11 +821,10 @@ const dataset=t.newrptdata;
   $('#action').val("Update");
   $('#operation').val("Save and Reply"); 
 
-var tid=$(this).parent().siblings(':first').html();
-$('#tick_title').text("Ticker Number: "+tid+"");
+  var tid = data['ticket_no'];
+  $('#tick_title').text("Ticker Number: "+tid+"");
 
-getinfo(tid, 'remarks', user_id);
-// console.log(tid)
+  getinfo(tid, 'remarks', user_id);
 
 // $('#itsup').change(function(e) { 
 //     e.preventDefault();

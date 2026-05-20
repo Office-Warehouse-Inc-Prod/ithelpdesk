@@ -1,4 +1,3 @@
-     
 <?php
 session_start();
 /**
@@ -11,7 +10,7 @@ var $connection = false;
 	{
 $username = 'root';
 $password = '';
-$this->connection = new PDO( 'mysql:host=localhost;dbname=helpdesk1', $username, $password );
+$this->connection = new PDO( 'mysql:host=localhost;dbname=helpdesk1;charset=utf8', $username, $password );
 
 return $this->connection;
 	
