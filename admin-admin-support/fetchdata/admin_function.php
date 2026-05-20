@@ -310,9 +310,16 @@ class dbconfig extends dbconn
 
 		//exclude from deptsel migration to f_deptsel since vw6 f_deptsel  AS "dept_sel"
 
-		$query = "
-		Select * from vw6 WHERE vw6.deptsel = '2' AND 
-		vw6.sub_id NOT IN ('15','28','34','35') AND status NOT IN ('NEW REPORT', 'Assigned', 'ASSIGNED') AND cat_id IN ('37','38','39','40','41') AND YEAR(vw6.date_created) IN (" . $_POST['yr'] . ")";
+		$query = "SELECT DISTINCT vw6.*
+		FROM vw6
+		LEFT JOIN users ON vw6.ursID = users.id
+		WHERE (
+			(vw6.deptsel = '2' AND vw6.cat_id IN ('37','38','39','40','41') AND vw6.status NOT IN ('NEW REPORT', 'Assigned', 'ASSIGNED'))
+			OR 
+			(users.deptsel = '2' AND vw6.status NOT IN ('NEW REPORT'))
+		)
+		AND vw6.sub_id NOT IN ('15', '28', '34', '35')
+		AND YEAR(vw6.date_created) IN (" . $_POST['yr'] . ")";
 
 		$statement = $this->connection->prepare($query);
 		$statement->execute();

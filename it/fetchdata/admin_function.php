@@ -302,14 +302,11 @@ class dbconfig extends dbconn
 		FROM vw6
 		LEFT JOIN users ON vw6.ursID = users.id
 		WHERE (
-		
-			(vw6.deptsel = '1' AND vw6.cat_id IN ('47','48','49','50','51','52','53'))
+			(vw6.deptsel = '1' AND vw6.cat_id IN ('47','48','49','50','51','52','53') AND vw6.status NOT IN ('NEW REPORT', 'Assigned', 'ASSIGNED'))
 			OR 
-
-			(users.deptsel = '1')
+			(users.deptsel = '1' AND vw6.status NOT IN ('NEW REPORT'))
 		)
 		AND vw6.sub_id NOT IN ('15', '28', '34', '35')
-		AND vw6.status NOT IN ('NEW REPORT', 'Assigned', 'ASSIGNED')
 		AND YEAR(vw6.date_created) IN (" . $_POST['yr'] . ")";
 
 		$statement = $this->connection->prepare($query);
