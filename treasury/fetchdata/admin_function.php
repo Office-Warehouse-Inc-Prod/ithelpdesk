@@ -311,7 +311,7 @@ class dbconfig extends dbconn
 		WHERE (
 			(vw6.deptsel = '15' AND vw6.cat_id IN ('61') AND vw6.status NOT IN ('NEW REPORT', 'Assigned', 'ASSIGNED'))
 			OR 
-			(users.deptsel = '15' AND vw6.status NOT IN ('NEW REPORT'))
+			(users.deptsel = '15' AND vw6.status IN ('NEW REPORT'))
 		)
 		AND vw6.sub_id NOT IN ('15', '28', '34', '35')
 		AND YEAR(vw6.date_created) IN (" . $_POST['yr'] . ")";
@@ -406,7 +406,7 @@ FROM
 			LEFT JOIN `reports_newmsg` ON ( `reports_newmsg`.`ticket_no` = `reports`.`ticket_no` ))
 	LEFT JOIN `users` ON ( `users`.`id` = `reports`.`userId` )) 
 WHERE
-	`reports`.`status` = 'ASSIGNED' 
+	(`reports`.`status` = 'ASSIGNED' OR `reports`.`status` = 'Assigned')
 	AND reports.f_deptsel = '15'
 	GROUP BY
 	concern

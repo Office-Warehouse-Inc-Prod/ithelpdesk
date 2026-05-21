@@ -382,7 +382,7 @@ Start of Add/Edit Modal
                     <option value=""> &larr; CATEGORY &rarr;</option>
                     <?php
                       // $query="select * from category WHERE deptsel = '1'";
-                          $query="select * from categories WHERE deptsel = '6'";
+                          $query="select * from categories WHERE deptsel = '6' AND old_tag IS NULL";
                       $run=$conn->prepare($query);
                       $run->execute();
                       $rs=$run->get_result();
@@ -540,6 +540,123 @@ Start of Add/Edit Modal
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
+<!-- =========================
+Start of Create Department Report Modal
+========================= -->
+<div class="modal fade" id="createReportModal" tabindex="-1" role="dialog" aria-labelledby="createReportModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <form method="post" id="create_report_form" enctype="multipart/form-data">
+      <div class="modal-content"
+        style="border-radius: 15px; border: none; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);">
+        <div class="modal-header"
+          style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: white; border-top-left-radius: 15px; border-top-right-radius: 15px;">
+          <h5 class="modal-title font-weight-bold" id="createReportModalLabel"><i
+              class="fas fa-plus-circle mr-2 text-warning"></i> Create Department Report</h5>
+          <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close"
+            style="opacity: 0.8; outline: none; background: none; border: none;">
+            <span aria-hidden="true" style="font-size: 28px;">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" style="padding: 30px; background-color: #fcfcfc;">
+          <div class="row">
+            <!-- Left Side: Dropdowns -->
+            <div class="col-12 col-lg-6">
+              <div class="form-group mb-4">
+                <label class="font-weight-bold text-secondary small"><i class="fas fa-store mr-1 text-primary"></i>
+                  STORE/BRANCH</label>
+                <select class="form-control" name="store" id="create_store" required
+                  style="border-radius: 8px; height: 45px; pointer-events: none; background-color: #e9ecef;">
+                  <?php
+                  $query = "select * from tbl_branch ";
+                  $run = $conn->prepare($query);
+                  $run->execute();
+                  $rs = $run->get_result();
+                  while ($res = $rs->fetch_assoc()) {
+                    $brcnhid = $res['str_num'];
+                    $brnchcd = $res['str_code'] . ' | ' . $res['str_name'];
+                    $selected = ($brcnhid == '201') ? 'selected' : '';
+                    ?>
+                    <option value="<?php echo $brcnhid; ?>" <?= $selected; ?>><?= $brnchcd; ?></option>
+                  <?php } ?>
+                </select>
+              </div>
+
+              <div class="form-group mb-4">
+                <label class="font-weight-bold text-secondary small"><i class="fas fa-building mr-1 text-primary"></i>
+                  ATTENTION TO (DEPARTMENT)</label>
+                <select class="form-control" name="deptsel" id="create_deptsel" required
+                  style="border-radius: 8px; height: 45px;">
+                  <option value="" selected disabled>Select Here</option>
+                  <option value="1">IT</option>
+                  <option value="2">ADMIN</option>
+                  <option value="3">MARKETING</option>
+                  <option value="6">VISUAL</option>
+                  <option value="11">H.R</option>
+                  <option value="13">ACCOUNTS PAYABLE</option>
+                  <option value="16">ACCOUNT RECEIVABLE</option>
+                </select>
+              </div>
+
+              <div class="form-group mb-4">
+                <label class="font-weight-bold text-secondary small"><i class="fas fa-envelope mr-1 text-primary"></i>
+                  SUBJECT (CATEGORY)</label>
+                <select class="form-control" id="create_subject" name="subject" required style="width: 100%;">
+                  <option value="" selected disabled>---Select Category---</option>
+                </select>
+              </div>
+
+              <div class="form-group mb-4" id="create_sub_group" style="display: none;">
+                <label class="font-weight-bold text-secondary small"><i class="fas fa-tag mr-1 text-primary"></i>
+                  SUBCATEGORY</label>
+                <select class="form-control" id="create_sub" name="sub" style="width: 100%;">
+                  <option value="" selected disabled>---Select Subcategory---</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Right Side: Concern and Upload -->
+            <div class="col-12 col-lg-6">
+              <div class="form-group mb-4">
+                <label class="font-weight-bold text-secondary small"><i
+                    class="fas fa-comment-alt mr-1 text-primary"></i> CONCERN (MESSAGE)</label>
+                <textarea class="form-control" id="create_concern" name="concern" minlength="10" maxlength="1000"
+                  rows="5" placeholder="Describe the concern or request in detail..." required
+                  style="border-radius: 8px; resize: none; height: 140px;"></textarea>
+              </div>
+
+              <div class="form-group mb-4">
+                <label class="font-weight-bold text-secondary small"><i
+                    class="fas fa-paperclip mr-1 text-primary"></i> ATTACH FILES (OPTIONAL)</label>
+                <div class="custom-file">
+                  <input id="create_file-input" type="file" name="file" multiple class="form-control-file">
+                  <small class="form-text text-muted">Max file size: 2MB. Allowed types: Images, PDF, Docs,
+                    Excel.</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer"
+          style="background-color: #f1f3f6; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; border-top: 1px solid #e3e6ec; padding: 15px 30px;">
+          <div class="mr-auto d-flex align-items-center">
+            <span class="badge badge-info p-2 font-weight-bold text-uppercase"
+              style="font-size: 13px; border-radius: 6px; letter-spacing: 0.5px; background-color: #17a2b8; color: white;">
+              Generated Ticket: <span id="create_ticket_lbl">---</span>
+            </span>
+            <input type="hidden" name="ticket_no" id="create_ticket_no">
+          </div>
+          <button type="button" class="btn btn-light font-weight-bold px-4" data-dismiss="modal"
+            style="border-radius: 8px; height: 40px;">Cancel</button>
+          <button type="submit" name="action" id="create_action" class="btn btn-primary font-weight-bold px-4"
+            style="border-radius: 8px; height: 40px; background-color: #1e3c72; border: none;"><i
+              class="fas fa-save mr-2"></i>Save Ticket</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
 <script>
   $(document).ready(function() {
     // KPI Card Click Functionality
@@ -557,7 +674,195 @@ Start of Add/Edit Modal
 
         $(this).fadeOut(100).fadeIn(100);
     });
-});
+
+    // Handle 'CREATE REPORT' Navbar Link Click
+    $(document).on('click', '#navCreateReport', function (e) {
+      // If we are already on adminpanel.php, open the modal directly
+      if (window.location.pathname.endsWith('adminpanel.php') || window.location.pathname.endsWith('/visual/')) {
+        e.preventDefault();
+        $('#createReportModal').modal({ backdrop: 'static', keyboard: false });
+      }
+    });
+
+    // Handle query param create=true on load
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('create') === 'true') {
+      $('#createReportModal').modal({ backdrop: 'static', keyboard: false });
+      // Clean up url parameters without reloading
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+
+    // Reset Form when Modal Closes or Opens
+    $('#createReportModal').on('show.bs.modal', function () {
+      $('#create_report_form').trigger('reset');
+      $('#create_store').val('201'); // Auto-select CEN | CENTRAL OFFICE - LIBIS
+      $('#create_subject').val(null).trigger('change');
+      $('#create_sub').val(null).trigger('change');
+      $('#create_sub_group').hide();
+      $('#create_ticket_lbl').text('---');
+      $('#create_ticket_no').val('');
+    });
+
+    // Populate dynamic categories and fetch ticket numbers when Attention To Department changes
+    $("#create_deptsel").on("change", function () {
+      $('#create_subject').val(null).trigger('change');
+      $('#create_sub').val(null).trigger('change');
+      $('#create_sub_group').hide();
+      let val = $(this).val();
+
+      $("#create_subject").select2({
+        dropdownParent: $('#createReportModal'),
+        width: '100%',
+        minimumResultsForSearch: Infinity, // Disable search box
+        ajax: {
+          url: "../users/select.php",
+          type: "get",
+          dataType: 'json',
+          delay: 250,
+          data: function (params) {
+            return {
+              type: 'category_id',
+              val: val
+            };
+          },
+          processResults: function (response) {
+            return {
+              results: response
+            };
+          },
+          cache: true
+        }
+      });
+
+      // Dynamic Ticket Number Generation Fetch
+      $.post('../users/fetch.php', { operation: 'search_tkt', iN: val }, function (data) {
+        if (data && data[0]) {
+          let next_tktno = data[0].ticket_no;
+          let deptabr = data[0].dept;
+          $('#create_ticket_no').val(deptabr + '' + next_tktno);
+          $('#create_ticket_lbl').html(deptabr + '' + next_tktno);
+        }
+      }, 'json');
+    });
+
+    $("#create_subject").on("change", function () {
+      let category_id = $(this).val();
+      if (!category_id) {
+        $('#create_sub_group').hide();
+        return;
+      }
+      
+      $.ajax({
+        url: "get_subcat.php",
+        type: "POST",
+        data: { category_id: category_id },
+        cache: false,
+        success: function(dataResult) {
+          $("#create_sub").html(dataResult);
+          $('#create_sub_group').show();
+        }
+      });
+    });
+
+    // Validate uploaded file size and extensions
+    $('#create_file-input').on('change', function () {
+      for (var i = 0; i < this.files.length; ++i) {
+        var file = this.files[i];
+        if (file.size > 2097152) { // 2MB
+          Swal.fire({
+            icon: 'error',
+            title: 'File Too Large',
+            text: 'File "' + file.name + '" must not exceed 2MB.'
+          });
+          this.value = "";
+          return false;
+        }
+        var ext = file.name.split('.').pop().toLowerCase();
+        var validExtensions = ['jpg', 'jpeg', 'gif', 'png', 'txt', 'pdf', 'docx', 'doc', 'xlsx', 'xls'];
+        if ($.inArray(ext, validExtensions) === -1) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Invalid File Type',
+            text: 'File "' + file.name + '" has an invalid extension.'
+          });
+          this.value = "";
+          return false;
+        }
+      }
+    });
+
+    // Handle AJAX Submission of Department Ticket
+    $('#create_report_form').on('submit', function (e) {
+      e.preventDefault();
+
+      var form = this;
+      var formData = new FormData(form);
+
+      $.ajax({
+        url: "api_create_dept_report.php",
+        method: "POST",
+        data: formData,
+        contentType: false,
+        processData: false,
+        beforeSend: function () {
+          $('#create_action').prop('disabled', true);
+          $.LoadingOverlay("show", {
+            image: "",
+            background: "rgba(0, 0, 0, 0.45)"
+          });
+        },
+        success: function (response) {
+          $.LoadingOverlay("hide");
+          $('#create_action').prop('disabled', false);
+
+          if (response.Response) {
+            // Upload files if selected
+            var files = $('#create_file-input')[0].files;
+            if (files.length > 0) {
+              var fileData = new FormData();
+              for (var i = 0; i < files.length; i++) {
+                fileData.append('files[]', files[i]);
+              }
+              fileData.append('ticket_no', response.ticket_no);
+
+              $.ajax({
+                type: "POST",
+                url: "insertimg.php",
+                data: fileData,
+                processData: false,
+                contentType: false
+              });
+            }
+
+            Swal.fire({
+              icon: 'success',
+              title: 'Success!',
+              text: 'Report successfully submitted to OWI HELPDESK.',
+              timer: 2000,
+              showConfirmButton: false
+            }).then(function () {
+              $('#createReportModal').modal('hide');
+              // Smoothly refresh charts and grid datatables instantly
+              if (typeof getdata === 'function') {
+                const currentYr = $("#yearpicker").val();
+                getdata(currentYr);
+              }
+              if (typeof get_card_data === 'function') {
+                const currentYr = $("#yearpicker").val();
+                get_card_data(currentYr);
+              }
+            });
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Submission Failed',
+              html: response.m
+            });
+          }
+        }
+      });
+    });
+  });
 </script>
 
 

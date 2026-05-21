@@ -20,7 +20,7 @@ class dbconfig extends dbconn
 		COUNT(CASE WHEN reports.`status` = 'SUBJECT FOR CLOSING' then 1 else NULL END) AS t_day
 		-- COUNT(CASE WHEN reports.`status` = 'CLOSED' AND DATE(reports.date_closed) = CURRENT_DATE THEN 1 else NULL END) AS t_day
         FROM
-        reports WHERE sub_id NOT IN ('15','28','34','35') AND `status` NOT IN ('WAITING FOR IT HELDESK RESPONSE','NEW REPORT') AND YEAR(date_created) IN (".$_POST['yr'] .") AND reports.f_deptsel = '6'";
+        reports WHERE sub_id NOT IN ('15','28','34','35') AND `status` NOT IN ('WAITING FOR IT HELDESK RESPONSE','NEW REPORT') AND cat_id IN ('19','20','21','22','23','27','34','35','36') AND YEAR(date_created) IN (".$_POST['yr'] .") AND reports.f_deptsel = '6'";
 
         $statement = $this->connection->prepare($query);
         $statement-> execute();
@@ -54,7 +54,7 @@ class dbconfig extends dbconn
 			FROM
 			reports
 			LEFT JOIN tbl_status ON reports.`status` = tbl_status.stat_desc
-			where `reports`.`sub_id` NOT IN ('15','28','34','35') AND `status` NOT IN ('WAITING FOR IT HELPDESK RESPONSE','NEW REPORT','ASSIGNED') AND YEAR(date_created) IN (".$_POST['yr'] .") AND reports.f_deptsel = '6'
+			where `reports`.`sub_id` NOT IN ('15','28','34','35') AND `status` NOT IN ('WAITING FOR IT HELPDESK RESPONSE','NEW REPORT','ASSIGNED') AND cat_id IN ('19','20','21','22','23','27','34','35','36') AND YEAR(date_created) IN (".$_POST['yr'] .") AND reports.f_deptsel = '6'
 			GROUP BY `status`
 			ORDER BY stat_id ASC
 
@@ -95,7 +95,7 @@ class dbconfig extends dbconn
 				LEFT JOIN reports ON reports.itsup = it_tech.itsup
 				INNER JOIN users ON users.tech_id = it_tech.itsup
 				WHERE
-				reports.sub_id NOT IN (15,28,34,35) AND reports.itsup NOT IN ('8') AND reports.f_deptsel = '6' and
+				reports.sub_id NOT IN (15,28,34,35) AND reports.itsup NOT IN ('8') AND reports.f_deptsel = '6' AND cat_id IN ('19','20','21','22','23','27','34','35','36') AND
 				YEAR(reports.date_created) IN (".$_POST['yr'].")
 				GROUP BY
 				reports.itsup
@@ -131,7 +131,7 @@ class dbconfig extends dbconn
 	public function linegraph(){
 
 		$query='';
-		if ($_POST['yr'] != '2019,2020,2021,2022,2023') {
+		if ($_POST['yr'] != '2019,2020,2021,2022,2023,2024,2025') {
 		$query="
 		SELECT
 		DATE( date_created ) AS DATEPART,
@@ -140,7 +140,7 @@ class dbconfig extends dbconn
 		FROM
 		reports
 		WHERE
-		year(date_created) BETWEEN '".$_POST['yr'] ."' AND '".$_POST['yr'] ."' and reports.sub_id NOT IN ('15','28','34','35') AND reports.f_deptsel = '6'
+		year(date_created) BETWEEN '".$_POST['yr'] ."' AND '".$_POST['yr'] ."' and reports.sub_id NOT IN ('15','28','34','35') AND reports.f_deptsel = '6' AND cat_id IN ('19','20','21','22','23','27','34','35','36')
 		GROUP BY
 		DATEPART";	
 		} else {
@@ -152,7 +152,7 @@ class dbconfig extends dbconn
 		FROM
 		reports
 		WHERE
-		year(date_created) BETWEEN '2019' AND '2022' and reports.sub_id NOT IN ('15','28','34','35') 
+		year(date_created) BETWEEN '2019' AND '2022' and reports.sub_id NOT IN ('15','28','34','35') AND reports.f_deptsel = '6' AND cat_id IN ('19','20','21','22','23','27','34','35','36')
 		GROUP BY
 		DATEPART";
 		}
@@ -176,7 +176,7 @@ class dbconfig extends dbconn
 		$query= "
 		SELECT cat_desc,clr,cat_id, count(*) as ctn, date_created
 		FROM vwp 
-		WHERE deptsel = '6' AND date_created IN (".$_POST['yr'] .")  AND cat_desc <> 'GENERAL'
+		WHERE deptsel = '6' AND cat_id IN ('19','20','21','22','23','27','34','35','36') AND date_created IN (".$_POST['yr'] .")  AND cat_desc <> 'GENERAL'
 		GROUP BY cat_id ORDER BY cat_desc ASC";
 		$statement = $this->connection->prepare($query);
 		$statement-> execute();
@@ -228,7 +228,7 @@ class dbconfig extends dbconn
 				JOIN `tbl_branch` ON ( `reports`.`store` = `tbl_branch`.`str_num` ))
 		JOIN `tbl_area` ON ( `tbl_area`.`area_num` = `tbl_branch`.`area_num` )) 
 	WHERE
-		YEAR ( `reports`.`date_created` )  IN ( ".$_POST['yr'] ." ) AND f_deptsel = '6'
+		YEAR ( `reports`.`date_created` )  IN ( ".$_POST['yr'] ." ) AND f_deptsel = '6' AND cat_id IN ('19','20','21','22','23','27','34','35','36')
 	GROUP BY
 		`tbl_branch`.`area_num`";
 		$statement = $this->connection->prepare($query);
@@ -301,9 +301,16 @@ class dbconfig extends dbconn
 
 //exclude from deptsel migration to f_deptsel since vw6 f_deptsel  AS "dept_sel"
 
-	$query="
-	Select * from vw6 WHERE vw6.deptsel = '6' AND
-	vw6.sub_id NOT IN ('15','28','34','35') AND status <> 'NEW REPORT' AND YEAR(vw6.date_created) IN (".$_POST['yr'] .")";
+	$query="SELECT DISTINCT vw6.*
+		FROM vw6
+		LEFT JOIN users ON vw6.ursID = users.id
+		WHERE (
+			(vw6.deptsel = '6' AND vw6.cat_id IN ('19','20','21','22','23','27','34','35','36') AND vw6.status NOT IN ('NEW REPORT', 'Assigned', 'ASSIGNED'))
+			OR 
+			(users.deptsel = '6' AND vw6.status IN ('NEW REPORT'))
+		)
+		AND vw6.sub_id NOT IN ('15', '28', '34', '35')
+		AND YEAR(vw6.date_created) IN (" . $_POST['yr'] . ")";
 	
 	$statement = $this->connection->prepare($query);
 	$statement-> execute();

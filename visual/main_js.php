@@ -289,7 +289,7 @@ $('#report_data tbody').on('dblclick', 'tr', function () {
   if (!data) return;
   // console.log(data);
   $('#subjct').attr('readonly', true);
-  var tid = $(this).find('td:eq(2)').html(); 
+  var tid = $(this).find('td:eq(2)').html();
   $('#ticket_no').val(data['ticket_no']);
   $('#str_num').val(data['store']);
   $('#store').val(data['store']);
@@ -299,13 +299,37 @@ $('#report_data tbody').on('dblclick', 'tr', function () {
   $('#via').val(data['via']);
   $('#status').val(data['status']);
   $('#it_num').val(data['itsup']);
+  if (data['itsup'] && $('#itsup option[value="' + data['itsup'] + '"]').length === 0) {
+    $('<option>', {
+      value: data['itsup'],
+      text: data['it_desc'] ? data['it_desc'] : 'Support ID ' + data['itsup'],
+      class: 'temp-option'
+    }).appendTo('#itsup');
+  }
   $('#itsup').val(data['itsup']);
+
   $('#cat_num').val(data['cat_id']);
   $('#close_by').val(data['close_by']);
   $('#cl_desc').val(data['clusers']); // added 5/3/2024
+
+  if (data['cat_id'] && $('#cat option[value="' + data['cat_id'] + '"]').length === 0) {
+    $('<option>', {
+      value: data['cat_id'],
+      text: data['category'] ? data['category'] : 'Category ID ' + data['cat_id'],
+      class: 'temp-option'
+    }).appendTo('#cat');
+  }
   $('#cat').val(data['cat_id']);
+
   $('#sub_num').val(data['sub_id']);
-  $('#sub').val(data['sub_category']);
+  if (data['sub_id'] && $('#sub option[value="' + data['sub_id'] + '"]').length === 0) {
+    $('<option>', {
+      value: data['sub_id'],
+      text: data['sub_category'] ? data['sub_category'] : 'Sub Category ID ' + data['sub_id'],
+      class: 'temp-option'
+    }).appendTo('#sub');
+  }
+  $('#sub').val(data['sub_id']);
   $('#isp_num').val(data['isp_id']);
   $('#isp').val(data['isp_id']);
   $('#refNo').val(data['refNo']);
@@ -320,7 +344,7 @@ $('#report_data tbody').on('dblclick', 'tr', function () {
   $('#itsup').off('change').on('change', function () {
     var itfrstsup = $('#it_num').val();
     var itchange = this.value;
-    if (itfrstsup != itchange ) {
+    if (itfrstsup != itchange) {
       $('#remarks').attr("placeholder", "Reason for re-assign/ Workoutput");
       $('#remarks').val("");
     } else {
@@ -328,8 +352,8 @@ $('#report_data tbody').on('dblclick', 'tr', function () {
     }
   });
 
-  if($('#status').val() == 'CLOSED') {
-    $(':input[type="submit"]').prop('disabled', true); 
+  if ($('#status').val() == 'CLOSED') {
+    $(':input[type="submit"]').prop('disabled', true);
     $('#date_createdx').attr('readonly', true);
     $('#date_refNo').attr('readonly', true);
     $('#date_closed').attr('readonly', true);
@@ -342,10 +366,11 @@ $('#report_data tbody').on('dblclick', 'tr', function () {
     $('#isp').prop("disabled", true);
     $('#remarks').attr('readonly', true);
   } else {
-    $(':input[type="submit"]').prop('disabled', false); 
+    $(':input[type="submit"]').prop('disabled', false);
     $('#date_createdx').attr('readonly', false);
     $('#date_refNo').attr('readonly', false);
     $('#date_closed').attr('readonly', false);
+    $('#subjct').attr('readonly', false);
     $('#store').prop("disabled", false);
     $('#via').prop("disabled", false);
     $('#status').prop("disabled", false);
@@ -356,40 +381,31 @@ $('#report_data tbody').on('dblclick', 'tr', function () {
     $('#remarks').attr('readonly', false);
   }
 
-  // ✅ Retained block as requested
-  var sst = document.querySelector("#sub");  
-  var option = document.createElement("option");
-  option.value = 0;
-  option.id = 'tmpsubid';
-  option.selected = 'selected';
-  option.text = $(this).find('td:eq(10)').html();
-  sst.add(option);   
-
   getinfo(tid, 'remarks', user_id);
-  
+
   gtsub_id();
 
   $('.modal-title').text("Ticket Number: " + tid);
   $('#action').val("Save and Reply");
-  $('#operation').val("Save and Reply"); 
+  $('#operation').val("Save and Reply");
   $('#userModal').modal({ "show": true, "backdrop": 'static' });
 
   var valtick = $('#ticket_no').val();
 
   $.ajax({
-      type: 'POST',
-      url: 'sesticket.php',
-      data: {tktval: valtick},
-      success: function(response) {
-        $('#img').html(response);
-      }
-    });
+    type: 'POST',
+    url: 'sesticket.php',
+    data: { tktval: valtick },
+    success: function (response) {
+      $('#img').html(response);
+    }
+  });
 
-$('#msgbtn').show();
-$('msg_thread').show();
-$('.dv_msg').show();
-$('#remarks_view').show();
-$('#addmsg').val("");
+  $('#msgbtn').show();
+  $('msg_thread').show();
+  $('.dv_msg').show();
+  $('#remarks_view').show();
+  $('#addmsg').val("");
 
 });
 

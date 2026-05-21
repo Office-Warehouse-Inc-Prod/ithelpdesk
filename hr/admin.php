@@ -32,6 +32,11 @@ exit();
 <script src="../js/popper.min.js"></script>
 <script src="../js/4bootstrap.min.js"></script>
 <script src="../vendor/sweetalert/dist/sweetalert2.all.min.js"></script>
+<!-- Select2 -->
+<link rel="stylesheet" href="../dist/select2/dist/css/select2.min.css" />
+<script src="../dist/select2/dist/js/select2.min.js"></script>
+<!-- LoadingOverlay -->
+<script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
 <link rel="stylesheet" href="../plugins/DataTables-1.10.25/media/css/dataTables.bootstrap.min.css"/>
 <link rel="stylesheet" href="//cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css"/>
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.css"/>
@@ -290,10 +295,16 @@ body {
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="maintDrop" role="button" data-toggle="dropdown">
             <i class="fa fa-sliders-h"></i> MAINTENANCE
+          </a>
           <div class="dropdown-menu" aria-labelledby="maintDrop">
             <a class="dropdown-item" href="user_maintenance.php"><i class="fas fa-user-cog"></i> User Maintenance</a>
             <a class="dropdown-item" href="store_maintenance.php"><i class="fas fa-store"></i> Store Maintenance</a>
           </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="adminpanel.php?create=true" id="navCreateReport">
+            <i class="fa fa-plus-circle" style="color: var(--primary-color);"></i> CREATE TICKET
+          </a>
         </li>
       </ul>
 

@@ -298,13 +298,37 @@
         $('#via').val(data['via']);
         $('#status').val(data['status']);
         $('#it_num').val(data['itsup']);
+        if (data['itsup'] && $('#itsup option[value="' + data['itsup'] + '"]').length === 0) {
+          $('<option>', {
+            value: data['itsup'],
+            text: data['it_desc'] ? data['it_desc'] : 'Support ID ' + data['itsup'],
+            class: 'temp-option'
+          }).appendTo('#itsup');
+        }
         $('#itsup').val(data['itsup']);
+
         $('#cat_num').val(data['cat_id']);
         $('#close_by').val(data['close_by']);
         $('#cl_desc').val(data['clusers']); // added 5/3/2024
+
+        if (data['cat_id'] && $('#cat option[value="' + data['cat_id'] + '"]').length === 0) {
+          $('<option>', {
+            value: data['cat_id'],
+            text: data['category'] ? data['category'] : 'Category ID ' + data['cat_id'],
+            class: 'temp-option'
+          }).appendTo('#cat');
+        }
         $('#cat').val(data['cat_id']);
+
         $('#sub_num').val(data['sub_id']);
-        $('#sub').val(data['sub_category']);
+        if (data['sub_id'] && $('#sub option[value="' + data['sub_id'] + '"]').length === 0) {
+          $('<option>', {
+            value: data['sub_id'],
+            text: data['sub_category'] ? data['sub_category'] : 'Sub Category ID ' + data['sub_id'],
+            class: 'temp-option'
+          }).appendTo('#sub');
+        }
+        $('#sub').val(data['sub_id']);
         $('#isp_num').val(data['isp_id']);
         $('#isp').val(data['isp_id']);
         $('#refNo').val(data['refNo']);
@@ -345,6 +369,7 @@
           $('#date_createdx').attr('readonly', false);
           $('#date_refNo').attr('readonly', false);
           $('#date_closed').attr('readonly', false);
+          $('#subjct').attr('readonly', false);
           $('#store').prop("disabled", false);
           $('#via').prop("disabled", false);
           $('#status').prop("disabled", false);
@@ -352,17 +377,7 @@
           $('#cat').prop("disabled", false);
           $('#sub').prop("disabled", false);
           $('#isp').prop("disabled", false);
-          $('#remarks').attr('readonly', false);
         }
-
-        // ✅ Retained block as requested
-        var sst = document.querySelector("#sub");
-        var option = document.createElement("option");
-        option.value = 0;
-        option.id = 'tmpsubid';
-        option.selected = 'selected';
-        option.text = $(this).find('td:eq(10)').html();
-        sst.add(option);
 
         getinfo(tid, 'remarks', user_id);
 

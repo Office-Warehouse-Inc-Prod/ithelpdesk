@@ -365,7 +365,7 @@ Start of Add/Edit Modal
                     <option value=""> &larr; CATEGORY &rarr;</option>
                     <?php
                       // $query="select * from category WHERE deptsel = '1'";
-                          $query="select * from categories WHERE deptsel = '2'";
+                          $query="select * from categories WHERE deptsel = '2' AND old_tag IS NULL";
                       $run=$conn->prepare($query);
                       $run->execute();
                       $rs=$run->get_result();
