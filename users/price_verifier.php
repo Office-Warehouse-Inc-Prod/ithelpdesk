@@ -63,7 +63,7 @@ hr {
 
         <div class="col-md-12">
             <input style="font-size:50px;" type="text" name="pr_vr" id="pr_vr" class="numbers form form-control text-center input-lg">
-            <input type="text" name="SBS_NO" id="SBS_NO" value="<?php echo $_SESSION['SBS_NO']; ?>">
+            <input type="hidden" name="SBS_NO" id="SBS_NO" value="<?php echo $_SESSION['SBS_NO']; ?>">
            <input type="hidden" name="PRICE_LVL" id="PRICE_LVL" value="<?php echo $_SESSION['PRICE_LVL']; ?>">
         </div>
 
