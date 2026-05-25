@@ -186,6 +186,7 @@ $user = NULL;
     $_SESSION['user_id'] = $results['id'];
     $_SESSION['str_num'] = $results['str_num'];
     $_SESSION['password'] = $results['password'];
+        $_SESSION['SBS_NO'] = $results['SBS_NO'];
         if(base64_decode($_SESSION['password'])!= $dflpass) {
            header("Location: users/userpanel.php");
         }
