@@ -130,7 +130,7 @@ $ticknum = $res['ticket_no']+1;
     ':subject' => strtoupper($_POST["subjct"]),
     // ':concern' => $_POST["concern"],
     ':via' => $_POST["via"],
-    ':status' => $_POST["status"],
+    ':status' => $_POST["setStatus"],
     ':itsup' => $_POST["itsup"],
     ':cat_id' => $_POST["cat"],
     ':sub_id' => $_POST["sub"],
@@ -162,7 +162,7 @@ $ticknum = $res['ticket_no']+1;
 
  }
 
-  if($_POST['status'] == "OPEN") {
+  if($_POST['setStatus'] == "Assigned") {
       $resasgn = $connection->prepare("
       INSERT INTO tbl_notif (ticket_no, store, itsup, notif_data, notif_val, notif_date, assigned_by)
       VALUES (:ticket_no, :store, :itsup, :notif_data, :notif_val, :notif_date, :assigned_by)");
@@ -623,44 +623,42 @@ else{
 // }
 
 
-if ($_POST["operation"] == "New_Report") {
 
-    if (empty($_POST["ticket_no"])) {
+if ($_POST["operation"] == "New_Report") {
+    $ticket_no = trim($_POST["ticket_no"] ?? '');
+    if ($ticket_no === '') {
         http_response_code(400);
         exit("Missing ticket_no");
     }
 
-    $ticket_no   = $_POST["ticket_no"];
-    $store       = $_POST["store"] ?? '0';
-    $dept        = $_POST["f_deptsel"] ?? '0';
-    $concern     = $_POST["concern"] ?? '0';
+    $store       = trim($_POST["store"] ?? '0');
+    $dept        = trim($_POST["f_deptsel"] ?? '0');
+    $concern     = trim($_POST["concern"] ?? '');
+    $subject     = trim($_POST["subject"] ?? '');
     $via         = 'PENDING';
-    $subject     = $_POST["subject"] ?? '0';
-
     $cat         = '31';
     $sub         = '199';
-
-    $close_by    = $_POST["close_by"] ?? '0';
-    $remarks     = $_POST["remarks"] ?? '';
-    $status      = $_POST["setStatus"] ?? '';
-    $refNo       = $_POST["refNo"] ?? '';
-    $plvl        = $_POST["priority_level"] ?? '0';
-    $sla_days    = $_POST["sla_days"] ?? '0';
+    $close_by    = trim($_POST["close_by"] ?? '0');
+    $remarks     = trim($_POST["remarks"] ?? '');
+    $status      = trim($_POST["setStatus"] ?? '');
+    $refNo       = trim($_POST["refNo"] ?? '');
+    $plvl        = trim($_POST["priority_level"] ?? '0');
+    $sla_days    = trim($_POST["sla_days"] ?? '0');
 
     $date_created = !empty($_POST["date_createdx"])
         ? date('Y-m-d H:i:s', strtotime($_POST["date_createdx"]))
         : date('Y-m-d H:i:s');
 
-    $date_closed  = !empty($_POST["date_closed"])
+    $date_closed = !empty($_POST["date_closed"])
         ? date('Y-m-d H:i:s', strtotime($_POST["date_closed"]))
         : null;
 
-    $date_refNo   = !empty($_POST["date_refNo"])
+    $date_refNo = !empty($_POST["date_refNo"])
         ? date('Y-m-d H:i:s', strtotime($_POST["date_refNo"]))
         : null;
 
     $contactNumber = '';
-    if ($dept != '0' && $dept != '') {
+    if ($dept !== '0' && $dept !== '') {
         $stmtCN = $connection->prepare("
             SELECT contactNumber
             FROM tbl_dept
@@ -687,6 +685,16 @@ if ($_POST["operation"] == "New_Report") {
         ':refNo'        => $refNo,
         ':remarks'      => $remarks
     ];
+
+    if ($subject !== '') {
+        $fields[] = "subject = :subject";
+        $data[':subject'] = $subject;
+    }
+
+    if ($concern !== '') {
+        $fields[] = "concern = :concern";
+        $data[':concern'] = $concern;
+    }
 
     if ($date_refNo !== null) {
         $fields[] = "date_refNo = :date_refNo";
@@ -739,7 +747,6 @@ if ($_POST["operation"] == "New_Report") {
     }
 
     $fields[] = "isp_id = '0'";
-    $fields[] = "is_transfer = '0'";
 
     $sql = "UPDATE reports SET " . implode(", ", $fields) . " WHERE ticket_no = :where_ticket_no";
     $data[':where_ticket_no'] = $ticket_no;
@@ -799,6 +806,7 @@ if ($_POST["operation"] == "New_Report") {
             ':assigned_by'  => $userid
         ]);
     }
+    
 
     if (!empty($_POST["admsg"])) {
         $makecom = $connection->prepare("
@@ -827,6 +835,18 @@ if ($_POST["operation"] == "New_Report") {
             ':ticket_no' => $ticket_no,
             ':status'    => $status,
             ':uid'       => $_POST["u_id"]
+        ]);
+    }
+    if ($_POST['setStatus'] == "Assigned") {
+        $resasgn = $connection->prepare("INSERT INTO tbl_notif (ticket_no, store, itsup, notif_data, notif_val, notif_date, assigned_by) VALUES (:ticket_no, :store, :itsup, :notif_data, :notif_val, :notif_date, :assigned_by)");
+        $resasgn->execute([
+            ':ticket_no'   => $ticket_no,
+            ':store'       => $store,
+            ':itsup'       => $_POST["itsup"] ?? '0',
+            ':notif_data'  => "New Ticket $ticket_no Has been assigned.",
+            ':notif_val'   => '2',
+            ':notif_date'  => date('Y-m-d H:i:s'),
+            ':assigned_by' => $userid
         ]);
     }
 
@@ -992,6 +1012,7 @@ if ($_POST["operation"] == "New_Report") {
 
                 <p style="margin-top:20px;">Please log in to the <strong>OWI Helpdesk</strong> for complete details and necessary action.</p>
 
+                <!-- BUTTON -->
                 <div style="text-align:center;margin-top:25px;">
                     <a href="https://owihelpdesk.officewarehouse.com.ph" 
                        style="background:#627bc5;
