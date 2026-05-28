@@ -7,7 +7,8 @@ session_start();
 <head>
 
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
     <title>Price Verifier</title>
 
     <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
@@ -26,41 +27,231 @@ session_start();
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 
     <style>
-        body {
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            min-height: 100%;
+            margin: 0;
+            padding: 0;
             background-color: #FFC108;
             font-family: 'Raleway', sans-serif;
         }
 
-        .card {
-            background-color: #212529;
-            padding: 20px;
+        body {
+            overflow-x: hidden;
         }
 
-        hr {
-            position: relative;
+        .page-wrapper {
+            width: 100%;
+            min-height: 100vh;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .pv-header {
+            text-align: center;
+            padding: 12px 8px 8px 8px;
+        }
+
+        .pv-header h3 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 800;
+            color: #212529;
+            letter-spacing: 1px;
+        }
+
+        .header-line {
+            width: 100%;
+            height: 8px;
+            background-color: #212529;
             border: none;
-            height: 12px;
-            background: black;
-            margin-bottom: 30px;
+            margin: 10px 0 14px 0;
+        }
+
+        .pv-card {
+            width: 100%;
+            background-color: #212529;
+            border-radius: 18px;
+            padding: 16px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+        }
+
+        .input-label {
+            color: #ffffff;
+            font-size: 14px;
+            margin-bottom: 6px;
+            text-align: center;
+        }
+
+        #pr_vr {
+            width: 100%;
+            height: 64px;
+            font-size: 30px;
+            font-weight: 700;
+            text-align: center;
+            border-radius: 14px;
+            border: 3px solid #FFC108;
+            outline: none;
+        }
+
+        #pr_vr:focus {
+            border-color: #ffffff;
+            box-shadow: 0 0 0 3px rgba(255, 193, 8, 0.35);
+        }
+
+        .button-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .pv-btn {
+            width: 100%;
+            min-height: 52px;
+            border-radius: 14px;
+            font-size: 18px;
+            font-weight: 700;
+            border: none;
+        }
+
+        #btnStartScan {
+            background-color: #FFC108;
+            color: #212529;
+        }
+
+        #btnStopScan {
+            background-color: #dc3545;
+            color: #ffffff;
+        }
+
+        #btnReadNumber {
+            background-color: #17a2b8;
+            color: #ffffff;
+        }
+
+        .camera-box {
+            width: 100%;
+            margin-top: 14px;
+            display: none;
         }
 
         #barcodePreview {
             width: 100%;
-            max-width: 500px;
+            max-height: 52vh;
+            object-fit: cover;
+            border-radius: 16px;
+            border: 4px solid #FFC108;
+            background-color: #000000;
+        }
+
+        .scan-note {
             display: none;
-            border: 5px solid #FFC108;
-            margin-top: 15px;
-        }
-
-        .pv-btn {
-            margin: 5px;
-            font-size: 18px;
-        }
-
-        .ocr-note {
-            font-size: 14px;
-            color: white;
             margin-top: 10px;
+            padding: 10px;
+            border-radius: 12px;
+            background-color: rgba(255,255,255,0.08);
+            color: #ffffff;
+            font-size: 14px;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        .result-box {
+            margin-top: 18px;
+            padding: 16px 10px;
+            min-height: 160px;
+            border-radius: 16px;
+            background-color: rgba(255,255,255,0.06);
+        }
+
+        #pr_vr_dtls {
+            color: #ffffff;
+            text-align: center;
+            font-size: 20px;
+            font-weight: 700;
+            line-height: 1.35;
+            margin: 0;
+            word-break: break-word;
+        }
+
+        #pr_vr_price {
+            color: #ffffff;
+            text-align: center;
+            font-size: 42px;
+            font-weight: 900;
+            margin: 18px 0 0 0;
+            word-break: break-word;
+        }
+
+        .footer-box {
+            width: 100%;
+            min-height: 40px;
+            margin-top: 14px;
+            border-radius: 14px;
+            background-color: rgba(33, 37, 41, 0.25);
+        }
+
+        #ocrCanvas {
+            display: none;
+        }
+
+        @media screen and (min-width: 768px) {
+            .page-wrapper {
+                max-width: 720px;
+                margin: 0 auto;
+                padding: 20px;
+            }
+
+            .pv-header h3 {
+                font-size: 32px;
+            }
+
+            #pr_vr {
+                height: 74px;
+                font-size: 42px;
+            }
+
+            .button-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            #pr_vr_dtls {
+                font-size: 26px;
+            }
+
+            #pr_vr_price {
+                font-size: 54px;
+            }
+        }
+
+        @media screen and (max-width: 380px) {
+            .pv-header h3 {
+                font-size: 21px;
+            }
+
+            #pr_vr {
+                height: 58px;
+                font-size: 25px;
+            }
+
+            .pv-btn {
+                min-height: 48px;
+                font-size: 16px;
+            }
+
+            #pr_vr_dtls {
+                font-size: 18px;
+            }
+
+            #pr_vr_price {
+                font-size: 36px;
+            }
         }
     </style>
 
@@ -68,88 +259,70 @@ session_start();
 
 <body>
 
-<div class="pv_header justify-content-center">
-    <div class="col-md-12 text-center">
+<div class="page-wrapper">
+
+    <div class="pv-header">
         <h3>PRICE VERIFIER</h3>
     </div>
-</div>
 
-<hr>
+    <div class="header-line"></div>
 
-<div class="col-md-12 col-sm-12 col-12">
-    <div class="card">
+    <div class="pv-card">
 
-        <div class="container">
+        <div class="input-label">
+            Scan or enter barcode / item code
+        </div>
 
-            <div class="col-md-12">
-                <input style="font-size:50px;"
-                       type="text"
-                       name="pr_vr"
-                       id="pr_vr"
-                       class="numbers form form-control text-center input-lg"
-                       autocomplete="off">
+        <input
+            type="text"
+            name="pr_vr"
+            id="pr_vr"
+            class="numbers form-control"
+            autocomplete="off"
+            inputmode="numeric"
+            pattern="[0-9]*"
+            placeholder="Barcode / Item Code">
 
-                <input type="hidden" name="SBS_NO" id="SBS_NO" value="<?php echo $_SESSION['SBS_NO']; ?>">
-                <input type="hidden" name="PRICE_LVL" id="PRICE_LVL" value="<?php echo $_SESSION['PRICE_LVL']; ?>">
-            </div>
+        <input type="hidden" name="SBS_NO" id="SBS_NO" value="<?php echo $_SESSION['SBS_NO']; ?>">
+        <input type="hidden" name="PRICE_LVL" id="PRICE_LVL" value="<?php echo $_SESSION['PRICE_LVL']; ?>">
 
-            <div class="text-center mt-3">
+        <div class="button-grid">
 
-                <button type="button" id="btnStartScan" class="btn btn-warning btn-lg pv-btn">
-                    <i class="fa fa-camera"></i> Scan Barcode
-                </button>
+            <button type="button" id="btnStartScan" class="pv-btn">
+                <i class="fa fa-camera"></i> Scan Barcode
+            </button>
 
-                <button type="button" id="btnStopScan" class="btn btn-danger btn-lg pv-btn" style="display:none;">
-                    Stop Scan
-                </button>
+            <button type="button" id="btnStopScan" class="pv-btn" style="display:none;">
+                Stop Scan
+            </button>
 
-                <button type="button" id="btnReadNumber" class="btn btn-info btn-lg pv-btn" style="display:none;">
-                    Read Number
-                </button>
-
-            </div>
-
-            <div class="text-center">
-                <video id="barcodePreview" autoplay muted playsinline></video>
-                <canvas id="ocrCanvas" style="display:none;"></canvas>
-
-                <p id="scanInstruction" class="ocr-note" style="display:none;">
-                    If barcode is not scanning, tap <b>Read Number</b> to detect the printed item code.
-                </p>
-            </div>
+            <button type="button" id="btnReadNumber" class="pv-btn" style="display:none;">
+                Read Number
+            </button>
 
         </div>
 
-        <br>
+        <div class="camera-box" id="cameraBox">
+            <video id="barcodePreview" autoplay muted playsinline></video>
+            <canvas id="ocrCanvas"></canvas>
+        </div>
 
-        <div class="row mt-4">
+        <div class="scan-note" id="scanInstruction">
+            If the barcode is blurry or glossy, tap <b>Read Number</b> to detect the printed item code.
+        </div>
 
-            <div class="col-md-12">
-                <h3>
-                    <p class="text-white text-center" id="pr_vr_dtls"></p>
-                </h3>
-            </div>
+        <div class="result-box">
 
-            <div class="col-md-12 mt-4">
-                <h1>
-                    <p class="text-white text-center" id="pr_vr_price"></p>
-                </h1>
-            </div>
+            <p id="pr_vr_dtls"></p>
 
-            <div class="col-md-12">
-                <br><br><br><br><br>
-            </div>
+            <p id="pr_vr_price"></p>
 
         </div>
 
     </div>
-</div>
 
-<div class="col-md-12 col-sm-12 col-12">
-    <div class="info-box shadow">
-        <span class="info-box-icon bg-warning"></span>
-        <div class="info-box-content"></div>
-    </div>
+    <div class="footer-box"></div>
+
 </div>
 
 </body>
@@ -161,27 +334,11 @@ $(document).ready(function () {
 
     $("#pr_vr").focus();
 
-    zoomIn(2.0);
-
-    function zoomIn(zoomLev) {
-        if (zoomLev > 1) {
-            if (typeof (document.body.style.zoom) != "undefined") {
-                $(document.body).css('zoom', zoomLev);
-            } else {
-                $('#divWrap').css({
-                    "-moz-transform": 'scale(' + zoomLev + ')',
-                    width: $(window).width() / zoomLev
-                });
-            }
-        }
-    }
-
     $('.numbers').keyup(function () {
         this.value = this.value.replace(/[^0-9]/g, '');
     });
 
     function isValidBarcode(code) {
-        // Allows short item code, UPC, EAN-13, CODE128 numeric values
         return /^[0-9]{4,14}$/.test(code);
     }
 
@@ -228,14 +385,16 @@ $(document).ready(function () {
         });
     }
 
-    $('#pr_vr').keypress(function (e) {
+    $('#pr_vr').on('keypress', function (e) {
 
         if (e.which == 13) {
+
             let kprvr = $('#pr_vr').val().trim();
 
             getPriceVerifier(kprvr);
 
             $('#pr_vr').select();
+
             return false;
         }
 
@@ -270,11 +429,16 @@ $(document).ready(function () {
 
         codeReader = new ZXing.BrowserMultiFormatReader(hints);
 
+        $('#cameraBox').show();
         $('#barcodePreview').show();
+
         $('#btnStartScan').hide();
         $('#btnStopScan').show();
         $('#btnReadNumber').show();
         $('#scanInstruction').show();
+
+        $('#pr_vr_dtls').html('Point the camera to the barcode...');
+        $('#pr_vr_price').html('');
 
         isScanning = true;
 
@@ -337,6 +501,8 @@ $(document).ready(function () {
         context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
         $('#btnReadNumber').prop('disabled', true).text('Reading...');
+        $('#pr_vr_dtls').html('Reading printed number...');
+        $('#pr_vr_price').html('');
 
         Tesseract.recognize(canvas, 'eng', {
             logger: function(m) {
@@ -363,6 +529,8 @@ $(document).ready(function () {
                 stopScanner();
 
             } else {
+                $('#pr_vr_dtls').html('No readable number detected.');
+                $('#pr_vr_price').html('');
                 alert('No readable number detected. Please move closer and try again.');
             }
 
@@ -387,7 +555,9 @@ $(document).ready(function () {
             codeReader = null;
         }
 
+        $('#cameraBox').hide();
         $('#barcodePreview').hide();
+
         $('#btnStartScan').show();
         $('#btnStopScan').hide();
         $('#btnReadNumber').hide();
