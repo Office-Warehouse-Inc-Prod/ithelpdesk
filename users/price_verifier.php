@@ -297,6 +297,9 @@ session_start();
             <button type="button" id="btnReadNumber" class="pv-btn" style="display:none;">
                 Read Number
             </button>
+            <button type="button" id="btnTorch" class="pv-btn" style="display:none; background-color:#6c757d; color:#ffffff;">
+    Flashlight
+</button>
 
         </div>
 
@@ -329,6 +332,9 @@ session_start();
 <script type="text/javascript">
 
 $(document).ready(function () {
+
+
+
 
     $("#pr_vr").focus();
 
@@ -415,8 +421,10 @@ $(document).ready(function () {
 
     });
 
-    let codeReader = null;
-    let isScanning = false;
+let codeReader = null;
+let isScanning = false;
+let currentVideoTrack = null;
+let torchOn = false;
 
     $('#btnStartScan').on('click', function () {
 
@@ -457,7 +465,18 @@ $(document).ready(function () {
 
         isScanning = true;
 
-        codeReader.decodeFromVideoDevice(null, 'barcodePreview', function(result, err) {
+        setTimeout(function () {
+    applyCameraFocus();
+}, 1000);
+
+        codeReader.decodeFromConstraints({
+    video: {
+        facingMode: { ideal: "environment" },
+        width: { ideal: 1280 },
+        height: { ideal: 720 },
+        focusMode: "continuous"
+    }
+}, 'barcodePreview', function(result, err) {
 
             if (result && isScanning) {
 
@@ -565,6 +584,117 @@ $(document).ready(function () {
         });
     }
 
+function applyCameraFocus() {
+    let video = document.getElementById('barcodePreview');
+
+    if (!video || !video.srcObject) {
+        return;
+    }
+
+    let stream = video.srcObject;
+    let tracks = stream.getVideoTracks();
+
+    if (!tracks || tracks.length === 0) {
+        return;
+    }
+
+    currentVideoTrack = tracks[0];
+
+    let capabilities = currentVideoTrack.getCapabilities ? currentVideoTrack.getCapabilities() : {};
+
+    console.log('Camera capabilities:', capabilities);
+
+    // Try continuous focus if supported
+    if (capabilities.focusMode && capabilities.focusMode.includes('continuous')) {
+        currentVideoTrack.applyConstraints({
+            advanced: [
+                { focusMode: 'continuous' }
+            ]
+        }).catch(function(error) {
+            console.log('Continuous focus not applied:', error);
+        });
+    }
+
+    // Show flashlight button only if supported
+    if (capabilities.torch) {
+        $('#btnTorch').show();
+    } else {
+        $('#btnTorch').hide();
+    }
+}
+
+
+
+$('#barcodePreview').on('click touchstart', function () {
+    refocusCamera();
+});
+
+function refocusCamera() {
+    if (!currentVideoTrack) {
+        applyCameraFocus();
+        return;
+    }
+
+    let capabilities = currentVideoTrack.getCapabilities ? currentVideoTrack.getCapabilities() : {};
+
+    console.log('Refocus tap capabilities:', capabilities);
+
+    // Browser-based tap-to-focus is limited.
+    // This forces continuous focus again when user taps the preview.
+    if (capabilities.focusMode && capabilities.focusMode.includes('continuous')) {
+        currentVideoTrack.applyConstraints({
+            advanced: [
+                { focusMode: 'continuous' }
+            ]
+        }).then(function() {
+            console.log('Camera refocus requested.');
+            $('#pr_vr_dtls').html('Refocusing camera...');
+        }).catch(function(error) {
+            console.log('Refocus failed:', error);
+        });
+    } else {
+        $('#pr_vr_dtls').html('Tap focus not supported on this device/browser.');
+    }
+}
+
+
+
+$('#btnTorch').on('click', function () {
+    toggleTorch();
+});
+
+function toggleTorch() {
+    if (!currentVideoTrack) {
+        applyCameraFocus();
+    }
+
+    if (!currentVideoTrack) {
+        alert('Camera is not ready yet.');
+        return;
+    }
+
+    let capabilities = currentVideoTrack.getCapabilities ? currentVideoTrack.getCapabilities() : {};
+
+    if (!capabilities.torch) {
+        alert('Flashlight is not supported on this device/browser.');
+        return;
+    }
+
+    torchOn = !torchOn;
+
+    currentVideoTrack.applyConstraints({
+        advanced: [
+            { torch: torchOn }
+        ]
+    }).then(function() {
+        $('#btnTorch').text(torchOn ? 'Flashlight On' : 'Flashlight');
+    }).catch(function(error) {
+        console.log('Torch failed:', error);
+        alert('Unable to control flashlight.');
+    });
+}
+
+
     function stopScanner() {
 
         isScanning = false;
@@ -582,9 +712,17 @@ $(document).ready(function () {
         $('#btnReadNumber').hide();
         $('#scanInstruction').hide();
 
-        $('#btnReadNumber').prop('disabled', false).text('Read Number');
+        // $('#btnReadNumber').prop('disabled', false).text('Read Number');
 
-        $('#pr_vr').focus();
+        // $('#pr_vr').focus();
+
+        $('#btnReadNumber').prop('disabled', false).text('Read Number');
+$('#btnTorch').hide().text('Flashlight');
+
+currentVideoTrack = null;
+torchOn = false;
+
+$('#pr_vr').focus();
     }
 
 });
