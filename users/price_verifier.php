@@ -256,9 +256,14 @@ $(document).ready(function () {
         this.value = this.value.replace(/[^0-9]/g, '');
     });
 
-    function isValidEAN13(code) {
-        return /^[0-9]{13}$/.test(code);
-    }
+    // function isValidEAN13(code) {
+    //     return /^[0-9]{13}$/.test(code);
+    // }
+
+    function isValidBarcode(code) {
+    // Allows UPC-A, EAN-13, and internal numeric barcodes like 29349
+    return /^[0-9]{4,14}$/.test(code);
+}
 
     function getPriceVerifier(kprvr) {
         let sbs_no = $('#SBS_NO').val();
@@ -329,30 +334,65 @@ $(document).ready(function () {
 
         isScanning = true;
 
-        codeReader.decodeFromVideoDevice(null, 'barcodePreview', function(result, err) {
+//         codeReader.decodeFromVideoDevice(null, 'barcodePreview', function(result, err) {
 
-            if (result && isScanning) {
-                let scannedCode = result.text.trim();
+//             if (result && isScanning) {
+//                 let scannedCode = result.text.trim();
 
-                console.log('Scanned:', scannedCode);
+//                 console.log('Scanned:', scannedCode);
 
-                // EAN-13 only
-                if (!isValidEAN13(scannedCode)) {
-                    return;
-                }
+//                 // EAN-13 only
+//                 // if (!isValidEAN13(scannedCode)) {
+//                 //     return;
+//                 // }
 
-                $('#pr_vr').val(scannedCode);
+//                 function isValidBarcode(code) {
+//     // Allows UPC-A, EAN-13, and internal numeric barcodes like 29349
+//     return /^[0-9]{4,14}$/.test(code);
+// }
 
-                getPriceVerifier(scannedCode);
+//                 $('#pr_vr').val(scannedCode);
 
-                stopScanner();
-            }
+//                 getPriceVerifier(scannedCode);
 
-        }).catch(function(error) {
-            console.error(error);
-            alert('Camera access failed. Please allow camera permission.');
-            stopScanner();
-        });
+//                 stopScanner();
+//             }
+
+//         }).catch(function(error) {
+//             console.error(error);
+//             alert('Camera access failed. Please allow camera permission.');
+//             stopScanner();
+//         });
+
+codeReader.decodeFromVideoDevice(null, 'barcodePreview', function(result, err) {
+
+    if (result && isScanning) {
+        let scannedCode = result.text.trim();
+
+        console.log('Scanned:', scannedCode);
+
+        if (!isValidBarcode(scannedCode)) {
+            return;
+        }
+
+        $('#pr_vr').val(scannedCode);
+
+        getPriceVerifier(scannedCode);
+
+        stopScanner();
+    }
+
+}).catch(function(error) {
+    console.error(error);
+
+    if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
+        alert('Camera requires HTTPS. Please open this page using HTTPS.');
+    } else {
+        alert('Camera permission was denied or blocked. Please allow camera access in your browser settings.');
+    }
+
+    stopScanner();
+});
 
     });
 
