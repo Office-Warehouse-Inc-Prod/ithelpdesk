@@ -62,7 +62,7 @@ session_start();
             font-size: 24px;
             font-weight: 800;
             color: #212529;
-            letter-spacing: 3px;
+            letter-spacing: 1px;
         }
 
         .header-line {
@@ -178,7 +178,6 @@ session_start();
             line-height: 1.35;
             margin: 0;
             word-break: break-word;
-            text-transform: uppercase;
         }
 
         #pr_vr_price {
@@ -278,10 +277,8 @@ session_start();
             type="text"
             name="pr_vr"
             id="pr_vr"
-            class="numbers form-control"
+            class="form-control"
             autocomplete="off"
-            inputmode="numeric"
-            pattern="[0-9]*"
             placeholder="Barcode / Item Code">
 
         <input type="hidden" name="SBS_NO" id="SBS_NO" value="<?php echo $_SESSION['SBS_NO']; ?>">
@@ -335,19 +332,14 @@ $(document).ready(function () {
 
     $("#pr_vr").focus();
 
-    $('.numbers').keyup(function () {
-        this.value = this.value.replace(/[^0-9]/g, '');
-    });
-
     function normalizeBarcode(code) {
         code = String(code).trim();
 
-        // Remove all leading zeroes ONLY if there are 2 or more zeroes before the number.
-        // Examples:
-        // 000993  -> 993
-        // 00993   -> 993
-        // 0993    -> 0993
-        // 993     -> 993
+        // Rule:
+        // 000993 -> 993
+        // 00993  -> 993
+        // 0993   -> 0993
+        // 993    -> 993
         code = code.replace(/^0{2,}(?=\d)/, '');
 
         return code;
@@ -392,7 +384,7 @@ $(document).ready(function () {
             }
 
             if (!pr_data || pr_data.length === 0) {
-                $('#pr_vr_dtls').html('No item found');
+                $('#pr_vr_dtls').html('Item not found.');
                 $('#pr_vr_price').html('');
                 return;
             }
@@ -408,7 +400,9 @@ $(document).ready(function () {
 
         if (e.which == 13) {
 
-            let kprvr = normalizeBarcode($('#pr_vr').val().trim());
+            let kprvr = $('#pr_vr').val().trim();
+
+            kprvr = normalizeBarcode(kprvr);
 
             $('#pr_vr').val(kprvr);
 
@@ -541,7 +535,9 @@ $(document).ready(function () {
 
             if (numbers && numbers.length > 0) {
 
-                let detectedNumber = normalizeBarcode(numbers[0]);
+                let detectedNumber = numbers[0];
+
+                detectedNumber = normalizeBarcode(detectedNumber);
 
                 console.log('Detected Number:', detectedNumber);
 
