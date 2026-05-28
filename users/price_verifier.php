@@ -62,7 +62,7 @@ session_start();
             font-size: 24px;
             font-weight: 800;
             color: #212529;
-            letter-spacing: 1px;
+            letter-spacing: 3px;
         }
 
         .header-line {
@@ -178,6 +178,7 @@ session_start();
             line-height: 1.35;
             margin: 0;
             word-break: break-word;
+            text-transform: uppercase;
         }
 
         #pr_vr_price {
@@ -338,8 +339,22 @@ $(document).ready(function () {
         this.value = this.value.replace(/[^0-9]/g, '');
     });
 
+    function normalizeBarcode(code) {
+        code = String(code).trim();
+
+        // Remove all leading zeroes ONLY if there are 2 or more zeroes before the number.
+        // Examples:
+        // 000993  -> 993
+        // 00993   -> 993
+        // 0993    -> 0993
+        // 993     -> 993
+        code = code.replace(/^0{2,}(?=\d)/, '');
+
+        return code;
+    }
+
     function isValidBarcode(code) {
-        return /^[0-9]{4,14}$/.test(code);
+        return /^[0-9]{3,14}$/.test(code);
     }
 
     function getPriceVerifier(kprvr) {
@@ -347,9 +362,13 @@ $(document).ready(function () {
         let sbs_no = $('#SBS_NO').val();
         let price_lvl = $('#PRICE_LVL').val();
 
+        kprvr = normalizeBarcode(kprvr);
+
         if (!kprvr) {
             return;
         }
+
+        $('#pr_vr').val(kprvr);
 
         $('#pr_vr_dtls').html('Checking item...');
         $('#pr_vr_price').html('');
@@ -373,7 +392,7 @@ $(document).ready(function () {
             }
 
             if (!pr_data || pr_data.length === 0) {
-                $('#pr_vr_dtls').html('Item not found.');
+                $('#pr_vr_dtls').html('No item found');
                 $('#pr_vr_price').html('');
                 return;
             }
@@ -389,7 +408,9 @@ $(document).ready(function () {
 
         if (e.which == 13) {
 
-            let kprvr = $('#pr_vr').val().trim();
+            let kprvr = normalizeBarcode($('#pr_vr').val().trim());
+
+            $('#pr_vr').val(kprvr);
 
             getPriceVerifier(kprvr);
 
@@ -447,6 +468,8 @@ $(document).ready(function () {
             if (result && isScanning) {
 
                 let scannedCode = result.text.trim();
+
+                scannedCode = normalizeBarcode(scannedCode);
 
                 console.log('Scanned Barcode:', scannedCode);
 
@@ -514,11 +537,11 @@ $(document).ready(function () {
 
             console.log('OCR Result:', text);
 
-            let numbers = text.match(/\d{4,14}/g);
+            let numbers = text.match(/\d{3,14}/g);
 
             if (numbers && numbers.length > 0) {
 
-                let detectedNumber = numbers[0];
+                let detectedNumber = normalizeBarcode(numbers[0]);
 
                 console.log('Detected Number:', detectedNumber);
 
