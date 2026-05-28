@@ -844,7 +844,7 @@ if ($_POST["operation"] == "New_Report") {
             ':store'       => $store,
             ':itsup'       => $_POST["itsup"] ?? '0',
             ':notif_data'  => "New Ticket $ticket_no Has been assigned.",
-            ':notif_val'   => '2',
+            ':notif_val'   => '1',
             ':notif_date'  => date('Y-m-d H:i:s'),
             ':assigned_by' => $userid
         ]);

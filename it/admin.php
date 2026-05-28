@@ -362,7 +362,7 @@ if ($_SESSION['login'] != 'true') {
       }
 
       // Run getdata() every 1 second
-      setInterval(getdata, 1000);
+    setInterval(getdata, 1000);
 
 
       var table

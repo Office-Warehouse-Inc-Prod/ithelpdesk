@@ -26,7 +26,7 @@ switch ($mode) {
         break;
     case 'netpie':
         $records= $fn->netpie();
-        break;
+    break;
     case 'overallnet':
         $records= $fn->overallnet_res();
             break;

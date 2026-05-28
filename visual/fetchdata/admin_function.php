@@ -20,7 +20,7 @@ class dbconfig extends dbconn
 		COUNT(CASE WHEN reports.`status` = 'SUBJECT FOR CLOSING' then 1 else NULL END) AS t_day
 		-- COUNT(CASE WHEN reports.`status` = 'CLOSED' AND DATE(reports.date_closed) = CURRENT_DATE THEN 1 else NULL END) AS t_day
         FROM
-        reports WHERE sub_id NOT IN ('15','28','34','35') AND `status` NOT IN ('WAITING FOR IT HELDESK RESPONSE','NEW REPORT') AND cat_id IN ('19','20','21','22','23','27','34','35','36') AND YEAR(date_created) IN (".$_POST['yr'] .") AND reports.f_deptsel = '6'";
+        reports WHERE sub_id NOT IN ('15','28','34','35') AND `status` NOT IN ('WAITING FOR IT HELDESK RESPONSE','NEW REPORT') AND YEAR(date_created) IN (".$_POST['yr'] .") AND reports.f_deptsel = '6'";
 
         $statement = $this->connection->prepare($query);
         $statement-> execute();
@@ -43,8 +43,7 @@ class dbconfig extends dbconn
 
 	public function overallpie_res(){
 
-		$query='';
-		// $query="SELECT `status` as stat_name, COUNT(`status`) as points, YEAR(date_created) as yr from reports where `reports`.`sub_id` NOT IN ('15','28','34','35') AND `status` NOT IN ('WAITING FOR IT HELPDESK RESPONSE','NEW REPORT') AND YEAR(date_created) IN (".$_POST['yr'] .")   GROUP BY `status` ";
+		
 		$query="
 			SELECT
 			reports.`status` AS stat_name,

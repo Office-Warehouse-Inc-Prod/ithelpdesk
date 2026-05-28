@@ -726,7 +726,7 @@ if($_POST["operation"] == "Save and Reply")
             ':store'       => $_POST["store"],
             ':itsup'       => $_POST["itsup"],
             ':notif_data'  => "New Ticket ".$_POST["ticket_no"]." Has been assigned.",
-            ':notif_val'   => '1',
+            ':notif_val'   => '0',
             ':notif_date'  => date('Y-m-d H:i:s'),
             ':assigned_by' => $userid
         ));
