@@ -21,7 +21,7 @@ class dbconfig extends dbconn
 		COUNT(CASE WHEN reports.`status` = 'SUBJECT FOR CLOSING' then 1 else NULL END) AS t_day
 		-- COUNT(CASE WHEN reports.`status` = 'CLOSED' AND DATE(reports.date_closed) = CURRENT_DATE THEN 1 else NULL END) AS t_day
         FROM
-        reports WHERE sub_id NOT IN ('15','28','34','35') AND `status` NOT IN ('WAITING FOR IT HELDESK RESPONSE','NEW REPORT')  AND YEAR(date_created) IN (" . $_POST['yr'] . ") AND reports.f_deptsel = '1'";
+        reports WHERE sub_id NOT IN ('15','28','34','35') AND `status` NOT IN ('WAITING FOR IT HELDESK RESPONSE','NEW REPORT') AND cat_id IN ('47','48','49','50','51','52','53') AND YEAR(date_created) IN (" . $_POST['yr'] . ") AND reports.f_deptsel = '1'";
 
 		$statement = $this->connection->prepare($query);
 		$statement->execute();
@@ -298,39 +298,18 @@ class dbconfig extends dbconn
 
 	public function admin_data_table_res()
 	{
-		$search = isset($_POST['search']) ? trim($_POST['search']) : '';
+		$query = "SELECT DISTINCT vw6.*
+		FROM vw6
+		LEFT JOIN users ON vw6.ursID = users.id
+		WHERE (
+			(vw6.deptsel = '1' AND vw6.cat_id IN ('47','48','49','50','51','52','53') AND vw6.status NOT IN ('NEW REPORT', 'Assigned', 'ASSIGNED'))
+			OR 
+			(users.deptsel = '1' AND vw6.status IN ('NEW REPORT'))
+		)
+		AND vw6.sub_id NOT IN ('15', '28', '34', '35')
+		AND YEAR(vw6.date_created) IN (" . $_POST['yr'] . ")";
 
-		if ($search !== '') {
-			$query = "SELECT DISTINCT vw6.*
-			FROM vw6
-			LEFT JOIN reports ON reports.ticket_no = vw6.ticket_no
-			LEFT JOIN tbl_branch ON tbl_branch.str_num = reports.store
-			LEFT JOIN users ON vw6.ursID = users.id
-			WHERE (
-				(vw6.deptsel = '1' AND vw6.cat_id IN ('47','48','49','50','51','52','53') AND vw6.status NOT IN ('NEW REPORT', 'Assigned', 'ASSIGNED'))
-				OR 
-				(users.deptsel = '1' AND vw6.status IN ('NEW REPORT'))
-			)
-			AND vw6.sub_id NOT IN ('15', '28', '34', '35')
-			AND YEAR(vw6.date_created) IN (" . $_POST['yr'] . ")
-			AND reports.f_deptsel = 1
-			AND tbl_branch.str_code LIKE :search";
-			$statement = $this->connection->prepare($query);
-			$statement->bindValue(':search', '%' . $search . '%', PDO::PARAM_STR);
-		} else {
-			$query = "SELECT DISTINCT vw6.*
-			FROM vw6
-			LEFT JOIN users ON vw6.ursID = users.id
-			WHERE (
-				(vw6.deptsel = '1' AND vw6.cat_id IN ('47','48','49','50','51','52','53') AND vw6.status NOT IN ('NEW REPORT', 'Assigned', 'ASSIGNED'))
-				OR 
-				(users.deptsel = '1' AND vw6.status IN ('NEW REPORT'))
-			)
-			AND vw6.sub_id NOT IN ('15', '28', '34', '35')
-			AND YEAR(vw6.date_created) IN (" . $_POST['yr'] . ")";
-			$statement = $this->connection->prepare($query);
-		}
-
+		$statement = $this->connection->prepare($query);
 		$statement->execute();
 		$result = $statement->fetchAll();
 		$data = array();
@@ -611,7 +590,7 @@ FROM
 		tbl_notif.ticket_no = reports.ticket_no
 WHERE
 	notif_val IN ('1','2','3') AND
-	reports.f_deptsel = 6
+	reports.f_deptsel = 1
 ORDER BY
 	notif_date ASC";
 		$statement = $this->connection->prepare($query);

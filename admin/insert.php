@@ -642,7 +642,6 @@ if ($_POST["operation"] == "New_Report") {
     $remarks     = trim($_POST["remarks"] ?? '');
     $status      = trim($_POST["setStatus"] ?? '');
     $refNo       = trim($_POST["refNo"] ?? '');
-    $is_transfer    = trim($_POST["is_transfer"] ?? '0');
     $plvl        = trim($_POST["priority_level"] ?? '0');
     $sla_days    = trim($_POST["sla_days"] ?? '0');
 

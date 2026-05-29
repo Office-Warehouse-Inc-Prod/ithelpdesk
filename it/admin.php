@@ -413,10 +413,10 @@ if ($_SESSION['login'] != 'true') {
     window.location.href = "adminwfit.php?ticket_no=" + encodeURIComponent(ticketVal);
   } 
   else if (notifVal == '2') {
-    if (ticketStatus === 'on process') {
+    if (ticketStatus === 'ON PROCESS') {
       window.location.href = "adminpanel.php?ticket_no=" + encodeURIComponent(ticketVal) + "#report_data";
     } 
-    else if (ticketStatus === 'assigned') {
+    else if (ticketStatus === 'Assigned') {
       window.location.href = "adminwfit.php?ticket_no=" + encodeURIComponent(ticketVal);
     }
   }

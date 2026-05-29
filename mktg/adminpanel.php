@@ -185,7 +185,7 @@ background: linear-gradient(135deg, #837031, #E1AD01);
 
           <div class="col-12 col-lg-6 mb-3">
             <div class="card card2 h-100">
-              <h5 class="card-header text-black"  style="background-color: #95a2b9b4; color:black;">I.T Support Logs</h5>
+              <h5 class="card-header text-black"  style="background-color: #95a2b9b4; color:black;">Marketing Support Logs</h5>
               <div class="card-body">
                 <div id="chartdiv8"></div>
               </div>
