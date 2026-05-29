@@ -402,7 +402,7 @@ WHERE
 	`reports`.`status` = 'ASSIGNED' 
 	AND reports.f_deptsel = '1'
 	GROUP BY
-	concern
+	reports.ticket_no
 ORDER BY
 	`reports`.`date_created` DESC";
 		$statement = $this->connection->prepare($query);
@@ -580,6 +580,7 @@ FROM
 	tbl_notif.notif_data, 
 	tbl_notif.notif_date, 
 	tbl_notif.notif_val, 
+	reports.status AS status,
 	tbl_notif.assigned_by
 FROM
 	tbl_notif
@@ -601,7 +602,8 @@ ORDER BY
 			$fetchdata[] = array(
 				'notif_data' => $row["notif_data"],
 				'ticket_no' => $row["ticket_no"],
-				'notif_val' => $row["notif_val"]
+				'notif_val' => $row["notif_val"],
+				'status' => $row["status"]
 
 			);
 		}

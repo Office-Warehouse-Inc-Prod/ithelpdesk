@@ -132,7 +132,7 @@
               $('#date_closed').attr('readonly', false);
 
               $('#store').prop("disabled", false);
-              $('#via').prop("disabled", false);
+              $('#via').prop("disabled", true);
               $('#status').prop("disabled", false);
 
               // ✅ new dept field support (fallback if you still use #itsup)
