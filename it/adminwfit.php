@@ -877,10 +877,4 @@ $(document).on('click', '#msgbtn', function(){
     $('#msg_thread').hide('slow');
   }
 });
-<<<<<<< HEAD
 </script>
-=======
-</script>
-
-```
->>>>>>> a8665559c8e1b94c6346751876fe40f3ae64867f
