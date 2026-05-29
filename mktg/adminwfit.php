@@ -732,200 +732,184 @@ background: linear-gradient(135deg, #837031, #E1AD01);
   
 
 <script type="text/javascript">
-  $(document).ready(function(){
+$(document).ready(function(){
 
-
-  
-
-// for Status Open    
-$("div.selected select").val("OPEN");
-
-
-  // $('#action').hide();
-
-var reptable;
-var user_id = <?= $_SESSION['user_id']; ?>
-
-function getdata(){
-  $.post('fetchdata/fetch_data.php',{mode:'newrpt_tbl'},function(data){
-    // console.log(data);
-    admin_datatable(data);
-  },'json');
-}
-getdata();
-
-function admin_datatable(t){
-const dataset=t.newrptdata;
-     reptable =  $("#new_rep_table").DataTable({
-           "dom":
-          '<"pull-left"lf><"pull-right">tip',
-           // ajax: t,
-          stateSave: true,
-          "bDestroy": true,
-          "responsive": true, "lengthChange": false, "autoWidth": false,
-          language: {
-          emptyTable: "No unassinged reports",
-          search: "_INPUT_",
-          searchPlaceholder: "Search..."
-          },
-          pageLength:5,
-          data: dataset,
-           "order": [[ 0, "Desc" ]],
-
-          columns: [
-          {title:"TicketNo", data:"ticket_no","defaultContent": ""},
-          {title:"Department/Store", data:"str_code","defaultContent": ""},
-          {title:"Created By", data:"full_name","defaultContent": ""},
-          {title:"Date Created", data:"date_created","defaultContent": ""},
-          {title:"SUBJECT", data:"concern","defaultContent": ""},
-          {title:"Types of Service", data:"service_desc","defaultContent": ""},
-          {title:"CONCERN", data:"subject","defaultContent": ""},
-          {title:"Update", data:null,"defaultContent": "<Button class='btn btn-danger' name='update'><i class='fas fa-edit'></i></Button>"}
-
-
-          ],
-              rowCallback: function(row, data, index){
-    if(data['msg_cnt'] == '1'){
-      $(row).find('td:eq(0)').css("font-weight", "bold");
-      $(row).find('td:eq(1)').css("font-weight", "bold");
-      $(row).find('td:eq(2)').css("font-weight", "bold");
-      $(row).find('td:eq(3)').css("font-weight", "bold");
-      $(row).find('td:eq(4)').css("font-weight", "bold");
-      $(row).find('td:eq(5)').css("font-weight", "bold");
-      $(row).find('td:eq(6)').css("font-weight", "bold");
-      $(row).find('td:eq(7)').css("font-weight", "bold");
-      $(row).find('td:eq(8)').css("font-weight", "bold");
-      $(row).find('td:eq(9)').css("font-weight", "bold");
-      $(row).find('td:eq(10)').css("font-weight", "bold");
-      $(row).find('td:eq(11)').css("font-weight", "bold");
- 
-    }
-
-
+  // Function to extract variables from the URL string
+  function getUrlParam(param) {
+    var urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param);
   }
 
+  var targetTicket = getUrlParam('ticket_no');
 
+  if (targetTicket) {
+    setTimeout(function() {
+      var foundRow = null;
 
-   }); //  end of datatable
+      // Scan rows to find match
+      reptable.rows().every(function (rowIdx, tableLoop, rowLoop) {
+        var rowData = this.data();
+        if (rowData && rowData.ticket_no == targetTicket) {
+          foundRow = this.node();
+        }
+      });
 
+      if (foundRow) {
+        // Trigger click action on the targeting action button inside that specific row
+        $(foundRow).find('button[name="update"]').trigger('click');
 
-   setInterval( function () {
-    getdata();
-   // admin_datatable();
-}, 60000);
- $('#new_rep_table tbody').on( 'click', 'button', function () {
-        var data = reptable.row( $(this).parents('tr') ).data();
+        // Smooth scroll layout view focus to the selected row
+        $('html, body').animate({
+          scrollTop: $(foundRow).offset().top - 100
+        }, 800, function() {
+          // Highlight Animation sequence on the target row
+          $(foundRow).css('transition', 'background-color 0.5s ease');
+          $(foundRow).css('background-color', '#ffff99'); // Fixed structural string mistake here
 
-                $('#ticket_no').val(data['ticket_no']);
-                $('#store').val(data['store']);
-                $('#str_desc').val(data['str_code']);
-                $('#crtd_by').val(data['full_name']);
-                $('#date_createdx').val(data['date_created']);
-                $('#concern').val(data['concern']);
-                $('#tos').val(data['service_desc']);
-                $('#message').val(data['subject']);
-                $('#sub_num').val(data['sub_id']);
-
-
-
-  $('#newrpt_Modal').modal('show');
-  $('#action').val("Update");
-  $('#operation').val("Save and Reply"); 
-
-var tid=$(this).parent().siblings(':first').html();
-$('#tick_title').text("Ticker Number: "+tid+"");
-
-getinfo(tid, 'remarks', user_id);
-// console.log(tid)
-
-// $('#itsup').change(function(e) { 
-//     e.preventDefault();
-//     let Dataxxx = $(this).val(); // Correct way to get value in jQuery
-//     alert(Dataxxx);
-//   });
-
+          setTimeout(function() {
+            $(foundRow).css('background-color', ''); 
+          }, 1200);
         });
+      }
+    }, 600);
+  }
 
-  $('#userModal').modal({"show": true, "backdrop": 'static'});
+  // for Status Open    
+  $("div.selected select").val("OPEN");
 
-  }; //end of function 
+  var reptable;
+  var user_id = <?= $_SESSION['user_id']; ?>; // Added missing semi-colon
+
+  function getdata(){
+    $.post('fetchdata/fetch_data.php',{mode:'newrpt_tbl'},function(data){
+      admin_datatable(data);
+    },'json');
+  }
+  getdata();
+
+  function admin_datatable(t){
+    const dataset = t.newrptdata;
+    reptable = $("#new_rep_table").DataTable({
+      "dom": '<"pull-left"lf><"pull-right">tip',
+      stateSave: true,
+      "bDestroy": true,
+      "responsive": true, 
+      "lengthChange": false, 
+      "autoWidth": false,
+      language: {
+        emptyTable: "No unassigned reports",
+        search: "_INPUT_",
+        searchPlaceholder: "Search..."
+      },
+      pageLength: 5,
+      data: dataset,
+      "order": [[ 0, "Desc" ]],
+      columns: [
+        {title:"TicketNo", data:"ticket_no","defaultContent": ""},
+        {title:"Department/Store", data:"str_code","defaultContent": ""},
+        {title:"Created By", data:"full_name","defaultContent": ""},
+        {title:"Date Created", data:"date_created","defaultContent": ""},
+        {title:"SUBJECT", data:"concern","defaultContent": ""},
+        {title:"Types of Service", data:"service_desc","defaultContent": ""},
+        {title:"CONCERN", data:"subject","defaultContent": ""},
+        {title:"Update", data:null,"defaultContent": "<Button class='btn btn-danger' name='update'><i class='fas fa-edit'></i></Button>"}
+      ],
+      rowCallback: function(row, data, index){
+        if(data['msg_cnt'] == '1'){
+          // Fixed out of bounds column count loops crashing assignments
+          $(row).find('td').css("font-weight", "bold");
+        }
+      }
+    });
+
+    setInterval(function () {
+      getdata();
+    }, 60000);
+
+    $('#new_rep_table tbody').on('click', 'button', function () {
+      var data = reptable.row($(this).parents('tr')).data();
+
+      $('#ticket_no').val(data['ticket_no']);
+      $('#store').val(data['store']);
+      $('#str_desc').val(data['str_code']);
+      $('#crtd_by').val(data['full_name']);
+      $('#date_createdx').val(data['date_created']);
+      $('#concern').val(data['concern']);
+      $('#tos').val(data['service_desc']);
+      $('#message').val(data['subject']);
+      $('#sub_num').val(data['sub_id']);
+
+      $('#newrpt_Modal').modal('show');
+      $('#action').val("Update");
+      $('#operation').val("Save and Reply"); 
+
+      var tid = $(this).parent().siblings(':first').html();
+      $('#tick_title').text("Ticker Number: "+tid);
+
+      getinfo(tid, 'remarks', user_id);
+    });
+  }
 
   $('#ModalDate_close').datetimepicker();
   $('#date_refNo').datetimepicker();
 
-
   $('#cat').on('change', function() {
-      var category_id = this.value;
-      $.ajax({
-        url: "get_subcat.php",
-        type: "POST",
-        data: {
-          category_id: category_id
-        },
-        cache: false,
-        success: function(dataResult){
-          $("#sub").html(dataResult);
-        }
-      });
-    
-    
+    var category_id = this.value;
+    $.ajax({
+      url: "get_subcat.php",
+      type: "POST",
+      data: { category_id: category_id },
+      cache: false,
+      success: function(dataResult){
+        $("#sub").html(dataResult);
+      }
+    });
   });
 
+  $(function () {
+    $('#datetimepicker2, #datetimepicker3').datetimepicker();
+  });
 
-$(function () {
-          $('#datetimepicker2, #datetimepicker3').datetimepicker()
-      });
+  // Keep checks active if functions are defined externally
+  if (typeof slct_isp === "function") slct_isp();
+  if (typeof slct_sub === "function") slct_sub();
+  if (typeof gtsub_id === "function") gtsub_id();
+  if (typeof admin_hideshowforms === "function") admin_hideshowforms();
 
-
-slct_isp();
-slct_sub();
-gtsub_id();
-admin_hideshowforms();
-
-
-$(document).on('submit', '#newrpt_form', function(event)
- {
-  event.preventDefault();
-  event.stopImmediatePropagation();
-   $.ajax({
-    url:"insert.php",
-    method:'POST',
-    data:new FormData(this),
-    contentType:false,
-    processData:false,
-    success:function(data)
-    {
-     alert(data);
-     $('#newrpt_form')[0].reset();
-     $('#newrpt_Modal').modal('hide');
-     getdata();
-     location.reload(); 
-    }
-   });
- });
-}); // end of docu.ready
-
-$(document).on('click', '#msgbtn', function(){
-
-$('.dv_msg').show();
-$('#remarks_view').show();
-
-
-if($('#msgbtn').val() == 'show'){
-$('#action').val("Save and Reply");
-$('#operation').val("Save and Reply");
-$('#msgbtn').val("hide");
-$('#msg_thread').show('slow');
-}
-else if($('#msgbtn').val() == 'hide'){
-$('#action').val("Save");
-$('#operation').val("Save and Reply");
-$('#msgbtn').val("show");
-$('#msg_thread').hide('slow');
-}
-
+  $(document).on('submit', '#newrpt_form', function(event) {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    $.ajax({
+      url: "insert.php",
+      method: 'POST',
+      data: new FormData(this),
+      contentType: false,
+      processData: false,
+      success: function(data) {
+        alert(data);
+        $('#newrpt_form')[0].reset();
+        $('#newrpt_Modal').modal('hide');
+        getdata();
+        location.reload(); 
+      }
+    });
+  });
 });
 
+$(document).on('click', '#msgbtn', function(){
+  $('.dv_msg').show();
+  $('#remarks_view').show();
 
-
+  if($('#msgbtn').val() == 'show'){
+    $('#action').val("Save and Reply");
+    $('#operation').val("Save and Reply");
+    $('#msgbtn').val("hide");
+    $('#msg_thread').show('slow');
+  } else if($('#msgbtn').val() == 'hide'){
+    $('#action').val("Save");
+    $('#operation').val("Save and Reply");
+    $('#msgbtn').val("show");
+    $('#msg_thread').hide('slow');
+  }
+});
 </script>

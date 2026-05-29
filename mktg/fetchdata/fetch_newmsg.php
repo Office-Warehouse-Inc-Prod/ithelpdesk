@@ -28,8 +28,8 @@ reports
 ON 
     tbl_notif.ticket_no = reports.ticket_no
 WHERE
-notif_val IN ('2','3') AND
-reports.deptsel = 3  ";
+notif_val IN ('1','2','3') AND
+reports.f_deptsel = 3  ";
 $result = $conn->query($sql);
 
 echo $result->num_rows;

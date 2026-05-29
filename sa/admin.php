@@ -384,39 +384,35 @@ className: 'bolded'
 
 });
 
-$('#notif_dataxx tbody').on('click', 'tr', function () {
-    var data = table.row(this).data();
-    var ticketVal = data.ticket_no;
 
-    $('#myInput').val(ticketVal).trigger('input');
+       $('#notif_dataxx tbody').on('click', 'tr', function () {
+  var data = table.row(this).data();
+  var ticketVal = data.ticket_no;
+  var notifVal = data.notif_val;
+  var ticketStatus = data.status ? data.status.toLowerCase().trim() : '';
 
-    $.post('change_notif.php', { ticketVal: ticketVal }, function(data, textStatus, xhr) {
-        getdata();
+  $('#myInput').val(ticketVal).trigger('input');
+  $.post('change_notif.php', { ticketVal: ticketVal }, function (response) {
+    getdata();
+  });
+
+  if (notifVal == '1') {
+    window.location.href = "adminwfit.php?ticket_no=" + encodeURIComponent(ticketVal);
+  } 
+  else if (notifVal == '2') {
+    if (ticketStatus === 'on process') {
+      window.location.href = "adminpanel.php?ticket_no=" + encodeURIComponent(ticketVal) + "#report_data";
+    } 
+    else if (ticketStatus === 'assigned') {
+      window.location.href = "adminwfit.php?ticket_no=" + encodeURIComponent(ticketVal);
+    }
+  }
+});
+
+      } // end of data table
+
+
     });
-
-    // Scroll to bottom smoothly after click
-  $('html, body').animate(
-        { scrollTop: $(document).height() },
-        800,
-        'swing',
-        function () {
-            // Add highlight effect
-            let tableDiv = $('#report_data');
-            tableDiv.css('transition', 'background-color 0.8s');
-            tableDiv.css('background-color', '#ffff99'); // highlight yellow
-
-            setTimeout(() => {
-                tableDiv.css('background-color', '#ffffff'); // back to white
-            }, 800); // delay before returning to white
-        }
-    );
-});
-
-
-} // end of data table
-
-
-});
 
 
 
