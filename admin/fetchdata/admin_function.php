@@ -951,7 +951,7 @@ FROM
 	ON 
 		tbl_notif.ticket_no = reports.ticket_no
 WHERE
-	notif_val IN ('1','2','3')
+	notif_val IN ('1','2','3') AND reports.status NOT IN ('ON PROCESS')
 ORDER BY
 	notif_date ASC";
 	$statement = $this->connection->prepare($query);

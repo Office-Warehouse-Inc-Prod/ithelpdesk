@@ -59,7 +59,7 @@
 
     if (/Android|webOS|iPhone|iPad|Mac|Macintosh|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) { $("#ovrall").hide(); }
 
-    var user_id = <?= $_SESSION['user_id']; ?>
+    var user_id = <?= $_SESSION['user_id']; ?>;
 
     let val = '';
     $('#card_totalval').click(function (e) {
@@ -169,6 +169,46 @@
           "search": "_INPUT_",
           "searchPlaceholder": "Search..."
         },
+
+       "initComplete": function (settings, json) {
+        var $searchWrapper = $('#report_data_filter');
+        var $nativeSearchInput = $searchWrapper.find('input');
+
+        $nativeSearchInput
+        .attr('id', 'report_data_filter_disabled')
+        .attr('placeholder', 'Auto Fill Status')
+        .prop('disabled', true)
+        .css('margin-right', '10px');
+
+        var $activeSearch = $('<input type="search" class="form-control form-control-sm">')
+          .attr('id', 'report_data_free_search')
+          .attr('placeholder', 'Type to Search')
+          .css({
+            'display': 'inline-block',
+            'width': 'auto',
+            'margin-left': '10px'
+          });
+
+          $searchWrapper.append($activeSearch);
+
+          $.fn.dataTable.ext.search.push(
+            function(settings, searchData, index, rowData, counter){
+              var freeSearchVal = $('#report_data_free_search').val();
+              if(!freeSearchVal) return true;
+              var searchRegex = new RegExp(freeSearchVal, 'i');
+              for(var i=0; i<searchData.length; i++){
+                if(searchRegex.test(searchData[i])){
+                  return true;
+                }
+              }
+              return false;
+            }
+          );
+ 
+  $activeSearch.on('input', function () {
+    table.draw();
+  });
+},
         
         "pageLength": 10,
         "data": dataset,
