@@ -278,6 +278,27 @@ VALUES (:ticket_no, :date_created, :deptsel, :store, :concern, :service_desc, :s
 
     }
 
+    // Handle uploaded files (if any) and save to images table
+    if (!empty($_FILES['files']) && isset($ticknum)) {
+      $uploadDir = __DIR__ . '/image/';
+      if (!is_dir($uploadDir)) {
+        mkdir($uploadDir, 0755, true);
+      }
+      $files = $_FILES['files'];
+      for ($i = 0; $i < count($files['name']); $i++) {
+        if (is_uploaded_file($files['tmp_name'][$i])) {
+          $originalName = basename($files['name'][$i]);
+          $uniqueName = time() . '_' . preg_replace('/[^A-Za-z0-9._-]/', '_', $originalName);
+          $dest = $uploadDir . $uniqueName;
+          if (move_uploaded_file($files['tmp_name'][$i], $dest)) {
+            $storedPath = 'image/' . $uniqueName;
+            $ins = $this->connection->prepare("INSERT INTO images (files_tmp, files_name, uploaded_on, ticket_no) VALUES (:files_tmp, :files_name, NOW(), :ticket_no)");
+            $ins->execute(array(':files_tmp' => $storedPath, ':files_name' => $originalName, ':ticket_no' => $deptabr . '' . $ticknum));
+          }
+        }
+      }
+    }
+
 
 
 

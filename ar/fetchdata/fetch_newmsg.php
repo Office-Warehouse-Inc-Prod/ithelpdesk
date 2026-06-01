@@ -28,7 +28,7 @@ reports
 ON 
     tbl_notif.ticket_no = reports.ticket_no
 WHERE
-notif_val IN ('2','3') AND
+notif_val IN ('1','2','3')AND reports.status NOT IN ('ON PROCESS') AND 
 reports.deptsel = 16  ";
 $result = $conn->query($sql);
 

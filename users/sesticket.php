@@ -2,17 +2,20 @@
 include 'db.php';
 if (isset($_POST['tktval'])) {
   $tktval = $_POST['tktval'];
-  $query = "SELECT * FROM images WHERE ticket_no = '$tktval' GROUP BY files_name";
+  $query = "SELECT * FROM images WHERE ticket_no = ? ORDER BY uploaded_on DESC";
   $run = $concat->prepare($query);
+  $run->bind_param('s', $tktval);
   $run->execute();
   $rs = $run->get_result();
 
   if ($rs->num_rows > 0) {
-    $output = '';
+    $output = '<div class="attachment-grid">';
     while ($row = $rs->fetch_assoc()) {
-      $filename = ltrim($row['files_name']);
-      $file_extension = pathinfo($filename, PATHINFO_EXTENSION);
-      $file_path = '../users/image/'. $filename;
+      $origName = htmlspecialchars($row['files_name']);
+      $storedPath = trim($row['files_tmp']);
+      $fileExtension = strtolower(pathinfo($origName, PATHINFO_EXTENSION));
+      $fileUrl = htmlspecialchars($storedPath);
+      $filePath = __DIR__ . '/' . $storedPath;
 
       if (file_exists($file_path)) {
         switch ($file_extension) {

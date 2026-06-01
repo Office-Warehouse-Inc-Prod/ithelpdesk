@@ -925,12 +925,12 @@ if ($_POST["operation"] == "New_Report") {
             $mail->isSMTP();
             $mail->Host       = 'mail.officewarehouse.com.ph';
             $mail->SMTPAuth   = true;
-            $mail->Username   = 'portal_noreply@officewarehouse.com.ph';
+            $mail->Username   = 'helpdesk_noreply@officewarehouse.com.ph';
             $mail->Password   = 'Owi@123456**';
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port       = 587;
 
-            $mail->setFrom('portal_noreply@officewarehouse.com.ph', 'HELPDESK AI');
+            $mail->setFrom('helpdesk_noreply@officewarehouse.com.ph', 'HELPDESK AI');
             $mail->addAddress($deptEmail, $deptName);
 
             $mail->isHTML(true);

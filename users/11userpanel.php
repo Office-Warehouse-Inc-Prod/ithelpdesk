@@ -314,6 +314,9 @@ $("#addmsg").click(function(){
   }
 
   getinfo($("#slctdtick").val(),'remarks',uid);
+  if (typeof loadAttachments === 'function') {
+    loadAttachments($("#slctdtick").val());
+  }
  
   $('#ticket_modal').modal('show')
 });
@@ -379,20 +382,27 @@ $('#reports_table').on( 'click','tbody tr',function () {
 $("#report_form").on('submit', function(event){
           event.preventDefault();
           const chktxt = valtxt();
-          if (chktxt){
-            let frm =$(this).serialize();
-        $.post('fetch.php', frm,function(data){
-                  console.log(data.insertdata)
-                  getdata()
-                  noslctd("#msg");
-                  $("#msg").append(data.insertdata.m);
-                  $('#report_form')[0].reset();
-                  $('#select_tos').val('default');
-                  $('#select_tos').val("default");
-   
-      },'json');
-  }
-          
+          if (!chktxt) return;
+
+          var formEl = document.getElementById('report_form');
+          var formData = new FormData(formEl);
+
+          $.ajax({
+            url: 'fetch.php',
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            dataType: 'json',
+            success: function(data){
+              console.log(data.insertdata)
+              getdata()
+              noslctd("#msg");
+              $("#msg").append(data.insertdata.m);
+              $('#report_form')[0].reset();
+            }
+          });
+
              });
 
 

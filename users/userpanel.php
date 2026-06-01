@@ -497,7 +497,7 @@ $con1 = new dbconfig();
                 <!-- FILE -->
                 <label style="font-weight: bold;">Attached File</label>
                 <p class="mb-3">
-                  <input id="file-input" type="file" name="file" Multiple>
+                  <input id="file-input" type="file" name="files[]" multiple>
                 </p>
 
                 <!-- SUBMIT -->

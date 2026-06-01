@@ -965,6 +965,11 @@ background: linear-gradient(135deg, #837031, #E1AD01);
 
       <!-- <div class="form-group col-md-12"> -->
 
+      <div class="form-group col-md-4">
+      <label>Attachment/s:</label>
+      <input type="text" class="form-control form-control-sm" name="tos" id="tos" readonly>
+      </div>
+
 
 
       <!-- </div> -->

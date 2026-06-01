@@ -495,13 +495,28 @@ className: 'bolded'
 $('#notif_dataxx tbody').on('click', 'tr', function () {
     var data = table.row(this).data();
     var ticketVal = data.ticket_no;
+    var notifVal = data.notif_val;
+    var ticketStatus = data.status ? data.status.toLowerCase().trim() : '';
 
     $('#myInput').val(ticketVal).trigger('input');
 
-    $.post('change_notif.php', { ticketVal: ticketVal }, function(data, textStatus, xhr) {
-        getdata();
-    });
 
+      $('#myInput').val(ticketVal).trigger('input');
+  $.post('change_notif.php', { ticketVal: ticketVal }, function (response) {
+    getdata();
+  });
+
+  if (notifVal == '1') {
+    window.location.href = "adminwfit.php?ticket_no=" + encodeURIComponent(ticketVal);
+  } 
+  else if (notifVal == '2') {
+    if (ticketStatus === 'ON PROCESS') {
+      window.location.href = "adminpanel.php?ticket_no=" + encodeURIComponent(ticketVal) + "#report_data";
+    } 
+    else if (ticketStatus === 'Assigned') {
+      window.location.href = "adminwfit.php?ticket_no=" + encodeURIComponent(ticketVal);
+    }
+  }
     // Scroll to bottom smoothly after click
   $('html, body').animate(
         { scrollTop: $(document).height() },

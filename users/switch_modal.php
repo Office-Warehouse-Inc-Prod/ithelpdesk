@@ -153,6 +153,13 @@ include 'switch_attach_modal.php';
             <input type="text" class="form-control " name="ModalStatus" id="ModalStatus" required="" readonly="" style="background-color: #fff;">
             </div>
 
+            <div class="input-group mb-3 col-md-12">
+              <div class="input-group-prepend">
+                <label class="input-group-text"><strong>Attachments</strong></label>
+              </div>
+              <div id="attached_files" class="form-control" style="min-height:120px; background:#f8f9fa; overflow:auto;"></div>
+            </div>
+
 <!--             <div class="input-group mb-3 col-md-12">
             <div class="input-group-prepend">
             <label class="input-group-text" for="ModalTOS"><strong> Concern</strong></label>
@@ -240,28 +247,34 @@ include 'switch_attach_modal.php';
 		  </div>
  <script type="text/javascript">
 
-$('#vwfile').click(function (e) { 
-    e.preventDefault();
-
-var val = $('#ModalTicket_no').val();
-
+function loadAttachments(ticketNo) {
+    if (!ticketNo) {
+      $('#attached_files').html('<div class="text-muted">No attachments available.</div>');
+      return;
+    }
 
     $.ajax({
       type: 'POST',
       url: 'sesticket.php',
-      data: {tktval: val},
+      data: {tktval: ticketNo},
       success: function(response) {
+        $('#attached_files').html(response);
         $('#images').html(response);
-        $('#ViewFile #ticketxxx').val(val);
-        $('#ViewFile #file-input').val('');
-        $('#save_file').attr('disabled', 'true');
-        $('#ViewFile').modal('show');
-        $('#ticket_modal').modal('hide');
-
-
-
       }
     });
+}
+
+$('#vwfile').click(function (e) { 
+    e.preventDefault();
+
+    var val = $('#ModalTicket_no').val();
+    loadAttachments(val);
+
+    $('#ViewFile #ticketxxx').val(val);
+    $('#ViewFile #file-input').val('');
+    $('#save_file').attr('disabled', 'true');
+    $('#ViewFile').modal('show');
+    $('#ticket_modal').modal('hide');
 });
 
 $('#rars').click(function (e) { 
