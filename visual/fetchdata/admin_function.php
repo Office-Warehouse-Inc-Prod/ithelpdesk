@@ -304,7 +304,7 @@ class dbconfig extends dbconn
 		FROM vw6
 		LEFT JOIN users ON vw6.ursID = users.id
 		WHERE (
-			(vw6.deptsel = '6' AND vw6.cat_id IN ('19','20','21','22','23','27','34','35','36') AND vw6.status NOT IN ('NEW REPORT', 'Assigned', 'ASSIGNED'))
+			(vw6.deptsel = '6'  AND vw6.status NOT IN ('NEW REPORT', 'Assigned', 'ASSIGNED'))
 			OR 
 			(users.deptsel = '6' AND vw6.status IN ('NEW REPORT'))
 		)

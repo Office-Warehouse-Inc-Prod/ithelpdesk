@@ -21,7 +21,7 @@ class dbconfig extends dbconn
 		COUNT(CASE WHEN reports.`status` = 'SUBJECT FOR CLOSING' then 1 else NULL END) AS t_day
 		-- COUNT(CASE WHEN reports.`status` = 'CLOSED' AND DATE(reports.date_closed) = CURRENT_DATE THEN 1 else NULL END) AS t_day
         FROM
-        reports WHERE sub_id NOT IN ('15','28','34','35') AND `status` NOT IN ('WAITING FOR IT HELDESK RESPONSE','NEW REPORT') AND cat_id IN ('37','38','39','40','41') AND YEAR(date_created) IN (" . $_POST['yr'] . ") AND reports.f_deptsel = '2'";
+        reports WHERE sub_id NOT IN ('15','28','34','35') AND `status` NOT IN ('WAITING FOR IT HELDESK RESPONSE','NEW REPORT')AND YEAR(date_created) IN (" . $_POST['yr'] . ") AND reports.f_deptsel = '2'";
 
 		$statement = $this->connection->prepare($query);
 		$statement->execute();
@@ -96,12 +96,7 @@ class dbconfig extends dbconn
 				FROM
 				it_tech
 				LEFT JOIN reports ON reports.itsup = it_tech.itsup
-				INNER JOIN (
-					SELECT tech_id, MIN(img_name) AS img_name 
-					FROM users 
-					WHERE tech_id IS NOT NULL AND tech_id <> ''
-					GROUP BY tech_id
-				) users ON users.tech_id = it_tech.itsup
+				INNER JOIN users ON users.tech_id = it_tech.itsup
 				WHERE
 				reports.sub_id NOT IN (15,28,34,35) AND reports.itsup NOT IN ('8') AND reports.f_deptsel = '2' AND cat_id IN ('37','38','39','40','41') AND
 				YEAR(reports.date_created) IN (" . $_POST['yr'] . ")
@@ -161,7 +156,7 @@ class dbconfig extends dbconn
 		FROM
 		reports
 		WHERE
-		year(date_created) BETWEEN '2019' AND '2022' and reports.sub_id NOT IN ('15','28','34','35') AND cat_id IN ('37','38','39','40','41')
+		year(date_created) BETWEEN '2019' AND '2025' and reports.sub_id NOT IN ('15','28','34','35') AND reports.f_deptsel = '2' AND cat_id IN ('37','38','39','40','41')
 		GROUP BY
 		DATEPART";
 		}
@@ -303,29 +298,22 @@ class dbconfig extends dbconn
 
 	public function admin_data_table_res()
 	{
-
-		// $query="
-		// Select * from vw6 WHERE 
-		// vw6.sub_id NOT IN ('15','28','34','35') AND status <> 'WAITING FOR IT HELPDESK RESPONSE' AND YEAR(vw6.date_created) IN (2022)";
-
-		//exclude from deptsel migration to f_deptsel since vw6 f_deptsel  AS "dept_sel"
-
 		$query = "SELECT DISTINCT vw6.*
 		FROM vw6
 		LEFT JOIN users ON vw6.ursID = users.id
 		WHERE (
-			(vw6.deptsel = '2' AND vw6.cat_id IN ('37','38','39','40','41') AND vw6.status NOT IN ('NEW REPORT', 'Assigned', 'ASSIGNED'))
+			(vw6.deptsel = '2' AND vw6.status NOT IN ('NEW REPORT', 'Assigned', 'ASSIGNED'))
 			OR 
 			(users.deptsel = '2' AND vw6.status IN ('NEW REPORT'))
 		)
-		AND vw6.sub_id NOT IN ('15', '28', '34', '35')
+		AND vw6.sub_id NOT IN ('15', '198','28', '34', '35')
 		AND YEAR(vw6.date_created) IN (" . $_POST['yr'] . ")";
 
 		$statement = $this->connection->prepare($query);
 		$statement->execute();
 		$result = $statement->fetchAll();
-		$data[] = array();
-		// $fetchdata[] = array();
+		$data = array();
+		$fetchdata = array();
 
 		foreach ($result as $row) {
 			$fetchdata[] = array(
@@ -399,7 +387,8 @@ class dbconfig extends dbconn
 	`reports_newmsg`.`nmsg_stat` AS `nmsg_stat`,
 	`users`.`fname` AS `fname`,
 	`users`.`lstname` AS `lstname`,
-	concat_ws( ' ', `users`.`fname`, `users`.`lstname` ) AS `full_name` 
+	concat_ws( ' ', `users`.`fname`, `users`.`lstname` ) AS `full_name`,
+	GROUP_CONCAT(images.files_name SEPARATOR '|') AS attachment_files 
 FROM
 	(((((((
 								`reports`
@@ -410,11 +399,12 @@ FROM
 				LEFT JOIN `reports_msgcnt` ON ( `reports_msgcnt`.`ticket_no` = `reports`.`ticket_no` ))
 			LEFT JOIN `reports_newmsg` ON ( `reports_newmsg`.`ticket_no` = `reports`.`ticket_no` ))
 	LEFT JOIN `users` ON ( `users`.`id` = `reports`.`userId` )) 
+	LEFT JOIN `images` ON ( `images`.`ticket_no` = `reports`.`ticket_no` )
 WHERE
-	(`reports`.`status` = 'ASSIGNED' OR `reports`.`status` = 'Assigned')
+	`reports`.`status` = 'ASSIGNED' 
 	AND reports.f_deptsel = '2'
 	GROUP BY
-	concern
+	reports.ticket_no
 ORDER BY
 	`reports`.`date_created` DESC";
 		$statement = $this->connection->prepare($query);
@@ -438,7 +428,8 @@ ORDER BY
 				'cat_desc' => $row["cat_desc"],
 				'sub_cat' => $row["sub_cat"],
 				'msg_cnt' => $row["msg_cnt"],
-				'full_name' => $row["full_name"]
+				'full_name' => $row["full_name"],
+				'attachment_files' => $row["attachment_files"]
 				// 'sub_cat' => $row["sub_cat"],
 			);
 		}
@@ -592,6 +583,7 @@ FROM
 	tbl_notif.notif_data, 
 	tbl_notif.notif_date, 
 	tbl_notif.notif_val, 
+	reports.status AS status,
 	tbl_notif.assigned_by
 FROM
 	tbl_notif
@@ -601,7 +593,7 @@ FROM
 		tbl_notif.ticket_no = reports.ticket_no
 WHERE
 	notif_val IN ('1','2') AND
-	reports.f_deptsel = 2
+	reports.f_deptsel = 1 
 ORDER BY
 	notif_date ASC";
 		$statement = $this->connection->prepare($query);
@@ -613,7 +605,8 @@ ORDER BY
 			$fetchdata[] = array(
 				'notif_data' => $row["notif_data"],
 				'ticket_no' => $row["ticket_no"],
-				'notif_val' => $row["notif_val"]
+				'notif_val' => $row["notif_val"],
+				'status' => $row["status"]
 
 			);
 		}
@@ -1263,7 +1256,7 @@ WHERE
 
 		$query = "
 		Select * from vw6 WHERE vw6.deptsel = '2' AND cat_id = '3' AND
-		vw6.sub_id NOT IN ('15','28','34','35') AND status <> 'NEW REPORT' AND YEAR(vw6.date_created) IN ('2026')";
+		vw6.sub_id NOT IN ('15','28','34','35') AND status <> 'NEW REPORT' AND YEAR(vw6.date_created) IN ('2025')";
 
 		$statement = $this->connection->prepare($query);
 		$statement->execute();
