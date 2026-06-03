@@ -1,8 +1,46 @@
-      <?php
-      include 'admin.php';
-      include '../condb.php';
-      $con1 = new dbconfig();
-      ?>
+<?php
+include 'admin.php';
+include '../condb.php';
+$con1 = new dbconfig();
+?>
+
+<?php
+  if(session_status() === PHP_SESSION_NONE){
+  session_start();
+  }
+      
+      if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mode']) && $_POST['mode'] === 'newrpt_tbl') {
+  
+
+    try {
+        $sql = "SELECT 
+                    r.ticket_no, 
+                    r.date_created, 
+                    r.concern, 
+                    r.service_desc, 
+                    r.subject,
+                    i.files_name,
+                    r.sub_id,
+                    r.f_deptsel,
+                    r.itsup,
+                    r.store
+                FROM reports r
+                LEFT JOIN images i ON r.ticket_no = i.ticket_no
+                WHERE r.status = 'NEW REPORT' 
+                ORDER BY r.date_created DESC";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode(['newrptdata' => $results]);
+        
+    } catch (Exception $e) {
+        echo json_encode(['newrptdata' => [], 'error' => $e->getMessage()]);
+    }
+    
+    exit; 
+}
+?>
 
       <head>
       <link rel="stylesheet" href="../css/bootstrap-datetimepicker.min.css"/>
@@ -965,11 +1003,12 @@ background: linear-gradient(135deg, #837031, #E1AD01);
 
       <!-- <div class="form-group col-md-12"> -->
 
-      <div class="form-group col-md-4">
-      <label>Attachment/s:</label>
-      <input type="text" class="form-control form-control-sm" name="tos" id="tos" readonly>
-      </div>
-
+    <div class="form-group col-md-4">
+    <label>Attachment:</label>
+    <div id="attachments-container" class="d-flex flex-wrap gap-2 p-2 border rounded bg-light" style="min-height: 50px;">
+        <span class="text-muted">No attachments for this ticket.</span>
+    </div>
+</div>
 
 
       <!-- </div> -->

@@ -731,6 +731,7 @@ public function newreporthist(){
 	reports.userId AS userId,
 	reports.via AS via,
 	reports.itsup AS itsup,
+	reports.f_deptsel AS f_deptsel,
 	it_tech.it_desc AS it_desc,
 	reports.cat_id AS cat_id,
 	categories.cat_desc AS cat_desc,
@@ -744,7 +745,8 @@ public function newreporthist(){
 	users.fname AS fname,
 	users.lstname AS lstname,
 	concat_ws( ' ', `users`.`fname`, `users`.`lstname` ) AS full_name,
-	tbl_deptsel.dept_desc AS dept_desc
+	tbl_deptsel.dept_desc AS dept_desc,
+	GROUP_CONCAT(images.files_name SEPARATOR '|') AS attachment_files
 FROM
 	(
 		(
@@ -765,9 +767,12 @@ FROM
 		)
 		LEFT JOIN users ON ( users.id = reports.userId ) 
 	)
+	LEFT JOIN images ON ( images.ticket_no = reports.ticket_no )
 	INNER JOIN tbl_deptsel ON reports.deptsel = tbl_deptsel.dept_id 
 WHERE
-	reports.`status` = 'NEW REPORT' 
+	reports.`status` = 'NEW REPORT'
+GROUP BY
+	reports.ticket_no
 ORDER BY
 	reports.date_created DESC";
 	$statement = $this->connection->prepare($query);
@@ -787,12 +792,14 @@ ORDER BY
 			'via' => $row["via"],
 			'status' => $row["status"],            
 			'itsup' => $row["itsup"],
+			'f_deptsel' => $row["f_deptsel"],
 			'it_desc' => $row["it_desc"],
 			'cat_desc' => $row["cat_desc"],
 			'sub_cat' => $row["sub_cat"],
 			'msg_cnt' => $row["msg_cnt"],
 			'full_name' => $row["full_name"],
-			'dept_desc' => $row["dept_desc"]
+			'dept_desc' => $row["dept_desc"],
+			'attachment_files' => $row["attachment_files"]
 
 			// 'sub_cat' => $row["sub_cat"],
 		);

@@ -101,7 +101,7 @@ getdata();
 var table
 function admin_datatable(t){
 const dataset=t.rptdata;
-table =  $("#report_data").DataTable({
+table =  $("#admin_report").DataTable({
 
 "dom":
 'B<"pull-left"lf><"pull-right">tip',
@@ -282,7 +282,7 @@ rowCallback: function(row, data, index) {
 
 });
 
-$('#report_data tbody').on('dblclick', 'tr', function () {
+$('#admin_report tbody').on('dblclick', 'tr', function () {
 
   // Simulate the original `button` click by using this `tr` as parent
   var data = table.row($(this)).data();
