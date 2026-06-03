@@ -2,6 +2,47 @@
       <script type="text/javascript">
       $(document).ready(function(){
 
+
+      
+  // Function to extract variables from the URL string
+  function getUrlParam(param) {
+    var urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param);
+  }
+
+  var targetTicket = getUrlParam('ticket_no');
+
+  if (targetTicket) {
+    setTimeout(function() {
+      var foundRow = null;
+
+      // Scan rows to find match
+      reptable.rows().every(function (rowIdx, tableLoop, rowLoop) {
+        var rowData = this.data();
+        if (rowData && rowData.ticket_no == targetTicket) {
+          foundRow = this.node();
+        }
+      });
+
+      if (foundRow) {
+        // Trigger click action on the targeting action button inside that specific row
+        $(foundRow).find('button[name="update"]').trigger('click');
+
+        // Smooth scroll layout view focus to the selected row
+        $('html, body').animate({
+          scrollTop: $(foundRow).offset().top - 100
+        }, 800, function() {
+          // Highlight Animation sequence on the target row
+          $(foundRow).css('transition', 'background-color 0.5s ease');
+          $(foundRow).css('background-color', '#ffff99'); // Fixed structural string mistake here
+
+          setTimeout(function() {
+            $(foundRow).css('background-color', ''); 
+          }, 1200);
+        });
+      }
+    }, 600);
+  }
       // default status
       $("div.selected select").val("OPEN");
 
@@ -89,42 +130,37 @@ $('#new_rep_table_filter input')
     });
 
       // open modal
-      $('#new_rep_table tbody').off('click', 'button').on('click', 'button', function () {
-      var data = reptable.row($(this).parents('tr')).data();
-      if(!data) return;
+$('#new_rep_table tbody').off('click', 'button').on('click', 'button', function () {
+    var data = reptable.row($(this).parents('tr')).data();
+    if(!data) return;
 
-      $('#ticket_no').val(data['ticket_no']);
-      $('#store').val(data['store']);
-      $('#str_desc').val(data['str_code']);
-      $('#crtd_by').val(data['full_name']);
-      $('#date_createdx').val(data['date_created']);
+    $('#ticket_no').val(data['ticket_no']);
+    $('#store').val(data['store']);
+    $('#str_desc').val(data['str_code']);
+    $('#crtd_by').val(data['full_name']);
+    $('#date_createdx').val(data['date_created']);
+    $('#concern').val(data['concern']); 
+    $('#tos').val(data['service_desc']);
+    $('#message').val(data['subject']); 
 
-      // NOTE: your dataset uses concern as "subject text", subject as "concern text"
-      $('#concern').val(data['concern']); // SUBJECT textarea
-      $('#tos').val(data['service_desc']);
-      $('#message').val(data['subject']); // CONCERN textarea
+    $('#sub_num').val(data['sub_id'] || '');
 
-      $('#sub_num').val(data['sub_id'] || '');
+    var tid = data['ticket_no'];
+    $('#tick_title').text("Ticket Number: " + tid);
+    displayAttachmentsFromData(data);
+    var currentDept = data['f_deptsel'] || data['itsup'] || '0';
+    $('#old_dept').val(currentDept);
+    $('#f_deptsel').val(currentDept !== '0' ? currentDept : '');
 
-      // ✅ new department assignment fields:
-      // prefer new field f_deptsel; fallback to old itsup if data still provides it
-      var currentDept = data['f_deptsel'] || data['itsup'] || '0';
-      $('#old_dept').val(currentDept);
-      $('#f_deptsel').val(currentDept !== '0' ? currentDept : '');
+    $('#newrpt_Modal').modal('show');
+    $('#action').val("Update");
+    $('#operation').val("New_Report");
 
-      $('#newrpt_Modal').modal('show');
-      $('#action').val("Update");
-      $('#operation').val("New_Report");
-
-      var tid = data['ticket_no'];
-      $('#tick_title').text("Ticket Number: " + tid);
-
-      // thread viewer
-      getinfo(tid, 'remarks', user_id);
-      });
+    getinfo(tid, 'remarks', user_id);
+});
       }
 
-      // datetime pickers
+  
       $(function () {
       $('#datetimepicker2, #datetimepicker3').datetimepicker();
       });
@@ -228,6 +264,63 @@ $('#new_rep_table_filter input')
 
       }); // end doc ready
 
+function displayAttachmentsFromData(data) {
+    const container = document.getElementById('attachments-container');
+    if (!container) {
+        console.warn('⚠️ attachments-container element not found in modal');
+        return;
+    }
+    
+    // Clear previous content
+    container.innerHTML = '';
+
+    // Get attachment files from the row data
+    const attachmentFiles = data.attachment_files;
+
+    // If no attachments
+    if (!attachmentFiles) {
+        container.innerHTML = '<span class="text-muted">No attachments for this ticket.</span>';
+        return;
+    }
+
+    // Split multiple attachments by pipe separator
+    const filePaths = attachmentFiles.split('|').filter(f => f.trim() !== '');
+
+    if (filePaths.length === 0) {
+        container.innerHTML = '<span class="text-muted">No attachments for this ticket.</span>';
+        return;
+    }
+
+    // Display each attachment as a thumbnail
+    filePaths.forEach(imagePath => {
+        if (!imagePath.trim()) return;
+
+        const imgElement = document.createElement('img');
+        let fullPath = imagePath.trim();
+        
+        if (!fullPath.includes('users/image/')) {
+            fullPath = 'users/image/' + fullPath;
+        }
+      
+        imgElement.src = '../' + fullPath;
+        imgElement.alt = "Ticket Attachment";
+        
+        imgElement.className = "img-thumbnail m-1";
+        imgElement.style.maxHeight = "100px";
+        imgElement.style.maxWidth = "100px";
+        imgElement.style.objectFit = "cover";
+        imgElement.style.cursor = "pointer";
+        imgElement.style.transition = "transform 0.2s ease";
+        imgElement.style.border = "2px solid #EAAA00";
+
+        imgElement.onmouseover = () => imgElement.style.transform = "scale(1.08)";
+        imgElement.onmouseout = () => imgElement.style.transform = "scale(1.0)";
+        
+        imgElement.onclick = () => window.open('../' + fullPath, '_blank');
+
+        container.appendChild(imgElement);
+    });
+}
 
 $('#f_deptsel').select2({
     dropdownParent: $('#newrpt_Modal'),

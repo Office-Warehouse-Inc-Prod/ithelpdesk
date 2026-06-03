@@ -27,8 +27,9 @@ $qry="select it_desc from it_tech where itsup='". $id."'";
 $qryexec=mysqli_query($this->link,$qry);
 $qryassoc=mysqli_fetch_assoc($qryexec);
 return $qryassoc;
-
-
+    }
+    public function getConnection() {
+        return $this->link;
     }
 }
 
@@ -61,5 +62,8 @@ $qryexec=mysqli_query($this->link,$qry);
 $qryassoc=mysqli_fetch_assoc($qryexec);
 return $qryassoc;
 }
+    public function getConnection() {
+        return $this->link;
+    }
 }
 

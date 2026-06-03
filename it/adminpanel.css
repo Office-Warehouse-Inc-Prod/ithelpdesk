@@ -1,5 +1,5 @@
 body {
-   font-family: 'Poppins', Tahoma, Geneva, Verdana, sans-serif;
+   font-family: "Arial", "Helvetica", sans-serif;
 }
 
 body.dark-mode {
@@ -672,7 +672,6 @@ body.dark-mode .toggle-label-text {
 }
 
 .table {
-    background-color: #E1AD01;
     border-collapse: separate;
     border-spacing: 0;
     border-radius: 8px;

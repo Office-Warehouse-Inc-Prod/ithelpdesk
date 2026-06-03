@@ -387,7 +387,8 @@ class dbconfig extends dbconn
 	`reports_newmsg`.`nmsg_stat` AS `nmsg_stat`,
 	`users`.`fname` AS `fname`,
 	`users`.`lstname` AS `lstname`,
-	concat_ws( ' ', `users`.`fname`, `users`.`lstname` ) AS `full_name` 
+	concat_ws( ' ', `users`.`fname`, `users`.`lstname` ) AS `full_name`,
+	GROUP_CONCAT(images.files_name SEPARATOR '|') AS attachment_files 
 FROM
 	(((((((
 								`reports`
@@ -398,6 +399,7 @@ FROM
 				LEFT JOIN `reports_msgcnt` ON ( `reports_msgcnt`.`ticket_no` = `reports`.`ticket_no` ))
 			LEFT JOIN `reports_newmsg` ON ( `reports_newmsg`.`ticket_no` = `reports`.`ticket_no` ))
 	LEFT JOIN `users` ON ( `users`.`id` = `reports`.`userId` )) 
+	LEFT JOIN `images` ON ( `images`.`ticket_no` = `reports`.`ticket_no` )
 WHERE
 	`reports`.`status` = 'ASSIGNED' 
 	AND reports.f_deptsel = '1'
@@ -426,7 +428,8 @@ ORDER BY
 				'cat_desc' => $row["cat_desc"],
 				'sub_cat' => $row["sub_cat"],
 				'msg_cnt' => $row["msg_cnt"],
-				'full_name' => $row["full_name"]
+				'full_name' => $row["full_name"],
+				'attachment_files' => $row["attachment_files"]
 				// 'sub_cat' => $row["sub_cat"],
 			);
 		}
@@ -589,8 +592,8 @@ FROM
 	ON 
 		tbl_notif.ticket_no = reports.ticket_no
 WHERE
-	notif_val IN ('1','2','3') AND
-	reports.f_deptsel = 1 AND reports.status NOT IN ('ON PROCESS')
+	notif_val IN ('1','2') AND
+	reports.f_deptsel = 1 
 ORDER BY
 	notif_date ASC";
 		$statement = $this->connection->prepare($query);

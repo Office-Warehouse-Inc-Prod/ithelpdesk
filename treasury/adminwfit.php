@@ -5,6 +5,46 @@ include '../condb.php';
 $con1=new dbconfig();
 
  ?>
+
+ 
+<?php
+  if(session_status() === PHP_SESSION_NONE){
+  session_start();
+  }
+      
+      if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mode']) && $_POST['mode'] === 'newrpt_tbl') {
+  
+
+    try {
+        $sql = "SELECT 
+                    r.ticket_no, 
+                    r.date_created, 
+                    r.concern, 
+                    r.service_desc, 
+                    r.subject,
+                    GROUP_CONCAT(i.files_name SEPARATOR '|') AS attachment_files,
+                    r.sub_id,
+                    r.f_deptsel,
+                    r.itsup,
+                    r.store
+                FROM reports r
+                LEFT JOIN images i ON r.ticket_no = i.ticket_no
+                WHERE r.status = 'Assigned' 
+                GROUP BY r.ticket_no
+                ORDER BY r.date_created DESC";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode(['newrptdata' => $results]);
+        
+    } catch (Exception $e) {
+        echo json_encode(['newrptdata' => [], 'error' => $e->getMessage()]);
+    }
+    
+    exit; 
+}
+?>
 <head>
 <link rel="stylesheet" href="../css/bootstrap-datetimepicker.min.css"/>
 <script src="../js/bootstrap-datetimepicker.min.js"></script>
@@ -541,6 +581,15 @@ background: linear-gradient(135deg, #837031, #E1AD01);
           style="text-transform:uppercase" onkeyup="this.value = this.value;" readonly></textarea>
       </div>
 
+      
+             <div class="form-group col-md-12">
+              <label>Attachment:</label>
+             
+              <div id="attachments-container" class="d-flex flex-wrap gap-2 p-2 border rounded bg-light" style="min-height: 50px;">
+                <span class="text-muted">No attachments for this ticket.</span>
+              </div>
+            </div>
+
       <div class="form-group col-md-4">
         <label>VIA</label>
         <select class="form-control form-control-sm" name="via" id="via" required>
@@ -802,8 +851,9 @@ const dataset=t.newrptdata;
     getdata();
    // admin_datatable();
 }, 60000);
- $('#new_rep_table tbody').on( 'click', 'button', function () {
+$('#new_rep_table tbody').off('click', 'button').on('click', 'button', function () {
         var data = reptable.row( $(this).parents('tr') ).data();
+         if(!data) return;
 
                 $('#ticket_no').val(data['ticket_no']);
                 $('#store').val(data['store']);
@@ -823,7 +873,7 @@ const dataset=t.newrptdata;
 
 var tid=$(this).parent().siblings(':first').html();
 $('#tick_title').text("Ticker Number: "+tid+"");
-
+  displayAttachmentsFromData(data);
 getinfo(tid, 'remarks', user_id);
 // console.log(tid)
 
@@ -917,4 +967,64 @@ $('#msg_thread').hide('slow');
 
 
 
+function displayAttachmentsFromData(data) {
+    const container = document.getElementById('attachments-container');
+    if (!container) {
+        console.warn('⚠️ attachments-container element not found in modal');
+        return;
+    }
+    
+    // Clear previous content
+    container.innerHTML = '';
+
+    // Get attachment files from the row data
+    const attachmentFiles = data.attachment_files;
+
+    // If no attachments
+    if (!attachmentFiles) {
+        container.innerHTML = '<span class="text-muted">No attachments for this ticket.</span>';
+        return;
+    }
+
+    // Split multiple attachments by pipe separator
+    const filePaths = attachmentFiles.split('|').filter(f => f.trim() !== '');
+
+    if (filePaths.length === 0) {
+        container.innerHTML = '<span class="text-muted">No attachments for this ticket.</span>';
+        return;
+    }
+
+    // Display each attachment as a thumbnail
+    filePaths.forEach(imagePath => {
+        if (!imagePath.trim()) return;
+
+        const imgElement = document.createElement('img');
+        let fullPath = imagePath.trim();
+        
+        if (!fullPath.includes('users/image/')) {
+            fullPath = 'users/image/' + fullPath;
+        }
+      
+        imgElement.src = '../' + fullPath;
+        imgElement.alt = "Ticket Attachment";
+        
+        imgElement.className = "img-thumbnail m-1";
+        imgElement.style.maxHeight = "100px";
+        imgElement.style.maxWidth = "100px";
+        imgElement.style.objectFit = "cover";
+        imgElement.style.cursor = "pointer";
+        imgElement.style.transition = "transform 0.2s ease";
+        imgElement.style.border = "2px solid #EAAA00";
+
+        imgElement.onmouseover = () => imgElement.style.transform = "scale(1.08)";
+        imgElement.onmouseout = () => imgElement.style.transform = "scale(1.0)";
+        
+        imgElement.onclick = () => window.open('../' + fullPath, '_blank');
+
+        container.appendChild(imgElement);
+    });
+}
+
+
 </script>
+

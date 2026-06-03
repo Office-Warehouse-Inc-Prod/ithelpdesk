@@ -59,7 +59,7 @@
 
     if (/Android|webOS|iPhone|iPad|Mac|Macintosh|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) { $("#ovrall").hide(); }
 
-    var user_id = <?= $_SESSION['user_id']; ?>
+    var user_id = <?= $_SESSION['user_id']; ?>;
 
     let val = '';
     $('#card_totalval').click(function (e) {
@@ -169,6 +169,47 @@
           "search": "_INPUT_",
           "searchPlaceholder": "Search..."
         },
+
+       "initComplete": function (settings, json) {
+        var $searchWrapper = $('#report_data_filter');
+        var $nativeSearchInput = $searchWrapper.find('input');
+
+        $nativeSearchInput
+        .attr('id', 'report_data_filter_disabled')
+        .attr('placeholder', 'Auto Fill Status')
+        .prop('disabled', true)
+        .css('margin-right', '10px');
+
+        var $activeSearch = $('<input type="search" class="form-control form-control-sm">')
+          .attr('id', 'report_data_free_search')
+          .attr('placeholder', 'Type to Search')
+          .css({
+            'display': 'inline-block',
+            'width': 'auto',
+            'margin-left': '10px'
+          });
+
+          $searchWrapper.append($activeSearch);
+
+          $.fn.dataTable.ext.search.push(
+            function(settings, searchData, index, rowData, counter){
+              var freeSearchVal = $('#report_data_free_search').val();
+              if(!freeSearchVal) return true;
+              var searchRegex = new RegExp(freeSearchVal, 'i');
+              for(var i=0; i<searchData.length; i++){
+                if(searchRegex.test(searchData[i])){
+                  return true;
+                }
+              }
+              return false;
+            }
+          );
+ 
+  $activeSearch.on('input', function () {
+    table.draw();
+  });
+},
+        
         "pageLength": 10,
         "data": dataset,
         "order": [[2, "Desc"]],
@@ -195,6 +236,7 @@
 
 
         ],
+        
 
         // columnDefs: [ {
         //             targets: -1,
@@ -377,7 +419,10 @@
           $('#cat').prop("disabled", false);
           $('#sub').prop("disabled", false);
           $('#isp').prop("disabled", false);
+          $('#remarks').attr('readonly', false);
         }
+
+
 
         getinfo(tid, 'remarks', user_id);
 
@@ -609,10 +654,26 @@
         cat_id != "" &&
         sub_id != ""
       ) {
+        var disabledFields = $('#store, #via, #status, #itsup, #cat, #sub');
+        disabledFields.prop('disabled', false);
+        var formData = new FormData(this);
+        setTimeout(function() {
+          if ($('#status').val() !== 'CLOSED') {
+            disabledFields.prop('disabled', true);
+          } else {
+            $(':input[type="submit"]').prop('disabled', true);
+            $('#date_createdx').attr('readonly', true);
+            $('#date_refNo').attr('readonly', true);
+            $('#date_closed').attr('readonly', true);
+            $('#store, #via, #status, #itsup, #cat, #sub, #isp').prop('disabled', true);
+            $('#remarks').attr('readonly', true);
+          }
+        }, 50);
+
         $.ajax({
           url: "insert.php",
           method: "POST",
-          data: new FormData(this),
+          data: formData,
           contentType: false,
           processData: false,
           success: function (data) {
@@ -784,9 +845,10 @@
     $('#frompolDate, #topolDate').change(function () {
       // alert("GOOD");
       _polledraph($('#frompolDate').val(), $('#topolDate').val());
+    });
 
-
-
+    $(document).on('hidden.bs.modal', '#userModal', function () {
+      $('.temp-option').remove();
     });
 
 

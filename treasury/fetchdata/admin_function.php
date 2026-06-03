@@ -590,7 +590,7 @@ FROM
 	ON 
 		tbl_notif.ticket_no = reports.ticket_no
 WHERE
-	notif_val IN ('2','3') AND
+	notif_val IN ('1','2') AND
 	reports.f_deptsel = 15
 ORDER BY
 	notif_date ASC";

@@ -261,7 +261,7 @@ body {
   position: absolute;
   width: 0;
   height: 3px;
-  bottom: 5px; /* Lifted slightly from the bottom */
+  bottom: 5px; 
   left: 50%;
   background-color: var(--primary-color);
   transition: width 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), left 0.3s ease;
@@ -374,7 +374,7 @@ NEW SUPPLIES REQUEST
 <!-- <li class="nav-item">
   <a class="nav-link" href="networkpanel.php" >
     <i class="fa-solid fa-ethernet"></i>
-    <span>Network Maintenance</span>
+    <span>Network Maintenance</span>V
   </a>
 </li> -->
 <!-- Changed mr-auto to ml-auto for right alignment -->
@@ -439,147 +439,133 @@ NEW SUPPLIES REQUEST
 </ul>
 </div>
 </nav>
-
-
 <script type="text/javascript">
 $(document).ready(function(){
-countnewrep();
-countNwMsg();
+    // Initialize the DataTable ONCE on page load
+    var table = $("#notif_dataxx").DataTable({
+        "dom": '<"pull-left"lf><"pull-right">tip',
+        "pagingType": "full_numbers",
+        "bDestroy": true,
+        "responsive": true, 
+        "lengthChange": false, 
+        "autoWidth": false,
+        "bInfo": false,
+        "bFilter": false,
+        "paging": false,
+        "select": true,
+        "pageLength": 10,
+        "language": {
+            "emptyTable": "No new Notification"
+        },
+        "columns": [
+            { title: "NOTIFICATION", data: 'notif_data', "defaultContent": "" }
+        ],
+        "columnDefs": [
+            { targets: 0, className: 'bolded' }
+        ]
+    });
 
-function getdata(){
-    $.post('fetchdata/fetch_data.php', { mode: 'notif_support' }, function(data){
-        // console.log(data);
-        notifdatas(data);
-    }, 'json');
-}
-
-// Run getdata() every 1 second
-setInterval(getdata, 1000);
-
-
-var table
-function notifdatas(t){
-const dataset=t.ntfsupdata;
-table =  $("#notif_dataxx").DataTable({
-
-"dom":
-'<"pull-left"lf><"pull-right">tip',
-// stateSave: true,
-"pagingType": "full_numbers",
-"bDestroy": true,
-"responsive": true, "lengthChange": false, "autoWidth": false,
-"bInfo": false,
-"bFilter": false,
-"paging": false,
-"select": true,
-"pageLength":10,
-"language": {
-"emptyTable": "No new Notification"
-},
-"data": dataset,
-// "order": [[ 0, "Asc" ]],
-
-"columns": [
-
-{title:"NOTIFICATION", data:'notif_data',"defaultContent": ""}
-],
-"columnDefs": [
-{
-targets: 0,
-className: 'bolded'
-}
-]
-
-});
-
-$('#notif_dataxx tbody').on('click', 'tr', function () {
-    var data = table.row(this).data();
-    var ticketVal = data.ticket_no;
-    var notifVal = data.notif_val;
-    var ticketStatus = data.status ? data.status.toLowerCase().trim() : '';
-
-    $('#myInput').val(ticketVal).trigger('input');
-
-
-      $('#myInput').val(ticketVal).trigger('input');
-  $.post('change_notif.php', { ticketVal: ticketVal }, function (response) {
-    getdata();
-  });
-
-  if (notifVal == '1') {
-    window.location.href = "adminwfit.php?ticket_no=" + encodeURIComponent(ticketVal);
-  } 
-  else if (notifVal == '2') {
-    if (ticketStatus === 'ON PROCESS') {
-      window.location.href = "adminpanel.php?ticket_no=" + encodeURIComponent(ticketVal) + "#report_data";
-    } 
-    else if (ticketStatus === 'Assigned') {
-      window.location.href = "adminwfit.php?ticket_no=" + encodeURIComponent(ticketVal);
-    }
-  }
-    // Scroll to bottom smoothly after click
-  $('html, body').animate(
-        { scrollTop: $(document).height() },
-        800,
-        'swing',
-        function () {
-            // Add highlight effect
-            let tableDiv = $('#report_data');
-            tableDiv.css('transition', 'background-color 0.8s');
-            tableDiv.css('background-color', '#ffff99'); // highlight yellow
-
-            setTimeout(() => {
-                tableDiv.css('background-color', '#ffffff'); // back to white
-            }, 800); // delay before returning to white
+    // Handle row clicks safely (Delegated to the table container)
+    $('#notif_dataxx').on('click', 'tbody tr', function () {
+        // Fallback checks to ensure we get the correct row reference
+        var rowData = table.row(this).data();
+        if (!rowData) {
+            rowData = table.row($(this).closest('tr')).data();
         }
-    );
+        if (!rowData) return; 
+
+        var ticketVal = rowData.ticket_no;
+        // Stringify and clean value to prevent mismatch issues
+        var notifVal = rowData.notif_val ? String(rowData.notif_val).trim() : '';
+        var ticketStatus = rowData.status ? String(rowData.status).toUpperCase().trim() : '';
+
+        // Prevent errors if input field doesn't exist
+        if ($('#myInput').length) {
+            $('#myInput').val(ticketVal).trigger('input');
+        }
+
+        // Post to server, THEN handle redirect after the server responds successfully
+        $.post('change_notif.php', { ticketVal: ticketVal }, function (response) {
+            
+            // Refresh data immediately
+            getdata();
+
+            // Redirect sequences cleanly matched against standardized inputs
+            if (notifVal === '1') {
+                window.location.href = "adminwfit.php?ticket_no=" + encodeURIComponent(ticketVal);
+            } 
+            else if (notifVal === '2') {
+                if (ticketStatus === 'ON PROCESS') {
+                    window.location.href = "adminpanel.php?ticket_no=" + encodeURIComponent(ticketVal) + "#report_data";
+                } 
+                else if (ticketStatus === 'ASSIGNED') {
+                    window.location.href = "adminwfit.php?ticket_no=" + encodeURIComponent(ticketVal);
+                }
+                else{
+                    window.location.href = "adminwfit.php?ticket_no=" + encodeURIComponent(ticketVal);
+                }
+            }
+            else if (notifVal === '3') {
+               window.location.href = "adminwfit.php?ticket_no=" + encodeURIComponent(ticketVal);
+            }
+        });
+    });
+
+    // Fetch data function utilizing DataTables API correctly
+    function getdata(){
+        $.post('fetchdata/fetch_data.php', { mode: 'notif_support' }, function(t){
+            const dataset = t && t.ntfsupdata ? t.ntfsupdata : [];
+            
+            // Update table content seamlessly without breaking the DOM UI
+            table.clear().rows.add(dataset).draw(false);
+        }, 'json');
+    }
+
+    getdata();
+    setInterval(getdata, 2000);
+
+    // Dynamic Navbar Highlighting 
+    var currentUrl = window.location.pathname.split("/").pop();
+    if (currentUrl === "" || currentUrl === "index.php") {
+        currentUrl = "adminpanel.php"; 
+    }
+
+    $('.navbar-nav .nav-item').each(function() {
+        var $this = $(this);
+        var linkHref = $this.find('a').attr('href');
+
+        $this.removeClass('active');
+
+        if (linkHref === currentUrl) {
+            $this.addClass('active');
+        }
+        
+        if ($this.hasClass('dropdown')) {
+            $this.find('.dropdown-item').each(function() {
+                if ($(this).attr('href') === currentUrl) {
+                    $this.addClass('active'); 
+                }
+            });
+        }
+    });
 });
-
-
-} // end of data table
-
-
-});
-
-
-
-// function countnewrep() {
-
-
-// setInterval(function(){
-
-// var xhttp = new XMLHttpRequest();
-// xhttp.onreadystatechange = function() {
-// if (this.readyState == 4 && this.status == 200) {
-// document.getElementById("notif_newrep").innerHTML = this.responseText;
-// }
-// };
-// xhttp.open("GET", "fetchdata/notif_newrep.php", true);
-// xhttp.send();
-
-// },1000);
-
-
-// }
-
-
 document.addEventListener("DOMContentLoaded", function () {
-
-    getNewReportCount();      // run immediately
+    getNewReportCount();      
     getTransferCount();
-    setInterval(getNewReportCount, 5000); // every 5 seconds (DO NOT use 1s)
+    getNewMsgCount();
 
+    // Polled at a stable 5-second frequency
+    setInterval(getNewReportCount, 5000); 
+    setInterval(getTransferCount, 5000); 
+    setInterval(getNewMsgCount, 5000);
 });
 
+// Modernized background badge fetch operations
 async function getNewReportCount() {
-
     try {
-
         const response = await fetch("fetchdata/notif_newrep.php?_=" + Date.now());
         const count = (await response.text()).trim();
-
         const badge = document.getElementById("notif_newrep");
-
         if (!badge) return;
 
         if (count === "0" || count === "") {
@@ -588,105 +574,44 @@ async function getNewReportCount() {
             badge.style.display = "inline-block";
             badge.innerHTML = count;
         }
-
     } catch (error) {
-        console.error("Notification count dev error:", error);
+        console.error("New Report count error:", error);
     }
 }
-
-
 
 async function getTransferCount() {
-
     try {
+        const response = await fetch("fetchdata/notif_transfer.php?_=" + Date.now());
+        const count = (await response.text()).trim();
+        const badge = document.getElementById("notif_transfer");
+        if (!badge) return;
 
-        const xresponse = await fetch("fetchdata/notif_transfer.php?_=" + Date.now());
-        const xcount = (await xresponse.text()).trim();
-
-        const xbadge = document.getElementById("notif_transfer");
-
-        if (!xbadge) return;
-
-        if (xcount === "0" || xcount === "") {
-            xbadge.style.display = "none";
+        if (count === "0" || count === "") {
+            badge.style.display = "none";
         } else {
-            xbadge.style.display = "inline-block";
-            xbadge.innerHTML = xcount;
+            badge.style.display = "inline-block";
+            badge.innerHTML = count;
         }
-
     } catch (error) {
-        console.error("Notification count error:", error);
+        console.error("Transfer count error:", error);
     }
 }
 
-function countnewrep() {
+async function getNewMsgCount() {
+    try {
+        const response = await fetch("fetchdata/fetch_newmsg.php?_=" + Date.now());
+        const count = (await response.text()).trim();
+        const badge = document.getElementById("notif_newmsg");
+        if (!badge) return;
 
-
-setInterval(function(){
-
-var xhttp = new XMLHttpRequest();
-xhttp.onreadystatechange = function() {
-if (this.readyState == 4 && this.status == 200) {
-document.getElementById("notif_newrep").innerHTML = this.responseText;
-}
-};
-xhttp.open("GET", "fetchdata/notif_newrep.php", true);
-xhttp.send();
-
-},1000);
-
-
-}
-
-function countNwMsg() {
-
-
-setInterval(function(){
-
-var xhttp = new XMLHttpRequest();
-xhttp.onreadystatechange = function() {
-if (this.readyState == 4 && this.status == 200) {
-document.getElementById("notif_newmsg").innerHTML = this.responseText;
-}
-};
-xhttp.open("GET", "fetchdata/fetch_newmsg.php", true);
-xhttp.send();
-
-},1000);
-
-
-}
-
-
-
-// Auto-detect current page and set 'active' class
-var currentUrl = window.location.pathname.split("/").pop();
-
-// If index or empty, default to home
-if (currentUrl === "" || currentUrl === "index.php") {
-    currentUrl = "adminpanel.php"; 
-}
-
-$('.navbar-nav .nav-item').each(function() {
-    var $this = $(this);
-    var linkHref = $this.find('a').attr('href');
-
-    // Remove default 'active' class first to prevent duplicates
-    $this.removeClass('active');
-
-    // Check if the link href matches the current URL
-    if (linkHref === currentUrl) {
-        $this.addClass('active');
+        if (count === "0" || count === "") {
+            badge.style.display = "none";
+        } else {
+            badge.style.display = "inline-block";
+            badge.innerHTML = count;
+        }
+    } catch (error) {
+        console.error("New message count error:", error);
     }
-    
-    // Special case for dropdown items
-    if ($this.hasClass('dropdown')) {
-        $this.find('.dropdown-item').each(function() {
-            if ($(this).attr('href') === currentUrl) {
-                $this.addClass('active'); // Highlight parent if child is active
-            }
-        });
-    }
-});
-
+}
 </script>

@@ -98,7 +98,7 @@
     getdata();
 
     var table
-    function admin_datatable(t) {
+  function admin_datatable(t) {
       const dataset = t.rptdata;
       table = $("#report_data").DataTable({
 
