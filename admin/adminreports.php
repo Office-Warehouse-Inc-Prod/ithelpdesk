@@ -8,7 +8,8 @@ include '../condb.php';
   <link rel="stylesheet" href="adminpanel.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" />
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-<script src="src/jquery.table2excel.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@linways/table-to-excel@1.0.4/dist/tableToExcel.min.js"></script>
+
 </head>
 
 <style>
@@ -291,7 +292,7 @@ body {
 }
 .department-table th { 
   background-color: #213456; 
-  color: #213456 !important; 
+  color: #ffffff !important; 
   font-weight: 700; 
   text-transform: uppercase; 
   font-size: 1.78rem; 
@@ -393,6 +394,28 @@ body {
                 <option value="2022">2022</option>
               </select>
             </div>
+
+
+             <div class="input-group">
+              <span class="input-group-text bg-light border-end-0">
+                <i class="fas fa-history me-2 text-muted">    </i>IN MONTH OF:
+              </span>
+              <select class="form-select border-start-0" name="monthpicker" id="monthpicker" required style="min-width: 150px;">
+                <option value="01,02,03,04,05,06,07,08,09,10,11,12" selected>OVERALL</option>
+                <option value="01">JANUARY</option>
+                <option value="02">FEBRUARY</option>
+                <option value="03">MARCH</option>
+                <option value="04">APRIL</option>
+                <option value="05">MAY</option>
+                <option value="06">JUNE</option>
+                <option value="07">JULY</option>
+                <option value="08">AUGUST</option>
+                <option value="09">SEPTEMBER</option>
+                <option value="10">OCTOBER</option>
+                <option value="11">NOVEMBER</option>
+                <option value="12">DECEMBER</option>
+              </select>
+            </div>
           </div>
           <div class="d-flex align-items-center">
             <div class="form-check form-switch m-0 px-5">
@@ -411,7 +434,7 @@ body {
                  
 
                 </h5>
-                 <button style="margin-left: 90px; ">Export</button>
+                    <button style ="align-itmes: right; border-radius:10px; background-color: #E1AD01; color: #213456; padding: 10px;"onclick="exportTableToExcel()"><i class="fa fa-file-excel-o" aria-hidden="true"></i>Export</button>
               </div>
               
               <div class="card-body p-0">
@@ -435,9 +458,15 @@ body {
                         </td>
                       </tr>
                     </tbody>
+                    <tfoot id="dept-table-footer" class="bg-light" style="border-top: 2px solid #2d3c59;">
+                      
+                    </tfoot>
                   </table>
                 </div>
               </div>
+               
+             
+               
             </div>
           </div>
         </div> 
@@ -467,11 +496,12 @@ body {
           <div>
             <h4 class="m-0 font-weight-bold text-dark" id="modal-dept-name">  Department Name</h4> 
             <small class="text-muted" id="modal-dept-year">  Year Metrics</small>
+            <button style ="align-itmes: right; border-radius:10px; background-color: #E1AD01; color: #213456; padding: 10px;"onclick="exportDeptExcel()"><i class="fa fa-file-excel-o" aria-hidden="true"></i> Excel</button>
           </div>
         </div>
         <div class="card-body p-0">
           <div class="table-responsive">
-            <table class="table department-table m-0">
+            <table id="dept-table" class="table department-table m-0">
               <thead>
                 <tr>
                   <th>TICKET NO</th>
@@ -494,9 +524,7 @@ body {
       </div>
     </div>
   </div>
-</div>
-
-<script>
+</div><script>
 $(document).ready(function() {
     let globalTicketDetails = [];
 
@@ -511,9 +539,10 @@ $(document).ready(function() {
         $(this).fadeOut(100).fadeIn(100);
     });
 
-    function loadDepartmentTable(selectedYear) {
+    function loadDepartmentTable(selectedYear, selectedMonth) {
         let displayYear = selectedYear.includes(',') ? 'OVERALL' : selectedYear;
-        $('#table-year-indicator').text('Year: ' + displayYear);
+        let displayMonthText = selectedMonth ? " | Month: " + selectedMonth : "";
+        $('#table-year-indicator').text('Period: ' + displayYear + displayMonthText);
 
         let currentPath = window.location.pathname;
         let dynamicDirectory = currentPath.substring(0, currentPath.lastIndexOf('/')) + '/';
@@ -522,13 +551,17 @@ $(document).ready(function() {
         $.ajax({
             url: targetedURL, 
             method: 'POST',
-            data: { yr: selectedYear },
+            data: { 
+                yr: selectedYear,
+                mo: selectedMonth 
+            },
             dataType: 'json',
             success: function(response) {
                 let html = '';
+                let footerHtml = '';
+                
                 if(response && response.department_stats && response.department_stats.length > 0) {
                     globalTicketDetails = response.ticket_details || []; 
-
                     response.department_stats.forEach(function(row) {
                         let closedCount = parseInt(row.CLOSED) || 0;
                         let grandTotal = parseInt(row.GRAND_TOTAL) || 0;
@@ -540,8 +573,8 @@ $(document).ready(function() {
                         else if (compliancePercent >= 40) { barTheme = "bg-warning"; }
 
                         html += `
-                            <tr class="dept-row" style="cursor: pointer; " data-dept="${row.DEPARTMENT}">
-                                <td><span class="dept-badge-title fw-bold" style ="color: #213456;">${row.DEPARTMENT}</span></td>
+                            <tr class="dept-row" style="cursor: pointer;" data-dept="${row.DEPARTMENT}">
+                                <td><span class="dept-badge-title fw-bold" style="color: #213456;">${row.DEPARTMENT}</span></td>
                                 <td class="text-center"><span class="stat-badge stat-assigned">${row.ASSIGNED}</span></td>
                                 <td class="text-center"><span class="stat-badge stat-onprocess">${row.ON_PROCESS}</span></td>
                                 <td class="text-center"><span class="stat-badge stat-pending">${row.PENDING}</span></td>
@@ -562,29 +595,73 @@ $(document).ready(function() {
                                 </td>
                             </tr>`;
                     });
+
+                    if(response.global_totals) {
+                        let gt = response.global_totals;
+                        let totalAssigned = parseInt(gt.TOTAL_ASSIGNED) || 0;
+                        let totalOnProcess = parseInt(gt.TOTAL_ON_PROCESS) || 0;
+                        let totalPending = parseInt(gt.TOTAL_PENDING) || 0;
+                        let totalClosed = parseInt(gt.TOTAL_CLOSED) || 0;
+                        let totalGrand = parseInt(gt.OVERALL_GRAND_TOTAL) || 0;
+                        
+                        let totalActiveSum = totalAssigned + totalOnProcess + totalPending;
+                        let globalCompliancePercent = totalGrand > 0 ? Math.round((totalClosed / totalGrand) * 100) : 0;
+
+                        let globalBarTheme = "bg-danger";
+                        if (globalCompliancePercent >= 75) { globalBarTheme = "bg-success"; }
+                        else if (globalCompliancePercent >= 40) { globalBarTheme = "bg-warning"; }
+
+                        footerHtml = `
+                            <tr style="background-color: #ecebe584; font-weight: bold; font-size: 2px; border-top: 2px solid #213456;">
+                                <td class="text-dark fw-bold text-uppercase" style="letter-spacing: 0px;">TOTAL SUMMARY</td>
+                                <td class="text-center text-dark">${totalAssigned}</td>
+                                <td class="text-center text-dark">${totalOnProcess}</td>
+                                <td class="text-center text-dark">${totalPending}</td>
+                                <td class="text-center text-primary fw-bold">${totalActiveSum}</td>
+                                <td>
+                                    <div class="d-flex align-items-center justify-content-center flex-column" style="padding: 0 10px;">
+                                        <div class="d-flex justify-content-between w-100 mb-1 small fw-bold">
+                                            <span class="text-muted">${totalClosed}/${totalGrand} Closed</span>
+                                            <span class="text-dark">${globalCompliancePercent}%</span>
+                                        </div>
+                                        <div class="progress w-100" style="height: 8px; border-radius: 4px; background-color: rgba(0,0,0,0.1);">
+                                            <div class="progress-bar ${globalBarTheme}" role="progressbar" 
+                                                 style="width: ${globalCompliancePercent}%; border-radius: 4px;" 
+                                                 aria-valuenow="${globalCompliancePercent}" aria-valuemin="0" aria-valuemax="100">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>`;
+                    }
+
                 } else {
                     let errMsg = (response && response.error) ? response.error : "No data discovered for this period context selection.";
                     html = `<tr><td colspan="6" class="text-center py-4 text-muted fw-semibold">${errMsg}</td></tr>`;
+                    footerHtml = '';
                 }
+                
                 $('#dept-table-body').html(html);
+                $('#dept-table-footer').html(footerHtml);
             },
             error: function(xhr, status, error) {
                 console.error("AJAX Exception Trace:", xhr.responseText, error);
                 $('#dept-table-body').html('<tr><td colspan="6" class="text-center text-danger py-4 fw-bold"><i class="fas fa-exclamation-triangle me-2"></i> Communications fault encountered.</td></tr>');
+                $('#dept-table-footer').html('');
             }
         });
     }
 
-    loadDepartmentTable($('#yearpicker').val());
-
-    $('#yearpicker').on('change', function() {
-        loadDepartmentTable($(this).val());
+    loadDepartmentTable($('#yearpicker').val(), $('#monthpicker').val());
+    $('#yearpicker, #monthpicker').on('change', function() {
+        loadDepartmentTable($('#yearpicker').val(), $('#monthpicker').val());
     });
 
     $(document).on('click', '.dept-row', function() {
         const targetedDept = $(this).data('dept');
         $('#modal-dept-name').text(targetedDept);
-        $('#modal-dept-year').text('Logging Metrics Context: ' + $('#yearpicker option:selected').text());
+        let rangeText = $('#yearpicker option:selected').text() + ' ' + $('#monthpicker option:selected').text();
+        $('#modal-dept-year').text('Logging Metrics Context: ' + rangeText);
 
         let filteredTickets = globalTicketDetails.filter(ticket => ticket['Assigned Department'] === targetedDept);
         let modalHtml = '';
@@ -621,17 +698,88 @@ $(document).ready(function() {
         }
     });
 });
+ 
+function exportTableToExcel() {
+    let table = document.getElementById("admin_report");
+    let headers = table.querySelectorAll("thead th");
+    headers.forEach(th => {
+        th.setAttribute("data-fill-color", "4B5694"); 
+        th.setAttribute("data-font-color", "F5F5F5"); 
+        th.setAttribute("data-f-bold", "true");
+        th.setAttribute("data-a-h", "center");        
+        th.setAttribute("data-a-v", "middle");      
+    });
 
+    let bodyRows = table.querySelectorAll("tbody tr");
+    bodyRows.forEach(row => {
+        let cells = row.querySelectorAll("td");
+        cells.forEach((td, index) => {
+            td.setAttribute("data-a-v", "middle"); 
+            if (td.classList.contains("text-center")) {
+                td.setAttribute("data-a-h", "center");
+            }
+            if (index === 5) { 
+                td.setAttribute("data-a-h", "center");
+            }
+        });
+    });
 
-$("button").click(function(){
-  $("#table2excel").table2excel({
-    // exclude CSS class
-    exclude: ".noExl",
-    name: "DEPARTMENT TICKET SUMMARY",
-    filename: "SomeFile", //do not include extension
-    fileext: ".xls", // file extension
-    preserveColors:true
+    let footerCells = table.querySelectorAll("tfoot tr td");
+    footerCells.forEach(td => {
+        td.setAttribute("data-fill-color", "F4AE52"); 
+        td.setAttribute("data-f-bold", "true");
+        td.setAttribute("data-font-color", "213456"); 
+        if (td.classList.contains("text-center")) {
+            td.setAttribute("data-a-h", "center");
+        }
+    });
+    const date = new Date();
+    const today = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+    TableToExcel.convert(table, {
+        name: `HELPDESK TICKET SUMMARY PER DEPARTMENT ${today}.xlsx`,
+        sheet: { name: "Ticket Summary" }
+    });
+}
 
-  }); 
-});
+function exportDeptExcel() {
+    let table = document.getElementById("dept-table");
+    let headers = table.querySelectorAll("thead th");
+    headers.forEach(th => {
+        th.setAttribute("data-fill-color", "4B5694"); 
+        th.setAttribute("data-font-color", "F5F5F5"); 
+        th.setAttribute("data-f-bold", "true");
+        th.setAttribute("data-a-h", "center");        
+        th.setAttribute("data-a-v", "middle");      
+    });
+
+    let bodyRows = table.querySelectorAll("tbody tr");
+    bodyRows.forEach(row => {
+        let cells = row.querySelectorAll("td");
+        cells.forEach((td, index) => {
+            td.setAttribute("data-a-v", "middle"); 
+            if (td.classList.contains("text-center")) {
+                td.setAttribute("data-a-h", "center");
+            }
+            if (index === 5) { 
+                td.setAttribute("data-a-h", "center");
+            }
+        });
+    });
+
+    let footerCells = table.querySelectorAll("tfoot tr td");
+    footerCells.forEach(td => {
+        td.setAttribute("data-fill-color", "F4AE52"); 
+        td.setAttribute("data-f-bold", "true");
+        td.setAttribute("data-font-color", "213456"); 
+        if (td.classList.contains("text-center")) {
+            td.setAttribute("data-a-h", "center");
+        }
+    });
+    const date = new Date();
+    const today = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+    TableToExcel.convert(table, {
+        name: `DEPARTMENT ACTIVE TICKETS REPORT ${today}.xlsx`,
+        sheet: { name: "Ticket Summary" }
+    });
+}
 </script>

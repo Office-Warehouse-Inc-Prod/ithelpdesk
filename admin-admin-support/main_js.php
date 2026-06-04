@@ -128,7 +128,7 @@
               $('#date_closed').attr('readonly', false);
               // $('#admsg').attr('readonly', false);
               $('#store').prop("disabled", false);
-              $('#via').prop("disabled", false);
+              
               $('#status').prop("disabled", false);
               $('#itsup').prop("disabled", false);
               $('#cat').prop("disabled", false);
@@ -223,7 +223,6 @@
           { title: "Date Created", data: "date_created", "defaultContent": "" },
           { title: "Subject", data: "subject", "defaultContent": "" },
           // {title:"Concern", data:"concern","defaultContent": ""},
-          { title: "Via", data: "via", "defaultContent": "" },
           { title: "STATUS", data: "status", "defaultContent": "" },
           { title: "Assigned Support", data: "it_desc", "defaultContent": "" },
           { title: "CATEGORY", data: "category", "defaultContent": "" },

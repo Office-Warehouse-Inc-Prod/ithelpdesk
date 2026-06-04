@@ -223,7 +223,6 @@
           { title: "Date Created", data: "date_created", "defaultContent": "" },
           { title: "Subject", data: "subject", "defaultContent": "" },
           // {title:"Concern", data:"concern","defaultContent": ""},
-          { title: "Via", data: "via", "defaultContent": "" },
           { title: "STATUS", data: "status", "defaultContent": "" },
           { title: "Assigned Support", data: "it_desc", "defaultContent": "" },
           { title: "CATEGORY", data: "category", "defaultContent": "" },

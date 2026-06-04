@@ -21,7 +21,7 @@ class dbconfig extends dbconn
 		COUNT(CASE WHEN reports.`status` = 'SUBJECT FOR CLOSING' then 1 else NULL END) AS t_day
 		-- COUNT(CASE WHEN reports.`status` = 'CLOSED' AND DATE(reports.date_closed) = CURRENT_DATE THEN 1 else NULL END) AS t_day
         FROM
-        reports WHERE sub_id NOT IN ('15','28','34','35') AND `status` NOT IN ('WAITING FOR IT HELDESK RESPONSE','NEW REPORT') AND cat_id IN ('47','48','49','50','51','52','53') AND YEAR(date_created) IN (" . $_POST['yr'] . ") AND reports.f_deptsel = '1'";
+        reports WHERE sub_id NOT IN ('15','28','34','35') AND `status` NOT IN ('WAITING FOR IT HELDESK RESPONSE','NEW REPORT')  AND YEAR(date_created) IN (" . $_POST['yr'] . ") AND reports.f_deptsel = '1'";
 
 		$statement = $this->connection->prepare($query);
 		$statement->execute();
