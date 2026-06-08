@@ -8,7 +8,7 @@ if (isset($_POST['yr']) && isset($_POST['mo'])) {
     $months_array = array_filter(array_map('intval', explode(',', $_POST['mo'])));
     if (empty($months_array)) { $months_array = [1,2,3,4,5,6,7,8,9,10,11,12]; }
 
-    $allowed_depts = [1, 2, 3, 6, 7, 8, 11, 13, 15, 16];
+    $allowed_depts = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18];
     $year_placeholders  = implode(',', array_fill(0, count($years_array), '?'));
     $month_placeholders = implode(',', array_fill(0, count($months_array), '?'));
     $dept_placeholders  = implode(',', array_fill(0, count($allowed_depts), '?'));
@@ -53,7 +53,6 @@ if (isset($_POST['yr']) && isset($_POST['mo'])) {
           AND YEAR(r.date_created) IN ($year_placeholders)
           AND MONTH(r.date_created) IN ($month_placeholders)
           AND r.f_deptsel IN ($dept_placeholders)
-          AND r.f_deptsel NOT IN (4, 5)
         ORDER BY r.date_created ASC";
 
     $query_totals = "SELECT 

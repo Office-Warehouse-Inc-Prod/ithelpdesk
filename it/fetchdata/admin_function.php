@@ -21,7 +21,7 @@ class dbconfig extends dbconn
 		COUNT(CASE WHEN reports.`status` = 'SUBJECT FOR CLOSING' then 1 else NULL END) AS t_day
 		-- COUNT(CASE WHEN reports.`status` = 'CLOSED' AND DATE(reports.date_closed) = CURRENT_DATE THEN 1 else NULL END) AS t_day
         FROM
-        reports WHERE sub_id NOT IN ('15','28','34','35') AND `status` NOT IN ('WAITING FOR IT HELDESK RESPONSE','NEW REPORT')  AND YEAR(date_created) IN (" . $_POST['yr'] . ") AND reports.f_deptsel = '1'";
+        reports WHERE sub_id NOT IN ('15','28','34','35') AND `status` NOT IN ('WAITING FOR IT HELDESK RESPONSE','NEW REPORT') AND YEAR(date_created) IN (" . $_POST['yr'] . ") AND reports.f_deptsel = '1'";
 
 		$statement = $this->connection->prepare($query);
 		$statement->execute();
@@ -56,7 +56,7 @@ class dbconfig extends dbconn
 			FROM
 			reports
 			LEFT JOIN tbl_status ON reports.`status` = tbl_status.stat_desc
-			where `reports`.`sub_id` NOT IN ('15','28','34','35') AND `status` NOT IN ('WAITING FOR IT HELPDESK RESPONSE','NEW REPORT','ASSIGNED') AND cat_id IN ('47','48','49','50','51','52','53') AND YEAR(date_created) IN (" . $_POST['yr'] . ") AND reports.f_deptsel = '1'
+			where `reports`.`sub_id` NOT IN ('15','28','34','35') AND `status` NOT IN ('WAITING FOR IT HELPDESK RESPONSE','NEW REPORT','ASSIGNED') AND YEAR(date_created) IN (" . $_POST['yr'] . ") AND reports.f_deptsel = '1'
 			GROUP BY `status`
 			ORDER BY stat_id ASC
 
@@ -98,7 +98,7 @@ class dbconfig extends dbconn
 				LEFT JOIN reports ON reports.itsup = it_tech.itsup
 				INNER JOIN users ON users.tech_id = it_tech.itsup
 				WHERE
-				reports.sub_id NOT IN (15,28,34,35) AND reports.itsup NOT IN ('8') AND reports.f_deptsel = '1' AND cat_id IN ('47','48','49','50','51','52','53') AND
+				reports.sub_id NOT IN (15,28,34,35) AND reports.itsup NOT IN ('8') AND reports.f_deptsel = '1' AND
 				YEAR(reports.date_created) IN (" . $_POST['yr'] . ")
 				GROUP BY
 				reports.itsup
@@ -144,7 +144,7 @@ class dbconfig extends dbconn
 		FROM
 		reports
 		WHERE
-		year(date_created) BETWEEN '" . $_POST['yr'] . "' AND '" . $_POST['yr'] . "' and reports.sub_id NOT IN ('15','28','34','35') AND reports.f_deptsel = '1' AND cat_id IN ('47','48','49','50','51','52','53')
+		year(date_created) BETWEEN '" . $_POST['yr'] . "' AND '" . $_POST['yr'] . "' and reports.sub_id NOT IN ('15','28','34','35') AND reports.f_deptsel = '1'
 		GROUP BY
 		DATEPART";
 		} else {
@@ -156,7 +156,7 @@ class dbconfig extends dbconn
 		FROM
 		reports
 		WHERE
-		year(date_created) BETWEEN '2019' AND '2025' and reports.sub_id NOT IN ('15','28','34','35') AND reports.f_deptsel = '1' AND cat_id IN ('47','48','49','50','51','52','53')
+		year(date_created) BETWEEN '2019' AND '2025' and reports.sub_id NOT IN ('15','28','34','35') AND reports.f_deptsel = '1'
 		GROUP BY
 		DATEPART";
 		}
@@ -181,7 +181,7 @@ class dbconfig extends dbconn
 		$query = "
 		SELECT cat_desc,clr,cat_id, count(*) as ctn, date_created
 		FROM vwp 
-		WHERE deptsel = '1' AND cat_id IN ('47','48','49','50','51','52','53') AND date_created IN (" . $_POST['yr'] . ")  AND cat_desc <> 'GENERAL'
+		WHERE deptsel = '1' AND date_created IN (" . $_POST['yr'] . ")  AND cat_desc <> 'GENERAL'
 		GROUP BY cat_id ORDER BY cat_desc ASC";
 		$statement = $this->connection->prepare($query);
 		$statement->execute();
@@ -234,7 +234,7 @@ class dbconfig extends dbconn
 				JOIN `tbl_branch` ON ( `reports`.`store` = `tbl_branch`.`str_num` ))
 		JOIN `tbl_area` ON ( `tbl_area`.`area_num` = `tbl_branch`.`area_num` )) 
 	WHERE
-		YEAR ( `reports`.`date_created` )  IN ( " . $_POST['yr'] . " ) AND f_deptsel = '1' AND cat_id IN ('47','48','49','50','51','52','53')
+		YEAR ( `reports`.`date_created` )  IN ( " . $_POST['yr'] . " ) AND f_deptsel = '1'
 	GROUP BY
 		`tbl_branch`.`area_num`";
 		$statement = $this->connection->prepare($query);
@@ -302,7 +302,7 @@ class dbconfig extends dbconn
 		FROM vw6
 		LEFT JOIN users ON vw6.ursID = users.id
 		WHERE (
-			(vw6.deptsel = '1' AND vw6.cat_id IN ('47','48','49','50','51','52','53') AND vw6.status NOT IN ('NEW REPORT', 'Assigned', 'ASSIGNED'))
+			(vw6.deptsel = '1' AND vw6.status NOT IN ('NEW REPORT', 'Assigned', 'ASSIGNED'))
 			OR 
 			(users.deptsel = '1' AND vw6.status IN ('NEW REPORT'))
 		)

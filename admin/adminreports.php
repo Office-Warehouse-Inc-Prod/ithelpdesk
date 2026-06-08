@@ -261,7 +261,7 @@ body {
 }
 .admin-table tbody tr:hover { 
   
-  background-color: #b4b5b65f !important;
+    background-color: #365d845f !important;
   border-bottom: 10px solid #213456 ;
   transform: translateY(-2px); 
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04); 
@@ -306,7 +306,7 @@ body {
 }
 .department-table tbody tr:hover { 
   
-    background-color: #b4b5b65f !important;
+    background-color: #365d845f !important;
   border-bottom-color: #213456 solid 3px;
   transform: translateY(-2px); 
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04); 
@@ -319,13 +319,13 @@ body {
   border-bottom: 1px solid rgba(0, 0, 0, 0.04); 
 }
 .stat-assigned {  
-  color: #0d6efd; 
+  color: black; 
 }
 .stat-onprocess { 
-  color: #fd7e14; 
+  color: black; 
 }
 .stat-pending { 
-  color: #dc3545; }
+  color: black; }
 .stat-total { 
   color: #ffffff; 
   }
@@ -382,10 +382,10 @@ body {
         <div class="action-bar-container d-flex justify-content-between align-items-center p-3 mb-4 rounded bg-white shadow-sm" style="box-shadow: 0 5px 10px 2px #2d3c597f !important;">
           <div class="year-picker-group">
             <div class="input-group">
-              <span class="input-group-text bg-light border-end-0">
+              <span class="input-group-text bg-light border-end-0"  style="width: 170px;">
                 <i class="fas fa-history me-2 text-muted"></i>LOGS IN YEAR OF:
               </span>
-              <select class="form-select border-start-0" name="yearpicker" id="yearpicker" required style="min-width: 150px;">
+              <select class="form-select border-start-0" name="yearpicker" id="yearpicker" required style="min-width: 150px; border-radius: 0 12px 12px 0 !important;">
                 <option value="2019,2020,2021,2022,2023,2024,2025,2026">OVERALL</option>
                 <option value="2026" selected>2026</option>
                 <option value="2025">2025</option>
@@ -395,12 +395,11 @@ body {
               </select>
             </div>
 
-
              <div class="input-group">
-              <span class="input-group-text bg-light border-end-0">
-                <i class="fas fa-history me-2 text-muted">    </i>IN MONTH OF:
+              <span class="input-group-text bg-light border-end-0" style="width: 170px; margin-top: 5px;">
+                <i class="fa fa-calendar-check-o" text-muted >   </i>   IN MONTH OF:
               </span>
-              <select class="form-select border-start-0" name="monthpicker" id="monthpicker" required style="min-width: 150px;">
+              <select class="form-select border-start-0" name="monthpicker" id="monthpicker" required style="min-width: 150px; margin-top: 5px; border-radius: 0 12px 12px 0 !important;">
                 <option value="01,02,03,04,05,06,07,08,09,10,11,12" selected>OVERALL</option>
                 <option value="01">JANUARY</option>
                 <option value="02">FEBRUARY</option>
@@ -417,12 +416,7 @@ body {
               </select>
             </div>
           </div>
-          <div class="d-flex align-items-center">
-            <div class="form-check form-switch m-0 px-5">
-              <!-- <input class="form-check-input style-switch" type="checkbox" id="darkModeToggle" style="transform: scale(1.2); cursor: pointer;">
-              <label class="form-check-label text-dark font-weight-bold ms-2" for="darkModeToggle">Dark Mode</label>-->
-            </div>
-          </div>
+         
         </div>
 
         <div class="row">
@@ -582,7 +576,7 @@ $(document).ready(function() {
                                 <td>
                                     <div class="d-flex align-items-center justify-content-center flex-column" style="padding: 0 10px;">
                                         <div class="d-flex justify-content-between w-100 mb-1 small fw-bold">
-                                            <span class="text-muted">${closedCount}/${grandTotal} Closed</span>
+                                            <span class="text-dark">${closedCount}/${grandTotal} Closed</span>
                                             <span class="text-dark">${compliancePercent}%</span>
                                         </div>
                                         <div class="progress w-100" style="height: 8px; border-radius: 4px; background-color: rgba(0,0,0,0.06);">
@@ -614,9 +608,9 @@ $(document).ready(function() {
                         footerHtml = `
                             <tr style="background-color: #ecebe584; font-weight: bold; font-size: 2px; border-top: 2px solid #213456;">
                                 <td class="text-dark fw-bold text-uppercase" style="letter-spacing: 0px;">TOTAL SUMMARY</td>
-                                <td class="text-center text-dark">${totalAssigned}</td>
-                                <td class="text-center text-dark">${totalOnProcess}</td>
-                                <td class="text-center text-dark">${totalPending}</td>
+                                <td class="text-center text-info">${totalAssigned}</td>
+                                <td class="text-center text-warning">${totalOnProcess}</td>
+                                <td class="text-center text-danger">${totalPending}</td>
                                 <td class="text-center text-primary fw-bold">${totalActiveSum}</td>
                                 <td>
                                     <div class="d-flex align-items-center justify-content-center flex-column" style="padding: 0 10px;">

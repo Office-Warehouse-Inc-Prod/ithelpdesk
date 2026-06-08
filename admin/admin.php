@@ -614,4 +614,28 @@ async function getNewMsgCount() {
         console.error("New message count error:", error);
     }
 }
+
+// Process global navbar element highlight checks matching parameters path routes
+    var currentUrl = window.location.pathname.split("/").pop();
+    if (currentUrl === "" || currentUrl === "index.php") {
+      currentUrl = "adminpanel.php";
+    }
+
+    $('.navbar-nav .nav-item').each(function () {
+      var $this = $(this);
+      var linkHref = $this.find('a').attr('href');
+      $this.removeClass('active');
+
+      if (linkHref === currentUrl) {
+        $this.addClass('active');
+      }
+
+      if ($this.hasClass('dropdown')) {
+        $this.find('.dropdown-item').each(function () {
+          if ($(this).attr('href') === currentUrl) {
+            $this.addClass('active');
+          }
+        });
+      }
+    });
 </script>

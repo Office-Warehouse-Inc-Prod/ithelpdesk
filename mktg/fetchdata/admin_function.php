@@ -20,7 +20,7 @@ class dbconfig extends dbconn
 		COUNT(CASE WHEN reports.`status` = 'SUBJECT FOR CLOSING' then 1 else NULL END) AS t_day
 		-- COUNT(CASE WHEN reports.`status` = 'CLOSED' AND DATE(reports.date_closed) = CURRENT_DATE THEN 1 else NULL END) AS t_day
         FROM
-        reports WHERE sub_id NOT IN ('15','28','34','35') AND `status` NOT IN ('WAITING FOR IT HELDESK RESPONSE','NEW REPORT') AND cat_id IN ('8','11','32','33') AND YEAR(date_created) IN (".$_POST['yr'] .") AND reports.f_deptsel = '3'";
+        reports WHERE sub_id NOT IN ('15','28','34','35') AND `status` NOT IN ('WAITING FOR IT HELDESK RESPONSE','NEW REPORT')  AND YEAR(date_created) IN (".$_POST['yr'] .") AND reports.f_deptsel = '3'";
 
         $statement = $this->connection->prepare($query);
         $statement-> execute();
@@ -309,7 +309,7 @@ class dbconfig extends dbconn
 		FROM vw6
 		LEFT JOIN users ON vw6.ursID = users.id
 		WHERE (
-			(vw6.deptsel = '3' AND vw6.cat_id IN ('8','11','32','33') AND vw6.status NOT IN ('NEW REPORT', 'Assigned', 'ASSIGNED'))
+			(vw6.deptsel = '3' AND vw6.status NOT IN ('NEW REPORT', 'Assigned', 'ASSIGNED'))
 			OR 
 			(users.deptsel = '3' AND vw6.status IN ('NEW REPORT'))
 		)
