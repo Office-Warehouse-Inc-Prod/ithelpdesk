@@ -443,6 +443,9 @@ body {
                         <th class="text-center">PENDING</th>
                         <th class="text-center">TOTAL</th>
                         <th class="text-center" style="width: 200px;">COMPLIANCE RATE</th>
+                        <!--<th class="text-center" style="width: 200px;">MET SLA      (WITH SLA)</th>
+                        <th class="text-center" style="width: 200px;">BREACHED SLA (WITHOUT SLA)</th>
+                        <th class="text-center" style="width: 200px;">SLA COMPLIANCE RATE</th>-->
                       </tr>
                     </thead>
                     <tbody id="dept-table-body">

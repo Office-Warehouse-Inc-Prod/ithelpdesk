@@ -8,7 +8,7 @@ if (isset($_POST['yr']) && isset($_POST['mo'])) {
     $months_array = array_filter(array_map('intval', explode(',', $_POST['mo'])));
     if (empty($months_array)) { $months_array = [1,2,3,4,5,6,7,8,9,10,11,12]; }
 
-    $allowed_depts = [1, 2, 3, 6, 7, 8, 11, 13, 15, 16];
+    $allowed_depts = [1, 2, 3, 6, 8, 11, 13, 15, 16];
     $year_placeholders  = implode(',', array_fill(0, count($years_array), '?'));
     $month_placeholders = implode(',', array_fill(0, count($months_array), '?'));
     $dept_placeholders  = implode(',', array_fill(0, count($allowed_depts), '?'));
