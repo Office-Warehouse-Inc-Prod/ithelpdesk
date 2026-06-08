@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     foreach ($files['name'] as $index => $name) {
         $fileTmp = $files['tmp_name'][$index];
         $originalName = basename($files['name'][$index]);
-        $uniqueName = preg_replace('/[^A-Za-z0-9._-]/', '_', $originalName);
+        $uniqueName = preg_replace('/[^A-Za-z0-9._-]/', ' ', $originalName);
         $filePath = $uploadDir . $uniqueName;
 
         if (is_uploaded_file($fileTmp) && move_uploaded_file($fileTmp, $filePath)) {

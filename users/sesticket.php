@@ -15,7 +15,7 @@ if (isset($_POST['tktval'])) {
       $storedPath = trim($row['files_tmp']);
       $fileExtension = strtolower(pathinfo($origName, PATHINFO_EXTENSION));
       $fileUrl = htmlspecialchars($storedPath);
-      $filePath = __DIR__ . '/' . $storedPath;
+      $filePath = $storedPath;
 
       if (file_exists($filePath)) {
         switch ($fileExtension) {
