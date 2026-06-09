@@ -56,7 +56,7 @@ class dbconfig extends dbconn
 			FROM
 			reports
 			LEFT JOIN tbl_status ON reports.`status` = tbl_status.stat_desc
-			where `reports`.`sub_id` NOT IN ('15','28','34','35') AND `status` NOT IN ('WAITING FOR IT HELPDESK RESPONSE','NEW REPORT','ASSIGNED') AND cat_id IN ('37','38','39','40','41') AND YEAR(date_created) IN (" . $_POST['yr'] . ") AND reports.f_deptsel = '2'
+			where `reports`.`sub_id` NOT IN ('15','28','34','35') AND `status` NOT IN ('WAITING FOR IT HELPDESK RESPONSE','NEW REPORT','ASSIGNED') AND YEAR(date_created) IN (" . $_POST['yr'] . ") AND reports.f_deptsel = '2'
 			GROUP BY `status`
 			ORDER BY stat_id ASC
 

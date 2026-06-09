@@ -543,9 +543,6 @@ if ($_SESSION['login'] != 'true') {
 
     }
 
-
-
-    // Auto-detect current page and set 'active' class
     var currentUrl = window.location.pathname.split("/").pop();
 
     // If index or empty, default to home
@@ -564,12 +561,10 @@ if ($_SESSION['login'] != 'true') {
       if (linkHref === currentUrl) {
         $this.addClass('active');
       }
-
-      // Special case for dropdown items
       if ($this.hasClass('dropdown')) {
         $this.find('.dropdown-item').each(function () {
           if ($(this).attr('href') === currentUrl) {
-            $this.addClass('active'); // Highlight parent if child is active
+            $this.addClass('active');
           }
         });
       }

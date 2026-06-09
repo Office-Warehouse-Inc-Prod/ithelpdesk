@@ -234,6 +234,16 @@ body {
   transform: rotate(-10deg) scale(1.1); 
 }
 
+
+.overall-table { 
+  align-items: center;
+  margin: 40px; 
+  padding-left: 30px;
+  padding-right: 40px;
+  margin-bottom: 40px;
+  width:100%; 
+}
+
 .admin-table { 
   align-items: center;
   background-color: transparent; 
@@ -245,8 +255,10 @@ body {
   border-collapse: separate; 
   border-spacing: 0;  box-shadow: 0 10px 20px rgba(221, 221, 93, 0.4);
 }
+
+
 .admin-table th { 
-  background-color: #213456; 
+  background-color: #3d4e6d; 
   color: #ffffff !important; 
   font-weight: 700; 
   text-transform: uppercase; 
@@ -261,7 +273,7 @@ body {
 }
 .admin-table tbody tr:hover { 
   
-    background-color: #365d845f !important;
+    background-color: #97b2cd77 !important;
   border-bottom: 10px solid #213456 ;
   transform: translateY(-2px); 
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04); 
@@ -370,7 +382,7 @@ body {
   border-radius: 8px;
 }
 </style>
-<div class="container-fluid">
+<div class="container-fluid" id="printTicketReport">
   <div id="wrapper">
     <div id="layoutSidenav_content">
       <div class="container-fluid py-4">
@@ -379,14 +391,14 @@ body {
           <input type="hidden" name="chcksbjcls" id="chcksbjcls" value="check">
         </form>
 
-        <div class="action-bar-container d-flex justify-content-between align-items-center p-3 mb-4 rounded bg-white shadow-sm" style="box-shadow: 0 5px 10px 2px #2d3c597f !important;">
-          <div class="year-picker-group">
+        <div  class="action-bar-container d-flex justify-content-between align-items-center p-3 mb-4 rounded bg-white shadow-sm" style="box-shadow: 0 5px 10px 2px #2d3c597f !important;">
+          <div class="">
             <div class="input-group">
-              <span class="input-group-text bg-light border-end-0"  style="width: 170px;">
-                <i class="fas fa-history me-2 text-muted"></i>LOGS IN YEAR OF:
+              <span class="input-group-text bg-light border-end-0"  style="width: 200px;">
+                LOGS IN YEAR OF:
               </span>
-              <select class="form-select border-start-0" name="yearpicker" id="yearpicker" required style="min-width: 150px; border-radius: 0 12px 12px 0 !important;">
-                <option value="2019,2020,2021,2022,2023,2024,2025,2026">OVERALL</option>
+              <select class="form-select border-start-0" name="yearpicker" id="yearpicker" required style="min-width: 250px; border-radius: 0 12px 12px 0 !important;">
+                <option value="2019,2020,2021,2022,2023,2024,2025,2026">   OVERALL</option>
                 <option value="2026" selected>2026</option>
                 <option value="2025">2025</option>
                 <option value="2024">2024</option>
@@ -396,11 +408,11 @@ body {
             </div>
 
              <div class="input-group">
-              <span class="input-group-text bg-light border-end-0" style="width: 170px; margin-top: 5px;">
-                <i class="fa fa-calendar-check-o" text-muted >   </i>   IN MONTH OF:
+              <span class="input-group-text bg-light border-end-0" style="width: 200px; margin-top: 5px;">
+                   FILTER BY MONTH:
               </span>
-              <select class="form-select border-start-0" name="monthpicker" id="monthpicker" required style="min-width: 150px; margin-top: 5px; border-radius: 0 12px 12px 0 !important;">
-                <option value="01,02,03,04,05,06,07,08,09,10,11,12" selected>OVERALL</option>
+              <select class="form-select border-start-0" name="monthpicker" id="monthpicker" required style="min-width: 250px; margin-top: 5px; border-radius: 0 12px 12px 0 !important;">
+                <option value="01,02,03,04,05,06,07,08,09,10,11,12" selected>  OVERALL</option>
                 <option value="01">JANUARY</option>
                 <option value="02">FEBRUARY</option>
                 <option value="03">MARCH</option>
@@ -423,29 +435,36 @@ body {
           <div class="col-12">
             <div class="card card2 border-0 shadow-sm" style="border-radius: 16px; background: rgba(255, 255, 255, 0.85);   box-shadow: 0 10px 20px rgba(90, 90, 37, 0.44);backdrop-filter: blur(10px);">
               <div class="card-header d-flex justify-content-between align-items-center text-dark py-3" style="border-bottom: 1px solid rgba(0,0,0,0.05);">
-                <h5 class="m-0 font-weight-bold" style="letter-spacing: 0.5px;">
-                  <i class="fa-solid fa-circle" style="color: green;"></i> DEPARTMENT TICKET SUMMARY
-                 
-
+                <h5 class="m-0 font-weight-bold" style="letter-spacing: 0.5px;" style="font-size:40px;">
+                  <i class="fa-solid fa-circle" style="color: green;"></i> HELPDESK DEPARTMENT TICKET SUMMARY
                 </h5>
-                    <button style ="align-itmes: right; border-radius:10px; background-color: #E1AD01; color: #213456; padding: 10px;"onclick="exportTableToExcel()"><i class="fa fa-file-excel-o" aria-hidden="true"></i>Export</button>
+                    <button style ="border-radius:10px; width:100px; background-color: #E1AD01; color: #213456; padding: 10px; margin-right:-600px;"onclick="exportTableToExcel()"><i class="fa fa-file-excel-o" aria-hidden="true"></i>Export</button>
+                      <button style ="border-radius:10px; width:100px; background-color: #12922a; color: #f0f1f2; padding: 10px; margin-left: -900px;"onclick="printDiv('printTicketReport')"><i class="fa fa-file-excel-o" aria-hidden="true"></i>Print</button>
               </div>
               
               <div class="card-body p-0">
                 
                 <div class="table-responsive">
+
+                <table id="overall_report" class="table overall-table m-0" style="margin-bottom: -120px;">
+                    <thead>  
+                        <th class="text-center" style="width: 100px; background-color: #2b9827; color: #fff; font-weight: 700; text-transform: uppercase; font-size: 1.50rem; letter-spacing: 0.8px; ">ACTIVE/RUNNING TICKET REPORTS</th>
+                        <th class="text-center"style="width: 100px; background-color: #7a6a12; color: #fff; font-weight: 700; text-transform: uppercase; font-size: 1.50rem; letter-spacing: 0.8px; ">COMPLIANCE TICKET REPORTS</th>
+                    </thead>
+                  </table>
                   <table id="admin_report" class="table admin-table m-0">
                     <thead>
                       <tr class="noExl">
+                        
                         <th>DEPARTMENT</th>
                         <th class="text-center">ASSIGNED</th>
                         <th class="text-center">ON PROCESS</th>
                         <th class="text-center">PENDING</th>
-                        <th class="text-center">TOTAL</th>
+                        <th class="text-center">TOTAL (Active)</th>
                         <th class="text-center" style="width: 200px;">COMPLIANCE RATE</th>
-                        <!--<th class="text-center" style="width: 200px;">MET SLA      (WITH SLA)</th>
-                        <th class="text-center" style="width: 200px;">BREACHED SLA (WITHOUT SLA)</th>
-                        <th class="text-center" style="width: 200px;">SLA COMPLIANCE RATE</th>-->
+                        <th class="text-center" style="width: 200px;">MET SLA      (WITH SLA)</th>
+                        <th class="text-center" style="width: 200px;">NON-SLA</th>
+                        <th class="text-center" style="width: 200px;">SLA COMPLIANCE RATE</th>
                       </tr>
                     </thead>
                     <tbody id="dept-table-body">
@@ -494,6 +513,8 @@ body {
             <h4 class="m-0 font-weight-bold text-dark" id="modal-dept-name">  Department Name</h4> 
             <small class="text-muted" id="modal-dept-year">  Year Metrics</small>
             <button style ="align-itmes: right; border-radius:10px; background-color: #E1AD01; color: #213456; padding: 10px;"onclick="exportDeptExcel()"><i class="fa fa-file-excel-o" aria-hidden="true"></i> Excel</button>
+             <button style ="align-itmes: right; border-radius:10px; background-color: #1ea871; color: #213456; padding: 10px;"onclick="exportDeptExcel()"><i class="fa fa-file-excel-o" aria-hidden="true"></i> Print</button>
+            
           </div>
         </div>
         <div class="card-body p-0">
@@ -562,12 +583,20 @@ $(document).ready(function() {
                     response.department_stats.forEach(function(row) {
                         let closedCount = parseInt(row.CLOSED) || 0;
                         let grandTotal = parseInt(row.GRAND_TOTAL) || 0;
+                        let metSlaCount = parseInt(row.MET_SLA) || 0;
                         let activeTotal = (parseInt(row.ASSIGNED) || 0) + (parseInt(row.ON_PROCESS) || 0) + (parseInt(row.PENDING) || 0);
                         let compliancePercent = grandTotal > 0 ? Math.round((closedCount / grandTotal) * 100) : 0;
+                        let metSLA = closedCount > 0 ? Math.round((metSlaCount / closedCount) * 100) : 0;
+
+
                         
                         let barTheme = "bg-danger";
                         if (compliancePercent >= 75) { barTheme = "bg-success"; }
                         else if (compliancePercent >= 40) { barTheme = "bg-warning"; }
+
+                        let metBarTheme = "bg-danger";
+                        if (metSLA >= 80) { metBarTheme = "bg-success"; }
+                        else if (metSLA >= 50) { metBarTheme = "bg-warning"; }
 
                         html += `
                             <tr class="dept-row" style="cursor: pointer;" data-dept="${row.DEPARTMENT}">
@@ -590,6 +619,23 @@ $(document).ready(function() {
                                         </div>
                                     </div>
                                 </td>
+
+                                <td class="text-center fw-bold text-success">${metSlaCount}</td>
+                                <td class="text-center fw-bold text-danger">${closedCount - metSlaCount}</td>
+                                <td>
+                                    <div class="d-flex align-items-center justify-content-center flex-column" style="padding: 0 10px;">
+                                        <div class="d-flex justify-content-between w-100 mb-1 small fw-bold">
+                                            <span class="text-dark">${metSlaCount}/${closedCount} Met </span>
+                                            <span class="text-dark">${metSLA}%</span>
+                                        </div>
+                                        <div class="progress w-100" style="height: 8px; border-radius: 4px; background-color: rgba(0,0,0,0.06);">
+                                            <div class="progress-bar ${metBarTheme}" role="progressbar" 
+                                                 style="width: ${metSLA}%; border-radius: 4px;" 
+                                                 aria-valuenow="${metSLA}" aria-valuemin="0" aria-valuemax="100">
+                                            </div>  
+                                        </div>
+                                    </div>
+                                </td>
                             </tr>`;
                     });
 
@@ -600,13 +646,19 @@ $(document).ready(function() {
                         let totalPending = parseInt(gt.TOTAL_PENDING) || 0;
                         let totalClosed = parseInt(gt.TOTAL_CLOSED) || 0;
                         let totalGrand = parseInt(gt.OVERALL_GRAND_TOTAL) || 0;
+                        let totalMetSLA = parseInt(gt.TOTAL_MET_SLA) || 0;
                         
                         let totalActiveSum = totalAssigned + totalOnProcess + totalPending;
                         let globalCompliancePercent = totalGrand > 0 ? Math.round((totalClosed / totalGrand) * 100) : 0;
+                        let globalMetSLAPercent = totalClosed > 0 ? Math.round((totalMetSLA / totalClosed) * 100) : 0;
 
                         let globalBarTheme = "bg-danger";
                         if (globalCompliancePercent >= 75) { globalBarTheme = "bg-success"; }
                         else if (globalCompliancePercent >= 40) { globalBarTheme = "bg-warning"; }
+
+                        let globalMetSLABarTheme = "bg-danger";
+                        if (globalMetSLAPercent >= 80) { globalMetSLABarTheme = "bg-success"; }
+                        else if (globalMetSLAPercent >= 50) { globalMetSLABarTheme = "bg-warning"; }
 
                         footerHtml = `
                             <tr style="background-color: #ecebe584; font-weight: bold; font-size: 2px; border-top: 2px solid #213456;">
@@ -629,6 +681,22 @@ $(document).ready(function() {
                                         </div>
                                     </div>
                                 </td>
+                                <td class="text-center fw-bold text-success">${totalMetSLA}</td>
+                                <td class="text-center fw-bold text-danger">${totalClosed - totalMetSLA}</td>
+                                <td>
+                                    <div class="d-flex align-items-center justify-content-center flex-column" style="padding: 0 10px;">
+                                        <div class="d-flex justify-content-between w-100 mb-1 small fw-bold">
+                                            <span class="text-muted">${totalMetSLA}/${totalClosed} Met </span>
+                                            <span class="text-dark">${globalMetSLAPercent}%</span>     
+                                        </div>
+                                        <div class="progress w-100" style="height: 8px; border-radius: 4px; background-color: rgba(0,0,0,0.1);">
+                                        <div class="progress-bar ${globalMetSLABarTheme}" role="progressbar" 
+                                             style="width: ${globalMetSLAPercent}%; border-radius: 4px;" 
+                                             aria-valuenow="${globalMetSLAPercent}" aria-valuemin="0" aria-valuemax="100">
+                                        </div>
+                                        </div>
+                                    </div>
+                                  </td>  
                             </tr>`;
                     }
 
@@ -680,7 +748,7 @@ $(document).ready(function() {
                     </tr>`;
             });
         } else {
-            modalHtml = `<tr><td colspan="11" class="text-center py-4 text-muted">No active issues pending for this department row.</td></tr>`;
+            modalHtml = `<tr><td colspan="11" class="text-center py-4 text-muted">No active ticket for this department row.</td></tr>`;
         }
 
         $('#modal-table-body').html(modalHtml);
@@ -779,4 +847,43 @@ function exportDeptExcel() {
         sheet: { name: "Ticket Summary" }
     });
 }
+
+function printDiv(divId) {
+     var printContents = document.getElementById(divId).innerHTML;
+     var originalContents = document.body.innerHTML;
+
+      var printStyles = `
+        <style>
+            @media print {
+              
+                thead {
+                    background-color: #004085 !important;
+                    color: #ffffff !important;
+                    display: table-header-group; 
+                }
+
+                th {background-color: #004085 !important;
+                    padding: 8px;
+                    border: 1px solid #dee2e6;
+                }
+
+                @page {
+                    margin: 20mm 15mm 20mm 15mm;
+                }
+            }
+        </style>
+    `;
+
+     document.body.innerHTML = printStyles + printContents;
+
+     window.print();
+
+     document.body.innerHTML = originalContents;
+
+     
+}
+
+
+
 </script>
+

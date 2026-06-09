@@ -354,28 +354,26 @@ if ($_SESSION['login'] != 'true') {
       countnewrep();
       countNwMsg();
 
+      // Initial Fetch
+      getdata();
+      setInterval(getdata, 1000);
+
       function getdata() {
         $.post('fetchdata/fetch_data.php', { mode: 'notif_support' }, function (data) {
-          // console.log(data);
           notifdatas(data);
         }, 'json');
       }
 
-      // Run getdata() every 1 second
-    setInterval(getdata, 1000);
-
-
-      var table
+      var table;
       function notifdatas(t) {
-        const dataset = t.ntfsupdata;
+        const dataset = t.ntfsupdata || [];
         table = $("#notif_dataxx").DataTable({
-
-          "dom":
-            '<"pull-left"lf><"pull-right">tip',
-          // stateSave: true,
+          "dom": '<"pull-left"lf><"pull-right">tip',
           "pagingType": "full_numbers",
           "bDestroy": true,
-          "responsive": true, "lengthChange": false, "autoWidth": false,
+          "responsive": true, 
+          "lengthChange": false, 
+          "autoWidth": false,
           "bInfo": false,
           "bFilter": false,
           "paging": false,
@@ -385,10 +383,7 @@ if ($_SESSION['login'] != 'true') {
             "emptyTable": "No new Notification"
           },
           "data": dataset,
-          // "order": [[ 0, "Asc" ]],
-
           "columns": [
-
             { title: "NOTIFICATION", data: 'notif_data', "defaultContent": "" }
           ],
           "columnDefs": [
@@ -396,83 +391,107 @@ if ($_SESSION['login'] != 'true') {
               targets: 0,
               className: 'bolded'
             }
-          ]
-
+          ],
+          "initComplete": function() {
+            handleUrlTicketHighlight();
+          }
         });
-
-        $('#notif_dataxx tbody').on('click', 'tr', function () {
+        $('#notif_dataxx tbody').off('click', 'tr').on('click', 'tr', function () {
           var data = table.row(this).data();
+          if (!data) return;
+
           var ticketVal = data.ticket_no;
+          var notifVal = data.notif_val;
+          var ticketStatus = data.status ? data.status.toUpperCase().trim() : '';
 
           $('#myInput').val(ticketVal).trigger('input');
-
-          $.post('change_notif.php', { ticketVal: ticketVal }, function (data, textStatus, xhr) {
+          $.post('change_notif.php', { ticketVal: ticketVal }, function (response) {
             getdata();
           });
 
-          // Scroll to bottom smoothly after click
-          $('html, body').animate(
-            { scrollTop: $(document).height() },
-            800,
-            'swing',
-            function () {
-              // Add highlight effect
-              let tableDiv = $('#report_data');
-              tableDiv.css('transition', 'background-color 0.8s');
-              tableDiv.css('background-color', '#ffff99'); // highlight yellow
-
-              setTimeout(() => {
-                tableDiv.css('background-color', '#ffffff'); // back to white
-              }, 800); // delay before returning to white
+          if (notifVal == '1') {
+            window.location.href = "adminwfit.php?ticket_no=" + encodeURIComponent(ticketVal);
+          } 
+          else if (notifVal == '2') {
+            if (ticketStatus === 'ON PROCESS') {
+              window.location.href = "adminpanel.php?ticket_no=" + encodeURIComponent(ticketVal) + "#report_data";
+            } 
+            else if (ticketStatus === 'ASSIGNED') {
+              window.location.href = "adminwfit.php?ticket_no=" + encodeURIComponent(ticketVal);
             }
-          );
+          }
         });
+      }
+      function getUrlParam(param) {
+        var urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(param);
+      }
 
+      var targetTicket = getUrlParam('ticket_no');
+      if (targetTicket && typeof reptable !== 'undefined') {
+        setTimeout(function() {
+          var foundRow = null;
+          reptable.rows().every(function (rowIdx, tableLoop, rowLoop) {
+            var rowData = this.data();
+            if (rowData && rowData.ticket_no == targetTicket) {
+              foundRow = this.node();
+            }
+          });
 
-      } // end of data table
+          if (foundRow) {
+            $(foundRow).find('button[name="update"]').trigger('click');
 
+            $('html, body').animate({
+              scrollTop: $(foundRow).offset().top - 100
+            }, 800, function() {
+              $(foundRow).css('transition', 'background-color 0.5s ease');
+              $(foundRow).css('background-color', '#ffff99');
 
+              setTimeout(function() {
+                $(foundRow).css('background-color', ''); 
+              }, 1200);
+            });
+          }
+        }, 600);
+      }
+
+      function handleUrlTicketHighlight() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const ticketNo = urlParams.get('ticket_no');
+        
+        if (ticketNo && window.location.hash === '#report_data') {
+          let reportElement = $('#report_data');
+          
+          if (reportElement.length) {
+            $('html, body').animate({
+              scrollTop: reportElement.offset().top - 100
+            }, 800, function() {
+              let matchedRow = $(`tr:contains('${ticketNo}')`);
+              if (matchedRow.length) {
+                matchedRow.addClass('highlight-row');
+                setTimeout(() => {
+                  matchedRow.removeClass('highlight-row');
+                }, 2500);
+              } else {
+                reportElement.css('transition', 'background-color 0.5s');
+                reportElement.css('background-color', '#ffff99');
+                setTimeout(() => { reportElement.css('background-color', 'transparent'); }, 1200);
+              }
+            });
+          }
+        }
+      }
     });
 
-
-
-    // function countnewrep() {
-
-
-    // setInterval(function(){
-
-    // var xhttp = new XMLHttpRequest();
-    // xhttp.onreadystatechange = function() {
-    // if (this.readyState == 4 && this.status == 200) {
-    // document.getElementById("notif_newrep").innerHTML = this.responseText;
-    // }
-    // };
-    // xhttp.open("GET", "fetchdata/notif_newrep.php", true);
-    // xhttp.send();
-
-    // },1000);
-
-
-    // }
-
-
     document.addEventListener("DOMContentLoaded", function () {
-
-      // getNewReportCount();      // run immediately
-      // getTransferCount();
-      setInterval(getNewReportCount, 5000); // every 5 seconds (DO NOT use 1s)
-
+      setInterval(getNewReportCount, 5000);
     });
 
     async function getNewReportCount() {
-
       try {
-
         const response = await fetch("fetchdata/notif_newrep.php?_=" + Date.now());
         const count = (await response.text()).trim();
-
         const badge = document.getElementById("notif_newrep");
-
         if (!badge) return;
 
         if (count === "0" || count === "") {
@@ -481,23 +500,16 @@ if ($_SESSION['login'] != 'true') {
           badge.style.display = "inline-block";
           badge.innerHTML = count;
         }
-
       } catch (error) {
         console.error("Notification count dev error:", error);
       }
     }
 
-
-
     async function getTransferCount() {
-
       try {
-
-        const xresponse = await fetch("fetchdata/notif_transfer.php?_=" + Date.now());
-        const xcount = (await xresponse.text()).trim();
-
+        const xcall = await fetch("fetchdata/notif_transfer.php?_=" + Date.now());
+        const xcount = (await xcall.text()).trim();
         const xbadge = document.getElementById("notif_transfer");
-
         if (!xbadge) return;
 
         if (xcount === "0" || xcount === "") {
@@ -506,56 +518,41 @@ if ($_SESSION['login'] != 'true') {
           xbadge.style.display = "inline-block";
           xbadge.innerHTML = xcount;
         }
-
       } catch (error) {
         console.error("Notification count error:", error);
       }
     }
 
     function countnewrep() {
-
-
       setInterval(function () {
-
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
           if (this.readyState == 4 && this.status == 200) {
-            document.getElementById("notif_newrep").innerHTML = this.responseText;
+            var badge = document.getElementById("notif_newrep");
+            if (badge) badge.innerHTML = this.responseText;
           }
         };
         xhttp.open("GET", "fetchdata/notif_newrep.php", true);
         xhttp.send();
-
       }, 1000);
-
-
     }
 
     function countNwMsg() {
-
-
       setInterval(function () {
-
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
           if (this.readyState == 4 && this.status == 200) {
-            document.getElementById("notif_newmsg").innerHTML = this.responseText;
+            var badge = document.getElementById("notif_newmsg");
+            if (badge) badge.innerHTML = this.responseText;
           }
         };
         xhttp.open("GET", "fetchdata/fetch_newmsg.php", true);
         xhttp.send();
-
       }, 1000);
-
-
     }
 
-
-
-    // Auto-detect current page and set 'active' class
+    // Process global navbar element highlight checks matching parameters path routes
     var currentUrl = window.location.pathname.split("/").pop();
-
-    // If index or empty, default to home
     if (currentUrl === "" || currentUrl === "index.php") {
       currentUrl = "adminpanel.php";
     }
@@ -563,23 +560,18 @@ if ($_SESSION['login'] != 'true') {
     $('.navbar-nav .nav-item').each(function () {
       var $this = $(this);
       var linkHref = $this.find('a').attr('href');
-
-      // Remove default 'active' class first to prevent duplicates
       $this.removeClass('active');
 
-      // Check if the link href matches the current URL
       if (linkHref === currentUrl) {
         $this.addClass('active');
       }
 
-      // Special case for dropdown items
       if ($this.hasClass('dropdown')) {
         $this.find('.dropdown-item').each(function () {
           if ($(this).attr('href') === currentUrl) {
-            $this.addClass('active'); // Highlight parent if child is active
+            $this.addClass('active');
           }
         });
       }
     });
-
   </script>

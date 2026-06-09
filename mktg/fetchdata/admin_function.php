@@ -54,7 +54,7 @@ class dbconfig extends dbconn
 			FROM
 			reports
 			LEFT JOIN tbl_status ON reports.`status` = tbl_status.stat_desc
-			where `reports`.`sub_id` NOT IN ('15','28','34','35') AND `status` NOT IN ('WAITING FOR IT HELPDESK RESPONSE','NEW REPORT','ASSIGNED') AND cat_id IN ('8','11','32','33') AND YEAR(date_created) IN (".$_POST['yr'] .") AND reports.f_deptsel = '3'
+			where `reports`.`sub_id` NOT IN ('15','28','34','35') AND `status` NOT IN ('WAITING FOR IT HELPDESK RESPONSE','NEW REPORT','ASSIGNED') AND YEAR(date_created) IN (".$_POST['yr'] .") AND reports.f_deptsel = '3'
 			GROUP BY `status`
 			ORDER BY stat_id ASC
 
@@ -366,11 +366,10 @@ class dbconfig extends dbconn
 
 
 
+	public function newreporthist()
+	{
 
-
-public function newreporthist(){
-
-	$query="SELECT
+		$query = "SELECT
 	reports.f_deptsel AS deptsel,
 	`reports`.`ticket_no` AS `ticket_no`,
 	`reports`.`date_created` AS `date_created`,
@@ -395,7 +394,8 @@ public function newreporthist(){
 	`reports_newmsg`.`nmsg_stat` AS `nmsg_stat`,
 	`users`.`fname` AS `fname`,
 	`users`.`lstname` AS `lstname`,
-	concat_ws( ' ', `users`.`fname`, `users`.`lstname` ) AS `full_name` 
+	concat_ws( ' ', `users`.`fname`, `users`.`lstname` ) AS `full_name`,
+	GROUP_CONCAT(images.files_name SEPARATOR '|') AS attachment_files 
 FROM
 	(((((((
 								`reports`
@@ -406,44 +406,46 @@ FROM
 				LEFT JOIN `reports_msgcnt` ON ( `reports_msgcnt`.`ticket_no` = `reports`.`ticket_no` ))
 			LEFT JOIN `reports_newmsg` ON ( `reports_newmsg`.`ticket_no` = `reports`.`ticket_no` ))
 	LEFT JOIN `users` ON ( `users`.`id` = `reports`.`userId` )) 
+	LEFT JOIN `images` ON ( `images`.`ticket_no` = `reports`.`ticket_no` )
 WHERE
 	`reports`.`status` = 'ASSIGNED' 
 	AND reports.f_deptsel = '3'
 	GROUP BY
-	concern
+	reports.ticket_no
 ORDER BY
 	`reports`.`date_created` DESC";
-	$statement = $this->connection->prepare($query);
-	$statement-> execute();
-	$result = $statement->fetchAll();
-	$data[] = array();
-	$fetchdata = array();
-	foreach ($result as $row) {
-		$fetchdata[] = array(
-			'ticket_no' => $row["ticket_no"],
-			'store' => $row['store'],
-			'str_code'=>$row["str_code"],
-			'date_created' => date('m/d/Y H:i',strtotime($row["date_created"])), 
-			'concern'=> $row["subject"],
-			'service_desc' => $row["service_desc"],
-			'subject' => $row["concern"],
-			'via' => $row["via"],
-			'status' => $row["status"],            
-			'itsup' => $row["itsup"],
-			'it_desc' => $row["it_desc"],
-			'cat_desc' => $row["cat_desc"],
-			'sub_cat' => $row["sub_cat"],
-			'msg_cnt' => $row["msg_cnt"],
-			'full_name' => $row["full_name"]
-			// 'sub_cat' => $row["sub_cat"],
-		);
-	}	
+		$statement = $this->connection->prepare($query);
+		$statement->execute();
+		$result = $statement->fetchAll();
+		$data[] = array();
+		$fetchdata = array();
+		foreach ($result as $row) {
+			$fetchdata[] = array(
+				'ticket_no' => $row["ticket_no"],
+				'store' => $row['store'],
+				'str_code' => $row["str_code"],
+				'date_created' => date('m/d/Y H:i', strtotime($row["date_created"])),
+				'concern' => $row["subject"],
+				'service_desc' => $row["service_desc"],
+				'subject' => $row["concern"],
+				'via' => $row["via"],
+				'status' => $row["status"],
+				'itsup' => $row["itsup"],
+				'it_desc' => $row["it_desc"],
+				'cat_desc' => $row["cat_desc"],
+				'sub_cat' => $row["sub_cat"],
+				'msg_cnt' => $row["msg_cnt"],
+				'full_name' => $row["full_name"],
+				'attachment_files' => $row["attachment_files"]
+				// 'sub_cat' => $row["sub_cat"],
+			);
+		}
 
-	$data = array_filter($fetchdata);
+		$data = array_filter($fetchdata);
 
 		return $data;
 
-}
+	}
 
 public function reassign_itsup(){
 	$qry = $this->connection->prepare("SELECT * FROM tbl_reassigned");

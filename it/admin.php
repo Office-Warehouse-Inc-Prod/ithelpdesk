@@ -393,12 +393,9 @@ if ($_SESSION['login'] != 'true') {
             }
           ],
           "initComplete": function() {
-            // Once data drops in, handle URL param highlight
             handleUrlTicketHighlight();
           }
         });
-
-        // FIXED: Wiped out bound click handlers before rebinding to prevent layout loop redirects
         $('#notif_dataxx tbody').off('click', 'tr').on('click', 'tr', function () {
           var data = table.row(this).data();
           if (!data) return;
@@ -426,7 +423,6 @@ if ($_SESSION['login'] != 'true') {
         });
       }
 
-      // Extract parameters safely out of the URL string layout
       function getUrlParam(param) {
         var urlParams = new URLSearchParams(window.location.search);
         return urlParams.get(param);
@@ -434,12 +430,10 @@ if ($_SESSION['login'] != 'true') {
 
       var targetTicket = getUrlParam('ticket_no');
 
-      // FIXED: Wrapped in an existence condition layer to prevent fatal javascript crashes
       if (targetTicket && typeof reptable !== 'undefined') {
         setTimeout(function() {
           var foundRow = null;
 
-          // Scan active datatable rows safely
           reptable.rows().every(function (rowIdx, tableLoop, rowLoop) {
             var rowData = this.data();
             if (rowData && rowData.ticket_no == targetTicket) {
@@ -464,7 +458,6 @@ if ($_SESSION['login'] != 'true') {
         }, 600);
       }
 
-      // Handle viewport placement scroll tracking and structural highlight routines
       function handleUrlTicketHighlight() {
         const urlParams = new URLSearchParams(window.location.search);
         const ticketNo = urlParams.get('ticket_no');
@@ -561,7 +554,6 @@ if ($_SESSION['login'] != 'true') {
       }, 1000);
     }
 
-    // Process global navbar element highlight checks matching parameters path routes
     var currentUrl = window.location.pathname.split("/").pop();
     if (currentUrl === "" || currentUrl === "index.php") {
       currentUrl = "adminpanel.php";

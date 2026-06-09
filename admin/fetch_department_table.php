@@ -18,7 +18,8 @@ if (isset($_POST['yr']) && isset($_POST['mo'])) {
                SUM(r.status = 'ON PROCESS') AS ON_PROCESS,
                SUM(r.status = 'PENDING') AS PENDING,
                SUM(r.status = 'CLOSED') AS CLOSED,
-               COUNT(r.status) AS GRAND_TOTAL 
+               COUNT(r.status) AS GRAND_TOTAL,
+               SUM(CASE WHEN r.status = 'CLOSED' AND r.date_closed IS NOT NULL AND DATEDIFF(r.date_closed, r.date_created) <= r.sla_days THEN 1 ELSE 0 END) AS MET_SLA
         FROM tbl_dept d
         INNER JOIN reports r ON r.f_deptsel = d.dept_id 
         WHERE r.status IN ('Assigned', 'ON PROCESS', 'PENDING', 'CLOSED') 
@@ -61,7 +62,8 @@ if (isset($_POST['yr']) && isset($_POST['mo'])) {
                SUM(status = 'ON PROCESS') AS TOTAL_ON_PROCESS,
                SUM(status = 'PENDING') AS TOTAL_PENDING,
                SUM(status = 'CLOSED') AS TOTAL_CLOSED,
-               COUNT(status) AS OVERALL_GRAND_TOTAL 
+               COUNT(status) AS OVERALL_GRAND_TOTAL,
+               SUM(CASE WHEN status = 'CLOSED' AND date_closed IS NOT NULL AND DATEDIFF(date_closed, date_created) <= sla_days THEN 1 ELSE 0 END) AS TOTAL_MET_SLA
         FROM reports r
         WHERE status IN ('Assigned', 'ON PROCESS', 'PENDING', 'CLOSED') 
           AND YEAR(r.date_created) IN ($year_placeholders) 

@@ -127,7 +127,7 @@ $ticknum = $res['ticket_no']+1;
     ':remarks' => ucfirst($_POST["remarks"]),
     ':isp_id' => '0',
     ':date_refNo' => date('Y-m-d H:i:s',strtotime($_POST["date_refNo"])),
-    ':deptsel' => '1' // it dept
+    ':deptsel' => '13' // it dept
 
     
    )
@@ -668,6 +668,20 @@ if($_POST["operation"] == "Save and Reply")
     );
 
     $result = $statement->execute($data);
+    
+    // NOTIFICATION: PROCESS STATE
+    $statement2 = $connection->prepare("
+        INSERT INTO tbl_notif (ticket_no, store, itsup, notif_data, notif_val, notif_date) 
+        VALUES (:ticket_no, :store, :itsup, :notif_data, :notif_val, :notif_date)
+    ");
+    $statement2->execute(array(
+        ':ticket_no'  => $computed_ticket,
+        ':store'      => $_SESSION["str_num"] ?? "",
+        ':itsup'      => $userId,
+        ':notif_data' => "Ticket $computed_ticket is On Process.",
+        ':notif_val'  => '4',
+        ':notif_date' => date('Y-m-d H:i:s')
+    ));
 
     // REASSIGNED SUPPORT
     if($_POST['it_num'] != $_POST['itsup'])

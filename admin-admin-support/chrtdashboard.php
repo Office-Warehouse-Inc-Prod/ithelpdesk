@@ -438,11 +438,13 @@ order: [[0, 'desc']],
           case "ON PROCESS":
             return am4core.color("#F2A65A"); // soft yellow
           case "CLOSED":
-            return am4core.color("#578f63"); // soft green
+            return am4core.color("#578f63");
+          case "Closed":
+            return am4core.color("#578f63"); 
           case "SUBJECT FOR CLOSING":
-            return am4core.color("#b667eb"); // soft purple
+            return am4core.color("#b667eb"); 
           default:
-            return am4core.color("#9EC9F7"); // fallback pastel blue
+            return am4core.color("#9EC9F7"); 
         }
       }
       return fill;

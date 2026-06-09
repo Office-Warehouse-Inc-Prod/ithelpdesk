@@ -746,7 +746,6 @@ $con1 = new dbconfig();
 <script type="text/javascript">
 $(document).ready(function(){
 
-  // Function to extract variables from the URL string
   function getUrlParam(param) {
     var urlParams = new URLSearchParams(window.location.search);
     return urlParams.get(param);
@@ -758,7 +757,6 @@ $(document).ready(function(){
     setTimeout(function() {
       var foundRow = null;
 
-      // Scan rows to find match
       reptable.rows().every(function (rowIdx, tableLoop, rowLoop) {
         var rowData = this.data();
         if (rowData && rowData.ticket_no == targetTicket) {
@@ -946,7 +944,6 @@ function displayAttachmentsFromData(data) {
         return;
     }
 
-    // Split multiple attachments by pipe separator
     const filePaths = attachmentFiles.split('|').filter(f => f.trim() !== '');
 
     if (filePaths.length === 0) {
@@ -954,7 +951,6 @@ function displayAttachmentsFromData(data) {
         return;
     }
 
-    // Display each attachment as a thumbnail
     filePaths.forEach(imagePath => {
         if (!imagePath.trim()) return;
 
