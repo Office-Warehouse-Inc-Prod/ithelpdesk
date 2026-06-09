@@ -8,6 +8,9 @@
       var reptable;
       var user_id = <?= (int)$_SESSION['user_id']; ?>;
 
+      /**
+       * Getdata.
+       */
       function getdata(){
       $.post('fetchdata/fetch_data.php',{mode:'trans_tbl'},function(data){
       admin_datatable(data);
@@ -15,6 +18,9 @@
       }
       getdata();
 
+      /**
+       * Admin datatable.
+       */
       function admin_datatable(t){
       const dataset = t.transdata || [];
 

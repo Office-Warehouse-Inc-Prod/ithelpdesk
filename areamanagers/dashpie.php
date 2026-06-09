@@ -74,6 +74,9 @@ var types = $.ajax({
    });
 
 
+ /**
+  * Grhp.
+  */
  function grhp(types){
 am4core.ready(function() {
 
@@ -100,6 +103,9 @@ pieSeries.slices.template.propertyFields.fill = "color";
 pieSeries.slices.template.propertyFields.isActive = "pulled";
 pieSeries.slices.template.strokeWidth = 0;
 
+/**
+ * Generate chart data.
+ */
 function generateChartData() {
   var chartData = [];
   for (var i = 0; i < types.length; i++) {

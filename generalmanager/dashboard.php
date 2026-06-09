@@ -515,6 +515,9 @@ _catpie(yr);
 getdata(yr);
 
 
+/**
+ * Getdata.
+ */
 function getdata(yr){
 $.post('fetchdata/fetch_data.php',{yr:yr,mode:'dtb'},function(data){
 admin_datatable(data);
@@ -523,6 +526,9 @@ admin_datatable(data);
 
 
 var table
+/**
+ * Admin datatable.
+ */
 function admin_datatable(t){
 const dataset=t.rptdata;
 table =  $("#report_data").DataTable({
@@ -864,6 +870,9 @@ $('#store_graph_modal').modal('hide');
 
 
 get_card_data(yr)
+/**
+ * Get card data.
+ */
 function get_card_data(y){
 
 $.post('fetchdata/fetch_data.php',{yr:y,mode:'yearch'}, function(data) {

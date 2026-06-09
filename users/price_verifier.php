@@ -141,6 +141,9 @@ $(document).ready(function () {
 $("#pr_vr").focus();
     zoomIn(2.0);
 
+    /**
+     * Zoom in.
+     */
     function zoomIn(zoomLev) {
     if (zoomLev > 1) {
         if (typeof (document.body.style.zoom) != "undefined") {
@@ -163,6 +166,9 @@ $('.numbers').keyup(function () {
 
 
        f_prvr();
+/**
+ * F prvr.
+ */
 function f_prvr(){
 
   $('#pr_vr').keypress(function (e) { 

@@ -15,6 +15,9 @@ var darkModeEnabled = window.matchMedia && window.matchMedia('(prefers-color-sch
 
 _dbline(curyra);
 
+/**
+ *  dbline.
+ */
 function _dbline(curyra){
   $.ajax({
     url:"fetchdata/fetch_data.php",
@@ -32,6 +35,9 @@ function _dbline(curyra){
    });
 }
 
+/**
+ *  plotdbline.
+ */
 function _plotdbline(grphdata){
 
 am4core.ready(function() {
@@ -99,6 +105,9 @@ am4core.options.autoDispose = true;
   const curyr2 = g=curdate2.getFullYear();
 
   _catpie(curyr2);
+ /**
+  *  catpie.
+  */
  function _catpie(curyr2){
    var selected;
 var types = $.ajax({
@@ -118,6 +127,9 @@ var types = $.ajax({
 
 
 
+ /**
+  * Grhp.
+  */
  function grhp(types){
 am4core.ready(function() {
 
@@ -167,6 +179,9 @@ chart.exporting.menu = new am4core.ExportMenu();
 
 
 
+/**
+ * Generate chart data.
+ */
 function generateChartData() {
  let d = Array();
   var chartData = [];
@@ -228,6 +243,9 @@ am4core.options.autoDispose = true;
 } // end am4core.ready()
 
 
+ /**
+  * Newgrph.
+  */
  function newgrph(data){
 // console.log(data)
 
@@ -303,6 +321,9 @@ am4core.options.autoDispose = true;
 $('#piegraphModal').modal({"show": true, "backdrop": 'static'});
 
 
+/**
+ * Getcategories.
+ */
 function getcategories(){
   $.post('fetchdata/fetch_data.php',{mode:'dtbcat'},function(data){
     console.log(data);
@@ -314,6 +335,9 @@ function getcategories(){
 getcategories();
 
 var tablecat
+/**
+ * Datatable categories.
+ */
 function datatable_categories(t){
 const dataset=t.rptcat;
 
@@ -372,6 +396,9 @@ order: [[0, 'desc']],
   const curyrs = g=curdates.getFullYear();
 
   _overallpie(curyrs);
+  /**
+   *  overallpie.
+   */
   function _overallpie(curyrs){
 
  $.ajax({
@@ -390,6 +417,9 @@ order: [[0, 'desc']],
    });
 
 }
+ /**
+  *  plotovpie.
+  */
  function _plotovpie(grphdata){
 
 am4core.ready(function() {
@@ -487,6 +517,9 @@ am4core.options.autoDispose = true;
 
 <!-- Chart code -->
 <script>
+/**
+ * Show graph.
+ */
 function show_graph (json_data) {
   am4core.ready(function() {
 
@@ -568,6 +601,9 @@ am4core.options.autoDispose = true;
   const curyr = g=curdate.getFullYear();
 
   _techgraph(curyr);
+  /**
+   *  techgraph.
+   */
   function _techgraph(curyr){
 
  $.ajax({
@@ -586,6 +622,9 @@ am4core.options.autoDispose = true;
    });
 
   }
+  /**
+   *  plotgraph.
+   */
   function _plotgraph(grphdata){
 
 am4core.ready(function() {
@@ -737,12 +776,18 @@ chart.exporting.menu = new am4core.ExportMenu();
 
   }
 
+/**
+ * Resgncnt.
+ */
 function resgncnt(resasgnsupcnt){
   $.post('fetchdata/fetch_data.php', {resasgnsupcnt:resasgnsupcnt,mode: 'count_reassigned'}, function(data) {
     $('#itm_resasncnt').html(resasgnsupcnt); 
   });
 }
 
+/**
+ * Rpt sla.
+ */
 function rpt_sla(count_slares){
   $.post('fetchdata/fetch_data.php', {count_slares:count_slares,mode: 'count_sla'}, function(data) {
        $('#itm_sla').html(count_slares); 
@@ -752,6 +797,9 @@ function rpt_sla(count_slares){
   });
 }
 
+/**
+ * Rpt cntsla.
+ */
 function rpt_cntsla(count_slares){
   $.post('fetchdata/fetch_data.php', {count_slares:count_slares,mode: 'count_sla'}, function(data) {
      $('#itm_cntsla').html(count_slares); 
@@ -759,6 +807,9 @@ function rpt_cntsla(count_slares){
   });
 }
  
+/**
+ * Itsupdata.
+ */
 function itsupdata(itVal,ItFullname,cmp_role,img_name,totrep,cmplted,opencase,openwfx,yrsx1){
 $.post('fetchdata/fetch_data.php',{itVal:itVal,ItFullname:ItFullname,cmp_role:cmp_role, img_name:img_name,totrep:totrep,cmplted:cmplted,opencase:opencase,openwfx:openwfx,yrsx1:yrsx1,mode:'dtbl_itsup'},function(data){
 $('#tech_bar_modal').modal({"show": true, "backdrop": 'static'});
@@ -774,6 +825,9 @@ $('#itm_closed').html(cmplted);
 }
 
 var table
+/**
+ * Itsup datatables.
+ */
 function itsup_datatables(t){
 const dataset=t.itsuptbldata;
 table =  $("#dtbl_itsup").DataTable({
@@ -937,6 +991,9 @@ $(row).find('td:eq(13)').css('color', '#890188');
 
 _areagraph(curyrz);
 
+  /**
+   *  areagraph.
+   */
   function _areagraph(curyrz){
 
  $.ajax({
@@ -956,6 +1013,9 @@ _areagraph(curyrz);
 
   }
 
+/**
+ *  plotareagrph.
+ */
 function _plotareagrph(grphdata){
 
 am4core.ready(function() {
@@ -1022,6 +1082,9 @@ bullet.label.truncate = false;
 
 }); // end am4core.ready()
 
+/**
+ *  storegraph.
+ */
 function _storegraph(s_area,syr){
                           $.ajax({
                   url:"fetchdata/fetch_data.php",
@@ -1055,6 +1118,9 @@ function _storegraph(s_area,syr){
 <!-- Chart code -->
 <script>
 
+/**
+ *  plot store graph.
+ */
 function _plot_store_graph(strdata){
 
 am4core.ready(function() {
@@ -1123,6 +1189,9 @@ columnTemplate.strokeOpacity = 1;
   const curyr3 = g=curdate3.getFullYear();
 
   _netpie(curyr3);
+ /**
+  *  netpie.
+  */
  function _netpie(curyr3){
    var selected;
 var types = $.ajax({
@@ -1142,6 +1211,9 @@ var types = $.ajax({
 
 
 
+ /**
+  * Netgrhp.
+  */
  function netgrhp(types){
 am4core.ready(function() {
 
@@ -1191,6 +1263,9 @@ chart.exporting.menu = new am4core.ExportMenu();
 
 
 
+/**
+ * Generate chart data.
+ */
 function generateChartData() {
  let d = Array();
   var chartData = [];
@@ -1252,6 +1327,9 @@ am4core.options.autoDispose = true;
 } // end am4core.ready()
 
 
+ /**
+  * Newgrph.
+  */
  function newgrph(data){
 // console.log(data)
 
@@ -1327,6 +1405,9 @@ am4core.options.autoDispose = true;
 $('#piegraphModal').modal({"show": true, "backdrop": 'static'});
 
 
+/**
+ * Getcategories.
+ */
 function getcategories(){
   $.post('fetchdata/fetch_data.php',{mode:'dtbcat'},function(data){
     console.log(data);
@@ -1338,6 +1419,9 @@ function getcategories(){
 getcategories();
 
 var tablecat
+/**
+ * Datatable categories.
+ */
 function datatable_categories(t){
 const dataset=t.rptcat;
 
@@ -1396,6 +1480,9 @@ order: [[0, 'desc']],
   const curyrs2 = g=curdates2.getFullYear();
 
   _overallnet(curyrs2);
+  /**
+   *  overallnet.
+   */
   function _overallnet(curyrs2){
 
  $.ajax({
@@ -1414,6 +1501,9 @@ order: [[0, 'desc']],
    });
 
 }
+ /**
+  *  plotovnet.
+  */
  function _plotovnet(grphdata){
 
 am4core.ready(function() {
@@ -1500,6 +1590,9 @@ am4core.options.autoDispose = true;
 
 _areagraph(curyrz1);
 
+  /**
+   *  areagraph.
+   */
   function _areagraph(curyrz1){
 
  $.ajax({
@@ -1519,6 +1612,9 @@ _areagraph(curyrz1);
 
   }
 
+/**
+ *  plotnetareagrph.
+ */
 function _plotnetareagrph(grphdata){
 
 am4core.ready(function() {
@@ -1585,6 +1681,9 @@ bullet.label.truncate = false;
 
 }); // end am4core.ready()
 
+/**
+ *  storenetgraph.
+ */
 function _storenetgraph(s_area,syr){
                           $.ajax({
                   url:"fetchdata/fetch_data.php",
@@ -1618,6 +1717,9 @@ function _storenetgraph(s_area,syr){
 <!-- Chart code -->
 <script>
 
+/**
+ *  plot netstore graph.
+ */
 function _plot_netstore_graph(strdata){
 
 am4core.ready(function() {

@@ -7,11 +7,17 @@
 class pg2 
 {
 
+	/**
+	 *   construct.
+	 */
 	function __construct(){
 
 
 	}
 	
+	/**
+	 * Donut.
+	 */
 	public function donut()
 	{
 $username = 'root';

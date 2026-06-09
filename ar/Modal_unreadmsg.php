@@ -518,6 +518,9 @@ setInterval(function () { // refresh datatables every 2 minutes.
   }, 120000);
 
 
+ /**
+  * Getinfo.
+  */
  function getinfo(tid,gettype){
 
         var Cid =tid;
@@ -630,6 +633,9 @@ newmes($(this).parent().siblings(':first').html(),$(this).parent().siblings(':nt
    });
 
 
+  /**
+   * Updatemsg.
+   */
   function updatemsg(ticketno,cnt){
 
     //ajax here
@@ -650,6 +656,9 @@ newmes($(this).parent().siblings(':first').html(),$(this).parent().siblings(':nt
      }
   }
 
+   /**
+    * Newmes.
+    */
    function newmes(ticketno,cnt){
 
     //ajax here

@@ -962,12 +962,10 @@ background: linear-gradient(135deg, #837031, #E1AD01);
       <textarea name="concern" id="message" class="form-control form-control-sm"
       style="text-transform:uppercase" readonly></textarea>
       </div>
-
-      <!-- <div class="form-group col-md-12"> -->
-
-
-
-      <!-- </div> -->
+      <div class="form-group col-md-12">
+      <label style="font-weight: bold; color: #334155;">Attached File(s):</label>
+      <div id="img" style="max-height: 500px; overflow-y: auto; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; background: #f8fafc; text-align: center; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);"></div>
+      </div>
 
       <!-- ✅ FIX 3: Assigned Support -> Assigned Department (itsup -> f_deptsel) -->
       <div class="form-group col-md-8">

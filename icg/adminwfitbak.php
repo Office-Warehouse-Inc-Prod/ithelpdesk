@@ -296,6 +296,9 @@ $("div.selected select").val("OPEN");
 var reptable;
 var user_id = <?= $_SESSION['user_id']; ?>
 
+/**
+ * Getdata.
+ */
 function getdata(){
   $.post('fetchdata/fetch_data.php',{mode:'newrpt_tbl'},function(data){
     // console.log(data);
@@ -304,6 +307,9 @@ function getdata(){
 }
 getdata();
 
+/**
+ * Admin datatable.
+ */
 function admin_datatable(t){
 const dataset=t.newrptdata;
      reptable =  $("#new_rep_table").DataTable({

@@ -8,6 +8,9 @@
       var reptable;
       var user_id = <?= (int)$_SESSION['user_id']; ?>;
 
+      /**
+       * Getdata.
+       */
       function getdata(){
       $.post('fetchdata/fetch_data.php',{mode:'newrpt_tbl'},function(data){
       admin_datatable(data);
@@ -15,6 +18,9 @@
       }
       getdata();
 
+      /**
+       * Admin datatable.
+       */
       function admin_datatable(t){
       const dataset = t.newrptdata || [];
 
@@ -121,6 +127,16 @@ $('#new_rep_table_filter input')
 
       // thread viewer
       getinfo(tid, 'remarks', user_id);
+
+      // fetch attachments
+      $.ajax({
+          type: 'POST',
+          url: 'sesticket.php',
+          data: {tktval: tid},
+          success: function(response) {
+              $('#img').html(response);
+          }
+      });
       });
       }
 

@@ -13,11 +13,17 @@ if ($_SESSION['login']!='true'){
 class pg 
 {
 
+	/**
+	 *   construct.
+	 */
 	function __construct(){
 
 
 	}
 	
+	/**
+	 * Pie.
+	 */
 	public function pie()
 	{
 $username = 'root';
@@ -46,6 +52,9 @@ return $data;
 	}
 
 	
+ /**
+  * Subs.
+  */
  function subs($id){
 $username = 'root';
 $password = '';

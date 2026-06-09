@@ -504,6 +504,9 @@ tb_title = "Overall Generated Report Filtered By Category";
 });
 
 var table
+/**
+ * Getrepdata.
+ */
 function getrepdata(t){
 const dataset=t.adminrptdata_bycat;
 table =  $("#genrep_table").DataTable({
@@ -850,6 +853,9 @@ $('#msg_thread').hide('slow');
 
 
 
+    /**
+     * Autostrt modal.
+     */
     function autostrt_modal(){
       setTimeout(function() {
       $('#genModal').modal({
@@ -859,6 +865,9 @@ $('#msg_thread').hide('slow');
       }, 1000);
     }
 
+    /**
+     * Hidealrtdiv.
+     */
     function hidealrtdiv(){
               setTimeout(function () {
   
@@ -886,6 +895,9 @@ $('#msg_thread').hide('slow');
     });
   });
 
+  /**
+   *  overallpie.
+   */
   function _overallpie(){
 
  $.ajax({
@@ -905,6 +917,9 @@ $('#msg_thread').hide('slow');
 
 }
 
+/**
+ *  plotovpie.
+ */
 function _plotovpie(grphdata){
 
 am4core.ready(function() {
@@ -960,6 +975,9 @@ am4core.options.autoDispose = true;
 
  }
 
+/**
+ *  catpie.
+ */
 function _catpie(){
 var selected;
 var types = $.ajax({
@@ -979,6 +997,9 @@ var types = $.ajax({
 
 
 
+ /**
+  * Grhp.
+  */
  function grhp(types){
 am4core.ready(function() {
 
@@ -1025,6 +1046,9 @@ pieSeries.slices.template.tooltipPosition = "pointer";
 chart.exporting.menu = new am4core.ExportMenu();
 
 
+/**
+ * Generate chart data.
+ */
 function generateChartData() {
  let d = Array();
   var chartData = [];
@@ -1086,6 +1110,9 @@ am4core.options.autoDispose = true;
 } // end am4core.ready()
 
 
+ /**
+  * Newgrph.
+  */
  function newgrph(data){
 // console.log(data)
 
@@ -1147,6 +1174,9 @@ $('#piegraphModal').modal({"show": true, "backdrop": 'static'});
  
 }
 
+/**
+ * Genrep store.
+ */
 function genrep_store(){
                           $.ajax({
                   url:"fetchdata/fetch_data.php",
@@ -1162,6 +1192,9 @@ function genrep_store(){
 }
 
 
+/**
+ * Plot genrepstore.
+ */
 function plot_genrepstore(strres){
 
 am4core.ready(function() {

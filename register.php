@@ -220,6 +220,9 @@ $(document).ready(function){
 
 
 
+    /**
+     * Validate password.
+     */
     function ValidatePassword() {
         var password = document.getElementById("password").value;
         var confirmPassword = document.getElementById("confirm_password").value;

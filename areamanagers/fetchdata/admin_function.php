@@ -7,6 +7,9 @@ date_default_timezone_set("Asia/Manila");
  */
 class dbconfig extends dbconn
 {
+	/**
+	 * Fetch cards result.
+	 */
 	public function fetch_cards_result(){
 		$query = '';
 		$output = array();
@@ -44,6 +47,9 @@ GROUP BY
 
 	}
 
+	/**
+	 * Overallpie res.
+	 */
 	public function overallpie_res(){
 
 		$query='';
@@ -79,6 +85,9 @@ GROUP BY
         return $data;
 	}
 
+	/**
+	 * Bargrph tech res.
+	 */
 	public function bargrph_tech_res(){
 		$query='';
 		// $output= array();
@@ -116,6 +125,9 @@ GROUP BY
         return $data;
 	}
 
+	/**
+	 * Linegraph.
+	 */
 	public function linegraph(){
 
 		$query='';
@@ -159,6 +171,9 @@ GROUP BY
 		return $data;
 	}
 
+	/**
+	 * Pie.
+	 */
 	public function pie(){
 
 		$query= "SELECT
@@ -194,6 +209,9 @@ ORDER BY
 
 	}
 
+	/**
+	 * Subs.
+	 */
 	public function subs($id){
 
 		$query= "SELECT
@@ -224,6 +242,9 @@ ORDER BY
 		return $data;
 	}
 
+	/**
+	 * Area grph.
+	 */
 	public function area_grph(){
 
 		$query="SELECT
@@ -261,6 +282,9 @@ GROUP BY
 		return $data;
 	}
 
+	/**
+	 * Str grph.
+	 */
 	public function str_grph(){
 		if ($_POST['area_desc'] == "CENTRAL") {
 			$query=" SELECT
@@ -304,6 +328,9 @@ GROUP BY
 
 	}
 
+	/**
+	 * Admin data table res.
+	 */
 	public function admin_data_table_res(){
 
 	$query="SELECT *
@@ -359,6 +386,9 @@ WHERE
 
 	}
 
+/**
+ * Newreporthist.
+ */
 public function newreporthist(){
 
 	$query="SELECT * FROM vw_wfittable";
@@ -394,6 +424,9 @@ public function newreporthist(){
 
 }
 
+/**
+ * Reassign itsup.
+ */
 public function reassign_itsup(){
 	$qry = $this->connection->prepare("SELECT * FROM tbl_reassigned");
 	$qry->execute();
@@ -414,6 +447,9 @@ public function reassign_itsup(){
 
 }
 
+/**
+ * Usermtc table.
+ */
 public function usermtc_table(){
 
 	$query="SELECT * FROM vw_usrmtc_data";
@@ -446,6 +482,9 @@ public function usermtc_table(){
 
 }
 
+/**
+ * Changepass.
+ */
 public function changepass(){
 		$query = "SELECT id, email, password FROM users";
 		$statement = $this->connection->prepare($query);
@@ -467,6 +506,9 @@ public function changepass(){
 		
 }
 
+/**
+ * Notif techsupp.
+ */
 public function notif_techsupp(){
 
 	$query="SELECT * FROM tbl_notif WHERE  notif_val IN ('2','3') ORDER BY notif_date ASC ";
@@ -492,6 +534,9 @@ public function notif_techsupp(){
 }
 
 
+	/**
+	 * Admin get reports.
+	 */
 	public function admin_get_reports(){
 	$slct_area = $_POST['slct_area'];
 	$start_date = $_POST['start_date'];
@@ -536,6 +581,9 @@ public function notif_techsupp(){
 
 	}	
 
+	/**
+	 * Genrep statpie.
+	 */
 	public function genrep_statpie(){
 
 	$slct_area = $_POST['slct_area'];
@@ -571,6 +619,9 @@ public function notif_techsupp(){
 	}
 
 
+	/**
+	 * Gencatpie.
+	 */
 	public function gencatpie(){
 		$slct_area = $_POST['slct_area'];
 		$start_date = $_POST['start_date'];
@@ -598,6 +649,9 @@ public function notif_techsupp(){
 		// echo json_encode($data);
 	}
 
+	/**
+	 * Gensubpie.
+	 */
 	public function gensubpie($catid){
 		$slct_area = $_POST['slct_area'];
 		$start_date = $_POST['start_date'];
@@ -618,6 +672,9 @@ public function notif_techsupp(){
 		return $data;
 	}
 
+	/**
+	 * Genstr grph.
+	 */
 	public function genstr_grph(){
 		$slct_area = $_POST['slct_area'];
 		$start_date = $_POST['start_date'];
@@ -659,6 +716,9 @@ public function notif_techsupp(){
 	}
 
 
+	/**
+	 * Polled store.
+	 */
 	public function polled_store(){
 		$start_date = $_POST['fromPolled'];
 		$end_date = $_POST['toPolled'];

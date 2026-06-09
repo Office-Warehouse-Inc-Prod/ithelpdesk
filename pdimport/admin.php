@@ -144,6 +144,9 @@ $(document).ready(function(){
 countnewrep();
 countNwMsg();
 
+/**
+ * Getdata.
+ */
 function getdata(){
 $.post('fetchdata/fetch_data.php',{mode:'notif_support'},function(data){
 // console.log(data);
@@ -153,6 +156,9 @@ notifdatas(data);
 getdata();
 
 var table
+/**
+ * Notifdatas.
+ */
 function notifdatas(t){
 const dataset=t.ntfsupdata;
 table =  $("#notif_data").DataTable({
@@ -204,6 +210,9 @@ $('#dtbsecond').click();
 
 
 
+/**
+ * Countnewrep.
+ */
 function countnewrep() {
 
 
@@ -226,6 +235,9 @@ xhttp.send();
 
 
 
+/**
+ * Count nw msg.
+ */
 function countNwMsg() {
 
 

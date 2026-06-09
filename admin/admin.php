@@ -446,6 +446,9 @@ $(document).ready(function(){
 countnewrep();
 countNwMsg();
 
+/**
+ * Getdata.
+ */
 function getdata(){
     $.post('fetchdata/fetch_data.php', { mode: 'notif_support' }, function(data){
         // console.log(data);
@@ -458,6 +461,9 @@ setInterval(getdata, 1000);
 
 
 var table
+/**
+ * Notifdatas.
+ */
 function notifdatas(t){
 const dataset=t.ntfsupdata;
 table =  $("#notif_dataxx").DataTable({
@@ -604,6 +610,9 @@ async function getTransferCount() {
     }
 }
 
+/**
+ * Countnewrep.
+ */
 function countnewrep() {
 
 
@@ -623,6 +632,9 @@ xhttp.send();
 
 }
 
+/**
+ * Count nw msg.
+ */
 function countNwMsg() {
 
 

@@ -91,6 +91,9 @@ while($row = mysqli_fetch_array($result))
  $data[] = $sub_array;
 }
 
+/**
+ * Get all data.
+ */
 function get_all_data($connect)
 {
  $query = "SELECT * FROM vw6 WHERE itsup = '{$_SESSION['tech_id']}'";

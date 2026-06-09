@@ -22,7 +22,7 @@ if (isset($_POST['tktval'])) {
           case 'png':
           case 'gif':
             $output.= "<br />\n";
-            $output.= "<a href='". $file_path. "' target='_blank'><img src='". $file_path. "' width='900'></a><br>";
+            $output.= "<a href='". $file_path. "' target='_blank'><img src='". $file_path. "' class='img-fluid' style='max-width: 100%; height: auto;'></a><br>";
             break;
           case 'pdf':
             $output.= "<br />\n";

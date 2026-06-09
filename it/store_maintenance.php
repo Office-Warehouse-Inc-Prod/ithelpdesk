@@ -326,6 +326,9 @@ $regcon=new dbconfig();
 
 var reptable;
 
+/**
+ * Getdata.
+ */
 function getdata(){
   $.post('fetchdata/fetch_data.php',{mode:'store_dtable'},function(data){
     admin_datatable(data);
@@ -334,6 +337,9 @@ function getdata(){
 }
 getdata();
 
+/**
+ * Admin datatable.
+ */
 function admin_datatable(t){
 const dataset=t.store_data;
      reptable =  $("#usermtc_table").DataTable({

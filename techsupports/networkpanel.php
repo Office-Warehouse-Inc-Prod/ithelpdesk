@@ -94,6 +94,9 @@ $con1=new dbconfig();
 
 <script type="text/javascript">
 
+/**
+ * Getdatanet.
+ */
 function getdatanet(){
 $.post('fetchdata/fetch_data.php',{mode:'dtbnet'},function(data){
 // console.log(data);
@@ -104,6 +107,9 @@ getdatanet();
 
 
 var table
+/**
+ * Admin datatablenet.
+ */
 function admin_datatablenet(t){
 const dataset=t.rptdatanet;
 table =  $("#report_datanet").DataTable({

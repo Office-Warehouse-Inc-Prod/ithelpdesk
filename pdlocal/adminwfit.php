@@ -291,6 +291,9 @@ var idleInterval = setInterval(timerIncrement, 60000);
     $(this).mousemove(function (e) {idleTime = 0;});
     $(this).keypress(function (e) {idleTime = 0;});
 
+/**
+ * Timer increment.
+ */
 function timerIncrement() {
     idleTime = idleTime + 1;
     if (idleTime > idleMax) { 
@@ -334,6 +337,9 @@ $("div.selected select").val("OPEN");
 var reptable;
 var user_id = <?= $_SESSION['user_id']; ?>
 
+/**
+ * Getdata.
+ */
 function getdata(){
   $.post('fetchdata/fetch_data.php',{mode:'newrpt_tbl'},function(data){
     console.log(data);
@@ -515,6 +521,9 @@ $(document).on('submit', '#newrpt_form', function(event)
 
 
 
+/**
+ * Get items.
+ */
 function GetItems(TiketNo){
   $.post('fetchdata/fetch_data.php',{mode:'tblitems', TiketNo:TiketNo},function(data){
     // console.log(data);
@@ -523,6 +532,9 @@ function GetItems(TiketNo){
 }
 
 var TblItem
+/**
+ * Items datatable.
+ */
 function items_datatable(t){
 const dataset=t.itemspddata;
 

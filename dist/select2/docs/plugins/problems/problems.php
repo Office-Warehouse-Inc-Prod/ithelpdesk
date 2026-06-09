@@ -22,6 +22,9 @@ class ProblemsPlugin extends Plugin
         ];
     }
 
+    /**
+     * On fatal exception.
+     */
     public function onFatalException()
     {
         if ($this->isAdmin()) {
@@ -35,6 +38,9 @@ class ProblemsPlugin extends Plugin
         }
     }
 
+    /**
+     * On plugins initialized.
+     */
     public function onPluginsInitialized()
     {
         if ($this->isAdmin()) {
@@ -66,6 +72,9 @@ class ProblemsPlugin extends Plugin
         }
     }
 
+    /**
+     * Render problems.
+     */
     protected function renderProblems()
     {
         $theme = 'antimatter';
@@ -125,6 +134,9 @@ class ProblemsPlugin extends Plugin
 
     }
 
+    /**
+     * Get list row.
+     */
     protected function getListRow($status, $text)
     {
         if ($status == 'error') {
@@ -139,6 +151,9 @@ class ProblemsPlugin extends Plugin
         return $output;
     }
 
+    /**
+     * Problem checker.
+     */
     protected function problemChecker()
     {
         $min_php_version = defined('GRAV_PHP_MIN') ? GRAV_PHP_MIN : '5.4.0';

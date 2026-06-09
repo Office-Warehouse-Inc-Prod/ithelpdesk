@@ -1004,6 +1004,9 @@ function openModal(title, date, event = null) {
         }
     }
             
+    /**
+     * Get employee name.
+     */
     function getEmployeeName(employeeId) {
         const employee = employees.find(emp => emp.userId == employeeId);
         return employee ? employee.name : 'Unknown';

@@ -66,6 +66,9 @@
   const curyr2 = g=curdate2.getFullYear();
 
   _catpie(curyr2);
+ /**
+  *  catpie.
+  */
  function _catpie(curyr2){
    var selected;
 var types = $.ajax({
@@ -85,6 +88,9 @@ var types = $.ajax({
 
 
 
+ /**
+  * Grhp.
+  */
  function grhp(types) {
   am4core.ready(function () {
     am4core.useTheme(am4themes_animated);
@@ -194,6 +200,9 @@ var types = $.ajax({
 
     chart.exporting.menu = new am4core.ExportMenu();
 
+    /**
+     * Generate chart data.
+     */
     function generateChartData() {
       let chartData = [];
       for (var i = 0; i < types.length; i++) {
@@ -308,6 +317,9 @@ label.fontSize = 20;
     });
 
 
+/**
+ * Hide small.
+ */
 function hideSmall(ev) {
   if (ev.target.dataItem && (ev.target.dataItem.category === "IT" 
   || ev.target.dataItem.category === "ADMIN" 
@@ -393,6 +405,9 @@ chart.innerRadius = am4core.percent(50);
   const curyrs = g=curdates.getFullYear();
 
   _overallpie(curyrs);
+  /**
+   *  overallpie.
+   */
   function _overallpie(curyrs){
 
  $.ajax({
@@ -411,6 +426,9 @@ chart.innerRadius = am4core.percent(50);
    });
 
 }
+ /**
+  *  plotovpie.
+  */
  function _plotovpie(grphdata) {
   am4core.ready(function () {
     am4core.useTheme(am4themes_animated);

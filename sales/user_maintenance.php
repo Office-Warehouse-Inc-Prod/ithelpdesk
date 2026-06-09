@@ -133,6 +133,9 @@ $regcon=new dbconfig();
 var reptable;
 var user_id = <?= $_SESSION['user_id']; ?>
 
+/**
+ * Getdata.
+ */
 function getdata(){
   $.post('fetchdata/fetch_data.php',{mode:'usermtc_dtable'},function(data){
     admin_datatable(data);
@@ -141,6 +144,9 @@ function getdata(){
 }
 getdata();
 
+/**
+ * Admin datatable.
+ */
 function admin_datatable(t){
 const dataset=t.usermtc_data;
      reptable =  $("#usermtc_table").DataTable({

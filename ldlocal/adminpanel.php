@@ -678,6 +678,9 @@ let alu = this.value;
 
 getdesc(alu);
 
+/**
+ * Getdesc.
+ */
 function getdesc(){
 $.post('fetchdata/fetch_data.php',{alu:alu, mode:'search_desc'},function(data){
 
@@ -914,6 +917,9 @@ $('#myInput').on( 'input', function () {
 } );
 
 
+/**
+ * Getdata.
+ */
 function getdata(yr){
 $.post('fetchdata/fetch_data.php',{yr:yr, mode:'dtb'},function(data){
 console.log(data);
@@ -923,6 +929,9 @@ admin_datatable(data);
 getdata();
 
 var table
+/**
+ * Admin datatable.
+ */
 function admin_datatable(t){
 const dataset=t.rptdata;
 table =  $("#report_data").DataTable({
@@ -1593,6 +1602,9 @@ table
 
 } // end of data table
 
+/**
+ * Get pd items.
+ */
 function GetPdItems(TiketNo){
   // console.log(TiketNo);
   $.post('fetchdata/fetch_data.php',{mode:'pditems', TiketNo:TiketNo},function(data){
@@ -1601,6 +1613,9 @@ function GetPdItems(TiketNo){
 }
 
 var tblItemx
+/**
+ * Items datatable.
+ */
 function items_datatable(t){
 // console.log(t);
 const datasetx=t.pddata_items;
@@ -1802,6 +1817,9 @@ admin_hideshowforms();
 const yr =$("#yearpicker").val();
 getdata(yr)
 get_card_data(yr)
+/**
+ * Get card data.
+ */
 function get_card_data(y){
 $.post('fetchdata/fetch_data.php',{yr:y,mode:'yearch'}, function(data) {
 /*optional stuff to do after success */

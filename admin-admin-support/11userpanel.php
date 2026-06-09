@@ -175,6 +175,9 @@ $("#Modal_reply").alphanum({
     // allowSpace : false
 });
 
+/**
+ * Getdata.
+ */
 function getdata(fltr=null){
   $.post('fetch.php',{operation:'',filter:fltr},function(data){
     tbl( data)
@@ -183,6 +186,9 @@ function getdata(fltr=null){
 getdata();
 
 var table;
+/**
+ * Tbl.
+ */
 function tbl(t){
 
 
@@ -318,6 +324,9 @@ $("#addmsg").click(function(){
   $('#ticket_modal').modal('show')
 });
    
+/**
+ * Noslctd.
+ */
 function  noslctd(thisid){
          var del = $(thisid);
         del.empty();
@@ -335,6 +344,9 @@ setInterval(function () { // refresh datatables every 15 sec.
 
      
   }, 15000);
+/**
+ * Valtxt.
+ */
 function valtxt(){
   if($('#subject').val().trim()==""){
     $('#subject').addClass('border-danger');

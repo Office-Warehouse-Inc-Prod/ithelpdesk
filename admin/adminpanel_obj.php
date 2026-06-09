@@ -6,6 +6,9 @@ $( document ).ready(function() {
 
 
 
+/**
+ * Reload dashboard.
+ */
 function reload_dashboard() {
     const yr = $("#yearpicker").val();
     const dept_id = $("#dept_id").val();
@@ -74,6 +77,9 @@ $('#myInput').on( 'input', function () {
 } );
 
 
+/**
+ * Getdata.
+ */
 function getdata(yr) {
     $.post(
         'fetchdata/fetch_data.php',
@@ -101,6 +107,9 @@ function getdata(yr) {
 // getdata();
 
 var table
+/**
+ * Admin datatable.
+ */
 function admin_datatable(t){
 const dataset=t.rptdata;
 table = $("#report_data").DataTable({
@@ -537,6 +546,9 @@ admin_hideshowforms();
 const yr =$("#yearpicker").val();
 getdata(yr)
 get_card_data(yr)
+/**
+ * Get card data.
+ */
 function get_card_data(yr) {
     $.post(
         'fetchdata/fetch_data.php',
@@ -754,6 +766,9 @@ $('#addmsg').val('');
 
 let activeCall = null; // {call_id, start_ms}
 
+/**
+ * Format duration.
+ */
 function formatDuration(ms){
   const totalSec = Math.floor(ms / 1000);
   const m = String(Math.floor(totalSec / 60)).padStart(2,'0');
@@ -761,6 +776,9 @@ function formatDuration(ms){
   return `${m}:${s}`;
 }
 
+/**
+ * Show end call swal.
+ */
 function showEndCallSwal(){
   if(!activeCall) return;
 

@@ -13,6 +13,9 @@
   const curyr2 = g=curdate2.getFullYear();
 
   _catpie(curyr2);
+ /**
+  *  catpie.
+  */
  function _catpie(curyr2){
    var selected;
 var types = $.ajax({
@@ -32,6 +35,9 @@ var types = $.ajax({
 
 
 
+ /**
+  * Grhp.
+  */
  function grhp(types) {
   am4core.ready(function () {
     am4core.useTheme(am4themes_animated);
@@ -124,6 +130,9 @@ function _storegraph(dept_id){
 }
 
 
+    /**
+     * Generate chart data.
+     */
     function generateChartData() {
       let chartData = [];
       for (var i = 0; i < types.length; i++) {
@@ -174,6 +183,9 @@ function _storegraph(dept_id){
 
 <script>
 
+  /**
+   *  storegraph bycat.
+   */
   function _storegraph_bycat(cat_id) {
     $.ajax({
         url: "fetchdata/fetch_data.php", 
@@ -193,6 +205,9 @@ function _storegraph(dept_id){
     });
 }
 
+/**
+ *  plot store graph.
+ */
 function _plot_store_graph(strdata){
 
   am4core.ready(function() {
@@ -265,6 +280,9 @@ chart.exporting.menu = new am4core.ExportMenu();
     valueLabel.label.hideOversized = false;
 
     var table
+/**
+ * Itsup datatables.
+ */
 function itsup_datatables(t){
 const dataset=t.itsuptbldata;
 table =  $("#dtbl_itsup").DataTable({
@@ -433,6 +451,9 @@ $(row).find('td:eq(13)').css('color', '#890188');
   const curyrs = g=curdates.getFullYear();
 
   _overallpie(curyrs);
+  /**
+   *  overallpie.
+   */
   function _overallpie(curyrs){
 
  $.ajax({
@@ -451,6 +472,9 @@ $(row).find('td:eq(13)').css('color', '#890188');
    });
 
 }
+ /**
+  *  plotovpie.
+  */
  function _plotovpie(grphdata) {
   am4core.ready(function () {
     am4core.useTheme(am4themes_animated);
