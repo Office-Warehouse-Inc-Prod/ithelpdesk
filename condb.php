@@ -7,9 +7,15 @@ class dbconfig
     private $pass="";
     private $dbname="helpdesk1";
     private $link,$error;
+    /**
+     *   construct.
+     */
     public function __construct() {
         $this->connect();
     }
+    /**
+     * Connect.
+     */
     public function connect()
     {
         $this->link=new mysqli($this->host, $this->user, $this->pass, $this->dbname);
@@ -18,16 +24,25 @@ class dbconfig
             die($this->error."DB Connect Error".$this->link->connect_errno);
         }
     }
+    /**
+     * Prepare.
+     */
     public function prepare($query)
     {
         return $this->link->prepare($query);
     }
+    /**
+     * Getuserinfo.
+     */
     public function getuserinfo($id){
 $qry="select it_desc from it_tech where itsup='". $id."'";
 $qryexec=mysqli_query($this->link,$qry);
 $qryassoc=mysqli_fetch_assoc($qryexec);
 return $qryassoc;
     }
+    /**
+     * Get connection.
+     */
     public function getConnection() {
         return $this->link;
     }
@@ -41,9 +56,15 @@ class regdbcon
     private $pass="";
     private $dbname="helpdesk1";
     private $link,$error;
+    /**
+     *   construct.
+     */
     public function __construct() {
         $this->connect();
     }
+    /**
+     * Connect.
+     */
     public function connect()
     {
         $this->link=new mysqli($this->host, $this->user, $this->pass, $this->dbname);
@@ -52,16 +73,25 @@ class regdbcon
             die($this->error."DB Connect Error".$this->link->connect_errno);
         }
     }
+    /**
+     * Prepare.
+     */
     public function prepare($query)
     {
         return $this->link->prepare($query);
     }
+    /**
+     * Getuserinfo.
+     */
     public function getuserinfo($id){
 $qry="select it_desc from it_tech where itsup='". $id."'";
 $qryexec=mysqli_query($this->link,$qry);
 $qryassoc=mysqli_fetch_assoc($qryexec);
 return $qryassoc;
 }
+    /**
+     * Get connection.
+     */
     public function getConnection() {
         return $this->link;
     }

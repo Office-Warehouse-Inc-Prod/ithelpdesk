@@ -6,6 +6,9 @@ session_start();
 class dbconn {
 	
 var $connection = false;
+ /**
+  *   construct.
+  */
  function __construct()
 	{
 $username = 'root';
@@ -16,6 +19,9 @@ return $this->connection;
 	
 	}
 
+	/**
+	 * Conn.
+	 */
 	public function conn(){
 if ($this->connection) {
 echo "connected";

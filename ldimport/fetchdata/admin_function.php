@@ -8,6 +8,9 @@ $cur_time = date("H:i:s");
  */
 class dbconfig extends dbconn
 {
+	/**
+	 * Fetch cards result.
+	 */
 	public function fetch_cards_result(){
 		$query = '';
 		$output = array();
@@ -83,6 +86,9 @@ class dbconfig extends dbconn
 
 	}
 
+	/**
+	 * Overallpie res.
+	 */
 	public function overallpie_res(){
 
 		$query='';
@@ -193,6 +199,9 @@ class dbconfig extends dbconn
         
 	}
 
+	/**
+	 * Linegraph.
+	 */
 	public function linegraph(){
 
 		$query='';
@@ -236,6 +245,9 @@ class dbconfig extends dbconn
 		return $data;
 	}
 
+	/**
+	 * Pie.
+	 */
 	public function pie(){
 
 		$query= "
@@ -261,6 +273,9 @@ class dbconfig extends dbconn
 
 	}
 
+	/**
+	 * Subs.
+	 */
 	public function subs($id){
 
 		$query= "SELECT sub_cat, count(*) as sctn, date_created FROM vwpd WHERE cat_id='".$id."' AND deptsel = '4' AND service_desc = 'IMPORT' AND date_created IN (".$_POST['yr'] .")  GROUP BY sub_cat ORDER BY cat_desc ASC";
@@ -278,6 +293,9 @@ class dbconfig extends dbconn
 		return $data;
 	}
 
+	/**
+	 * Area grph.
+	 */
 	public function area_grph(){
 
 		$query="SELECT
@@ -315,6 +333,9 @@ class dbconfig extends dbconn
 		return $data;
 	}
 
+	/**
+	 * Str grph.
+	 */
 	public function str_grph(){
 		if ($_POST['area_desc'] == "CENTRAL") {
 			$query=" SELECT
@@ -358,6 +379,9 @@ class dbconfig extends dbconn
 
 	}
 
+	/**
+	 * Admin data table res.
+	 */
 	public function admin_data_table_res(){
 
 	// $query="
@@ -426,6 +450,9 @@ class dbconfig extends dbconn
 
 	}
 
+/**
+ * Newreporthist.
+ */
 public function newreporthist(){
 
 	$query="SELECT
@@ -526,6 +553,9 @@ ORDER BY
 
 }
 
+/**
+ * Reassign itsup.
+ */
 public function reassign_itsup(){
 	$qry = $this->connection->prepare("SELECT * FROM tbl_reassigned");
 	$qry->execute();
@@ -546,6 +576,9 @@ public function reassign_itsup(){
 
 }
 
+/**
+ * Usermtc table.
+ */
 public function usermtc_table(){
 
 	$query="SELECT * FROM vw_usrmtc_data WHERE usr_stat = 'A'";
@@ -578,6 +611,9 @@ public function usermtc_table(){
 
 }
 
+/**
+ * Changepass.
+ */
 public function changepass(){
 		$query = "SELECT id, email, password FROM users";
 		$statement = $this->connection->prepare($query);
@@ -599,6 +635,9 @@ public function changepass(){
 		
 }
 
+/**
+ * Notif techsupp.
+ */
 public function notif_techsupp(){
 
 	$query="SELECT
@@ -642,6 +681,9 @@ ORDER BY
 }
 
 
+	/**
+	 * Admin get reports.
+	 */
 	public function admin_get_reports(){
 	$slct_area = $_POST['slct_area'];
 	$start_date = $_POST['start_date'];
@@ -686,6 +728,9 @@ ORDER BY
 
 	}	
 
+	/**
+	 * Admin get reports bycat.
+	 */
 	public function admin_get_reports_bycat(){
 	$slct_cat = $_POST['slct_cat'];
 	$slct_stat = $_POST['slct_stat'];
@@ -746,6 +791,9 @@ ORDER BY
 
 	}	
 
+	/**
+	 * Genrep statpie.
+	 */
 	public function genrep_statpie(){
 
 	$slct_area = $_POST['slct_area'];
@@ -780,6 +828,9 @@ ORDER BY
         // echo json_encode($data);
 	}
 
+	/**
+	 * Genrep bycat pie.
+	 */
 	public function genrep_bycat_pie(){
 
 	$slct_cat = $_POST['slct_cat'];
@@ -814,6 +865,9 @@ ORDER BY
 	}
 
 
+	/**
+	 * Gencatpie.
+	 */
 	public function gencatpie(){
 		$slct_area = $_POST['slct_area'];
 		$start_date = $_POST['start_date'];
@@ -841,6 +895,9 @@ ORDER BY
 		// echo json_encode($data);
 	}
 
+	/**
+	 * Gensubpie.
+	 */
 	public function gensubpie($catid){
 		$slct_area = $_POST['slct_area'];
 		$start_date = $_POST['start_date'];
@@ -862,6 +919,9 @@ ORDER BY
 	}
 
 	
+	/**
+	 * Genrepsubpie.
+	 */
 	public function genrepsubpie($catid){
 		$slct_area = $_POST['slct_area'];
 		$start_date = $_POST['start_date'];
@@ -883,6 +943,9 @@ ORDER BY
 	}
 
 
+	/**
+	 * Genrep bycat catpie.
+	 */
 	public function genrep_bycat_catpie(){
 		$slct_stat = $_POST['slct_stat'];
 		$slct_cat = $_POST['slct_cat'];
@@ -911,6 +974,9 @@ ORDER BY
 		// echo json_encode($data);
 	}
 
+		/**
+		 * Genrep bycat subpie.
+		 */
 		public function genrep_bycat_subpie($catid){
 		$slct_stat = $_POST['slct_stat'];
 		$start_date = $_POST['start_date'];
@@ -931,6 +997,9 @@ ORDER BY
 		return $data;
 	}
 
+	/**
+	 * Genstr grph.
+	 */
 	public function genstr_grph(){
 		$slct_area = $_POST['slct_area'];
 		$start_date = $_POST['start_date'];
@@ -970,6 +1039,9 @@ ORDER BY
 		return $data;
 
 	}
+		/**
+		 * Dtbl itsup.
+		 */
 		public function dtbl_itsup(){
 // fix update please main obj
 	$query="
@@ -1021,6 +1093,9 @@ ORDER BY
 
 	}
 
+/**
+ * Count reassigned.
+ */
 public function count_reassigned($itsup){
 $query="
 	SELECT *, COUNT(itsup) AS cnt_resassgn FROM tbl_reassigned WHERE itsup ='".$itsup."'";
@@ -1035,6 +1110,9 @@ $query="
 
 	}
 
+/**
+ * Count sla.
+ */
 public function count_sla($itsup){
 	$query="
 	SELECT itsup, years,
@@ -1052,6 +1130,9 @@ public function count_sla($itsup){
 				return $result[0];
 }
 
+/**
+ * Get percentage.
+ */
 public function get_percentage($total, $number)
 {
   if ( $total > 0 ) {
@@ -1062,6 +1143,9 @@ public function get_percentage($total, $number)
 }
 
 
+/**
+ * Search desc.
+ */
 public function search_desc(){
 	$search = $_POST['alu'];
 	$query="SELECT
@@ -1096,6 +1180,9 @@ public function search_desc(){
 	}
 
 
+	/**
+	 * Desc1.
+	 */
 	public function Desc1(){
 		$search = $_POST['desc'];
 		$query="SELECT
@@ -1129,6 +1216,9 @@ public function search_desc(){
 		
 		}
 
+		/**
+		 * Tblitems.
+		 */
 		public function tblitems(){
 			$TiketNo = $_POST['TiketNo'];
 			$query="SELECT
@@ -1175,6 +1265,9 @@ public function search_desc(){
 			}
 
 
+			/**
+			 * Pditems.
+			 */
 			public function pditems(){
 				$TiketNo = $_POST['TiketNo'];
 				$query="SELECT

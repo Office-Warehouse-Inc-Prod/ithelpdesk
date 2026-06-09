@@ -615,6 +615,9 @@ $withEmailCount = count(array_filter($departments, function ($department) {
 
     var rows = Array.prototype.slice.call(tableBody.querySelectorAll('.contact-row'));
 
+    /**
+     * Update directory filter.
+     */
     function updateDirectoryFilter() {
       var keyword = searchInput.value.toLowerCase().trim();
       var count = 0;

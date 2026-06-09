@@ -247,6 +247,9 @@ include 'switch_attach_modal.php';
 		  </div>
  <script type="text/javascript">
 
+/**
+ * Load attachments.
+ */
 function loadAttachments(ticketNo) {
     if (!ticketNo) {
       $('#attached_files').html('<div class="text-muted">No attachments available.</div>');

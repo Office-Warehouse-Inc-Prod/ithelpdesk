@@ -6,6 +6,9 @@ date_default_timezone_set("Asia/Manila");
 
 class dbconfig extends dbconn
 {
+    /**
+     * Getstrreports.
+     */
     public function getstrreports()
     {
         if (isset($_SESSION['dept_id']) && $_SESSION['dept_id'] == "10") {
@@ -61,6 +64,9 @@ class dbconfig extends dbconn
         return $output;
     }
 
+    /**
+     * Inserdata.
+     */
     public function inserdata()
     {
         $deptselectvalue = isset($_POST['deptsel']) ? $_POST['deptsel'] : '';
@@ -258,6 +264,9 @@ class dbconfig extends dbconn
         return array('Response' => true, 'm' => $msg);
     }
 
+    /**
+     * Search desc.
+     */
     public function search_desc()
     {
         $search = isset($_POST['alu']) ? $_POST['alu'] : '';
@@ -277,6 +286,9 @@ class dbconfig extends dbconn
         return $fetchdata;
     }
 
+    /**
+     * Search tkt.
+     */
     public function search_tkt()
     {
         $deptselectvalue = isset($_POST['iN']) ? $_POST['iN'] : '';
@@ -308,6 +320,9 @@ class dbconfig extends dbconn
         return $fetchdata;
     }
 
+    /**
+     * Ticket trail.
+     */
     public function ticket_trail($t, $deptabr, $status, $userId)
     {
         $restatnew = $this->connection->prepare("INSERT INTO tbl_tickethist (ticket_no, status, date_updated, userID) VALUES (:ticket_no, :status, :date_updated, :userID)");
@@ -319,6 +334,9 @@ class dbconfig extends dbconn
         ));
     }
 
+    /**
+     * Msgnewrpt.
+     */
     public function msgnewrpt($t, $deptabr)
     {
         $numnew = '1';
@@ -329,6 +347,9 @@ class dbconfig extends dbconn
         ));
     }
 
+    /**
+     * Insertrptmessages.
+     */
     public function insertrptmessages($t, $deptabr)
     {
         $nummsg = '1';
@@ -339,6 +360,9 @@ class dbconfig extends dbconn
         ));
     }
 
+    /**
+     * Updatetickno.
+     */
     public function updatetickno($t)
     {
         $deptselectvalue = isset($_POST['deptsel']) ? $_POST['deptsel'] : '';
@@ -357,6 +381,9 @@ class dbconfig extends dbconn
         $statement->execute(array(':ticket_no' => $t));
     }
 
+    /**
+     * Getmsgs.
+     */
     public function getmsgs()
     {
         $tickid = isset($_POST['tickid']) ? $_POST['tickid'] : '';
@@ -379,6 +406,9 @@ class dbconfig extends dbconn
         return $data;
     }
 
+    /**
+     * Insertcomm.
+     */
     public function insertcomm()
     {
         $unmsgcnt = '2';
@@ -415,6 +445,9 @@ class dbconfig extends dbconn
         return '<div class="alert alert-info col-md-12"><span class="fas fa-check-circle fa-lg"></span> Comment Saved </div>';
     }
 
+    /**
+     * Frscommt.
+     */
     public function frscommt($t, $deptabr, $userId = null)
     {
         $uid = !empty($userId) ? $userId : (isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 0);
@@ -427,6 +460,9 @@ class dbconfig extends dbconn
         ));
     }
 
+    /**
+     * User change password.
+     */
     public function user_change_password()
     {
         $userid = $_SESSION['user_id'];
@@ -448,6 +484,9 @@ class dbconfig extends dbconn
         }
     }
 
+    /**
+     * Get tos.
+     */
     public function get_tos()
     {
         $deptVal = isset($_POST['deptval']) ? $_POST['deptval'] : '';
@@ -467,6 +506,9 @@ class dbconfig extends dbconn
         return $fetchdata;
     }
 
+    /**
+     * Pditems.
+     */
     public function pditems()
     {
         $tktnoxx = isset($_POST['tickt']) ? $_POST['tickt'] : '';
@@ -489,6 +531,9 @@ class dbconfig extends dbconn
         return $fetchdata;
     }
 
+    /**
+     * Pv res.
+     */
     public function pv_res()
     {
         $kprvr = isset($_POST['kprvr']) ? $_POST['kprvr'] : '';
@@ -523,6 +568,9 @@ class dbconfig extends dbconn
         return $fetchdata;
     }
 
+    /**
+     * Rars count.
+     */
     public function rars_count()
     {
         $query = "SELECT * FROM rars_counter";

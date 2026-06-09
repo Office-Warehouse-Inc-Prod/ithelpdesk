@@ -8,6 +8,9 @@ $cur_time = date("H:i:s");
  */
 class dbconfig extends dbconn
 {
+	/**
+	 * Fetch cards result.
+	 */
 	public function fetch_cards_result()
 	{
 		$query = '';
@@ -42,6 +45,9 @@ class dbconfig extends dbconn
 
 	}
 
+	/**
+	 * Overallpie res.
+	 */
 	public function overallpie_res()
 	{
 
@@ -131,6 +137,9 @@ class dbconfig extends dbconn
 
 	}
 
+	/**
+	 * Linegraph.
+	 */
 	public function linegraph()
 	{
 
@@ -175,6 +184,9 @@ class dbconfig extends dbconn
 		return $data;
 	}
 
+	/**
+	 * Pie.
+	 */
 	public function pie()
 	{
 		// exclude from changing deptsel to f_deptsel
@@ -201,6 +213,9 @@ class dbconfig extends dbconn
 
 	}
 
+	/**
+	 * Subs.
+	 */
 	public function subs($id)
 	{
 		// exclude from changing deptsel to f_deptsel
@@ -218,6 +233,9 @@ class dbconfig extends dbconn
 		return $data;
 	}
 
+	/**
+	 * Area grph.
+	 */
 	public function area_grph()
 	{
 
@@ -255,6 +273,9 @@ class dbconfig extends dbconn
 		return $data;
 	}
 
+	/**
+	 * Str grph.
+	 */
 	public function str_grph()
 	{
 		if ($_POST['area_desc'] == "CENTRAL") {
@@ -296,6 +317,9 @@ class dbconfig extends dbconn
 
 	}
 
+	/**
+	 * Admin data table res.
+	 */
 	public function admin_data_table_res()
 	{
 		$query = "SELECT DISTINCT vw6.*
@@ -359,6 +383,9 @@ class dbconfig extends dbconn
 
 
 
+	/**
+	 * Newreporthist.
+	 */
 	public function newreporthist()
 	{
 
@@ -440,6 +467,9 @@ ORDER BY
 
 	}
 
+	/**
+	 * Reassign itsup.
+	 */
 	public function reassign_itsup()
 	{
 		$qry = $this->connection->prepare("SELECT * FROM tbl_reassigned");
@@ -461,6 +491,9 @@ ORDER BY
 
 	}
 
+	/**
+	 * Usermtc table.
+	 */
 	public function usermtc_table()
 	{
 
@@ -495,6 +528,9 @@ ORDER BY
 
 	}
 
+	/**
+	 * Store dtable.
+	 */
 	public function store_dtable()
 	{
 
@@ -551,6 +587,9 @@ FROM
 
 	}
 
+	/**
+	 * Changepass.
+	 */
 	public function changepass()
 	{
 		$query = "SELECT id, email, password FROM users";
@@ -573,6 +612,9 @@ FROM
 
 	}
 
+	/**
+	 * Notif techsupp.
+	 */
 	public function notif_techsupp()
 	{
 
@@ -619,6 +661,9 @@ ORDER BY
 	}
 
 
+	/**
+	 * Admin get reports.
+	 */
 	public function admin_get_reports()
 	{
 		$slct_area = $_POST['slct_area'];
@@ -663,6 +708,9 @@ ORDER BY
 
 	}
 
+	/**
+	 * Admin get reports bycat.
+	 */
 	public function admin_get_reports_bycat()
 	{
 		$slct_cat = $_POST['slct_cat'];
@@ -723,6 +771,9 @@ ORDER BY
 
 	}
 
+	/**
+	 * Genrep statpie.
+	 */
 	public function genrep_statpie()
 	{
 
@@ -758,6 +809,9 @@ ORDER BY
 		// echo json_encode($data);
 	}
 
+	/**
+	 * Genrep bycat pie.
+	 */
 	public function genrep_bycat_pie()
 	{
 
@@ -793,6 +847,9 @@ ORDER BY
 	}
 
 
+	/**
+	 * Gencatpie.
+	 */
 	public function gencatpie()
 	{
 		$slct_area = $_POST['slct_area'];
@@ -821,6 +878,9 @@ ORDER BY
 		// echo json_encode($data);
 	}
 
+	/**
+	 * Gensubpie.
+	 */
 	public function gensubpie($catid)
 	{
 		$slct_area = $_POST['slct_area'];
@@ -842,6 +902,9 @@ ORDER BY
 	}
 
 
+	/**
+	 * Genrepsubpie.
+	 */
 	public function genrepsubpie($catid)
 	{
 		$slct_area = $_POST['slct_area'];
@@ -863,6 +926,9 @@ ORDER BY
 	}
 
 
+	/**
+	 * Genrep bycat catpie.
+	 */
 	public function genrep_bycat_catpie()
 	{
 		$slct_stat = $_POST['slct_stat'];
@@ -892,6 +958,9 @@ ORDER BY
 		// echo json_encode($data);
 	}
 
+	/**
+	 * Genrep bycat subpie.
+	 */
 	public function genrep_bycat_subpie($catid)
 	{
 		$slct_stat = $_POST['slct_stat'];
@@ -912,6 +981,9 @@ ORDER BY
 		return $data;
 	}
 
+	/**
+	 * Genstr grph.
+	 */
 	public function genstr_grph()
 	{
 		$slct_area = $_POST['slct_area'];
@@ -951,6 +1023,9 @@ ORDER BY
 		return $data;
 
 	}
+	/**
+	 * Dtbl itsup.
+	 */
 	public function dtbl_itsup()
 	{
 		// fix update please main obj
@@ -1002,6 +1077,9 @@ ORDER BY
 
 	}
 
+	/**
+	 * Count reassigned.
+	 */
 	public function count_reassigned($itsup)
 	{
 		$query = "SELECT *, COUNT(itsup) AS cnt_resassgn FROM tbl_reassigned WHERE itsup ='" . $itsup . "'";
@@ -1016,6 +1094,9 @@ ORDER BY
 
 	}
 
+	/**
+	 * Count sla.
+	 */
 	public function count_sla($itsup)
 	{
 		$query = "SELECT itsup, years,
@@ -1033,6 +1114,9 @@ ORDER BY
 		return $result[0];
 	}
 
+	/**
+	 * Get percentage.
+	 */
 	public function get_percentage($total, $number)
 	{
 		if ($total > 0) {
@@ -1043,6 +1127,9 @@ ORDER BY
 	}
 
 
+	/**
+	 * Tbl cat.
+	 */
 	public function tbl_cat()
 	{
 
@@ -1099,6 +1186,9 @@ WHERE
 
 
 
+	/**
+	 * Netpie.
+	 */
 	public function netpie()
 	{
 
@@ -1124,6 +1214,9 @@ WHERE
 
 	}
 
+	/**
+	 * Netsubs.
+	 */
 	public function netsubs($id)
 	{
 
@@ -1142,6 +1235,9 @@ WHERE
 	}
 
 
+	/**
+	 * Overallnet res.
+	 */
 	public function overallnet_res()
 	{
 
@@ -1174,6 +1270,9 @@ WHERE
 	}
 
 
+	/**
+	 * Areanet grph.
+	 */
 	public function areanet_grph()
 	{
 
@@ -1211,6 +1310,9 @@ WHERE
 		return $data;
 	}
 
+	/**
+	 * Strnet grph.
+	 */
 	public function strnet_grph()
 	{
 		if ($_POST['area_desc'] == "CENTRAL") {
@@ -1251,6 +1353,9 @@ WHERE
 	}
 
 
+	/**
+	 * Admin data table resnet.
+	 */
 	public function admin_data_table_resnet()
 	{
 
@@ -1304,6 +1409,9 @@ WHERE
 	}
 
 
+	/**
+	 * Polled store.
+	 */
 	public function polled_store()
 	{
 		$start_date = $_POST['fromPolled'];

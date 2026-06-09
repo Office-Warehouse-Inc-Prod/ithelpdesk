@@ -748,6 +748,9 @@ $con1=new dbconfig();
 <script type="text/javascript">
 $(document).ready(function(){
 
+  /**
+   * Get url param.
+   */
   function getUrlParam(param) {
     var urlParams = new URLSearchParams(window.location.search);
     return urlParams.get(param);
@@ -790,6 +793,9 @@ $(document).ready(function(){
   var reptable;
   var user_id = <?= $_SESSION['user_id']; ?>; // Added missing semi-colon
 
+  /**
+   * Getdata.
+   */
   function getdata(){
     $.post('fetchdata/fetch_data.php',{mode:'newrpt_tbl'},function(data){
       admin_datatable(data);
@@ -797,6 +803,9 @@ $(document).ready(function(){
   }
   getdata();
 
+  /**
+   * Admin datatable.
+   */
   function admin_datatable(t){
     const dataset = t.newrptdata;
     reptable = $("#new_rep_table").DataTable({
@@ -927,6 +936,9 @@ $(document).on('click', '#msgbtn', function(){
 });
 
 
+/**
+ * Display attachments from data.
+ */
 function displayAttachmentsFromData(data) {
     const container = document.getElementById('attachments-container');
     if (!container) {

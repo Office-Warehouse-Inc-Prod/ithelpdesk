@@ -589,6 +589,9 @@ var dataTable = $('#net_data').removeAttr('width').DataTable({
 
  });
 
+   /**
+    * Getinfo.
+    */
    function getinfo(tid,gettype){
     var Cid =tid;
     var gettype = gettype;

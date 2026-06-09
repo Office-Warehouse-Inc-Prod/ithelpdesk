@@ -25,11 +25,17 @@ if (file_exists($base_dir . '/../fpdf/fpdf.php')) {
 class PDF extends FPDF {
     private $connection;
 
+    /**
+     *   construct.
+     */
     public function __construct($dbConnection) {
         parent::__construct();
         $this->connection = $dbConnection;
     }
 
+    /**
+     * Gcounts.
+     */
     public function gcounts() {
         // Add input validation
         if (!isset($_POST['ticket_no']) || empty($_POST['ticket_no'])) {
@@ -49,6 +55,9 @@ class PDF extends FPDF {
         return 0;
     }
 
+    /**
+     * Gdetails.
+     */
     public function gdetails() {
         // Add input validation
         if (!isset($_POST['ticket_no']) || empty($_POST['ticket_no'])) {

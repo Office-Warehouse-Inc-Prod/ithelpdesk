@@ -7,6 +7,9 @@ date_default_timezone_set("Asia/Manila");
  */
 class dbconfig extends dbconn
 {
+	/**
+	 * Fetch cards result.
+	 */
 	public function fetch_cards_result(){
 		$query = '';
 		$output = array();
@@ -37,6 +40,9 @@ class dbconfig extends dbconn
 
 	}
 
+	/**
+	 * Overallpie res.
+	 */
 	public function overallpie_res(){
 
 		$query='';
@@ -58,6 +64,9 @@ class dbconfig extends dbconn
         return $data;
 	}
 
+	/**
+	 * Bargrph tech res.
+	 */
 	public function bargrph_tech_res(){
 		$query='';
 		// $output= array();
@@ -95,6 +104,9 @@ class dbconfig extends dbconn
         return $data;
 	}
 
+	/**
+	 * Linegraph.
+	 */
 	public function linegraph(){
 
 		$query='';
@@ -125,6 +137,9 @@ class dbconfig extends dbconn
 		return $data;
 	}
 
+	/**
+	 * Pie.
+	 */
 	public function pie(){
 
 		$query= "
@@ -150,6 +165,9 @@ class dbconfig extends dbconn
 
 	}
 
+	/**
+	 * Subs.
+	 */
 	public function subs($id){
 
 		$query= "SELECT sub_cat, count(*) as sctn, date_created FROM vwp WHERE cat_id='".$id."' AND date_created='".$_POST['yr'] ."' GROUP BY sub_cat ORDER BY cat_desc ASC";
@@ -167,6 +185,9 @@ class dbconfig extends dbconn
 		return $data;
 	}
 
+	/**
+	 * Area grph.
+	 */
 	public function area_grph(){
 
 		$query="
@@ -191,6 +212,9 @@ class dbconfig extends dbconn
 		return $data;
 	}
 
+	/**
+	 * Str grph.
+	 */
 	public function str_grph(){
 		$query="
 
@@ -215,6 +239,9 @@ class dbconfig extends dbconn
 
 	}
 
+	/**
+	 * Admin data table res.
+	 */
 	public function admin_data_table_res(){
 	$query="select * from vw6 WHERE
 vw6.sub_id NOT IN ('15','28','34','35') AND status <> 'WAITING FOR IT HELPDESK RESPONSE' AND itsup = '{$_SESSION['tech_id']}'";
@@ -266,6 +293,9 @@ vw6.sub_id NOT IN ('15','28','34','35') AND status <> 'WAITING FOR IT HELPDESK R
 
 	}
 
+/**
+ * Newreporthist.
+ */
 public function newreporthist(){
 
 	$query="SELECT * FROM vw_wfittable";
@@ -302,6 +332,9 @@ public function newreporthist(){
 }
 
 
+/**
+ * Notif techsupp.
+ */
 public function notif_techsupp(){
 
 	$query="SELECT * FROM tbl_notif WHERE itsup = '{$_SESSION['tech_id']}' AND notif_val = '1' ORDER BY notif_date ASC ";

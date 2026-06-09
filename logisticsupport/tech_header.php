@@ -261,6 +261,9 @@ tr {
 
 $( document ).ready(function() {
 countNwMsg();
+/**
+ * Getdata.
+ */
 function getdata(){
 $.post('fetchdata/fetch_data.php',{mode:'notif_support'},function(data){
 // console.log(data);
@@ -270,6 +273,9 @@ notifdatas(data);
 getdata();
 
 var table
+/**
+ * Notifdatas.
+ */
 function notifdatas(t){
 const dataset=t.ntfsupdata;
 table =  $("#notif_data").DataTable({
@@ -318,6 +324,9 @@ $('#notif_data tbody').on( 'click', 'tr', function () {
 
 });//document ready close
 
+/**
+ * Getdata.
+ */
 function getdata(){
 $.post('fetchdata/fetch_data.php',{mode:'notif_support'},function(data){
 // console.log(data);
@@ -326,6 +335,9 @@ notif_data(data);
 }
 
 
+   /**
+    * Count nw msg.
+    */
    function countNwMsg() {
   
 

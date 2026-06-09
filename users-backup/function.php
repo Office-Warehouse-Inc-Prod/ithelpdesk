@@ -11,6 +11,9 @@ date_default_timezone_set("Asia/Manila");
 class dbconfig extends dbconn
 {
 
+/**
+ * Getstrreports.
+ */
 public function getstrreports(){
 
 if ($_SESSION['dept_id'] == "10") {
@@ -69,6 +72,9 @@ foreach($result as $row)
 return $output;
 }
 
+/**
+ * Inserdata.
+ */
 public function inserdata(){
 
 $deptselectvalue = $_POST['deptsel'];
@@ -297,6 +303,9 @@ return $data;
 }
 
 
+/**
+ * Search desc.
+ */
 public function search_desc(){
   $search = $_POST['alu'];
   $query="SELECT
@@ -331,6 +340,9 @@ WHERE
   }
 
 
+  /**
+   * Search tkt.
+   */
   public function search_tkt(){
 
     $deptselectvalue = $_POST['iN'];
@@ -415,6 +427,9 @@ WHERE
 
 
 
+/**
+ * Ticket trail.
+ */
 public function ticket_trail($t,$deptabr,$status,$userId){
   $restatnew =$this->connection->prepare("
   INSERT INTO tbl_tickethist (ticket_no, status,date_updated,userID) 
@@ -431,6 +446,9 @@ $remarkresnew= $restatnew->execute(
 }
 
 
+/**
+ * Msgnewrpt.
+ */
 public function msgnewrpt($t,$deptabr){
     $numnew = '1';
     $restatnew =$this->connection->prepare("
@@ -449,6 +467,9 @@ public function msgnewrpt($t,$deptabr){
 
 }
 
+/**
+ * Insertrptmessages.
+ */
 public function insertrptmessages($t,$deptabr){
 $nummsg = '1';
     $restat = $this->connection->prepare("
@@ -468,6 +489,9 @@ $nummsg = '1';
 }
 
 
+/**
+ * Updatetickno.
+ */
 public function updatetickno($t){
 
 
@@ -525,6 +549,9 @@ public function updatetickno($t){
 }
 
 
+/**
+ * Getmsgs.
+ */
 public function getmsgs(){
   $query="SELECT
   reports_comments.comment_details AS comment_details,
@@ -557,6 +584,9 @@ public function getmsgs(){
    return $data;
 
 }
+/**
+ * Insertcomm.
+ */
 public function insertcomm(){
   $msgcnt = '0'; // read
   $nmsgcnt= '1';
@@ -628,6 +658,9 @@ return $msg;
 
 }
 
+/**
+ * Frscommt.
+ */
 public function frscommt($t,$deptabr){
  // reports comments fix
   $msgcnt = '0'; // read
@@ -650,6 +683,9 @@ $remarkres= $makecom->execute(
 
 }
 
+/**
+ * User change password.
+ */
 public function user_change_password(){
 $userid = $_SESSION['user_id'];
 $qry = $this->connection->prepare(" SELECT * FROM users WHERE id = $userid");
@@ -677,6 +713,9 @@ WHERE id = $userid");
 
 
 
+/**
+ * Get tos.
+ */
 public function get_tos(){
 
 $deptVal = $_POST['deptval'];
@@ -739,6 +778,9 @@ $deptVal = $_POST['deptval'];
       
       }
 
+      /**
+       * Pv res.
+       */
       public function pv_res(){
 
         $kprvr = $_POST['kprvr'];
@@ -793,6 +835,9 @@ WHERE (ALU = '$kprvr' OR Local_UPC = '$kprvr')
         
         }
 
+        /**
+         * Rars count.
+         */
         public function rars_count(){
 
           $query="SELECT * FROM rars_counter";

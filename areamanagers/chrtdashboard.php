@@ -36,6 +36,9 @@ var types = $.ajax({
 
 
 
+ /**
+  * Grhp.
+  */
  function grhp(types) {
   am4core.ready(function () {
     am4core.useTheme(am4themes_animated); // Animated theme looks more modern
@@ -83,6 +86,9 @@ var types = $.ajax({
 
     chart.exporting.menu = new am4core.ExportMenu();
 
+    /**
+     * Generate chart data.
+     */
     function generateChartData() {
       let chartData = [];
       for (let i = 0; i < types.length; i++) {
@@ -165,6 +171,9 @@ var types = $.ajax({
    });
 
 }
+ /**
+  *  plotovpie.
+  */
  function _plotovpie(grphdata){
 
 am4core.ready(function() {
@@ -253,6 +262,9 @@ am4core.options.autoDispose = true;
 
 <!-- Chart code -->
 <script>
+/**
+ * Show graph.
+ */
 function show_graph (json_data) {
   am4core.ready(function() {
 
@@ -334,6 +346,9 @@ am4core.options.autoDispose = true;
   const curyr = g=curdate.getFullYear();
 
   _techgraph(curyr);
+  /**
+   *  techgraph.
+   */
   function _techgraph(curyr){
 
  $.ajax({
@@ -352,6 +367,9 @@ am4core.options.autoDispose = true;
    });
 
   }
+  /**
+   *  plotgraph.
+   */
   function _plotgraph(grphdata){
 
 am4core.ready(function() {
@@ -427,6 +445,9 @@ bullet.label.truncate = false;
 
   }
 
+/**
+ * Tech bar result.
+ */
 function tech_bar_result(itVal){
                           $.ajax({
                   url:"fetchdata/fetch_data.php",
@@ -487,6 +508,9 @@ function tech_bar_result(itVal){
 
   }
 
+/**
+ *  plotareagrph.
+ */
 function _plotareagrph(grphdata){
 
 am4core.ready(function() {
@@ -543,6 +567,9 @@ columnTemplate.strokeOpacity = 1;
 
 }); // end am4core.ready()
 
+/**
+ *  storegraph.
+ */
 function _storegraph(s_area,syr){
                           $.ajax({
                   url:"fetchdata/fetch_data.php",
@@ -576,6 +603,9 @@ function _storegraph(s_area,syr){
 <!-- Chart code -->
 <!-- <script>
 
+/**
+ *  plot store graph.
+ */
 function _plot_store_graph(strdata){
 
 am4core.ready(function() {
@@ -667,6 +697,9 @@ columnTemplate.strokeOpacity = 1;
 
   }
 
+/**
+ *  polledstore.
+ */
 function _polledstore(grphdata){
 
 am4core.ready(function() {

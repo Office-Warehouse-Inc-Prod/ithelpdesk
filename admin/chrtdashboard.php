@@ -13,6 +13,9 @@
   const curyr2 = g=curdate2.getFullYear();
 
   _catpie(curyr2);
+ /**
+  *  catpie.
+  */
  function _catpie(curyr2){
    var selected;
 var types = $.ajax({
@@ -32,6 +35,9 @@ var types = $.ajax({
 
 
 
+ /**
+  * Grhp.
+  */
  function grhp(types) { // dept graph
   am4core.ready(function () {
     am4core.useTheme(am4themes_animated);
@@ -123,6 +129,9 @@ pieSeries.slices.template.events.on("hit", function(ev) {
 
 var deptBreakTable;
 
+/**
+ *  loaddeptbreakdowntable.
+ */
 function _loadDeptBreakdownTable(dept_id) {
 
     if ($.fn.DataTable.isDataTable('#tbl_deptbreak')) {
@@ -367,6 +376,9 @@ function _deptgraph(dept_id){
 }
 
 
+    /**
+     * Generate chart data.
+     */
     function generateChartData() {
       let chartData = [];
       for (var i = 0; i < types.length; i++) {
@@ -417,6 +429,9 @@ function _deptgraph(dept_id){
 
 <script>
 
+  /**
+   *  storegraph bycat.
+   */
   function _storegraph_bycat(cat_id) {
     $.ajax({
         url: "fetchdata/fetch_data.php", 
@@ -436,6 +451,9 @@ function _deptgraph(dept_id){
     });
 }
 
+/**
+ *  plot dept graph.
+ */
 function _plot_dept_graph(strdata){
 
   am4core.ready(function() {
@@ -508,6 +526,9 @@ chart.exporting.menu = new am4core.ExportMenu();
     valueLabel.label.hideOversized = false;
 
     var table
+/**
+ * Itsup datatables.
+ */
 function itsup_datatables(t){
 const dataset=t.itsuptbldata;
 table =  $("#dtbl_itsup").DataTable({
@@ -688,6 +709,9 @@ _overallpie(curyrs, $('#dept_id').val());
 
 
 
+/**
+ *  overallpie.
+ */
 function _overallpie(curyrs, dept_id) {
     $.ajax({
         url: "fetchdata/fetch_data.php",
@@ -711,6 +735,9 @@ function _overallpie(curyrs, dept_id) {
 
 let categoryChart = null;
 
+/**
+ *  plotovpie.
+ */
 function _plotovpie(grphdata) {
     am4core.ready(function () {
         am4core.useTheme(am4themes_animated);
@@ -847,6 +874,9 @@ function _categorypie_all(yr, dept_id) {
 
 var selectedCategoryStatus = "";
 
+/**
+ *  categorypie.
+ */
 function _categorypie(yr, dept_id, status) {
     selectedCategoryStatus = status;
 
@@ -872,6 +902,9 @@ function _categorypie(yr, dept_id, status) {
     });
 }
 
+/**
+ *  plotcategorypie.
+ */
 function _plotcategorypie(grphdata) {
     am4core.ready(function () {
         am4core.useTheme(am4themes_animated);
@@ -955,6 +988,9 @@ pieSeries.slices.template.events.on("hit", function (ev) {
 }
 
 
+/**
+ *  category ticket dt.
+ */
 function _category_ticket_dt(yr, dept_id, status, cat_desc) {
     $.ajax({
         url: "fetchdata/fetch_data.php",
@@ -979,6 +1015,9 @@ function _category_ticket_dt(yr, dept_id, status, cat_desc) {
     });
 }
 
+/**
+ * Format date time.
+ */
 function formatDateTime(value) {
     if (!value || value === "0000-00-00 00:00:00" || value === "null") {
         return "";
@@ -1004,6 +1043,9 @@ function formatDateTime(value) {
     });
 }
 
+/**
+ * Category ticket datatable.
+ */
 function category_ticket_datatable(data) {
     if ($.fn.DataTable.isDataTable("#tbl_category_tickets")) {
         $("#tbl_category_tickets").DataTable().clear().destroy();
@@ -1115,6 +1157,9 @@ function category_ticket_datatable(data) {
 
 _areagraph(curyrz);
 
+/**
+ *  areagraph.
+ */
 function _areagraph(curyrz) {
     $.ajax({
         url: "fetchdata/fetch_data.php",
@@ -1137,6 +1182,9 @@ function _areagraph(curyrz) {
 }
 var areaChart = null;
 
+/**
+ *  plotareagrph.
+ */
 function _plotareagrph(grphdata) {
     am4core.ready(function () {
         am4core.useTheme(am4themes_animated);
@@ -1172,6 +1220,9 @@ function _plotareagrph(grphdata) {
         valueAxis.title.text = "No. of Reports";
         valueAxis.title.fontWeight = "600";
 
+        /**
+         * Create series.
+         */
         function createSeries(field, name, color, widthPercent, opacity) {
             let hasData = chart.data.some(function (row) {
                 return Number(row[field]) > 0;
@@ -1251,6 +1302,9 @@ function _plotareagrph(grphdata) {
 }
 
 
+/**
+ *  storegraph.
+ */
 function _storegraph(s_area, syr) {
     $.ajax({
         url: "fetchdata/fetch_data.php",
@@ -1306,6 +1360,9 @@ function _storegraph(s_area, syr) {
 
 var storeChart = null;
 
+/**
+ *  plot store graph.
+ */
 function _plot_store_graph(strdata) {
     am4core.ready(function () {
         am4core.useTheme(am4themes_animated);
@@ -1343,6 +1400,9 @@ function _plot_store_graph(strdata) {
         chart.legend.position = "bottom";
         chart.legend.labels.template.fontSize = 12;
 
+        /**
+         * Create series.
+         */
         function createSeries(field, name, color, widthPercent, opacity) {
             let hasData = chart.data.some(function (row) {
                 return Number(row[field]) > 0;
@@ -1420,6 +1480,9 @@ createSeries("assigned", "ASSIGNED", "#9EC9F7", 26, 0.95);
     });
 }
 
+/**
+ *  store ticket dt.
+ */
 function _store_ticket_dt(yr, dept_id, store) {
     $.ajax({
         url: "fetchdata/fetch_data.php",
@@ -1443,6 +1506,9 @@ function _store_ticket_dt(yr, dept_id, store) {
     });
 }
 
+/**
+ * Format date time.
+ */
 function formatDateTime(value) {
     if (!value || value === "0000-00-00 00:00:00" || value === "null") {
         return "";
@@ -1469,6 +1535,9 @@ function formatDateTime(value) {
 }
 
 
+/**
+ * Store ticket datatable.
+ */
 function store_ticket_datatable(data) {
     if ($.fn.DataTable.isDataTable("#tbl_store_tickets")) {
         $("#tbl_store_tickets").DataTable().clear().destroy();

@@ -1003,12 +1003,12 @@ background: linear-gradient(135deg, #837031, #E1AD01);
 
       <!-- <div class="form-group col-md-12"> -->
 
-    <div class="form-group col-md-4">
-    <label>Attachment:</label>
-    <div id="attachments-container" class="d-flex flex-wrap gap-2 p-2 border rounded bg-light" style="min-height: 50px;">
+    <div class="form-group col-md-12">
+    <label style="font-weight: bold; color: #334155;">Attachment(s):</label>
+    <div id="attachments-container" class="d-flex flex-wrap gap-2 p-3 border rounded" style="min-height: 60px; background-color: #f8fafc; border-color: #e2e8f0;">
         <span class="text-muted">No attachments for this ticket.</span>
     </div>
-</div>
+    </div>
 
 
       <!-- </div> -->

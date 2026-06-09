@@ -291,6 +291,9 @@ var idleInterval = setInterval(timerIncrement, 60000);
     $(this).mousemove(function (e) {idleTime = 0;});
     $(this).keypress(function (e) {idleTime = 0;});
 
+/**
+ * Timer increment.
+ */
 function timerIncrement() {
     idleTime = idleTime + 1;
     if (idleTime > idleMax) { 
@@ -343,6 +346,9 @@ function getdata(){
 }
 getdata();
 
+/**
+ * Admin datatable.
+ */
 function admin_datatable(t){
 
 const dataset=t.newrptdata;
@@ -607,6 +613,9 @@ $(document).on('submit', '#newrpt_form', function(event)
    });
  });
 
+ /**
+  * Get items.
+  */
  function GetItems(TiketNo){
   $.post('fetchdata/fetch_data.php',{mode:'tblitems', TiketNo:TiketNo},function(data){
     // console.log(data);
@@ -615,6 +624,9 @@ $(document).on('submit', '#newrpt_form', function(event)
 }
 
 var TblItem
+/**
+ * Items datatable.
+ */
 function items_datatable(t){
 const dataset=t.itemspddata;
 

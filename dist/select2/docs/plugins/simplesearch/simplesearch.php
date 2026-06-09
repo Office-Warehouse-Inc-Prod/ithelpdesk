@@ -300,6 +300,9 @@ class SimplesearchPlugin extends Plugin
         $this->grav['assets']->addJs('plugin://simplesearch/js/simplesearch.js', [ 'group' => 'bottom' ]);
     }
 
+    /**
+     * Match text.
+     */
     private function matchText($haystack, $needle) {
         if ($this->config->get('plugins.simplesearch.ignore_accented_characters')) {
             setlocale(LC_ALL, 'en_US');

@@ -557,6 +557,9 @@ $(document).ready(function() {
         $(this).fadeOut(100).fadeIn(100);
     });
 
+    /**
+     * Load department table.
+     */
     function loadDepartmentTable(selectedYear, selectedMonth) {
         let displayYear = selectedYear.includes(',') ? 'OVERALL' : selectedYear;
         let displayMonthText = selectedMonth ? " | Month: " + selectedMonth : "";
@@ -764,6 +767,9 @@ $(document).ready(function() {
     });
 });
  
+/**
+ * Export table to excel.
+ */
 function exportTableToExcel() {
     let table = document.getElementById("admin_report");
     let headers = table.querySelectorAll("thead th");
@@ -806,6 +812,9 @@ function exportTableToExcel() {
     });
 }
 
+/**
+ * Export dept excel.
+ */
 function exportDeptExcel() {
     let table = document.getElementById("dept-table");
     let headers = table.querySelectorAll("thead th");
@@ -848,6 +857,9 @@ function exportDeptExcel() {
     });
 }
 
+/**
+ * Print div.
+ */
 function printDiv(divId) {
      var printContents = document.getElementById(divId).innerHTML;
      var originalContents = document.body.innerHTML;

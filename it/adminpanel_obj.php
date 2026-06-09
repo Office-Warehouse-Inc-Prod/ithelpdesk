@@ -31,6 +31,9 @@
 
     verQTY();
 
+    /**
+     * Ver q t y.
+     */
     function verQTY() {
 
       let formxxx = document.getElementById('cof_form');
@@ -89,6 +92,9 @@
     });
 
 
+    /**
+     * Getdata.
+     */
     function getdata(yr) {
       $.post('fetchdata/fetch_data.php', { yr: yr, mode: 'dtb' }, function (data) {
         // console.log(data);
@@ -98,6 +104,9 @@
     getdata();
 
     var table
+    /**
+     * Admin datatable.
+     */
     function admin_datatable(t) {
       const dataset = t.rptdata;
       table = $("#report_data").DataTable({
@@ -520,6 +529,9 @@
     const yr = $("#yearpicker").val();
     getdata(yr)
     get_card_data(yr)
+    /**
+     * Get card data.
+     */
     function get_card_data(y) {
       $.post('fetchdata/fetch_data.php', { yr: y, mode: 'yearch' }, function (data) {
         /*optional stuff to do after success */

@@ -7,6 +7,9 @@ date_default_timezone_set("Asia/Manila");
  */
 class dbconfig extends dbconn
 {
+	/**
+	 * Fetch cards result.
+	 */
 	public function fetch_cards_result(){
 		$query = '';
 		$output = array();
@@ -40,6 +43,9 @@ class dbconfig extends dbconn
 
 	}
 
+	/**
+	 * Overallpie res.
+	 */
 	public function overallpie_res(){
 
 		$query='';
@@ -61,6 +67,9 @@ class dbconfig extends dbconn
         return $data;
 	}
 
+	/**
+	 * Bargrph tech res.
+	 */
 	public function bargrph_tech_res(){
 		$query='';
 		// $output= array();
@@ -98,6 +107,9 @@ class dbconfig extends dbconn
         return $data;
 	}
 
+	/**
+	 * Linegraph.
+	 */
 	public function linegraph(){
 
 		$query='';
@@ -128,6 +140,9 @@ class dbconfig extends dbconn
 		return $data;
 	}
 
+	/**
+	 * Pie.
+	 */
 	public function pie(){
 
 		$query= "
@@ -153,6 +168,9 @@ class dbconfig extends dbconn
 
 	}
 
+	/**
+	 * Subs.
+	 */
 	public function subs($id){
 
 		$query= "SELECT sub_cat, count(*) as sctn, date_created FROM vwp WHERE cat_id='".$id."' AND date_created='".$_POST['yr'] ."' GROUP BY sub_cat ORDER BY cat_desc ASC";
@@ -170,6 +188,9 @@ class dbconfig extends dbconn
 		return $data;
 	}
 
+	/**
+	 * Area grph.
+	 */
 	public function area_grph(){
 
 		$query="
@@ -194,6 +215,9 @@ class dbconfig extends dbconn
 		return $data;
 	}
 
+	/**
+	 * Str grph.
+	 */
 	public function str_grph(){
 		$query="
 
@@ -217,6 +241,9 @@ class dbconfig extends dbconn
 		return $data;
 
 	}
+/**
+ * Admin data table res.
+ */
 public function admin_data_table_res()
 {
     $query = "SELECT * FROM vw6
@@ -268,6 +295,9 @@ public function admin_data_table_res()
     return $fetchdata;
 }
 
+/**
+ * Newreporthist.
+ */
 public function newreporthist(){
 
 	$query="SELECT * FROM vw_wfittable";
@@ -304,6 +334,9 @@ public function newreporthist(){
 }
 
 
+/**
+ * Notif techsupp.
+ */
 public function notif_techsupp(){
 
 	$query="SELECT * FROM tbl_notif WHERE itsup = '{$_SESSION['tech_id']}' AND notif_val = '1' AND
@@ -329,6 +362,9 @@ public function notif_techsupp(){
 
 }
 
+/**
+ * Netpie.
+ */
 public function netpie(){
 
 	$query= "SELECT cat_desc,clr,cat_id, count(*) as ctn, date_created
@@ -353,6 +389,9 @@ public function netpie(){
 
 }
 
+/**
+ * Netsubs.
+ */
 public function netsubs($id){
 
 	$query= "SELECT sub_cat, count(*) as sctn, date_created FROM vwp WHERE cat_id='".$id."' AND deptsel = '1'  AND date_created IN (".$_POST['yr'] .")  GROUP BY sub_cat ORDER BY cat_desc ASC";
@@ -371,6 +410,9 @@ public function netsubs($id){
 }
 
 
+/**
+ * Overallnet res.
+ */
 public function overallnet_res(){
 
 	$query="SELECT
@@ -402,6 +444,9 @@ public function overallnet_res(){
 }
 
 
+/**
+ * Areanet grph.
+ */
 public function areanet_grph(){
 
 	$query="SELECT
@@ -439,6 +484,9 @@ GROUP BY
 	return $data;
 }
 
+/**
+ * Strnet grph.
+ */
 public function strnet_grph(){
 	if ($_POST['area_desc'] == "CENTRAL") {
 		$query=" SELECT

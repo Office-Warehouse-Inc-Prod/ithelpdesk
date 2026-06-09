@@ -85,6 +85,9 @@ $(document).ready(function(){
 
  fetch_data('no');
 
+ /**
+  * Fetch data.
+  */
  function fetch_data(is_date_search, start_date='', end_date='')
  {
   var dataTable = $('#order_data').DataTable({

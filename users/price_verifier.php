@@ -338,6 +338,9 @@ $(document).ready(function () {
 
     $("#pr_vr").focus();
 
+    /**
+     * Normalize barcode.
+     */
     function normalizeBarcode(code) {
         code = String(code).trim();
 
@@ -351,10 +354,16 @@ $(document).ready(function () {
         return code;
     }
 
+    /**
+     * Is valid barcode.
+     */
     function isValidBarcode(code) {
         return /^[0-9]{3,14}$/.test(code);
     }
 
+    /**
+     * Get price verifier.
+     */
     function getPriceVerifier(kprvr) {
 
         let sbs_no = $('#SBS_NO').val();
@@ -520,6 +529,9 @@ let torchOn = false;
         readNumberFromCamera();
     });
 
+    /**
+     * Read number from camera.
+     */
     function readNumberFromCamera() {
 
         let video = document.getElementById('barcodePreview');
@@ -584,6 +596,9 @@ let torchOn = false;
         });
     }
 
+/**
+ * Apply camera focus.
+ */
 function applyCameraFocus() {
     let video = document.getElementById('barcodePreview');
 
@@ -629,6 +644,9 @@ $('#barcodePreview').on('click touchstart', function () {
     refocusCamera();
 });
 
+/**
+ * Refocus camera.
+ */
 function refocusCamera() {
     if (!currentVideoTrack) {
         applyCameraFocus();
@@ -663,6 +681,9 @@ $('#btnTorch').on('click', function () {
     toggleTorch();
 });
 
+/**
+ * Toggle torch.
+ */
 function toggleTorch() {
     if (!currentVideoTrack) {
         applyCameraFocus();
@@ -695,6 +716,9 @@ function toggleTorch() {
 }
 
 
+    /**
+     * Stop scanner.
+     */
     function stopScanner() {
 
         isScanning = false;

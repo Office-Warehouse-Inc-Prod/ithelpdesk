@@ -390,6 +390,9 @@ else{
 
 getTkt(iN);
 
+/**
+ * Get tkt.
+ */
 function getTkt(){
 
 //In  = Deptsel value
@@ -410,6 +413,9 @@ $('#ticket_no').val(tktno[0].dept +''+ tktno[0].ticket_no);
 
 get_rarscount();
 
+/**
+ * Get rarscount.
+ */
 function get_rarscount(){
 $.post('fetch.php',{iN:iN, operation:'rars_count'},function(data){
 let get_count = jQuery.parseJSON(data);
@@ -511,6 +517,9 @@ $('#Alu').keyup(function (e) {
   getdesc(alu);
 });
 
+/**
+ * Getdesc.
+ */
 function getdesc(alu){
   $.post('fetch.php',{alu:alu, operation:'search_desc'},function(data){
     let desc = jQuery.parseJSON(data); 
@@ -537,6 +546,9 @@ concern.addEventListener('input', function() {
   action.disabled = inputLength < 9;
 });
 
+/**
+ * Hide.
+ */
 function hide(){
 var earrings = document.getElementById('logistic');
 logistic.style.visibility = 'hidden';
@@ -587,6 +599,9 @@ switch (deptval) {
 
 
 
+/**
+ *  get tos.
+ */
 function _get_tos(deptval){
   $.post('fetch.php',{deptval:deptval, operation:'get_tos'},function(data){
     
@@ -633,6 +648,9 @@ allowUpper : true
 // allowSpace : false
 });
 
+/**
+ * Getdata.
+ */
 function getdata(fltr=null){
 $.post('fetch.php',{operation:'',filter:fltr},function(data){
 tbl(data)
@@ -644,6 +662,9 @@ console.log(data)
 getdata();
 
 var table;
+/**
+ * Tbl.
+ */
 function tbl(t){
 
 
@@ -881,6 +902,9 @@ else{
 
 });
 
+/**
+ * Noslctd.
+ */
 function  noslctd(thisid){
 var del = $(thisid);
 del.empty();
@@ -898,6 +922,9 @@ getdata();
 
 
 }, 15000);
+/**
+ * Valtxt.
+ */
 function valtxt(){
 if($('#subject').val().trim()==""){
 $('#subject').addClass('border-danger');
@@ -1351,6 +1378,9 @@ function getitems(tickt){
 
 
 var pdtblitem
+/**
+ * Pd datatable.
+ */
 function pd_datatable(t){
 const dataset=t.rptpd;
 

@@ -358,6 +358,9 @@ if ($_SESSION['login'] != 'true') {
       getdata();
       setInterval(getdata, 1000);
 
+      /**
+       * Getdata.
+       */
       function getdata() {
         $.post('fetchdata/fetch_data.php', { mode: 'notif_support' }, function (data) {
           notifdatas(data);
@@ -365,6 +368,9 @@ if ($_SESSION['login'] != 'true') {
       }
 
       var table;
+      /**
+       * Notifdatas.
+       */
       function notifdatas(t) {
         const dataset = t.ntfsupdata || [];
         table = $("#notif_dataxx").DataTable({
@@ -423,6 +429,9 @@ if ($_SESSION['login'] != 'true') {
           }
         });
       }
+      /**
+       * Get url param.
+       */
       function getUrlParam(param) {
         var urlParams = new URLSearchParams(window.location.search);
         return urlParams.get(param);
@@ -457,6 +466,9 @@ if ($_SESSION['login'] != 'true') {
         }, 600);
       }
 
+      /**
+       * Handle url ticket highlight.
+       */
       function handleUrlTicketHighlight() {
         const urlParams = new URLSearchParams(window.location.search);
         const ticketNo = urlParams.get('ticket_no');
@@ -525,6 +537,9 @@ if ($_SESSION['login'] != 'true') {
       }
     }
 
+    /**
+     * Countnewrep.
+     */
     function countnewrep() {
       setInterval(function () {
         var xhttp = new XMLHttpRequest();
@@ -539,6 +554,9 @@ if ($_SESSION['login'] != 'true') {
       }, 1000);
     }
 
+    /**
+     * Count nw msg.
+     */
     function countNwMsg() {
       setInterval(function () {
         var xhttp = new XMLHttpRequest();

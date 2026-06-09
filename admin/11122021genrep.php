@@ -263,6 +263,9 @@ $(document).ready(function(){
   
  fetch_data('no');
 
+ /**
+  * Fetch data.
+  */
  function fetch_data(is_date_search, start_date='', end_date='')
  {
   let dataTable = $('#report_data').DataTable({
@@ -443,6 +446,9 @@ $('#search').click(function(){
 
   });
 
+/**
+ * Grhp.
+ */
 function grhp(types){
 am4core.ready(function() {
 
@@ -483,6 +489,9 @@ pieSeries.slices.template.tooltipPosition = "pointer";
 
 chart.exporting.menu = new am4core.ExportMenu();
 
+/**
+ * Generate chart data.
+ */
 function generateChartData() {
  let d = Array();
   var chartData = [];
@@ -545,6 +554,9 @@ am4core.options.autoDispose = true;
 } // end am4core.ready()
 
 
+ /**
+  * Newgrph.
+  */
  function newgrph(data){
 // console.log(data)
 
@@ -657,6 +669,9 @@ $('#search').click(function(){
 
 <!-- Chart code -->
 <script>
+  /**
+   * Show techgraph.
+   */
   function show_techgraph(json_data){
     am4core.ready(function() {
 
@@ -762,6 +777,9 @@ $('#search').click(function(){
  });
 
 
+/**
+ * Show areagraph.
+ */
 function show_areagraph (json_data) {
   am4core.ready(function() {
 

@@ -271,6 +271,9 @@ tr {
 
 $( document ).ready(function() {
 countNwMsg();
+/**
+ * Getdata.
+ */
 function getdata(){
 $.post('fetchdata/fetch_data.php',{mode:'notif_support'},function(data){
 // console.log(data);
@@ -280,6 +283,9 @@ notifdatas(data);
 getdata();
 
 var table
+/**
+ * Notifdatas.
+ */
 function notifdatas(t){
 const dataset=t.ntfsupdata;
 table =  $("#notif_data").DataTable({
@@ -332,6 +338,9 @@ if (technet != '8') {
 
 });//document ready close
 
+/**
+ * Getdata.
+ */
 function getdata(){
 $.post('fetchdata/fetch_data.php',{mode:'notif_support'},function(data){
 // console.log(data);
@@ -340,6 +349,9 @@ notif_data(data);
 }
 
 
+   /**
+    * Count nw msg.
+    */
    function countNwMsg() {
   
 
