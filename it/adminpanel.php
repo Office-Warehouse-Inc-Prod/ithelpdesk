@@ -478,7 +478,6 @@ Start of Add/Edit Modal
                         ?>
                         <option><?= $res['stat_desc'] ?></option>
                       <?php } ?>
-                      <option value="CLOSED" readonly>CLOSED</option>
                     </select>
                   </div>
 

@@ -448,7 +448,7 @@ Start of Add/Edit Modal
                   <select class="form-control form-control-sm" name="status" id="status" required>
                     <option value=""> &larr; Status &rarr;</option>
                     <?php
-                      $query="select * from status  WHERE it_module_tag = 'Y'";
+                      $query="select * from status  WHERE visual_module_tag = 'Y'";
                       $run=$conn->prepare($query);
                       $run->execute();
                       $rs=$run->get_result();
@@ -456,7 +456,6 @@ Start of Add/Edit Modal
                     ?>
                       <option><?= $res['stat_desc'] ?></option>
                     <?php } ?>
-                    <option value="CLOSED" readonly>CLOSED</option>
                   </select>
                 </div>
 

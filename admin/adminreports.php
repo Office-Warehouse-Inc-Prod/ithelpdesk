@@ -8,397 +8,279 @@ include '../condb.php';
   <link rel="stylesheet" href="adminpanel.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" />
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@linways/table-to-excel@1.0.4/dist/tableToExcel.min.js"></script>
-
+  <script src="https://cdn.jsdelivr.net/npm/@linways/table-to-excel@1.0.4/dist/tableToExcel.min.js"></script>
 </head>
 
 <style>
 /* Custom Scrollbar System Styling */
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.1); border-radius: 10px; }
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.05); border-radius: 10px; }
 ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #837031, #E1AD01); border-radius: 10px; }
 
-
-:root{
-  --navy:#121C31;
-  --navy2:#1a2a4a;
-  --yellow:#EAAA00;
-  --bg:#EEF2F7;
-  --card:#ffffff;
-  --line:#E5E7EB;
-  --text:#111827;
-  --muted:#6B7280;
-  --shadow: 0 14px 32px rgba(17,24,39,.12);
-  --radius:16px;
-}
-
-body{
-  background:
-    linear-gradient(135deg, rgba(18,28,49,.18) 0%, rgba(18,28,49,.18) 12%, transparent 12%) ,
-    linear-gradient(315deg, rgba(18,28,49,.18) 0%, rgba(18,28,49,.18) 12%, transparent 12%),
-    var(--bg) !important;
-  color: var(--text) !important;
-}
-
-.navbar, header, .topbar, .navbar-default{
-  background: var(--navy) !important;
-  border-color: rgba(255,255,255,.10) !important;
-}
-.navbar a, .navbar-brand, .navbar-nav > li > a,
-.navbar i, .navbar .fa, .navbar .fas{
-  color: #fff !important;
-}
-.navbar-nav > li.active > a,
-.navbar-nav > li > a:hover{
-  color: var(--yellow) !important;
-}
-.navbar-nav > li.active > a{
-  border-bottom: 3px solid var(--yellow);
-}
-.form-check.form-switch{
-  background: #fff !important;
-  border: 1px solid var(--line) !important;
-  border-radius: 999px !important;
-  box-shadow: 0 10px 22px rgba(17,24,39,.08) !important;
-}
-.form-check-label{ color: var(--muted) !important; font-weight: 700; }
-
-.input-group-text{
-  background: var(--navy) !important;
-  color: #fff !important;
-  border: 1px solid rgba(0,0,0,.08) !important;
-  font-weight: 800 !important;
-  border-radius: 12px 0 0 12px !important;
-}
-select.form-control, .form-control{
-  background: #fff !important;
-  color: var(--text) !important;
-  border: 1px solid var(--line) !important;
-  border-radius: 0 12px 12px 0 !important;
-}
-select.form-control:focus, .form-control:focus{
-  border-color: rgba(234,170,0,.55) !important;
-  box-shadow: 0 0 0 .2rem rgba(234,170,0,.18) !important;
-}
-
-/* Calendar button like screenshot */
-#showCalendarBtn{
-  background: var(--yellow) !important;
-  color: #111827 !important;
-  border: none !important;
-  border-radius: 12px !important;
-  font-weight: 900 !important;
-  letter-spacing: .02em;
-  box-shadow: 0 10px 22px rgba(17,24,39,.12);
-}
-#showCalendarBtn:hover{
-  filter: brightness(.98);
-  transform: translateY(-1px);
-}
 :root {
-  --primary-light: #F4F0FF;
+  --navy: #121C31;
+  --navy2: #1a2a4a;
+  --yellow: #EAAA00;
+  --bg: #EEF2F7;
+  --card: #ffffff;
+  --line: #E5E7EB;
+  --text: #111827;
+  --muted: #6B7280;
+  --shadow: 0 14px 32px rgba(17,24,39,.12);
+  --radius: 12px;
   --bg-body: #F4F5FA;
-  --sidebar-width: 260px;
-  --topbar-height: 70px;
-  --card-shadow: 0 4px 12px 0 rgba(58, 53, 65, 0.1);
 }
 
 body {
   font-family: "Arial", "Helvetica", sans-serif;
   background-color: var(--bg-body);
   color: #3A3541DE;
-  overflow-x: hidden;
-  background: linear-gradient(rgba(218, 219, 207, 0.3), rgba(113, 114, 136, 0.27)), url('images/bg_login.png'); 
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  background-repeat: no-repeat;
   min-height: 100vh;
+  margin: 0;
+  padding: 0;
 }
 
-/* Navbar Interface Configurations */
-.owi-navbar { 
-  background-color: #213456 !important; 
-  box-shadow: 0 2px 10px 2px #66738e; 
-  margin-bottom: 10px; 
-}
-.owi-navbar .nav-link, .owi-navbar .navbar-brand { 
-  color: #fff !important; 
-  font-weight: 600; 
-  letter-spacing: .3px; 
-}
-.owi-navbar .nav-link i { 
-  margin-right: 6px; 
-}
-.owi-navbar .nav-link:hover, .owi-navbar .navbar-brand:hover { 
-  opacity: .92; 
-}
-.owi-navbar .dropdown-menu { 
-  background-color: #ffffff; 
-  border: none; 
-  min-width: 220px; 
-  padding: .35rem; 
-  box-shadow: 0 12px 24px rgba(0,0,0,0.25); 
-  border-radius: 12px; 
-  border-top: 3px solid var(--primary-color) !important; 
-  margin-top: 10px; 
-}
-.owi-navbar .dropdown-item { 
-  color: black; 
-  border-radius: 10px; 
-  padding: .55rem .75rem;
-  white-space: normal; 
-}
-.owi-navbar .dropdown-item i { 
-  margin-right: 8px; 
-}
-.owi-navbar .dropdown-item:hover { 
-  background-color: #54699e; 
-  color: #fff; 
-}
-.owi-navbar .dropdown-divider { 
-  border-top: 1px solid rgba(255,255,255,0.2); 
-}
-.notif-dropdown { 
-  width: 360px; 
-  max-width: 92vw; 
+.navbar, header, .topbar, .navbar-default {
+  background: var(--navy) !important;
+  border-color: rgba(255,255,255,.10) !important;
 }
 
-@media (max-width: 576px) { .notif-dropdown { width: 92vw; } }
-
-.owi-navbar .badge-danger { 
-  background-color: #ff4d4d; 
+/* Action Filters Compact Layout */
+.action-bar-container {
+  padding: 10px 15px !important;
+  margin-bottom: 12px !important;
 }
-.owi-navbar .badge-info { 
-  background-color: #28c7ff; 
-  color: #002a4a; 
-  font-weight: 700; 
+.input-group-text {
+  background: var(--navy) !important;
+  color: #fff !important;
+  border: 1px solid rgba(0,0,0,.08) !important;
+  font-weight: 700 !important;
+  border-radius: 8px 0 0 8px !important;
+  font-size: 13px;
 }
-.owi-navbar .navbar-toggler { 
-  border-color: rgba(255,255,255,0.35); 
-}
-.owi-navbar .navbar-toggler-icon { 
-  filter: brightness(0) invert(1); 
-}
-
-.owi-navbar .nav-item { 
-  position: relative; 
-  margin: 0 5px; 
-  display: flex; 
-  align-items: center; 
-}
-.owi-navbar .nav-link { 
-  position: relative; 
-  padding: 0.8rem 1rem !important; 
-  color: rgba(255, 255, 255, 0.8) !important; 
-  transition: all 0.3s ease; 
-}
-.owi-navbar .nav-link::after { 
-  content: ''; 
-  position: absolute; 
-  width: 0; 
-  height: 3px; 
-  bottom: 5px; 
-  left: 50%; 
-  background-color: var(--primary-color); 
-  transition: width 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), left 0.3s ease; 
-  transform: translateX(-50%); 
-  border-radius: 10px; }
-.owi-navbar .nav-item:hover .nav-link { 
-  color: #fff !important; 
-}
-.owi-navbar .nav-item:hover .nav-link::after { 
-  width: 70%; 
-}
-.owi-navbar .nav-item.active .nav-link { 
-  color: var(--primary-color) !important; 
-  font-weight: 700; 
-}
-.owi-navbar .nav-item.active .nav-link::after { 
-  width: 70%; 
-  background-color: var(--primary-color); 
+select.form-control, .form-control, .form-select {
+  background: #fff !important;
+  color: var(--text) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 0 8px 8px 0 !important;
+  font-size: 13px;
+  padding: 4px 8px;
 }
 
-.navbar-brand { 
-  display: flex; 
-  align-items: center; 
-  gap: 10px; 
-  font-family: 'Orbitron', sans-serif; 
-  font-size: 1.4rem; 
-  letter-spacing: 1px; 
-}
-.navbar-brand img { 
-  transition: transform 0.3s ease; 
-}
-.navbar-brand:hover img { 
-  transform: rotate(-10deg) scale(1.1); 
+/* Print-Only Header Block Details */
+#print-filter-badge-header {
+  display: none;
 }
 
-
+/* Table Architecture Optimizations for One-Page Output */
 .overall-table { 
-  align-items: center;
-  margin: 40px; 
-  padding-left: 30px;
-  padding-right: 40px;
-  margin-bottom: 40px;
-  width:100%; 
+  margin: 15px 0; 
+  width: 100%; 
 }
-
 .admin-table { 
-  align-items: center;
-  background-color: transparent; 
-  margin: 40px; 
-  padding-left: 90px;
-  padding: 40px;
-  margin-bottom: 40px;
-  width:100%; 
-  border-collapse: separate; 
-  border-spacing: 0;  box-shadow: 0 10px 20px rgba(221, 221, 93, 0.4);
+  width: 100%; 
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  background-color: #fff;
 }
-
-
 .admin-table th { 
   background-color: #3d4e6d; 
   color: #ffffff !important; 
   font-weight: 700; 
   text-transform: uppercase; 
-  font-size: 1.78rem; 
-  letter-spacing: 0.8px; 
-  padding: 16px 24px; 
-  border-bottom: 2px solid rgba(0, 0, 0, 0.06); 
-}
-.admin-table tbody tr { 
-  transition: all 0.25s ease; 
-  cursor: pointer; 
-}
-.admin-table tbody tr:hover { 
-  
-    background-color: #97b2cd77 !important;
-  border-bottom: 10px solid #213456 ;
-  transform: translateY(-2px); 
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04); 
+  font-size: 13px !important; 
+  letter-spacing: 0.5px; 
+  padding: 10px 8px !important; 
 }
 .admin-table td { 
-  padding: 18px 24px; 
+  padding: 10px 8px !important; 
   vertical-align: middle; 
   color: #2D3748; 
-  font-size: 1.95rem;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.04); 
+  font-size: 13px !important; 
+  border-bottom: 1px solid var(--line); 
 }
-
-.dept-badge-title { 
-  font-weight: 600; 
-  color: #1A202C; 
+.admin-table tbody tr:hover { 
+  background-color: rgba(151, 178, 205, 0.2) !important;
 }
+.dept-badge-title { font-weight: 700; color: #1A202C; }
 
+/* Department Modal Table elements */
 .department-table { 
-  align-items: center;
-  background-color: transparent; 
-  margin: 40px; 
-  padding-left: 90px;
-  padding: 40px;
-  margin-bottom: 40px;
-  width:100%; 
-  border-collapse: separate; 
-  border-spacing: 0;  box-shadow: 0 10px 20px rgba(221, 221, 93, 0.4);
+  width: 100%; 
 }
 .department-table th { 
   background-color: #213456; 
   color: #ffffff !important; 
-  font-weight: 700; 
-  text-transform: uppercase; 
-  font-size: 1.78rem; 
-  letter-spacing: 0.8px; 
-  padding: 16px 24px; 
-  border-bottom: 2px solid rgba(0, 0, 0, 0.06); 
-}
-.department-table tbody tr { 
-  transition: all 0.25s ease; 
-  cursor: pointer; 
-}
-.department-table tbody tr:hover { 
-  
-    background-color: #365d845f !important;
-  border-bottom-color: #213456 solid 3px;
-  transform: translateY(-2px); 
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04); 
+  font-weight: 600; 
+  font-size: 13px; 
+  padding: 10px; 
 }
 .department-table td { 
-  padding: 18px 24px; 
-  vertical-align: middle; 
-  color: #2D3748; 
-  font-size: 1.95rem;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.04); 
+  padding: 10px; 
+  font-size: 13px; 
+  border-bottom: 1px solid var(--line); 
 }
-.stat-assigned {  
-  color: black; 
-}
-.stat-onprocess { 
-  color: black; 
-}
-.stat-pending { 
-  color: black; }
-.stat-total { 
-  color: #ffffff; 
-  }
 
-  #deptDetailsModal{
-    width: 100%;
+@media print {
+  @page {
+    size: landscape;
+    margin: 0.2in 0.3in;
   }
-
   
-#deptDetailsModal .modal-header {
-  background-color: #213456;
-  color: #fff;
-  border-bottom: 6px solid #E1AD01; /* Your Theme Gold */
+  html, body {
+    background: #fff !important;
+    height: 100%;
+    max-height: 100vh;
+    overflow: hidden !important;
+    font-size: 11px !important;
+  }
+
+  #print-filter-badge-header {
+    display: block !important;
+    margin-bottom: 5px !important;
+    border-bottom: 2px dashed #3d4e6d;
+    padding-bottom: 8px;
+    
+    
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.1);
+  }
+
+  .action-bar-container, 
+  .card-header .d-flex, 
+  .btn, 
+  #layoutSidenav_nav, 
+  nav, 
+  header, 
+  .owi-navbar,
+  .noExl,
+  .no-print-header { 
+    display: none !important; 
+  }
+
+  .card-header {
+    padding: 0 !important;
+    border-bottom: none !important;
+  }
+
+  .container-fluid, #wrapper, #layoutSidenav_content {
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    
+  }
+
+  .card {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    page-break-inside: avoid;
+    margin-top: -30px;
+    padding: -20px;
+    border-radius: 0;
+  }
+
+  .table-responsive {
+    overflow: visible !important;
+    width: 100% !important;
+  }
+
+  .admin-table {
+    width: 100% !important;
+    table-layout: auto !important;
+    page-break-inside: avoid;
+    
+  }
+
+  .admin-table th {
+    background-color: #213456 !important;
+    color: #fff !important;
+    padding: 6px 4px !important;
+    font-size: 11px !important;
+  }
+
+  #admin_report.admin-table th.active.text-center {
+    background-color: #2b9827 !important;
+    color: #fff !important;
+    padding: 6px 4px !important;
+    font-size: 11px !important;
+  }
+
+  #admin_report.admin-table th.compliance.text-center {
+    background-color: #a29341 !important;
+    color: #fff !important;
+    padding: 6px 4px !important;
+    font-size: 11px !important;
+  }
+
+  .admin-table td {
+    padding: 6px 4px !important;
+    font-size: 11px !important;
+    border-bottom: 1px solid #0e0e0ea1 !important;
+  }
+  .table-responsive{
+    margin-top: -600px;
+  }
+
+  .progress {
+    border: 1px solid #999 !important;
+    background-color: #ddd !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  #dept-table-footer {
+    border: 2px solid #2d3c59;
+    background-color: #f4e9d7 !important; /* !important ensures it overrides Bootstrap's .bg-light */
 }
 
-#deptDetailsModal .modal-title {
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  display: flex;
-  align-items: center;
-}
-
-#deptDetailsModal .input-group-text {
-  background-color: #f8f9fa;
-  border-right: none;
-  color: #213456;
-}
-
-#deptDetailsModal .form-control {
-  border-left: none;
-  height: 45px;
-  border-radius: 0 8px 8px 0;
-}
-
-#deptDetailsModal .form-control:focus {
-  border-color: #ced4da;
-  box-shadow: none;
-}
-
-#deptDetailsModal .input-group:focus-within {
-  box-shadow: 0 0 0 0.2rem rgba(225, 173, 1, 0.25);
-  border-radius: 8px;
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+    box-shadow: none !important;
+  }
 }
 </style>
+
 <div class="container-fluid" id="printTicketReport">
   <div id="wrapper">
     <div id="layoutSidenav_content">
-      <div class="container-fluid py-4">
+      <div class="container-fluid py-2">
         
         <form method="post" name="cof_form" id="cof_form" enctype="multipart/form-data">
           <input type="hidden" name="chcksbjcls" id="chcksbjcls" value="check">
         </form>
 
-        <div  class="action-bar-container d-flex justify-content-between align-items-center p-3 mb-4 rounded bg-white shadow-sm" style="box-shadow: 0 5px 10px 2px #2d3c597f !important;">
-          <div class="">
-            <div class="input-group">
-              <span class="input-group-text bg-light border-end-0"  style="width: 200px;">
-                LOGS IN YEAR OF:
-              </span>
-              <select class="form-select border-start-0" name="yearpicker" id="yearpicker" required style="min-width: 250px; border-radius: 0 12px 12px 0 !important;">
-                <option value="2019,2020,2021,2022,2023,2024,2025,2026">   OVERALL</option>
+        <div id="print-filter-badge-header">
+          <div class="header" style="font-size: 25px; display: flex; align-items: center; justify-content: center; text-align: center;">
+            OFFICE WAREHOUSE INC
+          </div>
+
+          <div class="header" style="font-size: 15px; display: flex; align-items: center; justify-content: center; text-align: center;">
+            169 E.Rodriguez Jr. Ave., Brgy. Bagumbayan, Quezon City
+          </div>
+          <div class="header" style="font-size: 25px; margin-top:10px; display: flex; align-items: center; justify-content: center; text-align: center;">
+            HELPDESK - DEPARTMENT TICKET SUMMARY
+          </div>
+          <table style="width: 100%; margin-top:10px; font-family: sans-serif;padding:60px; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6);color: #121C31;">
+            <tr>
+               
+              <td style="text-align: right; font-size: 13px; border:none; padding:0;">
+                <strong>LOGS IN YEAR OF:</strong> <span id="print-year-val">--</span> &nbsp;|&nbsp; 
+                <strong>FILTER BY MONTH:</strong> <span id="print-month-val">--</span>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="action-bar-container d-flex flex-wrap gap-2 align-items-center p-2 mb-3 rounded bg-white shadow-sm" style="box-shadow: 0 4px 8px rgba(45, 60, 89, 0.15) !important;">
+          <div class="d-flex flex-wrap gap-2 w-100">
+            
+            <div class="input-group" style="max-width: 380px;">
+              <span class="input-group-text bg-light border-end-0" style="width: 150px; ">LOGS IN YEAR OF:</span>
+              <select class="form-select border-start-0" name="yearpicker" id="yearpicker" required>
+                <option value="2019,2020,2021,2022,2023,2024,2025,2026">OVERALL</option>
                 <option value="2026" selected>2026</option>
                 <option value="2025">2025</option>
                 <option value="2024">2024</option>
@@ -407,12 +289,10 @@ body {
               </select>
             </div>
 
-             <div class="input-group">
-              <span class="input-group-text bg-light border-end-0" style="width: 200px; margin-top: 5px;">
-                   FILTER BY MONTH:
-              </span>
-              <select class="form-select border-start-0" name="monthpicker" id="monthpicker" required style="min-width: 250px; margin-top: 5px; border-radius: 0 12px 12px 0 !important;">
-                <option value="01,02,03,04,05,06,07,08,09,10,11,12" selected>  OVERALL</option>
+            <div class="input-group" style="max-width: 380px;">
+              <span class="input-group-text bg-light border-end-0" style="width: 150px;">FILTER BY MONTH:</span>
+              <select class="form-select border-start-0" name="monthpicker" id="monthpicker" required>
+                <option value="01,02,03,04,05,06,07,08,09,10,11,12" selected>OVERALL</option>
                 <option value="01">JANUARY</option>
                 <option value="02">FEBRUARY</option>
                 <option value="03">MARCH</option>
@@ -427,69 +307,105 @@ body {
                 <option value="12">DECEMBER</option>
               </select>
             </div>
+
           </div>
-         
         </div>
 
         <div class="row">
           <div class="col-12">
-            <div class="card card2 border-0 shadow-sm" style="border-radius: 16px; background: rgba(255, 255, 255, 0.85);   box-shadow: 0 10px 20px rgba(90, 90, 37, 0.44);backdrop-filter: blur(10px);">
-              <div class="card-header d-flex justify-content-between align-items-center text-dark py-3" style="border-bottom: 1px solid rgba(0,0,0,0.05);">
-                <h5 class="m-0 font-weight-bold" style="letter-spacing: 0.5px;" style="font-size:40px;">
-                  <i class="fa-solid fa-circle" style="color: green;"></i> HELPDESK DEPARTMENT TICKET SUMMARY
+            <div class="card card2 border-0 shadow-sm" style="border-radius: 12px; background: rgba(255, 255, 255, 0.95);">
+              
+              <div class="card-header d-flex flex-wrap justify-content-between align-items-center text-dark py-2 gap-2" style="border-bottom: 1px solid rgba(0,0,0,0.05);">
+                <h5 class="m-0 font-weight-bold no-print-header" style="letter-spacing: 0.3px; font-size: 1.15rem;">
+                  <i class="fa-solid fa-circle text-success me-2"></i> HELPDESK DEPARTMENT TICKET SUMMARY
                 </h5>
-                    <button style ="border-radius:10px; width:100px; background-color: #E1AD01; color: #213456; padding: 10px; margin-right:-600px;"onclick="exportTableToExcel()"><i class="fa fa-file-excel-o" aria-hidden="true"></i>Export</button>
-                      <button style ="border-radius:10px; width:100px; background-color: #12922a; color: #f0f1f2; padding: 10px; margin-left: -900px;"onclick="printDiv('printTicketReport')"><i class="fa fa-file-excel-o" aria-hidden="true"></i>Print</button>
+                <div class="d-flex gap-2">
+                  <button type="button" class="btn text-white d-flex align-items-center gap-2" style="border-radius: 6px; font-size: 13px; background-color: #12922a; padding: 4px 12px;" onclick="window.print()">
+                    <i class="fa fa-print" aria-hidden="true"></i> Print
+                  </button>
+                  <button type="button" class="btn text-dark d-flex align-items-center gap-2" style="border-radius: 6px; font-size: 13px; background-color: #E1AD01; padding: 4px 12px;" onclick="exportTableToExcel()">
+                    <i class="fa fa-file-excel-o" aria-hidden="true"></i> Export
+                  </button>
+                </div>
               </div>
               
               <div class="card-body p-0">
-                
                 <div class="table-responsive">
-
-                <table id="overall_report" class="table overall-table m-0" style="margin-bottom: -120px;">
-                    <thead>  
-                        <th class="text-center" style="width: 100px; background-color: #2b9827; color: #fff; font-weight: 700; text-transform: uppercase; font-size: 1.50rem; letter-spacing: 0.8px; ">ACTIVE/RUNNING TICKET REPORTS</th>
-                        <th class="text-center"style="width: 100px; background-color: #7a6a12; color: #fff; font-weight: 700; text-transform: uppercase; font-size: 1.50rem; letter-spacing: 0.8px; ">COMPLIANCE TICKET REPORTS</th>
-                    </thead>
-                  </table>
                   <table id="admin_report" class="table admin-table m-0">
-                    <thead>
-                      <tr class="noExl">
-                        
-                        <th>DEPARTMENT</th>
-                        <th class="text-center">ASSIGNED</th>
-                        <th class="text-center">ON PROCESS</th>
-                        <th class="text-center">PENDING</th>
-                        <th class="text-center">TOTAL (Active)</th>
-                        <th class="text-center" style="width: 200px;">COMPLIANCE RATE</th>
-                        <th class="text-center" style="width: 200px;">MET SLA      (WITH SLA)</th>
-                        <th class="text-center" style="width: 200px;">NON-SLA</th>
-                        <th class="text-center" style="width: 200px;">SLA COMPLIANCE RATE</th>
+                    <thead>  
+                      <tr>
+                        <th colspan="5" class="active text-center" style="background-color: #2b9827; color: #fff; font-weight: 700; text-transform: uppercase; font-size: 13px; padding: 6px;">
+                          ACTIVE/RUNNING TICKET REPORTS
+                        </th>
+                        <th colspan="4" class="compliance text-center" style="background-color: #a29341; color: #fff; font-weight: 700; text-transform: uppercase; font-size: 13px; padding: 6px;">
+                          COMPLIANCE TICKET REPORTS
+                        </th>
+                      </tr>
+                      
+                      <tr style="background-color: #213456; color: #ffffff;">
+                        <th style="background-color: #213456; font-size: 12px; vertical-align: middle;">DEPARTMENT</th>
+                        <th class="text-center fw-bold" style="background-color: #213456; font-size: 12px; vertical-align: middle;">ASSIGNED</th>
+                        <th class="text-center fw-bold" style="background-color: #213456; font-size: 12px; vertical-align: middle;">ON PROCESS</th>
+                        <th class="text-center" style="background-color: #213456; font-size: 12px; vertical-align: middle;">PENDING</th>
+                        <th class="text-center" style="background-color: #213456; font-size: 12px; vertical-align: middle;">TOTAL (ACTIVE)</th>
+                        <th class="text-center" style="background-color: #213456; font-size: 12px; vertical-align: middle;">COMPLIANCE RATE</th>
+                        <th class="text-center" style="background-color: #213456; font-size: 12px; vertical-align: middle;">MET SLA</th>
+                        <th class="text-center" style="background-color: #213456; font-size: 12px; vertical-align: middle;">NON-SLA</th>
+                        <th class="text-center" style="background-color: #213456; font-size: 12px; vertical-align: middle;">SLA COMPLIANCE</th>
                       </tr>
                     </thead>
+                    
                     <tbody id="dept-table-body">
                       <tr>
-                        <td colspan="6" class="text-center py-5 text-muted">
-                          <div class="spinner-border spinner-border-sm me-2 text-warning" role="status"></div> Loading department metrics...
+                        <td colspan="9" class="text-center py-4 text-muted">
+                          <div class="spinner-border spinner-border-sm me-2 text-warning" role="status"></div> 
+                          Loading department metrics...
                         </td>
                       </tr>
                     </tbody>
-                    <tfoot id="dept-table-footer" class="bg-light" style="border-top: 2px solid #2d3c59;">
-                      
+                    
+                    <tfoot id="dept-table-footer" class="bg-light" style="border: 2px solid #2d3c59; background: #F4E9D7;">
                     </tfoot>
                   </table>
-                </div>
+
+                 <div class="legend-container" style="font-size: 15px; margin-top: 10px; font-family: sans-serif;">
+                    <div style="font-weight: bold; margin-bottom: 8px;">LEGEND:</div>
+                    
+                    <table style="border-collapse: collapse; border: none; width: 100%; max-width: 600px;">
+                      <tr>
+                        <td style="border: none; padding: 0 20px 0 0; vertical-align: top; width: 50%;">
+                          <div style="font-weight: bold; margin-bottom: 5px;">COMPLIANCE RATE:</div>
+                          <div style="display: flex; align-items: center; margin-bottom: 4px;">
+                            <i class="fas fa-square" style="color:green; font-size:24px; margin-right: 8px;"></i> 75% - 100%
+                          </div>
+                          <div style="display: flex; align-items: center; margin-bottom: 4px;">
+                            <i class="fas fa-square" style="color:yellow; font-size:24px; margin-right: 8px;"></i> 40% - 74%
+                          </div>
+                          <div style="display: flex; align-items: center;">
+                            <i class="fas fa-square" style="color:red; font-size:24px; margin-right: 8px;"></i> 0% - 39%
+                          </div>
+                        </td>
+
+                        <td style="border: none; padding: 0; vertical-align: top; width: 50%;">
+                          <div style="font-weight: bold; margin-bottom: 5px;">SLA COMPLIANCE RATE:</div>
+                          <div style="display: flex; align-items: center; margin-bottom: 4px;">
+                            <i class="fas fa-square" style="color:green; font-size:24px; margin-right: 8px;"></i> 80% - 100%
+                          </div>
+                          <div style="display: flex; align-items: center; margin-bottom: 4px;">
+                            <i class="fas fa-square" style="color:yellow; font-size:24px; margin-right: 8px;"></i> 50% - 79%
+                          </div>
+                          <div style="display: flex; align-items: center;">
+                            <i class="fas fa-square" style="color:red; font-size:24px; margin-right: 8px;"></i> 0% - 49%
+                          </div>
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
               </div>
-               
-             
-               
+
             </div>
           </div>
         </div> 
-        
-        <div class="col-lg-12 Down mt-3" id="Down">
-          <input type="hidden" id="myInput">
-        </div>
 
       </div>
     </div>
@@ -498,53 +414,60 @@ body {
 
 <div class="modal fade" id="deptDetailsModal" tabindex="-1" aria-labelledby="deptModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-xl" style="max-width: 95%;">
-    <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(15px);">
-      <div class="modal-header border-0 pb-0" style="position: relative; font-size: 40px;">
-        <h5 class="modal-title font-weight-bold" id="deptModalLabel">DEPARTMENT OVERVIEW</h5>
-         <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-        <button type="button" class="btn-close m-2" data-bs-dismiss="modal" aria-label="Close" style="position: absolute; right: 15px; top: 15px; background: none; border: 0; font-size: 1.2rem;"></button>
+    <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; background: rgba(255, 255, 255, 0.95);">
+      <div class="modal-header border-0 pb-0" style="background-color: #213456; color: #fff;">
+        <h5 class="modal-title font-weight-bold" id="deptModalLabel" style="font-size:1.5rem;">DEPARTMENT OVERVIEW</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body pt-3">
-        <div class="d-flex align-items-center mb-4 p-3 rounded-3" style="background: rgba(225, 173, 1, 0.1); border-left: 5px solid #e1ad01;">
-          <i class="fas fa-chart-pie fa-2x text-warning me-3" style="margin-right: 10px;"></i>   
-          <div>
-            <h4 class="m-0 font-weight-bold text-dark" id="modal-dept-name">  Department Name</h4> 
-            <small class="text-muted" id="modal-dept-year">  Year Metrics</small>
-            <button style ="align-itmes: right; border-radius:10px; background-color: #E1AD01; color: #213456; padding: 10px;"onclick="exportDeptExcel()"><i class="fa fa-file-excel-o" aria-hidden="true"></i> Excel</button>
-             <button style ="align-itmes: right; border-radius:10px; background-color: #1ea871; color: #213456; padding: 10px;"onclick="exportDeptExcel()"><i class="fa fa-file-excel-o" aria-hidden="true"></i> Print</button>
-            
+        <div class="d-flex align-items-center mb-3 p-2 rounded" style="background: rgba(225, 173, 1, 0.1); border-left: 5px solid #e1ad01;">
+          <i class="fas fa-chart-pie fa-lg text-warning me-3" style="margin-right: 10px;"></i>   
+          <div class="w-100 d-flex justify-content-between align-items-center">
+            <div>
+              <h4 class="m-0 font-weight-bold text-dark" id="modal-dept-name">Department Name</h4> 
+              <small class="text-muted" id="modal-dept-year">Year Metrics</small>
+            </div>
+            <div class="d-flex gap-2">
+              <button class="btn btn-sm text-dark" style="border-radius:6px; background-color: #E1AD01;" onclick="exportDeptExcel()"><i class="fa fa-file-excel-o"></i> Excel</button>
+              <button class="btn btn-sm text-white" style="border-radius:6px; background-color: #1ea871;" onclick="window.print()"><i class="fa fa-print"></i> Print</button>
+            </div>
           </div>
         </div>
-        <div class="card-body p-0">
-          <div class="table-responsive">
-            <table id="dept-table" class="table department-table m-0">
-              <thead>
-                <tr>
-                  <th>TICKET NO</th>
-                  <th class="text-center">STR CODE</th>
-                  <th class="text-center">DATE CREATED</th>
-                  <th class="text-center">CONCERN</th>
-                  <th class="text-center">STATUS</th>
-                  <th class="text-center">CATEGORY</th>
-                  <th class="text-center">ASSIGNED DEPARTMENT</th>
-                  <th class="text-center">SUB CATEGORY</th>
-                  <th class="text-center">REMARKS</th>
-                  <th class="text-center">SUBJECT</th>
-                </tr>
-              </thead>
-              <tbody id="modal-table-body">
-                </tbody>
-            </table>
-          </div>
+        <div class="table-responsive">
+          <table id="dept-table" class="table department-table m-0">
+            <thead>
+              <tr>
+                <th>TICKET NO</th>
+                <th class="text-center">STR CODE</th>
+                <th class="text-center">DATE CREATED</th>
+                <th class="text-center">CONCERN</th>
+                <th class="text-center">STATUS</th>
+                <th class="text-center">CATEGORY</th>
+                <th class="text-center">ASSIGNED DEPARTMENT</th>
+                <th class="text-center">SUB CATEGORY</th>
+                <th class="text-center">REMARKS</th>
+                <th class="text-center">SUBJECT</th>
+              </tr>
+            </thead>
+            <tbody id="modal-table-body"></tbody>
+          </table>
         </div>
       </div>
     </div>
   </div>
-</div><script>
+</div>
+
+<script>
 $(document).ready(function() {
     let globalTicketDetails = [];
+
+    // Captures live select names dynamically before printing triggers
+    window.onbeforeprint = function() {
+        let yrText = $("#yearpicker option:selected").text();
+        let moText = $("#monthpicker option:selected").text();
+        $("#print-year-val").text(yrText);
+        $("#print-month-val").text(moText);
+    };
 
     $('.dashcard-clickable').on('click', function() {
         const filterValue = $(this).data('filter');
@@ -557,9 +480,6 @@ $(document).ready(function() {
         $(this).fadeOut(100).fadeIn(100);
     });
 
-    /**
-     * Load department table.
-     */
     function loadDepartmentTable(selectedYear, selectedMonth) {
         let displayYear = selectedYear.includes(',') ? 'OVERALL' : selectedYear;
         let displayMonthText = selectedMonth ? " | Month: " + selectedMonth : "";
@@ -591,8 +511,6 @@ $(document).ready(function() {
                         let compliancePercent = grandTotal > 0 ? Math.round((closedCount / grandTotal) * 100) : 0;
                         let metSLA = closedCount > 0 ? Math.round((metSlaCount / closedCount) * 100) : 0;
 
-
-                        
                         let barTheme = "bg-danger";
                         if (compliancePercent >= 75) { barTheme = "bg-success"; }
                         else if (compliancePercent >= 40) { barTheme = "bg-warning"; }
@@ -603,18 +521,18 @@ $(document).ready(function() {
 
                         html += `
                             <tr class="dept-row" style="cursor: pointer;" data-dept="${row.DEPARTMENT}">
-                                <td><span class="dept-badge-title fw-bold" style="color: #213456;">${row.DEPARTMENT}</span></td>
-                                <td class="text-center"><span class="stat-badge stat-assigned">${row.ASSIGNED}</span></td>
-                                <td class="text-center"><span class="stat-badge stat-onprocess">${row.ON_PROCESS}</span></td>
-                                <td class="text-center"><span class="stat-badge stat-pending">${row.PENDING}</span></td>
-                                <td class="text-center"><span class="stat-badge stat-total font-weight-bold text-primary">${activeTotal}</span></td>
+                                <td><span class="dept-badge-title" style="font-size:13px;">${row.DEPARTMENT}</span></td>
+                                <td class="text-center fw-bold" style="font-size:13px;"><span class="stat-badge stat-assigned">${row.ASSIGNED}</span></td>
+                                <td class="text-center fw-bold" style="font-size:13px;"><span class="stat-badge stat-onprocess">${row.ON_PROCESS}</span></td>
+                                <td class="text-center fw-bold" style="font-size:13px;"><span class="stat-badge stat-pending">${row.PENDING}</span></td>
+                                <td class="text-center fw-bold" style="font-size:13px;"><span class="stat-badge stat-total text-primary">${activeTotal}</span></td>
                                 <td>
-                                    <div class="d-flex align-items-center justify-content-center flex-column" style="padding: 0 10px;">
+                                    <div class="d-flex align-items-center justify-content-center flex-column" style="padding: 0 4px;">
                                         <div class="d-flex justify-content-between w-100 mb-1 small fw-bold">
-                                            <span class="text-dark">${closedCount}/${grandTotal} Closed</span>
-                                            <span class="text-dark">${compliancePercent}%</span>
+                                            <span class="text-dark" style="font-size:12px;">${closedCount}/${grandTotal}</span>
+                                            <span class="text-dark" style="font-size:12px;">${compliancePercent}%</span>
                                         </div>
-                                        <div class="progress w-100" style="height: 8px; border-radius: 4px; background-color: rgba(0,0,0,0.06);">
+                                        <div class="progress w-100" style="height: 6px; border-radius: 4px; background-color: rgba(0,0,0,0.06);">
                                             <div class="progress-bar ${barTheme}" role="progressbar" 
                                                  style="width: ${compliancePercent}%; border-radius: 4px;" 
                                                  aria-valuenow="${compliancePercent}" aria-valuemin="0" aria-valuemax="100">
@@ -622,16 +540,15 @@ $(document).ready(function() {
                                         </div>
                                     </div>
                                 </td>
-
-                                <td class="text-center fw-bold text-success">${metSlaCount}</td>
-                                <td class="text-center fw-bold text-danger">${closedCount - metSlaCount}</td>
+                                <td class="text-center fw-bold text-success" style="font-size:13px;">${metSlaCount}</td>
+                                <td class="text-center fw-bold text-danger" style="font-size:13px;">${closedCount - metSlaCount}</td>
                                 <td>
-                                    <div class="d-flex align-items-center justify-content-center flex-column" style="padding: 0 10px;">
+                                    <div class="d-flex align-items-center justify-content-center flex-column" style="padding: 0 4px;">
                                         <div class="d-flex justify-content-between w-100 mb-1 small fw-bold">
-                                            <span class="text-dark">${metSlaCount}/${closedCount} Met </span>
-                                            <span class="text-dark">${metSLA}%</span>
+                                            <span class="text-dark fw-bold" style="font-size:12px;">${metSlaCount}/${closedCount}</span>
+                                            <span class="text-dark fw-bold" style="font-size:12px;">${metSLA}%</span>
                                         </div>
-                                        <div class="progress w-100" style="height: 8px; border-radius: 4px; background-color: rgba(0,0,0,0.06);">
+                                        <div class="progress w-100" style="height: 6px; border-radius: 4px; background-color: rgba(0,0,0,0.06);">
                                             <div class="progress-bar ${metBarTheme}" role="progressbar" 
                                                  style="width: ${metSLA}%; border-radius: 4px;" 
                                                  aria-valuenow="${metSLA}" aria-valuemin="0" aria-valuemax="100">
@@ -664,19 +581,19 @@ $(document).ready(function() {
                         else if (globalMetSLAPercent >= 50) { globalMetSLABarTheme = "bg-warning"; }
 
                         footerHtml = `
-                            <tr style="background-color: #ecebe584; font-weight: bold; font-size: 2px; border-top: 2px solid #213456;">
-                                <td class="text-dark fw-bold text-uppercase" style="letter-spacing: 0px;">TOTAL SUMMARY</td>
-                                <td class="text-center text-info">${totalAssigned}</td>
-                                <td class="text-center text-warning">${totalOnProcess}</td>
-                                <td class="text-center text-danger">${totalPending}</td>
-                                <td class="text-center text-primary fw-bold">${totalActiveSum}</td>
+                            <tr style="background-color: #ecebe584; font-weight: bold; border-top: 2px solid #213456;">
+                                <td class="text-dark fw-bold text-uppercase" style="font-size:13px;border-bottom: 1px solid #0e0e0ea1 !important;">TOTAL SUMMARY</td>
+                                <td class="text-center" style="font-size:14px;">${totalAssigned}</td>
+                                <td class="text-center" style="font-size:14px;">${totalOnProcess}</td>
+                                <td class="text-center" style="font-size:14px;">${totalPending}</td>
+                                <td class="text-center text-primary fw-bold" style="font-size:14px;">${totalActiveSum}</td>
                                 <td>
-                                    <div class="d-flex align-items-center justify-content-center flex-column" style="padding: 0 10px;">
+                                    <div class="d-flex align-items-center justify-content-center flex-column" style="padding: 0 4px;">
                                         <div class="d-flex justify-content-between w-100 mb-1 small fw-bold">
-                                            <span class="text-muted">${totalClosed}/${totalGrand} Closed</span>
-                                            <span class="text-dark">${globalCompliancePercent}%</span>
+                                            <span class="text-dark" style="font-size:13px;">${totalClosed}/${totalGrand}</span>
+                                            <span class="text-dark" style="font-size:13px;">${globalCompliancePercent}%</span>
                                         </div>
-                                        <div class="progress w-100" style="height: 8px; border-radius: 4px; background-color: rgba(0,0,0,0.1);">
+                                        <div class="progress w-100" style="height: 6px; border-radius: 4px; background-color: rgba(0,0,0,0.1);">
                                             <div class="progress-bar ${globalBarTheme}" role="progressbar" 
                                                  style="width: ${globalCompliancePercent}%; border-radius: 4px;" 
                                                  aria-valuenow="${globalCompliancePercent}" aria-valuemin="0" aria-valuemax="100">
@@ -684,28 +601,27 @@ $(document).ready(function() {
                                         </div>
                                     </div>
                                 </td>
-                                <td class="text-center fw-bold text-success">${totalMetSLA}</td>
-                                <td class="text-center fw-bold text-danger">${totalClosed - totalMetSLA}</td>
+                                <td class="text-center text-success" style="font-size:14px;">${totalMetSLA}</td>
+                                <td class="text-center fw-bold text-danger" style="font-size:14px;">${totalClosed - totalMetSLA}</td>
                                 <td>
-                                    <div class="d-flex align-items-center justify-content-center flex-column" style="padding: 0 10px;">
+                                    <div class="d-flex align-items-center justify-content-center flex-column" style="padding: 0 4px;">
                                         <div class="d-flex justify-content-between w-100 mb-1 small fw-bold">
-                                            <span class="text-muted">${totalMetSLA}/${totalClosed} Met </span>
-                                            <span class="text-dark">${globalMetSLAPercent}%</span>     
+                                            <span class="text-dark" style="font-size:13px;">${totalMetSLA}/${totalClosed}</span>
+                                            <span class="text-dark" style="font-size:13px;">${globalMetSLAPercent}%</span>     
                                         </div>
-                                        <div class="progress w-100" style="height: 8px; border-radius: 4px; background-color: rgba(0,0,0,0.1);">
-                                        <div class="progress-bar ${globalMetSLABarTheme}" role="progressbar" 
-                                             style="width: ${globalMetSLAPercent}%; border-radius: 4px;" 
-                                             aria-valuenow="${globalMetSLAPercent}" aria-valuemin="0" aria-valuemax="100">
-                                        </div>
+                                        <div class="progress w-100" style="height: 6px; border-radius: 4px; background-color: rgba(0,0,0,0.1);">
+                                            <div class="progress-bar ${globalMetSLABarTheme}" role="progressbar" 
+                                                 style="width: ${globalMetSLAPercent}%; border-radius: 4px;" 
+                                                 aria-valuenow="${globalMetSLAPercent}" aria-valuemin="0" aria-valuemax="100">
+                                            </div>
                                         </div>
                                     </div>
-                                  </td>  
+                                </td>  
                             </tr>`;
                     }
-
                 } else {
                     let errMsg = (response && response.error) ? response.error : "No data discovered for this period context selection.";
-                    html = `<tr><td colspan="6" class="text-center py-4 text-muted fw-semibold">${errMsg}</td></tr>`;
+                    html = `<tr><td colspan="9" class="text-center py-4 text-muted fw-semibold">${errMsg}</td></tr>`;
                     footerHtml = '';
                 }
                 
@@ -714,7 +630,7 @@ $(document).ready(function() {
             },
             error: function(xhr, status, error) {
                 console.error("AJAX Exception Trace:", xhr.responseText, error);
-                $('#dept-table-body').html('<tr><td colspan="6" class="text-center text-danger py-4 fw-bold"><i class="fas fa-exclamation-triangle me-2"></i> Communications fault encountered.</td></tr>');
+                $('#dept-table-body').html('<tr><td colspan="9" class="text-center text-danger py-4 fw-bold"><i class="fas fa-exclamation-triangle me-2"></i> Communications fault encountered.</td></tr>');
                 $('#dept-table-footer').html('');
             }
         });
@@ -728,174 +644,32 @@ $(document).ready(function() {
     $(document).on('click', '.dept-row', function() {
         const targetedDept = $(this).data('dept');
         $('#modal-dept-name').text(targetedDept);
-        let rangeText = $('#yearpicker option:selected').text() + ' ' + $('#monthpicker option:selected').text();
-        $('#modal-dept-year').text('Logging Metrics Context: ' + rangeText);
-
-        let filteredTickets = globalTicketDetails.filter(ticket => ticket['Assigned Department'] === targetedDept);
-        let modalHtml = '';
-
-        if(filteredTickets.length > 0) {
-            filteredTickets.forEach(function(ticket) {
-                modalHtml += `
-                    <tr>
-                        <td>${ticket.ticket_no || ''}</td>
-                        <td class="text-center">${ticket.str_code || ''}</td>
-                        <td class="text-center">${ticket.date_created || ''}</td>
-                        <td>${ticket.concern || ''}</td>
-                        <td class="text-center">${ticket.status || ''}</span></td>
-                        <td>${ticket.category || ''}</td>
-                        <td>${ticket['Assigned Department'] || ''}</td>
-                        <td>${ticket.sub_category || ''}</td>
-                        <td>${ticket.remarks || ''}</td>
-                        <td>${ticket.subject || ''}</td>
-                    </tr>`;
-            });
-        } else {
-            modalHtml = `<tr><td colspan="11" class="text-center py-4 text-muted">No active ticket for this department row.</td></tr>`;
-        }
-
-        $('#modal-table-body').html(modalHtml);
-
-        if (typeof $.fn.modal === 'function') {
-            $('#deptDetailsModal').modal('show');
-        } else if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
-            const systemDetailModal = new bootstrap.Modal(document.getElementById('deptDetailsModal'));
-            systemDetailModal.show();
-        } else {
-            alert("Bootstrap layout core library engine not detected.");
-        }
+        let rangeText = $('#yearpicker').val();
+        $('#modal-dept-year').text("Period: " + rangeText);
     });
 });
- 
-/**
- * Export table to excel.
- */
-function exportTableToExcel() {
-    let table = document.getElementById("admin_report");
-    let headers = table.querySelectorAll("thead th");
-    headers.forEach(th => {
-        th.setAttribute("data-fill-color", "4B5694"); 
-        th.setAttribute("data-font-color", "F5F5F5"); 
-        th.setAttribute("data-f-bold", "true");
-        th.setAttribute("data-a-h", "center");        
-        th.setAttribute("data-a-v", "middle");      
-    });
 
-    let bodyRows = table.querySelectorAll("tbody tr");
-    bodyRows.forEach(row => {
-        let cells = row.querySelectorAll("td");
-        cells.forEach((td, index) => {
-            td.setAttribute("data-a-v", "middle"); 
-            if (td.classList.contains("text-center")) {
-                td.setAttribute("data-a-h", "center");
-            }
-            if (index === 5) { 
-                td.setAttribute("data-a-h", "center");
-            }
+
+    var currentUrl = window.location.pathname.split("/").pop();
+    if (currentUrl === "" || currentUrl === "index.php") {
+      currentUrl = "adminreports.php";
+    }
+
+    $('.navbar-nav .nav-item').each(function () {
+      var $this = $(this);
+      var linkHref = $this.find('a').attr('href');
+      $this.removeClass('active');
+
+      if (linkHref === currentUrl) {
+        $this.addClass('active');
+      }
+
+      if ($this.hasClass('dropdown')) {
+        $this.find('.dropdown-item').each(function () {
+          if ($(this).attr('href') === currentUrl) {
+            $this.addClass('active');
+          }
         });
+      }
     });
-
-    let footerCells = table.querySelectorAll("tfoot tr td");
-    footerCells.forEach(td => {
-        td.setAttribute("data-fill-color", "F4AE52"); 
-        td.setAttribute("data-f-bold", "true");
-        td.setAttribute("data-font-color", "213456"); 
-        if (td.classList.contains("text-center")) {
-            td.setAttribute("data-a-h", "center");
-        }
-    });
-    const date = new Date();
-    const today = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-    TableToExcel.convert(table, {
-        name: `HELPDESK TICKET SUMMARY PER DEPARTMENT ${today}.xlsx`,
-        sheet: { name: "Ticket Summary" }
-    });
-}
-
-/**
- * Export dept excel.
- */
-function exportDeptExcel() {
-    let table = document.getElementById("dept-table");
-    let headers = table.querySelectorAll("thead th");
-    headers.forEach(th => {
-        th.setAttribute("data-fill-color", "4B5694"); 
-        th.setAttribute("data-font-color", "F5F5F5"); 
-        th.setAttribute("data-f-bold", "true");
-        th.setAttribute("data-a-h", "center");        
-        th.setAttribute("data-a-v", "middle");      
-    });
-
-    let bodyRows = table.querySelectorAll("tbody tr");
-    bodyRows.forEach(row => {
-        let cells = row.querySelectorAll("td");
-        cells.forEach((td, index) => {
-            td.setAttribute("data-a-v", "middle"); 
-            if (td.classList.contains("text-center")) {
-                td.setAttribute("data-a-h", "center");
-            }
-            if (index === 5) { 
-                td.setAttribute("data-a-h", "center");
-            }
-        });
-    });
-
-    let footerCells = table.querySelectorAll("tfoot tr td");
-    footerCells.forEach(td => {
-        td.setAttribute("data-fill-color", "F4AE52"); 
-        td.setAttribute("data-f-bold", "true");
-        td.setAttribute("data-font-color", "213456"); 
-        if (td.classList.contains("text-center")) {
-            td.setAttribute("data-a-h", "center");
-        }
-    });
-    const date = new Date();
-    const today = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-    TableToExcel.convert(table, {
-        name: `DEPARTMENT ACTIVE TICKETS REPORT ${today}.xlsx`,
-        sheet: { name: "Ticket Summary" }
-    });
-}
-
-/**
- * Print div.
- */
-function printDiv(divId) {
-     var printContents = document.getElementById(divId).innerHTML;
-     var originalContents = document.body.innerHTML;
-
-      var printStyles = `
-        <style>
-            @media print {
-              
-                thead {
-                    background-color: #004085 !important;
-                    color: #ffffff !important;
-                    display: table-header-group; 
-                }
-
-                th {background-color: #004085 !important;
-                    padding: 8px;
-                    border: 1px solid #dee2e6;
-                }
-
-                @page {
-                    margin: 20mm 15mm 20mm 15mm;
-                }
-            }
-        </style>
-    `;
-
-     document.body.innerHTML = printStyles + printContents;
-
-     window.print();
-
-     document.body.innerHTML = originalContents;
-
-     
-}
-
-
-
 </script>
-

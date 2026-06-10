@@ -141,8 +141,6 @@ body {
   background-color: var(--bg-body);
   color: #3A3541DE;
   overflow-x: hidden;
-  background: linear-gradient(rgba(218, 219, 207, 0.3), rgba(113, 114, 136, 0.27)), 
-    url('images/bg_login.png'); 
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
