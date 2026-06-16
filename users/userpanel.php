@@ -20,9 +20,10 @@ $con1 = new dbconfig();
     --topbar-height: 70px;
     --card-shadow: 0 4px 12px 0 rgba(58, 53, 65, 0.1);
   }
+  body {
+   font-family: "Arial", "Helvetica", sans-serif;
+}
 
-
-  /* ===== Reduce Header Height ===== */
   .navbar,
   header,
   .topbar,
@@ -319,12 +320,12 @@ $con1 = new dbconfig();
     border: none;
     position: relative;
     margin-bottom: 0;
-    box-shadow: 0 5px 2px #2d3c597f;
+    box-shadow: 0 4px 15px rgba(42, 9, 100, 0.25);
     color: #465172;
     overflow-x: hidden;
     border: 2px solid transparent;
     transition: border-color 0.3 ease, color 0.3s ease;
-    background-color: #e5e7e7;
+    background-color: whitesmoke;
 
 
   }
@@ -349,7 +350,8 @@ $con1 = new dbconfig();
   /* Your existing hover rule */
 
   .card:hover {
-    border-color: #E5BA41;
+    border-color:  #E5BA41;
+    border: solid 4px #E5BA41;
   }
 
   .card:hover .card-header,
@@ -367,7 +369,7 @@ $con1 = new dbconfig();
       <div class="card w-100">
         <div class="card-header">
           <div class="section-title">
-            <span>Create Ticket</span>
+            <span><i class="fa-regular fa-square-plus"></i>CREATE TICKET</span>
             <small>Unified Helpdesk</small>
           </div>
         </div>
@@ -526,7 +528,7 @@ $con1 = new dbconfig();
       <div class="card" id="dvtables" style="width:auto;">
         <div class="card-header">
           <div class="section-title">
-            <span>Created Tickets</span>
+            <span >CREATED TICKETS</span>
             <small>Track and follow up</small>
           </div>
         </div>

@@ -31,8 +31,247 @@ background: linear-gradient(135deg, #837031, #E1AD01);
   background: linear-gradient(135deg, #837031, #E1AD01);
 }
 
-</style>
+ .modal-overlay {
+            display: none; 
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+       .modal-overlay .modal-content {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            width: 70%;
+            max-width: 90%;
+            margin-top:30px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+       .modal-overlay .modal-content h3 {
+            margin-top: 0;
+            color: #333;
+        }
+       .modal-overlay .close-btn {
+            background-color: #28a745;
+            margin-top: 15px;
+        }
+ 
 
+        
+  .table-responsive {
+    overflow: visible !important;
+    width: 100% !important;
+  }
+
+  .admin-table {
+    width: 100% !important;
+    table-layout: auto !important;
+    page-break-inside: avoid;
+    
+  }
+
+  .admin-table th {
+    background-color: #213456 !important;
+    color: #fff !important;
+    padding: 6px 4px !important;
+    font-size: 11px !important;
+  }
+
+  #admin_report.admin-table th.active.text-center {
+    background-color: #2b9827 !important;
+    color: #fff !important;
+    padding: 6px 4px !important;
+    font-size: 11px !important;
+  }
+
+  #admin_report.admin-table th.compliance.text-center {
+    background-color: #a29341 !important;
+    color: #fff !important;
+    padding: 6px 4px !important;
+    font-size: 11px !important;
+  }
+
+  .admin-table td {
+    padding: 6px 4px !important;
+    font-size: 11px !important;
+    border-bottom: 1px solid #0e0e0ea1 !important;
+  }
+  .table-responsive{
+    margin-top: -600px;
+  }
+
+  .progress {
+    border: 1px solid #999 !important;
+    background-color: #ddd !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  #dept-table-footer {
+    border: 2px solid #2d3c59;
+    background-color: #f4e9d7 !important; 
+}
+
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+    box-shadow: none !important;
+  }
+.modal-overlay .close-btn:hover{
+   display: block;
+  margin-left: auto;
+  border-radius: 12px;
+  width: 30%;
+
+  background-color: #E1AD01;
+  color: white;
+}
+
+.modal-overlay .close-btn {
+  display: block;
+  margin-left: auto;
+  border-radius: 12px;
+  padding:10px;
+  width: 30%;
+  color: white;
+  background-color: #156436;
+}
+ .modal-overlay .month-row[data-month="6"] {
+  background: #213456;
+  outline: 2px solid red;
+  outline-offset: -2px; 
+}
+</style>
+    
+<div id="welcomeModal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+        <h3>Treasury HelpDesk Efficiency & Performance Report</h3>
+        <p>As of the Year -  2026</p>
+
+  
+
+         <table id="admin_report" class="table admin-table m-0">
+                    <thead>  
+                      <tr>
+                       
+                        <th colspan="6" class="compliance text-center" style="background-color: #a29341; color: #fff; font-weight: 700; text-transform: uppercase; font-size: 13px; padding: 6px;">
+                          COMPLIANCE TICKET REPORTS
+                        </th>
+                      </tr>
+                      
+                      <tr style="background-color: #213456; color: #ffffff;">
+                         <th style="background-color: #213456; font-size: 12px; vertical-align: middle;">MONTH</th>
+                        <th class="text-center" style="background-color: #213456; font-size: 12px; vertical-align: middle;">ACTIVE TICKETS</th>
+                        <th class="text-center" style="background-color: #213456; font-size: 12px; vertical-align: middle;">COMPLIANCE RATE</th>
+                        <th class="text-center" style="background-color: #213456; font-size: 12px; vertical-align: middle;">MET SLA</th>
+                        <th class="text-center" style="background-color: #213456; font-size: 12px; vertical-align: middle;">NON-SLA</th>
+                        <th class="text-center" style="background-color: #213456; font-size: 12px; vertical-align: middle;">SLA COMPLIANCE</th>
+                      </tr>
+                    </thead>
+                    
+                    <tbody id="dept-table-body">
+                      <tr class ="month-row" data-month="1">
+                        <td class="fw-bold">JANUARY</td>
+                        <td class="text-center active-total">-</td>
+                        <td class="compliance-rate">-</td>
+                        <td class="text-center met-sla">-</td>
+                        <td class="text-center non-sla">-</td>
+                        <td class="sla-compliance">-</td>
+                      </tr>
+                      <tr class ="month-row" data-month="2">
+                        <td class="fw-bold">FEBRUARY</td>
+                        <td class="text-center active-total">-</td>
+                        <td class="compliance-rate">-</td>
+                        <td class="text-center met-sla">-</td>
+                        <td class="text-center non-sla">-</td>
+                        <td class="sla-compliance">-</td>
+                      </tr>
+                      <tr class ="month-row" data-month="3">
+                        <td class="fw-bold">MARCH</td>
+                        <td class="text-center active-total">-</td>
+                        <td class="compliance-rate">-</td>
+                        <td class="text-center met-sla">-</td>
+                        <td class="text-center non-sla">-</td>
+                        <td class="sla-compliance">-</td>
+                      </tr>
+                      <tr class ="month-row" data-month="4">
+                        <td class="fw-bold">APRIL</td>
+                        <td class="text-center active-total">-</td>
+                        <td class="compliance-rate">-</td>
+                        <td class="text-center met-sla">-</td>
+                        <td class="text-center non-sla">-</td>
+                        <td class="sla-compliance">-</td>
+                      </tr>
+                      <tr class ="month-row" data-month="5">
+                        <td class="fw-bold">MAY</td>
+                        <td class="text-center active-total">-</td>
+                        <td class="compliance-rate">-</td>
+                        <td class="text-center met-sla">-</td>
+                        <td class="text-center non-sla">-</td>
+                        <td class="sla-compliance">-</td>
+                      </tr>
+                      <tr class ="month-row" data-month="6" style="background: #213456; border-outline: 2px solid red;">
+                        <td class="fw-bold" >JUNE</td>
+                        <td class="text-center active-total">-</td>
+                        <td class="compliance-rate">-</td>
+                        <td class="text-center met-sla">-</td>
+                        <td class="text-center non-sla">-</td>
+                        <td class="sla-compliance">-</td>
+                      </tr>
+                          <tr class ="month-row" data-month="7" style="background: #213456; border-outline: 2px solid red;">
+                        <td class="fw-bold" >JULY</td>
+                        <td class="text-center active-total">-</td>
+                        <td class="compliance-rate">-</td>
+                        <td class="text-center met-sla">-</td>
+                        <td class="text-center non-sla">-</td>
+                        <td class="sla-compliance">-</td>
+                      </tr>
+                          <tr class ="month-row" data-month="8" style="background: #213456; border-outline: 2px solid red;">
+                        <td class="fw-bold" >AUGUST</td>
+                        <td class="text-center active-total">-</td>
+                        <td class="compliance-rate">-</td>
+                        <td class="text-center met-sla">-</td>
+                        <td class="text-center non-sla">-</td>
+                        <td class="sla-compliance">-</td>
+                      </tr>
+                          <tr class ="month-row" data-month="9" style="background: #213456; border-outline: 2px solid red;">
+                        <td class="fw-bold" >SEPTEMBER</td>
+                        <td class="text-center active-total">-</td>
+                        <td class="compliance-rate">-</td>
+                        <td class="text-center met-sla">-</td>
+                        <td class="text-center non-sla">-</td>
+                        <td class="sla-compliance">-</td>
+                      </tr>
+                          <tr class ="month-row" data-month="10" style="background: #213456; border-outline: 2px solid red;">
+                        <td class="fw-bold" >OCTOBER</td>
+                        <td class="text-center active-total">-</td>
+                        <td class="compliance-rate">-</td>
+                        <td class="text-center met-sla">-</td>
+                        <td class="text-center non-sla">-</td>
+                        <td class="sla-compliance">-</td>
+                      </tr>
+                          <tr class ="month-row" data-month="11" style="background: #213456; border-outline: 2px solid red;">
+                        <td class="fw-bold" >NOVEMBER</td>
+                        <td class="text-center active-total">-</td>
+                        <td class="compliance-rate">-</td>
+                        <td class="text-center met-sla">-</td>
+                        <td class="text-center non-sla">-</td>
+                        <td class="sla-compliance">-</td>
+                      </tr>
+                      
+                    </tbody>
+                  <tfoot id="dept-table-footer"></tfoot>
+                  </table>
+
+        <button id="closeModalBtn" class="close-btn">Proceed to Dashboard</button>
+    </div>
+</div>
 <!-- =========================
      DASHBOARD MAIN WRAPPER
      ========================= -->
@@ -656,219 +895,370 @@ Start of Create Department Report Modal
     </div>
   </div>
 
-<script>
-  $(document).ready(function() {
-    // KPI Card Click Functionality
-    $('.dashcard-clickable').on('click', function() {
+  <script>
+    $(document).ready(function () {
+      // KPI Card Click Functionality
+      $('.dashcard-clickable').on('click', function () {
         const filterValue = $(this).data('filter');
-      
+
         if ($.fn.DataTable.isDataTable('#report_data')) {
-            const table = $('#report_data').DataTable();
-            table.search(filterValue).draw();
+          const table = $('#report_data').DataTable();
+          table.search(filterValue).draw();
         }
 
         $('html, body').animate({
-            scrollTop: $("#report_data").offset().top - 100
+          scrollTop: $("#report_data").offset().top - 100
         }, 600);
 
         $(this).fadeOut(100).fadeIn(100);
-    });
+      });
 
-    // Handle 'CREATE REPORT' Navbar Link Click
-    $(document).on('click', '#navCreateReport', function (e) {
-      if (window.location.pathname.endsWith('adminpanel.php') || window.location.pathname.endsWith('/treasury/')) {
-        e.preventDefault();
+      // Handle 'CREATE REPORT' Navbar Link Click
+      $(document).on('click', '#navCreateReport', function (e) {
+        // If we are already on adminpanel.php, open the modal directly
+        if (window.location.pathname.endsWith('adminpanel.php') || window.location.pathname.endsWith('/it/')) {
+          e.preventDefault();
+          $('#createReportModal').modal({ backdrop: 'static', keyboard: false });
+        }
+      });
+
+      // Handle query param create=true on load
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('create') === 'true') {
         $('#createReportModal').modal({ backdrop: 'static', keyboard: false });
+        // Clean up url parameters without reloading
+        window.history.replaceState({}, document.title, window.location.pathname);
       }
-    });
 
-    // Handle query param create=true on load
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('create') === 'true') {
-      $('#createReportModal').modal({ backdrop: 'static', keyboard: false });
-      window.history.replaceState({}, document.title, window.location.pathname);
-    }
-
-    // Reset Form when Modal Closes or Opens
-    $('#createReportModal').on('show.bs.modal', function () {
-      $('#create_report_form').trigger('reset');
-      $('#create_store').val('201'); // Auto-select CEN | CENTRAL OFFICE - LIBIS
-      $('#create_subject').val(null).trigger('change');
-      $('#create_sub').val(null).trigger('change');
-      $('#create_sub_group').hide();
-      $('#create_ticket_lbl').text('---');
-      $('#create_ticket_no').val('');
-    });
-
-    // Populate dynamic categories and fetch ticket numbers when Attention To Department changes
-    $("#create_deptsel").on("change", function () {
-      $('#create_subject').val(null).trigger('change');
-      $('#create_sub').val(null).trigger('change');
-      $('#create_sub_group').hide();
-      let val = $(this).val();
-
-      $("#create_subject").select2({
-        dropdownParent: $('#createReportModal'),
-        width: '100%',
-        minimumResultsForSearch: Infinity, // Disable search box
-        ajax: {
-          url: "../users/select.php",
-          type: "get",
-          dataType: 'json',
-          delay: 250,
-          data: function (params) {
-            return {
-              type: 'category_id',
-              val: val
-            };
-          },
-          processResults: function (response) {
-            return {
-              results: response
-            };
-          },
-          cache: true
-        }
-      });
-
-      // Dynamic Ticket Number Generation Fetch
-      $.post('../users/fetch.php', { operation: 'search_tkt', iN: val }, function (data) {
-        if (data && data[0]) {
-          let next_tktno = data[0].ticket_no;
-          let deptabr = data[0].dept;
-          $('#create_ticket_no').val(deptabr + '' + next_tktno);
-          $('#create_ticket_lbl').html(deptabr + '' + next_tktno);
-        }
-      }, 'json');
-    });
-
-    $("#create_subject").on("change", function () {
-      let category_id = $(this).val();
-      if (!category_id) {
+      // Reset Form when Modal Closes or Opens
+      $('#createReportModal').on('show.bs.modal', function () {
+        $('#create_report_form').trigger('reset');
+        $('#create_store').val('201'); // Auto-select CEN | CENTRAL OFFICE - LIBIS
+        $('#create_subject').val(null).trigger('change');
+        $('#create_sub').val(null).trigger('change');
         $('#create_sub_group').hide();
-        return;
-      }
-      
-      $.ajax({
-        url: "get_subcat.php",
-        type: "POST",
-        data: { category_id: category_id },
-        cache: false,
-        success: function(dataResult) {
-          $("#create_sub").html(dataResult);
-          $('#create_sub_group').show();
-        }
+        $('#create_ticket_lbl').text('---');
+        $('#create_ticket_no').val('');
       });
-    });
 
-    // Validate uploaded file size and extensions
-    $('#create_file-input').on('change', function () {
-      for (var i = 0; i < this.files.length; ++i) {
-        var file = this.files[i];
-        if (file.size > 2097152) { // 2MB
-          Swal.fire({
-            icon: 'error',
-            title: 'File Too Large',
-            text: 'File "' + file.name + '" must not exceed 2MB.'
-          });
-          this.value = "";
-          return false;
+      // Populate dynamic categories and fetch ticket numbers when Attention To Department changes
+      $("#create_deptsel").on("change", function () {
+        $('#create_subject').val(null).trigger('change');
+        $('#create_sub').val(null).trigger('change');
+        $('#create_sub_group').hide();
+        let val = $(this).val();
+
+        $("#create_subject").select2({
+          dropdownParent: $('#createReportModal'),
+          width: '100%',
+          minimumResultsForSearch: Infinity, // Disable search box
+          ajax: {
+            url: "../users/select.php",
+            type: "get",
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+              return {
+                type: 'category_id',
+                val: val
+              };
+            },
+            processResults: function (response) {
+              return {
+                results: response
+              };
+            },
+            cache: true
+          }
+        });
+
+        // Dynamic Ticket Number Generation Fetch
+        $.post('../users/fetch.php', { operation: 'search_tkt', iN: val }, function (data) {
+          if (data && data[0]) {
+            let next_tktno = data[0].ticket_no;
+            let deptabr = data[0].dept;
+            $('#create_ticket_no').val(deptabr + '' + next_tktno);
+            $('#create_ticket_lbl').html(deptabr + '' + next_tktno);
+          }
+        }, 'json');
+      });
+
+      $("#create_subject").on("change", function () {
+        let category_id = $(this).val();
+        if (!category_id) {
+          $('#create_sub_group').hide();
+          return;
         }
-        var ext = file.name.split('.').pop().toLowerCase();
-        var validExtensions = ['jpg', 'jpeg', 'gif', 'png', 'txt', 'pdf', 'docx', 'doc', 'xlsx', 'xls'];
-        if ($.inArray(ext, validExtensions) === -1) {
-          Swal.fire({
-            icon: 'error',
-            title: 'Invalid File Type',
-            text: 'File "' + file.name + '" has an invalid extension.'
-          });
-          this.value = "";
-          return false;
-        }
-      }
-    });
+        
+        $.ajax({
+          url: "get_subcat.php",
+          type: "POST",
+          data: { category_id: category_id },
+          cache: false,
+          success: function(dataResult) {
+            $("#create_sub").html(dataResult);
+            $('#create_sub_group').show();
+          }
+        });
+      });
 
-    // Handle AJAX Submission of Department Ticket
-    $('#create_report_form').on('submit', function (e) {
-      e.preventDefault();
-
-      var form = this;
-      var formData = new FormData(form);
-
-      $.ajax({
-        url: "api_create_dept_report.php",
-        method: "POST",
-        data: formData,
-        contentType: false,
-        processData: false,
-        beforeSend: function () {
-          $('#create_action').prop('disabled', true);
-          $.LoadingOverlay("show", {
-            image: "",
-            background: "rgba(0, 0, 0, 0.45)"
-          });
-        },
-        success: function (response) {
-          $.LoadingOverlay("hide");
-          $('#create_action').prop('disabled', false);
-
-          if (response.Response) {
-            // Upload files if selected
-            var files = $('#create_file-input')[0].files;
-            if (files.length > 0) {
-              var fileData = new FormData();
-              for (var i = 0; i < files.length; i++) {
-                fileData.append('files[]', files[i]);
-              }
-              fileData.append('ticket_no', response.ticket_no);
-
-              $.ajax({
-                type: "POST",
-                url: "insertimg.php",
-                data: fileData,
-                processData: false,
-                contentType: false
-              });
-            }
-
-            Swal.fire({
-              icon: 'success',
-              title: 'Success!',
-              text: 'Report successfully submitted to OWI HELPDESK.',
-              timer: 2000,
-              showConfirmButton: false
-            }).then(function () {
-              $('#createReportModal').modal('hide');
-              // Smoothly refresh charts and grid datatables instantly
-              if (typeof getdata === 'function') {
-                const currentYr = $("#yearpicker").val();
-                getdata(currentYr);
-              }
-              if (typeof get_card_data === 'function') {
-                const currentYr = $("#yearpicker").val();
-                get_card_data(currentYr);
-              }
-            });
-          } else {
+      // Validate uploaded file size and extensions
+      $('#create_file-input').on('change', function () {
+        for (var i = 0; i < this.files.length; ++i) {
+          var file = this.files[i];
+          if (file.size > 2097152) { // 2MB
             Swal.fire({
               icon: 'error',
-              title: 'Submission Failed',
-              html: response.m
+              title: 'File Too Large',
+              text: 'File "' + file.name + '" must not exceed 2MB.'
             });
+            this.value = "";
+            return false;
           }
-        },
-        error: function () {
-          $.LoadingOverlay("hide");
-          $('#create_action').prop('disabled', false);
-          Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'An unexpected error occurred while saving the report.'
-          });
+          var ext = file.name.split('.').pop().toLowerCase();
+          var validExtensions = ['jpg', 'jpeg', 'gif', 'png', 'txt', 'pdf', 'docx', 'doc', 'xlsx', 'xls'];
+          if ($.inArray(ext, validExtensions) === -1) {
+            Swal.fire({
+              icon: 'error',
+              title: 'Invalid File Type',
+              text: 'File "' + file.name + '" has an invalid extension.'
+            });
+            this.value = "";
+            return false;
+          }
         }
       });
+
+      // Handle AJAX Submission of Department Ticket
+      $('#create_report_form').on('submit', function (e) {
+        e.preventDefault();
+
+        var form = this;
+        var formData = new FormData(form);
+
+        $.ajax({
+          url: "api_create_dept_report.php",
+          method: "POST",
+          data: formData,
+          contentType: false,
+          processData: false,
+          beforeSend: function () {
+            $('#create_action').prop('disabled', true);
+            $.LoadingOverlay("show", {
+              image: "",
+              background: "rgba(0, 0, 0, 0.45)"
+            });
+          },
+          success: function (response) {
+            $.LoadingOverlay("hide");
+            $('#create_action').prop('disabled', false);
+
+            if (response.Response) {
+              // Upload files if selected
+              var files = $('#create_file-input')[0].files;
+              if (files.length > 0) {
+                var fileData = new FormData();
+                for (var i = 0; i < files.length; i++) {
+                  fileData.append('files[]', files[i]);
+                }
+                fileData.append('ticket_no', response.ticket_no);
+
+                $.ajax({
+                  type: "POST",
+                  url: "insertimg.php",
+                  data: fileData,
+                  processData: false,
+                  contentType: false
+                });
+              }
+
+              Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: 'Report successfully submitted to OWI HELPDESK.',
+                timer: 2000,
+                showConfirmButton: false
+              }).then(function () {
+                $('#createReportModal').modal('hide');
+                if (typeof getdata === 'function') {
+                  const currentYr = $("#yearpicker").val();
+                  getdata(currentYr);
+                }
+                if (typeof get_card_data === 'function') {
+                  const currentYr = $("#yearpicker").val();
+                  get_card_data(currentYr);
+                }
+              });
+            } else {
+              Swal.fire({
+                icon: 'error',
+                title: 'Submission Failed',
+                html: response.m
+              });
+            }
+          },
+          error: function () {
+            $.LoadingOverlay("hide");
+            $('#create_action').prop('disabled', false);
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'An unexpected error occurred while saving the report.'
+            });
+          }
+        });
+      });
     });
-  });
+
+
+
+  </script>
+
+  
+<script src="https://jquery.com"></script>
+<script>
+$(document).ready(function() {
+    const $modal = $('#welcomeModal');
+    const $closeBtn = $('#closeModalBtn');
+
+    const shouldShowModal = localStorage.getItem('showWelcomeModal') === 'true';
+    if (shouldShowModal) {
+        $modal.css('display', 'flex'); 
+        localStorage.removeItem('showWelcomeModal');
+    }
+    $closeBtn.on('click', function() {
+        $modal.css('display', 'none');
+    });
+    loadDepartmentTable();
+});
+
+function loadDepartmentTable() {
+
+    let currentPath = window.location.pathname;
+    let dynamicDirectory = currentPath.substring(0, currentPath.lastIndexOf('/')) + '/';
+    let targetedURL = window.location.origin + dynamicDirectory + 'fetch_department_table.php';
+    
+    $('#dept-table-body').html('<tr><td colspan="6" class="text-center py-4 text-muted"><div class="spinner-border spinner-border-sm me-2 text-warning"></div>Loading Performance Metrics...</td></tr>');
+
+    $.ajax({
+        url: targetedURL, 
+        method: 'POST',
+        dataType: 'json',
+        success: function(response) {
+            let html = '';
+            let footerHtml = '';
+        
+            const monthNames = {
+                1: "JANUARY", 2: "FEBRUARY", 3: "MARCH", 
+                4: "APRIL", 5: "MAY", 6: "JUNE"
+            };
+
+            if (response && response.department_stats) {
+                globalTicketDetails = response.ticket_details || []; 
+                
+                let statsByMonth = {};
+                response.department_stats.forEach(function(row) {
+                    statsByMonth[parseInt(row.MONTH_NUM)] = row;
+                });
+
+                for (let m = 1; m <= 6; m++) {
+                    let row = statsByMonth[m];
+                    let monthName = monthNames[m];
+
+                    let closedCount = row ? (parseInt(row.CLOSED) || 0) : 0;
+                    let grandTotal = row ? (parseInt(row.GRAND_TOTAL) || 0) : 0;
+                    let metSlaCount = row ? (parseInt(row.MET_SLA) || 0) : 0;
+                    let activeTotal = row ? ((parseInt(row.ASSIGNED) || 0) + (parseInt(row.ON_PROCESS) || 0) + (parseInt(row.PENDING) || 0)) : 0;
+                    
+                    let compliancePercent = grandTotal > 0 ? Math.round((closedCount / grandTotal) * 100) : 0;
+                    let metSLA = closedCount > 0 ? Math.round((metSlaCount / closedCount) * 100) : 0;
+
+                    let barTheme = compliancePercent >= 75 ? "bg-success" : (compliancePercent >= 40 ? "bg-warning" : "bg-danger");
+                    let metBarTheme = metSLA >= 80 ? "bg-success" : (metSLA >= 50 ? "bg-warning" : "bg-danger");
+
+                    html += `
+                        <tr class="dept-row" style="cursor: pointer;" data-month="${m}">
+                            <td class="fw-bold" style="font-size:13px; vertical-align: middle;">${monthName}</td>
+                            <td class="text-center fw-bold" style="font-size:13px; vertical-align: middle;">
+                                <span class="stat-badge stat-total text-primary">${activeTotal}</span>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center justify-content-center flex-column" style="padding: 0 4px;">
+                                    <div class="d-flex justify-content-between w-100 mb-1 small fw-bold">
+                                        <span class="text-dark" style="font-size:12px;">${closedCount}/${grandTotal}</span>
+                                        <span class="text-dark" style="font-size:12px;">${compliancePercent}%</span>
+                                    </div>
+                                    <div class="progress w-100" style="height: 6px; border-radius: 4px; background-color: rgba(0,0,0,0.06);">
+                                        <div class="progress-bar ${barTheme}" role="progressbar" style="width: ${compliancePercent}%;"></div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="text-center fw-bold text-success" style="font-size:13px; vertical-align: middle;">${metSlaCount}</td>
+                            <td class="text-center fw-bold text-danger" style="font-size:13px; vertical-align: middle;">${closedCount - metSlaCount}</td>
+                            <td>
+                                <div class="d-flex align-items-center justify-content-center flex-column" style="padding: 0 4px;">
+                                    <div class="d-flex justify-content-between w-100 mb-1 small fw-bold">
+                                        <span class="text-dark fw-bold" style="font-size:12px;">${metSlaCount}/${closedCount}</span>
+                                        <span class="text-dark fw-bold" style="font-size:12px;">${metSLA}%</span>
+                                    </div>
+                                    <div class="progress w-100" style="height: 6px; border-radius: 4px; background-color: rgba(0,0,0,0.06);">
+                                        <div class="progress-bar ${metBarTheme}" role="progressbar" style="width: ${metSLA}%;"></div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>`;
+                }
+
+                if (response.global_totals) {
+                    let gt = response.global_totals;
+                    let totalActiveSum = (parseInt(gt.TOTAL_ASSIGNED) || 0) + (parseInt(gt.TOTAL_ON_PROCESS) || 0) + (parseInt(gt.TOTAL_PENDING) || 0);
+                    let globalCompliancePercent = (parseInt(gt.OVERALL_GRAND_TOTAL) || 0) > 0 ? Math.round((parseInt(gt.TOTAL_CLOSED) / parseInt(gt.OVERALL_GRAND_TOTAL)) * 100) : 0;
+                    let globalMetSLAPercent = (parseInt(gt.TOTAL_CLOSED) || 0) > 0 ? Math.round((parseInt(gt.TOTAL_MET_SLA) / parseInt(gt.TOTAL_CLOSED)) * 100) : 0;
+
+                    let globalBarTheme = globalCompliancePercent >= 75 ? "bg-success" : (globalCompliancePercent >= 40 ? "bg-warning" : "bg-danger");
+                    let globalMetSLABarTheme = globalMetSLAPercent >= 80 ? "bg-success" : (globalMetSLAPercent >= 50 ? "bg-warning" : "bg-danger");
+
+                    footerHtml = `
+                        <tr style="background-color: #ecebe584; font-weight: bold; border-top: 2px solid #213456;">
+                            <td class="text-dark fw-bold text-uppercase" style="font-size:13px;">TOTAL SUMMARY</td>
+                            <td class="text-center text-primary fw-bold" style="font-size:14px;">${totalActiveSum}</td>
+                            <td>
+                                <div class="d-flex align-items-center justify-content-center flex-column" style="padding: 0 4px;">
+                                    <div class="d-flex justify-content-between w-100 mb-1 small fw-bold">
+                                        <span class="text-dark" style="font-size:13px;">${gt.TOTAL_CLOSED || 0}/${gt.OVERALL_GRAND_TOTAL || 0}</span>
+                                        <span class="text-dark" style="font-size:13px;">${globalCompliancePercent}%</span>
+                                    </div>
+                                    <div class="progress w-100" style="height: 6px; background-color: rgba(0,0,0,0.1);">
+                                        <div class="progress-bar ${globalBarTheme}" role="progressbar" style="width: ${globalCompliancePercent}%;"></div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="text-center text-success" style="font-size:14px;">${gt.TOTAL_MET_SLA || 0}</td>
+                            <td class="text-center fw-bold text-danger" style="font-size:14px;">${(parseInt(gt.TOTAL_CLOSED) || 0) - (parseInt(gt.TOTAL_MET_SLA) || 0)}</td>
+                            <td>
+                                <div class="d-flex align-items-center justify-content-center flex-column" style="padding: 0 4px;">
+                                    <div class="d-flex justify-content-between w-100 mb-1 small fw-bold">
+                                        <span class="text-dark" style="font-size:13px;">${gt.TOTAL_MET_SLA || 0}/${gt.TOTAL_CLOSED || 0}</span>
+                                        <span class="text-dark" style="font-size:13px;">${globalMetSLAPercent}%</span>     
+                                    </div>
+                                    <div class="progress w-100" style="height: 6px; background-color: rgba(0,0,0,0.1);">
+                                        <div class="progress-bar ${globalMetSLABarTheme}" role="progressbar" style="width: ${globalMetSLAPercent}%;"></div>
+                                    </div>
+                                </div>
+                            </td>  
+                        </tr>`;
+                }
+            } else {
+                html = '<tr><td colspan="6" class="text-center py-4 text-muted">No database response detected.</td></tr>';
+            }
+
+            $('#dept-table-body').html(html);
+            $('#dept-table-footer').html(footerHtml);
+        },
+        error: function(xhr, status, error) {
+            console.error("AJAX Error Context:", xhr.responseText);
+            $('#dept-table-body').html('<tr><td colspan="6" class="text-center text-danger py-4 fw-bold">Communications fault with fetch_department_table.php</td></tr>');
+        }
+    });
+}
 </script>
-
-

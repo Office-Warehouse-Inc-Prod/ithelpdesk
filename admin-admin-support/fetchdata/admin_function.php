@@ -635,7 +635,7 @@ FROM
 		tbl_notif.ticket_no = reports.ticket_no
 WHERE
 	notif_val IN ('1','2') AND
-	reports.f_deptsel = 1 
+	reports.f_deptsel = 2
 ORDER BY
 	notif_date ASC";
 		$statement = $this->connection->prepare($query);

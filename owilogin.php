@@ -337,6 +337,7 @@ if ($system === 'dts') {
     75% { transform: translateX(-2px); }
     100% { transform: translateX(0); }
 }
+
 </style>
 </head>
 <body>
@@ -387,6 +388,9 @@ if ($system === 'dts') {
 </div>
 </div>
                     </form>
+
+
+        
 </body>
 </html>
 
@@ -405,8 +409,9 @@ $(function () {
         $(".btn-login").addClass("loading").text("Signing in");
         $(".login-container").addClass("submitting");
 
+        localStorage.setItem('showWelcomeModal', 'true');
         setTimeout(() => {
-            this.submit();
+            this.submit(); 
         }, 700);
     });
 });

@@ -31,8 +31,247 @@ background: linear-gradient(135deg, #837031, #E1AD01);
 ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(135deg, #837031, #E1AD01);
 }
-</style>
 
+.modal-overlay {
+            display: none; 
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+       .modal-overlay .modal-content {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            width: 70%;
+            max-width: 90%;
+            margin-top:30px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+       .modal-overlay .modal-content h3 {
+            margin-top: 0;
+            color: #333;
+        }
+       .modal-overlay .close-btn {
+            background-color: #28a745;
+            margin-top: 15px;
+        }
+ 
+
+        
+  .table-responsive {
+    overflow: visible !important;
+    width: 100% !important;
+  }
+
+  .admin-table {
+    width: 100% !important;
+    table-layout: auto !important;
+    page-break-inside: avoid;
+    
+  }
+
+  .admin-table th {
+    background-color: #213456 !important;
+    color: #fff !important;
+    padding: 6px 4px !important;
+    font-size: 11px !important;
+  }
+
+  #admin_report.admin-table th.active.text-center {
+    background-color: #2b9827 !important;
+    color: #fff !important;
+    padding: 6px 4px !important;
+    font-size: 11px !important;
+  }
+
+  #admin_report.admin-table th.compliance.text-center {
+    background-color: #a29341 !important;
+    color: #fff !important;
+    padding: 6px 4px !important;
+    font-size: 11px !important;
+  }
+
+  .admin-table td {
+    padding: 6px 4px !important;
+    font-size: 11px !important;
+    border-bottom: 1px solid #0e0e0ea1 !important;
+  }
+  .table-responsive{
+    margin-top: -600px;
+  }
+
+  .progress {
+    border: 1px solid #999 !important;
+    background-color: #ddd !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  #dept-table-footer {
+    border: 2px solid #2d3c59;
+    background-color: #f4e9d7 !important; 
+}
+
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+    box-shadow: none !important;
+  }
+.modal-overlay .close-btn:hover{
+   display: block;
+  margin-left: auto;
+  border-radius: 12px;
+  width: 30%;
+
+  background-color: #E1AD01;
+  color: white;
+}
+
+.modal-overlay .close-btn {
+  display: block;
+  margin-left: auto;
+  border-radius: 12px;
+  width: 30%;
+  padding:10px;
+  color: white;
+  background-color: #156436;
+}
+ .modal-overlay .month-row[data-month="6"] {
+  background: #213456;
+  outline: 2px solid red;
+  outline-offset: -2px; 
+}
+</style>
+<div id="welcomeModal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+        <h3>Admin HelpDesk Efficiency & Performance Report</h3>
+        <p>As of the Year -  2026</p>
+
+  
+
+         <table id="admin_report" class="table admin-table m-0">
+                    <thead>  
+                      <tr>
+                       
+                        <th colspan="6" class="compliance text-center" style="background-color: #a29341; color: #fff; font-weight: 700; text-transform: uppercase; font-size: 13px; padding: 6px;">
+                          COMPLIANCE TICKET REPORTS
+                        </th>
+                      </tr>
+                      
+                      <tr style="background-color: #213456; color: #ffffff;">
+                         <th style="background-color: #213456; font-size: 12px; vertical-align: middle;">MONTH</th>
+                        <th class="text-center" style="background-color: #213456; font-size: 12px; vertical-align: middle;">ACTIVE TICKETS</th>
+                        <th class="text-center" style="background-color: #213456; font-size: 12px; vertical-align: middle;">COMPLIANCE RATE</th>
+                        <th class="text-center" style="background-color: #213456; font-size: 12px; vertical-align: middle;">MET SLA</th>
+                        <th class="text-center" style="background-color: #213456; font-size: 12px; vertical-align: middle;">NON-SLA</th>
+                        <th class="text-center" style="background-color: #213456; font-size: 12px; vertical-align: middle;">SLA COMPLIANCE</th>
+                      </tr>
+                    </thead>
+                    
+                    <tbody id="dept-table-body">
+                      <tr class ="month-row" data-month="1">
+                        <td class="fw-bold">JANUARY</td>
+                        <td class="text-center active-total">-</td>
+                        <td class="compliance-rate">-</td>
+                        <td class="text-center met-sla">-</td>
+                        <td class="text-center non-sla">-</td>
+                        <td class="sla-compliance">-</td>
+                      </tr>
+                      <tr class ="month-row" data-month="2">
+                        <td class="fw-bold">FEBRUARY</td>
+                        <td class="text-center active-total">-</td>
+                        <td class="compliance-rate">-</td>
+                        <td class="text-center met-sla">-</td>
+                        <td class="text-center non-sla">-</td>
+                        <td class="sla-compliance">-</td>
+                      </tr>
+                      <tr class ="month-row" data-month="3">
+                        <td class="fw-bold">MARCH</td>
+                        <td class="text-center active-total">-</td>
+                        <td class="compliance-rate">-</td>
+                        <td class="text-center met-sla">-</td>
+                        <td class="text-center non-sla">-</td>
+                        <td class="sla-compliance">-</td>
+                      </tr>
+                      <tr class ="month-row" data-month="4">
+                        <td class="fw-bold">APRIL</td>
+                        <td class="text-center active-total">-</td>
+                        <td class="compliance-rate">-</td>
+                        <td class="text-center met-sla">-</td>
+                        <td class="text-center non-sla">-</td>
+                        <td class="sla-compliance">-</td>
+                      </tr>
+                      <tr class ="month-row" data-month="5">
+                        <td class="fw-bold">MAY</td>
+                        <td class="text-center active-total">-</td>
+                        <td class="compliance-rate">-</td>
+                        <td class="text-center met-sla">-</td>
+                        <td class="text-center non-sla">-</td>
+                        <td class="sla-compliance">-</td>
+                      </tr>
+                      <tr class ="month-row" data-month="6" style="background: #213456; border-outline: 2px solid red;">
+                        <td class="fw-bold" >JUNE</td>
+                        <td class="text-center active-total">-</td>
+                        <td class="compliance-rate">-</td>
+                        <td class="text-center met-sla">-</td>
+                        <td class="text-center non-sla">-</td>
+                        <td class="sla-compliance">-</td>
+                      </tr>
+                          <tr class ="month-row" data-month="7" style="background: #213456; border-outline: 2px solid red;">
+                        <td class="fw-bold" >JULY</td>
+                        <td class="text-center active-total">-</td>
+                        <td class="compliance-rate">-</td>
+                        <td class="text-center met-sla">-</td>
+                        <td class="text-center non-sla">-</td>
+                        <td class="sla-compliance">-</td>
+                      </tr>
+                          <tr class ="month-row" data-month="8" style="background: #213456; border-outline: 2px solid red;">
+                        <td class="fw-bold" >AUGUST</td>
+                        <td class="text-center active-total">-</td>
+                        <td class="compliance-rate">-</td>
+                        <td class="text-center met-sla">-</td>
+                        <td class="text-center non-sla">-</td>
+                        <td class="sla-compliance">-</td>
+                      </tr>
+                          <tr class ="month-row" data-month="9" style="background: #213456; border-outline: 2px solid red;">
+                        <td class="fw-bold" >SEPTEMBER</td>
+                        <td class="text-center active-total">-</td>
+                        <td class="compliance-rate">-</td>
+                        <td class="text-center met-sla">-</td>
+                        <td class="text-center non-sla">-</td>
+                        <td class="sla-compliance">-</td>
+                      </tr>
+                          <tr class ="month-row" data-month="10" style="background: #213456; border-outline: 2px solid red;">
+                        <td class="fw-bold" >OCTOBER</td>
+                        <td class="text-center active-total">-</td>
+                        <td class="compliance-rate">-</td>
+                        <td class="text-center met-sla">-</td>
+                        <td class="text-center non-sla">-</td>
+                        <td class="sla-compliance">-</td>
+                      </tr>
+                          <tr class ="month-row" data-month="11" style="background: #213456; border-outline: 2px solid red;">
+                        <td class="fw-bold" >NOVEMBER</td>
+                        <td class="text-center active-total">-</td>
+                        <td class="compliance-rate">-</td>
+                        <td class="text-center met-sla">-</td>
+                        <td class="text-center non-sla">-</td>
+                        <td class="sla-compliance">-</td>
+                      </tr>
+                      
+                    </tbody>
+                  <tfoot id="dept-table-footer"></tfoot>
+                  </table>
+
+        <button id="closeModalBtn" class="close-btn">Proceed to Dashboard</button>
+    </div>
+</div>
 <!-- =========================
      DASHBOARD MAIN WRAPPER
      ========================= -->
@@ -185,7 +424,7 @@ background: linear-gradient(135deg, #837031, #E1AD01);
 
           <div class="col-12 col-lg-6 mb-3">
             <div class="card card2 h-100">
-              <h5 class="card-header text-black"  style="background-color: #95a2b9b4; color:black;">I.T Support Logs</h5>
+              <h5 class="card-header text-black"  style="background-color: #95a2b9b4; color:black;">Admin Support Logs</h5>
               <div class="card-body">
                 <div id="chartdiv8"></div>
               </div>
@@ -640,6 +879,7 @@ Start of Create Department Report Modal
     </div>
   </div>
 
+ 
   <script>
     $(document).ready(function () {
       // KPI Card Click Functionality
@@ -661,7 +901,7 @@ Start of Create Department Report Modal
       // Handle 'CREATE REPORT' Navbar Link Click
       $(document).on('click', '#navCreateReport', function (e) {
         // If we are already on adminpanel.php, open the modal directly
-        if (window.location.pathname.endsWith('adminpanel.php') || window.location.pathname.endsWith('/admin-admin-support/')) {
+        if (window.location.pathname.endsWith('adminpanel.php') || window.location.pathname.endsWith('/it/')) {
           e.preventDefault();
           $('#createReportModal').modal({ backdrop: 'static', keyboard: false });
         }
@@ -825,7 +1065,6 @@ Start of Create Department Report Modal
                 showConfirmButton: false
               }).then(function () {
                 $('#createReportModal').modal('hide');
-                // Smoothly refresh charts and grid datatables instantly
                 if (typeof getdata === 'function') {
                   const currentYr = $("#yearpicker").val();
                   getdata(currentYr);
@@ -855,6 +1094,156 @@ Start of Create Department Report Modal
         });
       });
     });
+
+
+
   </script>
 
+  
+<script src="https://jquery.com"></script>
+<script>
+$(document).ready(function() {
+    const $modal = $('#welcomeModal');
+    const $closeBtn = $('#closeModalBtn');
 
+    const shouldShowModal = localStorage.getItem('showWelcomeModal') === 'true';
+    if (shouldShowModal) {
+        $modal.css('display', 'flex'); 
+        localStorage.removeItem('showWelcomeModal');
+    }
+    $closeBtn.on('click', function() {
+        $modal.css('display', 'none');
+    });
+    loadDepartmentTable();
+});
+
+function loadDepartmentTable() {
+
+    let currentPath = window.location.pathname;
+    let dynamicDirectory = currentPath.substring(0, currentPath.lastIndexOf('/')) + '/';
+    let targetedURL = window.location.origin + dynamicDirectory + 'fetch_department_table.php';
+    
+    $('#dept-table-body').html('<tr><td colspan="6" class="text-center py-4 text-muted"><div class="spinner-border spinner-border-sm me-2 text-warning"></div>Loading Performance Metrics...</td></tr>');
+
+    $.ajax({
+        url: targetedURL, 
+        method: 'POST',
+        dataType: 'json',
+        success: function(response) {
+            let html = '';
+            let footerHtml = '';
+        
+            const monthNames = {
+                1: "JANUARY", 2: "FEBRUARY", 3: "MARCH", 
+                4: "APRIL", 5: "MAY", 6: "JUNE"
+            };
+
+            if (response && response.department_stats) {
+                globalTicketDetails = response.ticket_details || []; 
+                
+                let statsByMonth = {};
+                response.department_stats.forEach(function(row) {
+                    statsByMonth[parseInt(row.MONTH_NUM)] = row;
+                });
+
+                for (let m = 1; m <= 6; m++) {
+                    let row = statsByMonth[m];
+                    let monthName = monthNames[m];
+
+                    let closedCount = row ? (parseInt(row.CLOSED) || 0) : 0;
+                    let grandTotal = row ? (parseInt(row.GRAND_TOTAL) || 0) : 0;
+                    let metSlaCount = row ? (parseInt(row.MET_SLA) || 0) : 0;
+                    let activeTotal = row ? ((parseInt(row.ASSIGNED) || 0) + (parseInt(row.ON_PROCESS) || 0) + (parseInt(row.PENDING) || 0)) : 0;
+                    
+                    let compliancePercent = grandTotal > 0 ? Math.round((closedCount / grandTotal) * 100) : 0;
+                    let metSLA = closedCount > 0 ? Math.round((metSlaCount / closedCount) * 100) : 0;
+
+                    let barTheme = compliancePercent >= 75 ? "bg-success" : (compliancePercent >= 40 ? "bg-warning" : "bg-danger");
+                    let metBarTheme = metSLA >= 80 ? "bg-success" : (metSLA >= 50 ? "bg-warning" : "bg-danger");
+
+                    html += `
+                        <tr class="dept-row" style="cursor: pointer;" data-month="${m}">
+                            <td class="fw-bold" style="font-size:13px; vertical-align: middle;">${monthName}</td>
+                            <td class="text-center fw-bold" style="font-size:13px; vertical-align: middle;">
+                                <span class="stat-badge stat-total text-primary">${activeTotal}</span>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center justify-content-center flex-column" style="padding: 0 4px;">
+                                    <div class="d-flex justify-content-between w-100 mb-1 small fw-bold">
+                                        <span class="text-dark" style="font-size:12px;">${closedCount}/${grandTotal}</span>
+                                        <span class="text-dark" style="font-size:12px;">${compliancePercent}%</span>
+                                    </div>
+                                    <div class="progress w-100" style="height: 6px; border-radius: 4px; background-color: rgba(0,0,0,0.06);">
+                                        <div class="progress-bar ${barTheme}" role="progressbar" style="width: ${compliancePercent}%;"></div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="text-center fw-bold text-success" style="font-size:13px; vertical-align: middle;">${metSlaCount}</td>
+                            <td class="text-center fw-bold text-danger" style="font-size:13px; vertical-align: middle;">${closedCount - metSlaCount}</td>
+                            <td>
+                                <div class="d-flex align-items-center justify-content-center flex-column" style="padding: 0 4px;">
+                                    <div class="d-flex justify-content-between w-100 mb-1 small fw-bold">
+                                        <span class="text-dark fw-bold" style="font-size:12px;">${metSlaCount}/${closedCount}</span>
+                                        <span class="text-dark fw-bold" style="font-size:12px;">${metSLA}%</span>
+                                    </div>
+                                    <div class="progress w-100" style="height: 6px; border-radius: 4px; background-color: rgba(0,0,0,0.06);">
+                                        <div class="progress-bar ${metBarTheme}" role="progressbar" style="width: ${metSLA}%;"></div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>`;
+                }
+
+                if (response.global_totals) {
+                    let gt = response.global_totals;
+                    let totalActiveSum = (parseInt(gt.TOTAL_ASSIGNED) || 0) + (parseInt(gt.TOTAL_ON_PROCESS) || 0) + (parseInt(gt.TOTAL_PENDING) || 0);
+                    let globalCompliancePercent = (parseInt(gt.OVERALL_GRAND_TOTAL) || 0) > 0 ? Math.round((parseInt(gt.TOTAL_CLOSED) / parseInt(gt.OVERALL_GRAND_TOTAL)) * 100) : 0;
+                    let globalMetSLAPercent = (parseInt(gt.TOTAL_CLOSED) || 0) > 0 ? Math.round((parseInt(gt.TOTAL_MET_SLA) / parseInt(gt.TOTAL_CLOSED)) * 100) : 0;
+
+                    let globalBarTheme = globalCompliancePercent >= 75 ? "bg-success" : (globalCompliancePercent >= 40 ? "bg-warning" : "bg-danger");
+                    let globalMetSLABarTheme = globalMetSLAPercent >= 80 ? "bg-success" : (globalMetSLAPercent >= 50 ? "bg-warning" : "bg-danger");
+
+                    footerHtml = `
+                        <tr style="background-color: #ecebe584; font-weight: bold; border-top: 2px solid #213456;">
+                            <td class="text-dark fw-bold text-uppercase" style="font-size:13px;">TOTAL SUMMARY</td>
+                            <td class="text-center text-primary fw-bold" style="font-size:14px;">${totalActiveSum}</td>
+                            <td>
+                                <div class="d-flex align-items-center justify-content-center flex-column" style="padding: 0 4px;">
+                                    <div class="d-flex justify-content-between w-100 mb-1 small fw-bold">
+                                        <span class="text-dark" style="font-size:13px;">${gt.TOTAL_CLOSED || 0}/${gt.OVERALL_GRAND_TOTAL || 0}</span>
+                                        <span class="text-dark" style="font-size:13px;">${globalCompliancePercent}%</span>
+                                    </div>
+                                    <div class="progress w-100" style="height: 6px; background-color: rgba(0,0,0,0.1);">
+                                        <div class="progress-bar ${globalBarTheme}" role="progressbar" style="width: ${globalCompliancePercent}%;"></div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="text-center text-success" style="font-size:14px;">${gt.TOTAL_MET_SLA || 0}</td>
+                            <td class="text-center fw-bold text-danger" style="font-size:14px;">${(parseInt(gt.TOTAL_CLOSED) || 0) - (parseInt(gt.TOTAL_MET_SLA) || 0)}</td>
+                            <td>
+                                <div class="d-flex align-items-center justify-content-center flex-column" style="padding: 0 4px;">
+                                    <div class="d-flex justify-content-between w-100 mb-1 small fw-bold">
+                                        <span class="text-dark" style="font-size:13px;">${gt.TOTAL_MET_SLA || 0}/${gt.TOTAL_CLOSED || 0}</span>
+                                        <span class="text-dark" style="font-size:13px;">${globalMetSLAPercent}%</span>     
+                                    </div>
+                                    <div class="progress w-100" style="height: 6px; background-color: rgba(0,0,0,0.1);">
+                                        <div class="progress-bar ${globalMetSLABarTheme}" role="progressbar" style="width: ${globalMetSLAPercent}%;"></div>
+                                    </div>
+                                </div>
+                            </td>  
+                        </tr>`;
+                }
+            } else {
+                html = '<tr><td colspan="6" class="text-center py-4 text-muted">No database response detected.</td></tr>';
+            }
+
+            $('#dept-table-body').html(html);
+            $('#dept-table-footer').html(footerHtml);
+        },
+        error: function(xhr, status, error) {
+            console.error("AJAX Error Context:", xhr.responseText);
+            $('#dept-table-body').html('<tr><td colspan="6" class="text-center text-danger py-4 fw-bold">Communications fault with fetch_department_table.php</td></tr>');
+        }
+    });
+}
+</script>

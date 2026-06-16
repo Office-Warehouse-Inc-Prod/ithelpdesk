@@ -1,4 +1,15 @@
 <?php
+
+$inactive = 180;
+
+ if (isset($_SESSION['start']) && (time() - $_SESSION['start'] > $inactive)){
+  session_unset();
+  session_destroy();
+  header("Location: adminpanel.php");
+  exit();
+ }
+
+ $_SESSION['start'] = time ();
 include 'admin.php';
 include '../condb.php';
 $con1 = new dbconfig();
@@ -1143,5 +1154,32 @@ background: linear-gradient(135deg, #837031, #E1AD01);
       </form>
       </div>
       </div>
+
+      <script>
+        
+let inactivityTime = function(){
+  let time;
+
+  window.onload = resetTimer;
+  document.onmousemove = resetTimer;
+  document.onkeypress = resetTimer;
+  document.onscroll = resetTimer;
+  document.onclick = resetTimer;
+
+  function logout(){
+    window.location.href = 'adminpanel.php';
+  }
+
+  function resetTimer(){
+    clearTimeout(time);
+    time = setTimeout(logout, 180000)
+  }
+};
+
+inactivityTime();
+
+
+</script>
+
 
 <?php include 'adminwfit_obj.php'; ?>

@@ -298,6 +298,9 @@ if ($_SESSION['login'] != 'true') {
               <a class="dropdown-item" href="genrep_bycat.php">
                 <i class="fa fa-calendar-day"></i> By Categories
               </a>
+              <a class="dropdown-item" href="performance.php">
+                <i class="fa-solid fa-arrow-trend-up"></i> IT Performance
+              </a>
             </div>
           </li>
           <li class="nav-item dropdown">

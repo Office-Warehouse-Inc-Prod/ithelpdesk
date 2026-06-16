@@ -854,7 +854,11 @@ if($_POST["operation"] == "Save and Reply")
             ':ticket_no' => $_POST["ticket_no"]
         ));
     }
-    */
+    */  $connection->commit();
+
+    header('Content-Type: text/plain; charset=utf-8');
+    echo 'Data Inserted.';
+    exit;
 }
 
 

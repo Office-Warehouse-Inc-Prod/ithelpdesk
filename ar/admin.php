@@ -298,6 +298,9 @@ if ($_SESSION['login'] != 'true') {
               <a class="dropdown-item" href="genrep_bycat.php">
                 <i class="fa fa-calendar-day"></i> By Categories
               </a>
+              <a class="dropdown-item" href="performance.php">
+                <i class="fa-solid fa-arrow-trend-up"></i> AR Performance
+              </a>
             </div>
           </li>
           <li class="nav-item dropdown">
@@ -353,6 +356,8 @@ if ($_SESSION['login'] != 'true') {
     $(document).ready(function () {
       countnewrep();
       countNwMsg();
+
+      // Initial Fetch
       getdata();
       setInterval(getdata, 1000);
 
@@ -400,7 +405,6 @@ if ($_SESSION['login'] != 'true') {
             handleUrlTicketHighlight();
           }
         });
-
         $('#notif_dataxx tbody').off('click', 'tr').on('click', 'tr', function () {
           var data = table.row(this).data();
           if (!data) return;

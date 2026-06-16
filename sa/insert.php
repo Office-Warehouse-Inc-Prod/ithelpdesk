@@ -669,6 +669,26 @@ if($_POST["operation"] == "Save and Reply")
 
     $result = $statement->execute($data);
 
+    $statement2 = $connection->prepare("
+    UPDATE tbl_notif 
+    SET 
+        store      = :store, 
+        itsup      = :itsup, 
+        notif_data = :notif_data, 
+        notif_val  = :notif_val, 
+        notif_date = :notif_date
+    WHERE ticket_no = :ticket_no
+");
+
+$statement2->execute(array(
+    ':ticket_no'  => $computed_ticket,
+    ':store'      => $_SESSION["str_num"] ?? "",
+    ':itsup'      => $userId,
+    ':notif_data' => "Ticket $computed_ticket is On Process.",
+    ':notif_val'  => '0', // Set to 0 as requested
+    ':notif_date' => date('Y-m-d H:i:s')
+));
+
     // REASSIGNED SUPPORT
     if($_POST['it_num'] != $_POST['itsup'])
     {

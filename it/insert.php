@@ -676,19 +676,26 @@ if ($_POST["operation"] == "Save and Reply") {
 
     $result = $statement->execute($data);
 
-    // NOTIFICATION: PROCESS STATE
-    $statement2 = $connection->prepare("
-        INSERT INTO tbl_notif (ticket_no, store, itsup, notif_data, notif_val, notif_date) 
-        VALUES (:ticket_no, :store, :itsup, :notif_data, :notif_val, :notif_date)
-    ");
-    $statement2->execute(array(
-        ':ticket_no'  => $computed_ticket,
-        ':store'      => $_SESSION["str_num"] ?? "",
-        ':itsup'      => $userId,
-        ':notif_data' => "Ticket $computed_ticket is On Process.",
-        ':notif_val'  => '4',
-        ':notif_date' => date('Y-m-d H:i:s')
-    ));
+   
+$statement2 = $connection->prepare("
+    UPDATE tbl_notif 
+    SET 
+        store      = :store, 
+        itsup      = :itsup, 
+        notif_data = :notif_data, 
+        notif_val  = :notif_val, 
+        notif_date = :notif_date
+    WHERE ticket_no = :ticket_no
+");
+
+$statement2->execute(array(
+    ':ticket_no'  => $computed_ticket,
+    ':store'      => $_SESSION["str_num"] ?? "",
+    ':itsup'      => $userId,
+    ':notif_data' => "Ticket $computed_ticket is On Process.",
+    ':notif_val'  => '0', // Set to 0 as requested
+    ':notif_date' => date('Y-m-d H:i:s')
+));
 
     // REASSIGNED SUPPORT LOGIC
     if (isset($_POST['it_num']) && isset($_POST['itsup']) && ($_POST['it_num'] != $_POST['itsup'])) {
@@ -860,9 +867,11 @@ if ($_POST["operation"] == "Save and Reply") {
             ':ticket_no' => $_POST["ticket_no"]
         ));
     }
-
-    // Commit everything at the end safely
     $connection->commit();
+
+    header('Content-Type: text/plain; charset=utf-8');
+    echo 'Data Inserted.';
+    exit;
 }
 
 

@@ -1,12 +1,29 @@
+
+<!-- // DEVELOPMENT NOTE: -->
+<!-- Main Dev:
+Derek Alejo
+CJ Gutana
+
+Enhancemennts and Fixes:
+Mark Allan Espinal 
+OJT - Karl Magpayo -->
+
+
+<!-- // Enhancements: -->
+<!-- - Refined navbar styling for a more modern and cohesive look.
+- Implemented dynamic notification badge updates for new reports and messages.
+- Added smooth scrolling and highlight effects when navigating to specific tickets from notifications.
+- Optimized AJAX calls for fetching notifications and counts to reduce server load and improve responsiveness.
+Minor Fixes:
+- Fixed potential JavaScript errors when notification data is empty or malformed. -->
+
 <?php
 session_start();
 if ($_SESSION['login'] != 'true') {
   header("Location: index.php");
   exit();
 }
-
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -39,30 +56,22 @@ if ($_SESSION['login'] != 'true') {
   <link rel="stylesheet" href="../assets/Date-Time-Picker-Bootstrap-4/src/sass/bootstrap-datetimepicker-build.css" />
   <link href="https://fonts.googleapis.com/css2?family=Edu+NSW+ACT+Foundation&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
-  <!-- <link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css' rel='stylesheet' /> -->
 
   <script src="../assets/Date-Time-Picker-Bootstrap-4/src/js/bootstrap-datetimepicker.js"></script>
-  <!-- <link rel="stylesheet" href="styles.css" /> -->
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&display=swap" rel="stylesheet">
   <script src="../plugins/DataTables-1.10.25/media/js/jquery.dataTables.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.js"></script>
   <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.js"></script>
   <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.js"></script>
   <script src="../js/ellipsis.js"></script>
-  <!-- <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script> -->
-
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap"
-    rel="stylesheet">
-  <!-- Select2 -->
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../dist/select2/dist/css/select2.min.css" />
   <script src="../dist/select2/dist/js/select2.min.js"></script>
-  <!-- LoadingOverlay -->
   <script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
 </head>
-
 
 <style>
   :root {
@@ -79,8 +88,7 @@ if ($_SESSION['login'] != 'true') {
     background-color: var(--bg-body);
     color: #3A3541DE;
     overflow-x: hidden;
-    background: linear-gradient(rgba(218, 219, 207, 0.3), rgba(113, 114, 136, 0.27)),
-      url('images/bg_login.png');
+    background: linear-gradient(rgba(218, 219, 207, 0.3), rgba(113, 114, 136, 0.27)), url('images/bg_login.png');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
@@ -94,7 +102,6 @@ if ($_SESSION['login'] != 'true') {
     margin-bottom: 10px;
   }
 
-  /* Make links clean + readable */
   .owi-navbar .nav-link,
   .owi-navbar .navbar-brand {
     color: #fff !important;
@@ -102,18 +109,15 @@ if ($_SESSION['login'] != 'true') {
     letter-spacing: .3px;
   }
 
-  /* Icon spacing */
   .owi-navbar .nav-link i {
     margin-right: 6px;
   }
 
-  /* Hover states */
   .owi-navbar .nav-link:hover,
   .owi-navbar .navbar-brand:hover {
     opacity: .92;
   }
 
-  /* Dropdown */
   .owi-navbar .dropdown-menu {
     background-color: #ffffff;
     border: none;
@@ -123,7 +127,6 @@ if ($_SESSION['login'] != 'true') {
     border-radius: 12px;
   }
 
-  /* Dropdown items */
   .owi-navbar .dropdown-item {
     color: black;
     border-radius: 10px;
@@ -134,7 +137,6 @@ if ($_SESSION['login'] != 'true') {
   .owi-navbar .dropdown-item i {
     margin-right: 8px;
   }
-
 
   .owi-navbar .dropdown-item:hover {
     background-color: #54699e;
@@ -156,7 +158,6 @@ if ($_SESSION['login'] != 'true') {
     }
   }
 
-  /* Badges keep visible on blue */
   .owi-navbar .badge-danger {
     background-color: #ff4d4d;
   }
@@ -167,7 +168,6 @@ if ($_SESSION['login'] != 'true') {
     font-weight: 700;
   }
 
-  /* Toggler icon visibility on blue */
   .owi-navbar .navbar-toggler {
     border-color: rgba(255, 255, 255, 0.35);
   }
@@ -176,8 +176,6 @@ if ($_SESSION['login'] != 'true') {
     filter: brightness(0) invert(1);
   }
 
-  /* Modern Underline Animation */
-  /* Modern Underline Animation Refined */
   .owi-navbar .nav-item {
     position: relative;
     margin: 0 5px;
@@ -192,14 +190,12 @@ if ($_SESSION['login'] != 'true') {
     transition: all 0.3s ease;
   }
 
-  /* The Underline - Modernized */
   .owi-navbar .nav-link::after {
     content: '';
     position: absolute;
     width: 0;
     height: 3px;
     bottom: 5px;
-    /* Lifted slightly from the bottom */
     left: 50%;
     background-color: var(--primary-color);
     transition: width 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), left 0.3s ease;
@@ -207,7 +203,6 @@ if ($_SESSION['login'] != 'true') {
     border-radius: 10px;
   }
 
-  /* Hover State */
   .owi-navbar .nav-item:hover .nav-link {
     color: #fff !important;
   }
@@ -253,8 +248,17 @@ if ($_SESSION['login'] != 'true') {
     border-top: 3px solid var(--primary-color);
     margin-top: 10px;
   }
-</style>
 
+  /* Smooth flash styling for highlighting rows */
+  .highlight-row {
+    animation: flashYellow 2.5s ease-in-out;
+  }
+
+  @keyframes flashYellow {
+    0% { background-color: #ffff99; }
+    100% { background-color: transparent; }
+  }
+</style>
 
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark owi-navbar sticky-top">
@@ -294,16 +298,20 @@ if ($_SESSION['login'] != 'true') {
               <a class="dropdown-item" href="genrep_bycat.php">
                 <i class="fa fa-calendar-day"></i> By Categories
               </a>
+              <a class="dropdown-item" href="performance.php">
+                <i class="fa-solid fa-arrow-trend-up"></i> HR Performance
+              </a>
             </div>
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="maintDrop" role="button" data-toggle="dropdown">
               <i class="fa fa-sliders-h"></i> MAINTENANCE
-              <div class="dropdown-menu" aria-labelledby="maintDrop">
-                <a class="dropdown-item" href="user_maintenance.php"><i class="fas fa-user-cog"></i> User
-                  Maintenance</a>
-                <a class="dropdown-item" href="store_maintenance.php"><i class="fas fa-store"></i> Store Maintenance</a>
-              </div>
+            </a>
+            <div class="dropdown-menu" aria-labelledby="maintDrop">
+              <a class="dropdown-item" href="user_maintenance.php"><i class="fas fa-user-cog"></i> User Maintenance</a>
+              <a class="dropdown-item" href="store_maintenance.php"><i class="fas fa-store"></i> Store Maintenance</a>
+            </div>
+          </li>
           <li class="nav-item">
             <a class="nav-link" href="adminpanel.php?create=true" id="navCreateReport">
               <i class="fa fa-plus-circle" style="color: var(--primary-color);"></i> CREATE TICKET
@@ -312,8 +320,6 @@ if ($_SESSION['login'] != 'true') {
         </ul>
 
         <ul class="navbar-nav ml-auto">
-
-
           <li class="nav-item dropdown">
             <a class="nav-link" href="#" id="notifDrop" role="button" data-toggle="dropdown">
               <i class="fa fa-bell">
@@ -329,10 +335,8 @@ if ($_SESSION['login'] != 'true') {
           </li>
 
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button"
-              data-toggle="dropdown">
-              <img class="rounded-circle border border-light" src="../images/users/<?= $_SESSION['imguser']; ?>"
-                alt="User" style="width: 30px; height: 30px; object-fit: cover;">
+            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-toggle="dropdown">
+              <img class="rounded-circle border border-light" src="../images/users/<?= $_SESSION['imguser']; ?>" alt="User" style="width: 30px; height: 30px; object-fit: cover;">
               <span class="ml-2 d-none d-lg-inline">
                 <?php echo $_SESSION['fname'] . ' ' . $_SESSION['lstname']; ?>
               </span>
@@ -340,8 +344,7 @@ if ($_SESSION['login'] != 'true') {
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
               <a class="dropdown-item" href="change_password.php"><i class="fas fa-key mr-2"></i>Change Password</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item text-danger" href="../logout.php"><i class="fas fa-sign-out-alt mr-2"></i>Log
-                Out</a>
+              <a class="dropdown-item text-danger" href="../logout.php"><i class="fas fa-sign-out-alt mr-2"></i>Log Out</a>
             </div>
           </li>
         </ul>
@@ -354,32 +357,32 @@ if ($_SESSION['login'] != 'true') {
       countnewrep();
       countNwMsg();
 
+      // Initial Fetch
+      getdata();
+      setInterval(getdata, 1000);
+
       /**
        * Getdata.
        */
       function getdata() {
         $.post('fetchdata/fetch_data.php', { mode: 'notif_support' }, function (data) {
-          // console.log(data);
           notifdatas(data);
         }, 'json');
       }
-    setInterval(getdata, 1000);
 
-
-      var table
+      var table;
       /**
        * Notifdatas.
        */
       function notifdatas(t) {
-        const dataset = t.ntfsupdata;
+        const dataset = t.ntfsupdata || [];
         table = $("#notif_dataxx").DataTable({
-
-          "dom":
-            '<"pull-left"lf><"pull-right">tip',
-          // stateSave: true,
+          "dom": '<"pull-left"lf><"pull-right">tip',
           "pagingType": "full_numbers",
           "bDestroy": true,
-          "responsive": true, "lengthChange": false, "autoWidth": false,
+          "responsive": true, 
+          "lengthChange": false, 
+          "autoWidth": false,
           "bInfo": false,
           "bFilter": false,
           "paging": false,
@@ -389,10 +392,7 @@ if ($_SESSION['login'] != 'true') {
             "emptyTable": "No new Notification"
           },
           "data": dataset,
-          // "order": [[ 0, "Asc" ]],
-
           "columns": [
-
             { title: "NOTIFICATION", data: 'notif_data', "defaultContent": "" }
           ],
           "columnDefs": [
@@ -400,78 +400,116 @@ if ($_SESSION['login'] != 'true') {
               targets: 0,
               className: 'bolded'
             }
-          ]
-
+          ],
+          "initComplete": function() {
+            handleUrlTicketHighlight();
+          }
         });
+        $('#notif_dataxx tbody').off('click', 'tr').on('click', 'tr', function () {
+          var data = table.row(this).data();
+          if (!data) return;
 
-       $('#notif_dataxx tbody').on('click', 'tr', function () {
-  var data = table.row(this).data();
-  var ticketVal = data.ticket_no;
-  var notifVal = data.notif_val;
-  var ticketStatus = data.status ? data.status.toLowerCase().trim() : '';
+          var ticketVal = data.ticket_no;
+          var notifVal = data.notif_val;
+          var ticketStatus = data.status ? data.status.toUpperCase().trim() : '';
 
-  $('#myInput').val(ticketVal).trigger('input');
-  $.post('change_notif.php', { ticketVal: ticketVal }, function (response) {
-    getdata();
-  });
+          $('#myInput').val(ticketVal).trigger('input');
+          $.post('change_notif.php', { ticketVal: ticketVal }, function (response) {
+            getdata();
+          });
 
-  if (notifVal == '1') {
-    window.location.href = "adminwfit.php?ticket_no=" + encodeURIComponent(ticketVal);
-  } 
-  else if (notifVal == '2') {
-    if (ticketStatus === 'ON PROCESS') {
-      window.location.href = "adminpanel.php?ticket_no=" + encodeURIComponent(ticketVal) + "#report_data";
-    } 
-    else if (ticketStatus === 'Assigned') {
-      window.location.href = "adminwfit.php?ticket_no=" + encodeURIComponent(ticketVal);
-    }
-  }
-});
+          if (notifVal == '1') {
+            window.location.href = "adminwfit.php?ticket_no=" + encodeURIComponent(ticketVal);
+          } 
+          else if (notifVal == '2') {
+            if (ticketStatus === 'ON PROCESS') {
+              window.location.href = "adminpanel.php?ticket_no=" + encodeURIComponent(ticketVal) + "#report_data";
+            } 
+            else if (ticketStatus === 'ASSIGNED') {
+              window.location.href = "adminwfit.php?ticket_no=" + encodeURIComponent(ticketVal);
+            }
+          }
+        });
+      }
 
-      } // end of data table
+      /**
+       * Get url param.
+       */
+      function getUrlParam(param) {
+        var urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(param);
+      }
 
+      var targetTicket = getUrlParam('ticket_no');
 
+      if (targetTicket && typeof reptable !== 'undefined') {
+        setTimeout(function() {
+          var foundRow = null;
+
+          reptable.rows().every(function (rowIdx, tableLoop, rowLoop) {
+            var rowData = this.data();
+            if (rowData && rowData.ticket_no == targetTicket) {
+              foundRow = this.node();
+            }
+          });
+
+          if (foundRow) {
+            $(foundRow).find('button[name="update"]').trigger('click');
+
+            $('html, body').animate({
+              scrollTop: $(foundRow).offset().top - 100
+            }, 800, function() {
+              $(foundRow).css('transition', 'background-color 0.5s ease');
+              $(foundRow).css('background-color', '#ffff99');
+
+              setTimeout(function() {
+                $(foundRow).css('background-color', ''); 
+              }, 1200);
+            });
+          }
+        }, 600);
+      }
+
+      /**
+       * Handle url ticket highlight.
+       */
+      function handleUrlTicketHighlight() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const ticketNo = urlParams.get('ticket_no');
+        
+        if (ticketNo && window.location.hash === '#report_data') {
+          let reportElement = $('#report_data');
+          
+          if (reportElement.length) {
+            $('html, body').animate({
+              scrollTop: reportElement.offset().top - 100
+            }, 800, function() {
+              let matchedRow = $(`tr:contains('${ticketNo}')`);
+              if (matchedRow.length) {
+                matchedRow.addClass('highlight-row');
+                setTimeout(() => {
+                  matchedRow.removeClass('highlight-row');
+                }, 2500);
+              } else {
+                reportElement.css('transition', 'background-color 0.5s');
+                reportElement.css('background-color', '#ffff99');
+                setTimeout(() => { reportElement.css('background-color', 'transparent'); }, 1200);
+              }
+            });
+          }
+        }
+      }
     });
 
-
-
-    // function countnewrep() {
-
-
-    // setInterval(function(){
-
-    // var xhttp = new XMLHttpRequest();
-    // xhttp.onreadystatechange = function() {
-    // if (this.readyState == 4 && this.status == 200) {
-    // document.getElementById("notif_newrep").innerHTML = this.responseText;
-    // }
-    // };
-    // xhttp.open("GET", "fetchdata/notif_newrep.php", true);
-    // xhttp.send();
-
-    // },1000);
-
-
-    // }
-
-
     document.addEventListener("DOMContentLoaded", function () {
-
-      // getNewReportCount();      // run immediately
-      // getTransferCount();
-      setInterval(getNewReportCount, 5000); // every 5 seconds (DO NOT use 1s)
-
+      setInterval(getNewReportCount, 5000);
     });
 
     async function getNewReportCount() {
-
       try {
-
         const response = await fetch("fetchdata/notif_newrep.php?_=" + Date.now());
         const count = (await response.text()).trim();
-
         const badge = document.getElementById("notif_newrep");
-
         if (!badge) return;
 
         if (count === "0" || count === "") {
@@ -480,23 +518,16 @@ if ($_SESSION['login'] != 'true') {
           badge.style.display = "inline-block";
           badge.innerHTML = count;
         }
-
       } catch (error) {
         console.error("Notification count dev error:", error);
       }
     }
 
-
-
     async function getTransferCount() {
-
       try {
-
-        const xresponse = await fetch("fetchdata/notif_transfer.php?_=" + Date.now());
-        const xcount = (await xresponse.text()).trim();
-
+        const xcall = await fetch("fetchdata/notif_transfer.php?_=" + Date.now());
+        const xcount = (await xcall.text()).trim();
         const xbadge = document.getElementById("notif_transfer");
-
         if (!xbadge) return;
 
         if (xcount === "0" || xcount === "") {
@@ -505,7 +536,6 @@ if ($_SESSION['login'] != 'true') {
           xbadge.style.display = "inline-block";
           xbadge.innerHTML = xcount;
         }
-
       } catch (error) {
         console.error("Notification count error:", error);
       }
@@ -515,49 +545,37 @@ if ($_SESSION['login'] != 'true') {
      * Countnewrep.
      */
     function countnewrep() {
-
-
       setInterval(function () {
-
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
           if (this.readyState == 4 && this.status == 200) {
-            document.getElementById("notif_newrep").innerHTML = this.responseText;
+            var badge = document.getElementById("notif_newrep");
+            if (badge) badge.innerHTML = this.responseText;
           }
         };
         xhttp.open("GET", "fetchdata/notif_newrep.php", true);
         xhttp.send();
-
       }, 1000);
-
-
     }
 
     /**
      * Count nw msg.
      */
     function countNwMsg() {
-
-
       setInterval(function () {
-
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
           if (this.readyState == 4 && this.status == 200) {
-            document.getElementById("notif_newmsg").innerHTML = this.responseText;
+            var badge = document.getElementById("notif_newmsg");
+            if (badge) badge.innerHTML = this.responseText;
           }
         };
         xhttp.open("GET", "fetchdata/fetch_newmsg.php", true);
         xhttp.send();
-
       }, 1000);
-
-
     }
 
     var currentUrl = window.location.pathname.split("/").pop();
-
-    // If index or empty, default to home
     if (currentUrl === "" || currentUrl === "index.php") {
       currentUrl = "adminpanel.php";
     }
@@ -565,14 +583,12 @@ if ($_SESSION['login'] != 'true') {
     $('.navbar-nav .nav-item').each(function () {
       var $this = $(this);
       var linkHref = $this.find('a').attr('href');
-
-      // Remove default 'active' class first to prevent duplicates
       $this.removeClass('active');
 
-      // Check if the link href matches the current URL
       if (linkHref === currentUrl) {
         $this.addClass('active');
       }
+
       if ($this.hasClass('dropdown')) {
         $this.find('.dropdown-item').each(function () {
           if ($(this).attr('href') === currentUrl) {
@@ -581,5 +597,4 @@ if ($_SESSION['login'] != 'true') {
         });
       }
     });
-
   </script>
