@@ -867,6 +867,7 @@ $statement2->execute(array(
             ':ticket_no' => $_POST["ticket_no"]
         ));
     }
+// Commit everything at the end safely
     $connection->commit();
 
     header('Content-Type: text/plain; charset=utf-8');

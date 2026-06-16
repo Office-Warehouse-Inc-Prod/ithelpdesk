@@ -18,6 +18,22 @@ include('db.php');
 if(isset($_POST["operation"]))
 {
 
+  // Normalize incoming form field names to expected keys
+  // Map alternative names used in different forms to the canonical keys used below
+  $_POST['date_created'] = isset($_POST['date_created']) ? $_POST['date_created'] : (isset($_POST['date_createdx']) ? $_POST['date_createdx'] : null);
+  $_POST['subject'] = isset($_POST['subject']) ? $_POST['subject'] : (isset($_POST['message']) ? $_POST['message'] : (isset($_POST['subjct']) ? $_POST['subjct'] : null));
+  $_POST['it_num'] = isset($_POST['it_num']) ? $_POST['it_num'] : (isset($_POST['itsup']) ? $_POST['itsup'] : null);
+  $_POST['store'] = isset($_POST['store']) ? $_POST['store'] : (isset($_POST['str_num']) ? $_POST['str_num'] : null);
+  $_POST['sub'] = isset($_POST['sub']) ? $_POST['sub'] : (isset($_POST['sub_num']) ? $_POST['sub_num'] : null);
+  $_POST['isp'] = isset($_POST['isp']) ? $_POST['isp'] : (isset($_POST['isp_num']) ? $_POST['isp_num'] : null);
+  $_POST['date_refNo'] = isset($_POST['date_refNo']) ? $_POST['date_refNo'] : null;
+  $_POST['date_closed'] = isset($_POST['date_closed']) ? $_POST['date_closed'] : null;
+  $_POST['close_by'] = isset($_POST['close_by']) ? $_POST['close_by'] : null;
+  $_POST['remarks'] = isset($_POST['remarks']) ? $_POST['remarks'] : null;
+  $_POST['admsg'] = isset($_POST['admsg']) ? $_POST['admsg'] : null;
+  $_POST['u_id'] = isset($_POST['u_id']) ? $_POST['u_id'] : $userid;
+
+
  if($_POST["operation"] == "Add")
  {
 

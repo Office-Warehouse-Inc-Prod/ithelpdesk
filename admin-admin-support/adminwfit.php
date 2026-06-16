@@ -1,15 +1,4 @@
 <?php
-
-$inactive = 180;
-
- if (isset($_SESSION['start']) && (time() - $_SESSION['start'] > $inactive)){
-  session_unset();
-  session_destroy();
-  header("Location: adminpanel.php");
-  exit();
- }
-
- $_SESSION['start'] = time ();
 include 'admin.php';
 include '../condb.php';
 
@@ -365,46 +354,16 @@ $con1=new dbconfig();
     padding: 14px 18px !important;
   }
 
- 
-label{
-  font-size: 11px;
-  font-weight: 900;
-  color: #213456;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  margin-bottom: 6px;
-}
-input.form-control.custom-disabled-input:read-only,
-textarea.form-control.custom-disabled-input:read-only {
-  color: #6c757d !important;
-  background-color: transparent !important; 
-  border: none !important; 
-  border-bottom: 1px solid #213456 !important; 
-  border-radius: 0px !important; 
-  resize: none !important; 
-}
+  /* Labels */
+  label {
+    font-size: 11px;
+    font-weight: 900;
+    color: rgba(17,24,39,.65);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
 
-select.custom-select-placeholder.placeholder-active,
-textarea.form-control.custom-select-placeholder:placeholder-shown {
-  color: red !important;
-  border: 1px solid #ced4da !important;
-  border-radius: .2rem !important;
-  background-color: #fff !important;
-}
-
-textarea.form-control.custom-select-placeholder::placeholder {
-  color: red !important;
-  opacity: 0.7;
-}
-
-select.custom-select-placeholder.has-value,
-textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
-  color: #212529 !important; 
-  border: none !important; 
-  border-bottom: 1px solid #213456 !important; 
-  border-radius: 0px !important;
-  background-color: transparent !important;
-}
   /* Inputs / Select / Textarea */
   .form-control,
   .form-control-sm,
@@ -413,6 +372,7 @@ textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
     background: #fff !important;
     border: 1px solid var(--line) !important;
     color: var(--text) !important;
+    border-radius: 14px !important;
     padding: 10px 12px !important;
   }
 
@@ -578,33 +538,33 @@ textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
             <div class="form-group col-md-4">
               <label>STORE</label>
               <input type="hidden" name="store" id="store" readonly value="">
-              <input type="text" class="form-control form-control-sm custom-disabled-input" name="str_desc" id="str_desc" readonly value="">
+              <input type="text" class="form-control form-control-sm" name="str_desc" id="str_desc" readonly value="">
             </div>
           
             <div class="form-group col-md-4">
               <label>Created By:</label>
-              <input type="text" class="form-control form-control-sm custom-disabled-input" name="crtd_by" id="crtd_by" readonly>
+              <input type="text" class="form-control form-control-sm" name="crtd_by" id="crtd_by" readonly>
             </div>
           
             <input type="hidden" class="form-control form-control-sm" name="ticket_no" id="ticket_no">
             <div class="form-group col-md-4">
               <label>DATE CREATED</label>
-              <input type="text" class="form-control form-control-sm custom-disabled-input" name="date_createdx" id="date_createdx" readonly value="">
+              <input type="text" class="form-control form-control-sm" name="date_createdx" id="date_createdx" readonly value="">
             </div>
 
-            <div class="form-group col-md-4">
+            <div class="form-group col-md-12">
               <label>SUBJECT</label>
-              <textarea name="concern" id="concern" class="form-control form-control-sm custom-disabled-input" placeholder="Input Concern" style="text-transform:uppercase" readonly></textarea>
+              <textarea name="concern" id="concern" class="form-control form-control-sm" placeholder="Input Concern" style="text-transform:uppercase" readonly></textarea>
             </div>
 
             <div class="form-group col-md-4">
               <label>Service Requested:</label>
-              <input type="text" class="form-control form-control-sm custom-disabled-input" name="tos" id="tos" readonly>
+              <input type="text" class="form-control form-control-sm" name="tos" id="tos" readonly>
             </div>
 
             <div class="form-group col-md-12">
               <label>CONCERN</label>
-              <textarea name="concern" id="message" class="form-control form-control-sm custom-disabled-input" placeholder="Input Concern" style="text-transform:uppercase" readonly></textarea>
+              <textarea name="concern" id="message" class="form-control form-control-sm" placeholder="Input Concern" style="text-transform:uppercase" readonly></textarea>
             </div>
 
              <div class="form-group col-md-12">
@@ -615,14 +575,10 @@ textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
               </div>
             </div>
 
-
-
-            <hr style="border:2px solid #333; width: 100%; ">
-
             <div class="form-group col-md-4">
               <label>VIA</label>
-              <select class="form-control form-control-sm custom-select-placeholder placeholder-active" name="via" id="via" required onchange="handleDropdownChange(this)">
-                <option value=""style="color:red;"> &larr; VIA &rarr;</option>
+              <select class="form-control form-control-sm" name="via" id="via" required>
+                <option value=""> &larr; VIA &rarr;</option>
                 <?php
                   $query = "select * from via_main";
                   $run = $con1->prepare($query);
@@ -630,7 +586,7 @@ textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
                   $rs = $run->get_result();
                   while ($res = $rs->fetch_assoc()) {
                 ?>
-                <option value="<?=$res['via_desc']?>"style="color: #333;"><?=$res['via_desc']?></option>
+                <option value="<?=$res['via_desc']?>"><?=$res['via_desc']?></option>
                 <?php } ?>
               </select>
             </div>
@@ -638,8 +594,8 @@ textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
             <div class="form-group col-md-8">
               <label>ASSIGNED SUPPORT</label>
               <input type="hidden" name="it_num" id="it_num" readonly>
-              <select class="form-control form-control-sm custom-select-placeholder placeholder-active" name="itsup" id="itsup"required onchange="handleDropdownChange(this)">
-                <option value=""style="color:red;">&larr; ASSIGN SUPPORT &rarr;</option>  
+              <select class="form-control form-control-sm" name="itsup" id="itsup">
+                <option value="">Assign support...</option>  
                 <?php
                   $query="select * from it_tech WHERE itsup NOT IN ('4','7','8','12','14') AND deptsel = '2'";
                   $run=$con1->prepare($query);
@@ -649,7 +605,7 @@ textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
                     $tchid = $res['itsup'];
                     $tchdesc = $res['it_desc'];
                 ?>
-                <option value="<?php echo $tchid;?>"style="color: #333;"><?= $tchdesc; ?></option>
+                <option value="<?php echo $tchid;?>"><?= $tchdesc; ?></option>
                 <?php } ?>    
               </select> 
             </div>
@@ -657,8 +613,8 @@ textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
             <div class="form-group col-md-6">
               <label>CATEGORY</label>
               <input type="hidden" name="cat_num" id="cat_num" readonly>
-              <select class="form-control form-control-sm custom-select-placeholder placeholder-active" name="cat" id="cat" required onchange="handleDropdownChange(this)">
-                <option value=""style="color:red;"> &larr; CATEGORY &rarr;</option>  
+              <select class="form-control form-control-sm" name="cat" id="cat" required>
+                <option value=""> &larr; CATEGORY &rarr;</option>  
                 <?php
                   $query="select * from categories WHERE deptsel = '2' AND (old_tag IS NULL OR old_tag <> 'Y') ORDER BY order_id ASC";
                   $run=$con1->prepare($query);
@@ -668,7 +624,7 @@ textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
                     $supid = $res['cat_id'];
                     $suppdesc = $res['cat_desc'];
                 ?>
-                <option value="<?php echo $supid;?>"style="color: #333;"><?= $suppdesc; ?></option>
+                <option value="<?php echo $supid;?>"><?= $suppdesc; ?></option>
                 <?php } ?>
               </select> 
             </div>
@@ -676,14 +632,14 @@ textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
             <div class="form-group col-md-6">
               <label>SUB CATEGORY</label>
               <input type="hidden" name="sub_num" id="sub_num" readonly>
-              <select class="form-control form-control-sm custom-select-placeholder placeholder-active" name="sub" id="sub"required onchange="handleDropdownChange(this)"></select>
+              <select class="form-control form-control-sm" name="sub" id="sub"></select>
             </div>
 
             <div class="form-group col-md-4 hide_isp">
               <label for="isp" id="lbl_isp">Service Provider</label>
               <input type="hidden" name="isp_num" id="isp_num" readonly>
               <select class="form-control form-control-sm" name="isp" id="isp">
-                <option value=""style="color:red;">Select Network Provider</option>  
+                <option value="">Select Network Provider</option>  
                 <?php
                   $query="select * from tbl_isp";
                   $run=$con1->prepare($query);
@@ -693,7 +649,7 @@ textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
                     $ispid = $res['isp_id'];
                     $ispdesc = $res['isp_shortDesc'];
                 ?>
-                <option value="<?php echo $ispid;?>"style="color: #333;"><?= $ispdesc; ?></option>
+                <option value="<?php echo $ispid;?>"><?= $ispdesc; ?></option>
                 <?php } ?>
               </select> 
             </div> 
@@ -713,10 +669,10 @@ textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
               </div>
             </div>
 
-            <div class="form-group col-md-4">
+            <div class="form-group col-md-4 selected">
               <label>STATUS</label>
-              <select class="form-control form-control-sm custom-select-placeholder placeholder-active" name="status" id="status" required onchange="handleDropdownChange(this)">
-                <option value=""style="color:red;"> &larr; STATUS &rarr;</option>
+              <select class="form-control form-control-sm" name="status" id="status" required>
+                <option value=""> &larr; Status &rarr;</option>
                 <?php
                   $query="select * from status WHERE it_module_tag = 'Y' AND stat_id <> '29'";
                   $run=$con1->prepare($query);
@@ -724,7 +680,7 @@ textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
                   $rs=$run->get_result();
                   while ($res=$rs->fetch_assoc()) {
                 ?>
-                  <option value="<?=$res['stat_desc'] ?>" style="color: #333;"><?=$res['stat_desc'] ?></option>
+                <option><?=$res['stat_desc'] ?></option>
                 <?php } ?>
               </select>
             </div>
@@ -746,7 +702,7 @@ textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
 
             <div class="form-group col-md-12">
               <label>Work Output: </label>
-              <textarea name="remarks" id="remarks" class="form-control form-control-sm custom-select-placeholder placeholder-active" placeholder="Your Workoutput" style="text-transform:uppercase" required onchange="handleDropdownChange(this)"></textarea>
+              <textarea name="remarks" id="remarks" class="form-control form-control-sm" placeholder="Your Workoutput" style="text-transform:uppercase" required></textarea>
             </div>
             <hr/>
 
@@ -1039,37 +995,5 @@ function displayAttachmentsFromData(data) {
     });
 }
 
-
-let inactivityTime = function(){
-  let time;
-
-  window.onload = resetTimer;
-  document.onmousemove = resetTimer;
-  document.onkeypress = resetTimer;
-  document.onscroll = resetTimer;
-  document.onclick = resetTimer;
-
-  function logout(){
-    window.location.href = 'adminpanel.php';
-  }
-
-  function resetTimer(){
-    clearTimeout(time);
-    time = setTimeout(logout, 180000)
-  }
-};
-
-inactivityTime();
-
-
-function handleDropdownChange(selectElement) {
-  if (selectElement.value === "") {
-    selectElement.classList.add("placeholder-active");
-    selectElement.classList.remove("has-value");
-  } else {
-    selectElement.classList.remove("placeholder-active");
-    selectElement.classList.add("has-value");
-  }
-}
 
 </script>
