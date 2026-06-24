@@ -299,7 +299,7 @@ if ($_SESSION['login'] != 'true') {
                 <i class="fa fa-calendar-day"></i> By Categories
               </a>
               <a class="dropdown-item" href="performance.php">
-                <i class="fa-solid fa-arrow-trend-up"></i> IT Performance
+                <i class="fa-solid fa-arrow-trend-up"></i> Treasury Performance
               </a>
             </div>
           </li>

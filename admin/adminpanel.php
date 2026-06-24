@@ -686,7 +686,7 @@ background: linear-gradient(135deg, #837031, #E1AD01);
       <div class="card-title" style="font-size: 15px;">ESCALATED <br><span class="float-center" id="count_nonesca"></span></div>
     </div>
     <div class="card-footer d-flex align-items-center justify-content-between">
-      <a class="text-white stretched-link" id="card_nonesca" href="#bottom" value="NON ESCALATED" ><span class="small text-white">Click here for more info.</span></a>
+      <a class="text-white stretched-link" id="card_nonesca" href="#bottom" value="ESCALATED" ><span class="small text-white">Click here for more info.</span></a>
       <div class="go-arrow">  </div>
     </div>
   </div>

@@ -66,21 +66,30 @@ if(/Android|webOS|iPhone|iPad|Mac|Macintosh|iPod|BlackBerry|IEMobile|Opera Mini/
 var user_id = <?= $_SESSION['user_id']; ?>
 
 let val = '';
-$('#card_totalval').click(function(e) {
+$('#card_assigned').click(function(e) {
 e.preventDefault();
 val =  $(this).attr("value");
 
 });
-$('#card_openval').click(function(e) {
+$('#card_onprocess').click(function(e) {
 e.preventDefault();
 val =  $(this).attr("value");
 });
 
-$('#card_openwfaval').click(function(e) {
+$('#card_pending').click(function(e) {
 e.preventDefault();
 val =  $(this).attr("value");
 });
-$('#card_closedval').click(function(e) {
+$('#card_nonesca').click(function(e) {
+e.preventDefault();
+val =  $(this).attr("value");
+});
+$('#card_subforclosing').click(function(e) {
+e.preventDefault();
+val =  $(this).attr("value");
+});
+
+$('#card_closed').click(function(e) {
 e.preventDefault();
 val =  $(this).attr("value");
 });
@@ -411,7 +420,7 @@ $('#addmsg').val("");
 // .columns().search( '' )
 // .draw();
 
-$('#card_totalval').on('click', function () {
+$('#card_assigned').on('click', function () {
 var val =  $(this).attr("value");
 // alert(val);
 table
@@ -421,7 +430,7 @@ table
 } );
 
 
-$('#card_openval').on('click', function () {
+$('#card_onprocess').on('click', function () {
 var val =  $(this).attr("value");
 // alert(val);
 table
@@ -430,7 +439,7 @@ table
 .draw();
 } );
 
-$('#card_openwfaval').on('click', function () {
+$('#card_pending').on('click', function () {
 var val =  $(this).attr("value");
 // alert(val);
 table
@@ -439,7 +448,25 @@ table
 .draw();
 } );
 
-$('#card_closedval').on('click', function () {
+$('#card_nonesca').on('click', function () {
+var val =  $(this).attr("value");
+// alert(val);
+table
+.columns( 7 )
+.search(val)
+.draw();
+} );
+
+$('#card_subforclosing').on('click', function () {
+var val =  $(this).attr("value");
+// alert(val);
+table
+.columns( 7 )
+.search(val)
+.draw();
+} );
+
+$('#card_closed').on('click', function () {
 var val =  $(this).attr("value");
 // alert(val);
 table
@@ -486,11 +513,12 @@ $.post('fetchdata/fetch_data.php',{yr:y,mode:'yearch'}, function(data) {
 let card_data = jQuery.parseJSON(data); 
 const a = card_data;
 // console.log(a)
-$('#count_total').html(a[0].total_res);
-$('#count_open').html(a[0].open_res);
-$('#count_owfa').html(a[0].owfa_res);
-$('#count_closed').html(a[0].cls_res);
-$('#today_closed').html(a[0].t_res);
+$('#card_assigned').html(a[0].assigned_res);
+$('#card_onprocess').html(a[0].onprocess_res);
+$('#card_pending').html(a[0].pending_res);
+$('#card_nonesca').html(a[0].nonesca_res);
+$('#card_subforclosing').html(a[0].subforclosing_res);
+$('#card_closed').html(a[0].closed_res);
 
 
 });

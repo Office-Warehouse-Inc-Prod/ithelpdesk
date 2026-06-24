@@ -640,7 +640,7 @@ textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
               <select class="form-control form-control-sm custom-select-placeholder placeholder-active" name="itsup" id="itsup"required onchange="handleDropdownChange(this)">
                 <option value=""style="color:red;"> &larr;ASSIGN SUPPORT&larr;</option>  
                 <?php
-                  $query="select * from it_tech WHERE itsup NOT IN ('4','7','8','12','14') AND deptsel = '1'";
+                  $query="select * from it_tech WHERE itsup NOT IN ('4','8','12','14') AND deptsel = '1'";
                   $run=$con1->prepare($query);
                   $run->execute();
                   $rs=$run->get_result();

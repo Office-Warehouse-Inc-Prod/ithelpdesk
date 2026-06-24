@@ -53,7 +53,7 @@ $dept_ids_clean = implode(',', $dept_ids_array);
         END) AS t_pending,
 
         COUNT(CASE 
-            WHEN reports.`status` = 'NON ESCALATED' 
+            WHEN reports.`status` = 'ESCALATED' 
             THEN 1 ELSE NULL 
         END) AS t_nonesca,
 

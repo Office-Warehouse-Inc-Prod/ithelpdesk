@@ -861,7 +861,7 @@ Start of Add/Edit Modal
                     <select class="form-control form-control-sm" name="itsup" id="itsup" required>
                       <option value="">Assign support...</option>
                       <?php
-                      $query = "select * from it_tech WHERE deptsel = '1' AND itsup NOT IN ('4','7','8','12','14')";
+                      $query = "select * from it_tech WHERE deptsel = '1' AND itsup NOT IN ('4','8','12','14')";
                       $run = $conn->prepare($query);
                       $run->execute();
                       $rs = $run->get_result();

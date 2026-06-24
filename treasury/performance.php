@@ -565,7 +565,7 @@ select.form-control, .form-control, .form-select {
             169 E.Rodriguez Jr. Ave., Brgy. Bagumbayan, Quezon City
           </div>
           <div class="header" style="font-size: 25px; margin-top:6px; display: flex; align-items: center; justify-content: center; text-align: center;">
-            IT HELPDESK TICKET SUMMARY
+            Treasury HELPDESK TICKET SUMMARY
           </div>
           <div class="datetime-container" style=" margin-top:1px; display: flex; align-items: center; justify-content: center; text-align: center;">
             <p>As of: <strong><?php echo $ph_datetime; ?></strong></p>

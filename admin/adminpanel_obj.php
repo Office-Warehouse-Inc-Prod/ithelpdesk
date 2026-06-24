@@ -49,14 +49,21 @@ if(/Android|webOS|iPhone|iPad|Mac|Macintosh|iPod|BlackBerry|IEMobile|Opera Mini/
 var user_id = <?= $_SESSION['user_id']; ?>
 
 let val = '';
-$('#count_assigned').click(function(e) {
+$('#card_totalval').click(function(e) {
 e.preventDefault();
 val =  $(this).attr("value");
     $('html, body').animate({
         scrollTop: $('#report_data').offset().top - 80
     }, 600);
 });
-$('#count_onprocess').click(function(e) {
+$('#card_assigned').click(function(e) {
+e.preventDefault();
+val =  $(this).attr("value");
+    $('html, body').animate({
+        scrollTop: $('#report_data').offset().top - 80
+    }, 600);
+});
+$('#card_onprocess').click(function(e) {
 e.preventDefault();
 val =  $(this).attr("value");
 // console.log(val)
@@ -65,7 +72,7 @@ val =  $(this).attr("value");
     }, 600);
 });
 
-$('#count_pending').click(function(e) {
+$('#card_pending').click(function(e) {
 e.preventDefault();
 val =  $(this).attr("value");
 // console.log(val)
@@ -74,14 +81,14 @@ val =  $(this).attr("value");
     }, 600);
 });
 
-$('#count_nonesca').click(function(e) {
+$('#card_nonesca').click(function(e) {
 e.preventDefault();
 val =  $(this).attr("value");
     $('html, body').animate({
         scrollTop: $('#report_data').offset().top - 80
     }, 600);
 });
-$('#count_subforclosing').click(function(e) {
+$('#card_subforclosing').click(function(e) {
 e.preventDefault();
 val =  $(this).attr("value");
     $('html, body').animate({
@@ -89,7 +96,7 @@ val =  $(this).attr("value");
     }, 600);
 });
 
-$('#count_closed').click(function(e) {
+$('#card_closed').click(function(e) {
 e.preventDefault();
 val =  $(this).attr("value");
     $('html, body').animate({
@@ -516,6 +523,7 @@ $('#addmsg').val("");
 // .columns().search( '' )
 // .draw();
 
+
 $('#card_totalval').on('click', function () {
 var val =  $(this).attr("value");
 // alert(val);
@@ -525,50 +533,66 @@ table
 .draw();
 } );
 
-
-function filterStatus(status, nonEscalated = false) {
-  table.columns(7).search(status);
-  table.columns(8).search(nonEscalated ? 'Y' : '');
-  table.draw();
-}
-
 $('#card_assigned').on('click', function () {
-  filterStatus('ASSIGNED');
-});
+// var val =  $(this).attr("value");
+var val =  $(this).attr("value");
+// alert(val);
+table
+.columns( 7 )
+.search(val)
+.draw();
+} );
 
 $('#card_onprocess').on('click', function () {
-  filterStatus('PENDING', true);
-});
+var val =  $(this).attr("value");
+// alert(val);
+table
+.columns( 7 )
+.search(val)
+.draw();
+} );
 
 $('#card_pending').on('click', function () {
-  var val = $(this).attr("value");
-  filterStatus(val);
-});
+var val =  $(this).attr("value");
+// alert(val);
+table
+.columns( 7 )
+.search(val)
+.draw();
+} );
 
 $('#card_nonesca').on('click', function () {
-  var val = $(this).attr("value");
-  filterStatus(val);
-});
+var val =  $(this).attr("value");
+// alert(val);
+table
+.columns( 7 )
+.search(val)
+.draw();
+} );
 
 $('#card_subforclosing').on('click', function () {
-  var val = $(this).attr("value");
-  filterStatus(val);
-});
-$('#card_closed').on('click', function () {
-  var val = $(this).attr("value");
-  filterStatus(val);
-});
+var val =  $(this).attr("value");
+// alert(val);
+table
+.columns( 7 )
+.search(val)
+.draw();
+} );
 
+$('#card_closed').on('click', function () {
+var val =  $(this).attr("value");
+// alert(val);
+table
+.columns( 7 )
+.search(val)
+.draw();
+} );
 
 
 $('.clcktxt').click(function () { 
   var val =  $(this).attr("value");
-  if (val === 'NON ESCALATED') {
-    filterStatus('PENDING', true);
-  } else {
-    filterStatus(val);
-  }
-
+// alert(val);
+table.columns(7).search(val).draw();
 $('#network_tb').slideToggle();
     $('html, body').animate({
         scrollTop: 1600
@@ -606,6 +630,7 @@ function get_card_data(yr) {
         function (data) {
             let card_data = jQuery.parseJSON(data);
             const a = card_data;
+            $('#count_total').html(a[0].total_res);
 
             $('#count_assigned').html(a[0].assigned_res);
             $('#count_onprocess').html(a[0].onprocess_res);
