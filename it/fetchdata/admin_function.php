@@ -1038,7 +1038,7 @@ ORDER BY
 		// fix update please main obj
 		$query = "
 	Select * from vw6 WHERE
-	vw6.sub_id NOT IN ('15','28','34','35') AND status <> 'NEW REPORT' AND itsup = " . $_POST['itVal'] . " AND years IN (" . $_POST['yrsx1'] . ") ORDER BY `status` DESC";
+	vw6.sub_id NOT IN ('15','28','34','35') AND status <> 'NEW REPORT' AND itsup = " . $_POST['itVal'] . " AND years IN (" . $_POST['yrsx1'] . ") AND deptsel = 1 ORDER BY `status` DESC";
 		$statement = $this->connection->prepare($query);
 		$statement->execute();
 		$result = $statement->fetchAll();
