@@ -259,7 +259,7 @@
         "columnDefs": [
           {
 
-            targets: [7, 11, 12],
+            targets: [7, 10, 11, 12],
             "width": "2%",
             render: function (data, type, row) {
               if (type === 'display') {
@@ -382,10 +382,18 @@
         $('#isp_num').val(data['isp_id']);
         $('#isp').val(data['isp_id']);
         $('#refNo').val(data['refNo']);
-        $('#date_refNo').val(data['date_refNo']);
+        let dtRef = data['date_refNo'] ? data['date_refNo'].trim() : "";
+        if (dtRef === "01/01/1970 01:00" || dtRef === "01/01/1970 08:00" || dtRef === "01/01/1970 00:00") {
+          dtRef = "";
+        }
+        $('#date_refNo').val(dtRef);
         $('#file-input').val("");
         admin_hideshowforms();
-        $('#date_closed').val(data['date_closed']);
+        let dtClosed = data['date_closed'] ? data['date_closed'].trim() : "";
+        if (dtClosed === "01/01/1970 01:00" || dtClosed === "01/01/1970 08:00" || dtClosed === "01/01/1970 00:00") {
+          dtClosed = "";
+        }
+        $('#date_closed').val(dtClosed);
         $('#remarks').val(data['remarks']);
         // $('#remarks').val('');
         unilayout_netshowmodalform();

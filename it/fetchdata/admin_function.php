@@ -3,6 +3,14 @@
 include '../../connection/db.php';
 date_default_timezone_set("Asia/Manila");
 $cur_time = date("H:i:s");
+
+function safe_date_format($dateStr) {
+	if (empty($dateStr) || $dateStr === '0000-00-00 00:00:00' || strtotime($dateStr) <= 0) {
+		return "";
+	}
+	return date('m/d/Y H:i', strtotime($dateStr));
+}
+
 /**
  *     
  */
@@ -328,7 +336,7 @@ class dbconfig extends dbconn
 		WHERE (
 			(vw6.deptsel = '1' AND vw6.status NOT IN ('NEW REPORT', 'Assigned', 'ASSIGNED'))
 			OR 
-			(users.deptsel = '1' AND vw6.status IN ('NEW REPORT'))
+			(users.deptsel = '1' AND vw6.status NOT IN ('NEW REPORT'))
 		)
 		AND vw6.sub_id NOT IN ('15', '28', '34', '35')
 		AND YEAR(vw6.date_created) IN (" . $_POST['yr'] . ")";
@@ -356,7 +364,7 @@ class dbconfig extends dbconn
 				'category' => $row['category'],
 				'sub_id' => $row['sub_id'],
 				'sub_category' => $row['sub_category'],
-				'date_closed' => ($row['status'] == 'OPEN') ? " " : date('m/d/Y H:i', strtotime($row["date_closed"])),
+				'date_closed' => ($row['status'] == 'OPEN') ? " " : safe_date_format($row["date_closed"]),
 				'tdc' => ($row['status'] == 'OPEN') ? $row["dtdf"] . " " . "Days Unresolved" : $row['tdc'],
 				'crdt' => $row['crdt'],
 				'dtdf' => $row['dtdf'],
@@ -367,7 +375,7 @@ class dbconfig extends dbconn
 				'isp_id' => $row['isp_id'],
 				'isp_shortDesc' => $row['isp_shortDesc'],
 				'refNo' => $row['refNo'],
-				'date_refNo' => date('m/d/Y H:i', strtotime($row["date_refNo"])),
+				'date_refNo' => safe_date_format($row["date_refNo"]),
 				'msg_cnt' => $row['msg_cnt'],
 
 
@@ -694,8 +702,7 @@ ORDER BY
 				'cat_desc' => $row['cat_desc'],
 				'sub_id' => $row['sub_id'],
 				'sub_cat' => $row['sub_cat'],
-				// 'date_closed' => $row['date_closed'],
-				'date_closed' => ($row['status'] == 'OPEN') ? $row["dtdf"] . " " . "Days Unresolved" : date('m/d/Y H:i', strtotime($row["date_closed"])),
+				'date_closed' => ($row['status'] == 'OPEN') ? $row["dtdf"] . " " . "Days Unresolved" : safe_date_format($row["date_closed"]),
 				'date_completion' => $row['tdc'],
 				'remarks' => $row['remarks']
 
@@ -749,7 +756,7 @@ ORDER BY
 				'category' => $row['category'],
 				'sub_id' => $row['sub_id'],
 				'sub_category' => $row['sub_category'],
-				'date_closed' => ($row['status'] == 'OPEN' || 'OPEN WITH FIX ASSET') ? $row["dtdf"] . " " . "Days Unresolved" : date('m/d/Y H:i', strtotime($row["date_closed"])),
+				'date_closed' => ($row['status'] == 'OPEN' || $row['status'] == 'OPEN WITH FIX ASSET') ? $row["dtdf"] . " " . "Days Unresolved" : safe_date_format($row["date_closed"]),
 				'tdc' => $row['tdc'],
 				'crdt' => $row['crdt'],
 				'dtdf' => $row['dtdf'],
@@ -760,7 +767,7 @@ ORDER BY
 				'isp_id' => $row['isp_id'],
 				'isp_shortDesc' => $row['isp_shortDesc'],
 				'refNo' => $row['refNo'],
-				'date_refNo' => date('m/d/Y H:i', strtotime($row["date_refNo"]))
+				'date_refNo' => safe_date_format($row["date_refNo"])
 
 			);
 
@@ -1055,7 +1062,7 @@ ORDER BY
 				'category' => $row['category'],
 				'sub_id' => $row['sub_id'],
 				'sub_category' => $row['sub_category'],
-				'date_closed' => ($row['status'] == 'OPEN') ? $row["dtdf"] . " " . "Days Unresolved" : date('m/d/Y H:i', strtotime($row["date_closed"])),
+				'date_closed' => ($row['status'] == 'OPEN') ? $row["dtdf"] . " " . "Days Unresolved" : safe_date_format($row["date_closed"]),
 				'tdc' => $row['tdc'],
 				'crdt' => $row['crdt'],
 				'dtdf' => $row['dtdf'],
@@ -1066,7 +1073,7 @@ ORDER BY
 				'isp_id' => $row['isp_id'],
 				'isp_shortDesc' => $row['isp_shortDesc'],
 				'refNo' => $row['refNo'],
-				'date_refNo' => date('m/d/Y H:i', strtotime($row["date_refNo"])),
+				'date_refNo' => safe_date_format($row["date_refNo"]),
 				'years' => $row['years']
 
 			);
@@ -1386,7 +1393,7 @@ WHERE
 				'category' => $row['category'],
 				'sub_id' => $row['sub_id'],
 				'sub_category' => $row['sub_category'],
-				'date_closed' => ($row['status'] == 'OPEN') ? " " : date('m/d/Y H:i', strtotime($row["date_closed"])),
+				'date_closed' => ($row['status'] == 'OPEN') ? " " : safe_date_format($row["date_closed"]),
 				'tdc' => ($row['status'] == 'OPEN') ? $row["dtdf"] . " " . "Days Unresolved" : $row['tdc'],
 				'crdt' => $row['crdt'],
 				'dtdf' => $row['dtdf'],
@@ -1397,7 +1404,7 @@ WHERE
 				'isp_id' => $row['isp_id'],
 				'isp_shortDesc' => $row['isp_shortDesc'],
 				'refNo' => $row['refNo'],
-				'date_refNo' => date('m/d/Y H:i', strtotime($row["date_refNo"])),
+				'date_refNo' => safe_date_format($row["date_refNo"]),
 				'msg_cnt' => $row['msg_cnt'],
 
 
