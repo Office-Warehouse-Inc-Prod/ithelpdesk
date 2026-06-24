@@ -353,14 +353,14 @@ select.form-control, .form-control, .form-select {
                     <thead>  
                       <tr style="background-color: #213456; color: #ffffff;">
                         <th style="font-size: 12px; vertical-align: middle;">DEPARTMENT</th>
-                        <th class="text-center fw-bold" style="font-size: 12px; vertical-align: middle;">TOTAL NUMBER OF NON-ESCALATED REPORTS</th>
+                        <th class="text-center fw-bold" style="font-size: 12px; vertical-align: middle;">TOTAL NUMBER OF ESCALATED REPORTS FOR NON-ACTION</th>
                         <th class="text-center fw-bold" style="font-size: 12px; vertical-align: middle;">PERCENTAGE SHARE</th>
                       </tr>
                     </thead>
                     <tbody id="dept-table-body-non-escalated">
                       <tr>
                         <td colspan="3" class="text-center py-4 text-muted">
-                          <div class="spinner-border spinner-border-sm me-2 text-warning" role="status"></div> Loading non-escalated metrics...
+                          <div class="spinner-border spinner-border-sm me-2 text-warning" role="status"></div> Loading ESCALATED REPORTS FOR NON-ACTION metrics...
                         </td>
                       </tr>
                     </tbody>

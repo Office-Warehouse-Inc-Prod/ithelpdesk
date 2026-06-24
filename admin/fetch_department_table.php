@@ -68,24 +68,26 @@ if (isset($_POST['yr']) && isset($_POST['mo'])) {
             ORDER BY r.date_created ASC";
 
         $query3 = "SELECT 
-                d.dept_desc AS DEPARTMENT,
-                COUNT(filtered_tickets.ticket_no) AS ticket_count
-            FROM (
-                SELECT DISTINCT
-                    T0.ticket_no, 
-                    T0.f_deptsel
-                FROM reports T0
-                INNER JOIN reports_comments T1 ON T0.ticket_no = T1.ticket_no 
-                WHERE T0.status = 'NON ESCALATED' 
-                  AND YEAR(T0.date_created) IN ($year_placeholders)
-                  AND MONTH(T0.date_created) IN ($month_placeholders)
-                  AND T0.f_deptsel IN ($dept_placeholders)
-                  AND T0.f_deptsel NOT IN (4, 5) 
-                  AND T1.userId NOT IN (11, 16, 18, 20, 26, 27, 48, 54, 55, 56, 64, 65, 77, 78) 
-            ) AS filtered_tickets
-            INNER JOIN tbl_dept d ON filtered_tickets.f_deptsel = d.dept_id
-            GROUP BY d.dept_id, d.dept_desc
-            ORDER BY ticket_count DESC";
+            d.dept_desc AS DEPARTMENT,
+            COUNT(filtered_tickets.ticket_no) AS ticket_count,
+            ROUND((COUNT(filtered_tickets.ticket_no) / SUM(COUNT(filtered_tickets.ticket_no)) OVER ()) * 100, 2) AS ticket_percentage
+        FROM (
+            SELECT DISTINCT
+                T0.ticket_no, 
+                T0.f_deptsel
+            FROM reports T0
+            INNER JOIN reports_comments T1 ON T0.ticket_no = T1.ticket_no 
+            WHERE T0.status = 'ESCALATED' 
+              AND YEAR(T0.date_created) IN ($year_placeholders)
+              AND MONTH(T0.date_created) IN ($month_placeholders)
+              AND T0.f_deptsel IN ($dept_placeholders)
+              AND T0.f_deptsel NOT IN (4, 5) 
+              AND T1.userId NOT IN (11, 16, 18, 20, 26, 27, 48, 54, 55, 56, 64, 65, 77, 78) 
+            GROUP BY T0.ticket_no
+        ) AS filtered_tickets
+        INNER JOIN tbl_dept d ON filtered_tickets.f_deptsel = d.dept_id
+        GROUP BY d.dept_id, d.dept_desc
+        ORDER BY ticket_count DESC";
 
          $query4 = "SELECT
                 r.ticket_no AS TICKET_NO,
@@ -110,7 +112,7 @@ if (isset($_POST['yr']) && isset($_POST['mo'])) {
             LEFT JOIN tbl_isp isp ON isp.isp_id = r.isp_id
             LEFT JOIN reports_msgcnt mc ON mc.ticket_no = r.ticket_no
             LEFT JOIN tbl_priority p ON p.priority_id = r.priority_level
-            WHERE r.status = 'NON ESCALATED' 
+            WHERE r.status = 'ESCALATED' 
               AND YEAR(r.date_created) IN ($year_placeholders)
               AND MONTH(r.date_created) IN ($month_placeholders)
               AND r.f_deptsel IN ($dept_placeholders)
