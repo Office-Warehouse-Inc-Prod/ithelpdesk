@@ -65,12 +65,7 @@ $dept_ids_clean = implode(',', $dept_ids_array);
         COUNT(CASE 
             WHEN reports.`status` = 'CLOSED' 
             THEN 1 ELSE NULL 
-        END) AS t_closed,
-
-		COUNT(CASE 
-            WHEN reports.`status` = 'PENDING' 
-            THEN 1 ELSE NULL 
-        END) AS t_nonesca
+        END) AS t_closed
 
 
     FROM reports
