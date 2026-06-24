@@ -16,6 +16,17 @@ include 'sub_graph_modal.php';
 </head>
 <style>
 
+body {
+  background: linear-gradient(to bottom, #ffffff, #99aac8);
+  background-attachment: fixed; 
+  margin: 0; 
+   overflow-x: hidden;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+} 
 
 ::-webkit-scrollbar {
   width: 8px;
@@ -147,6 +158,63 @@ background: linear-gradient(135deg, #837031, #E1AD01);
   background: #213456;
   outline: 2px solid red;
   outline-offset: -2px; 
+}
+
+label {
+  font-size: 11px;
+  font-weight: 900;
+  color: #e1ad01; 
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+input.form-control,
+textarea.form-control {
+  color: #6c757d !important;
+  background-color: transparent !important; 
+  border: black !important; 
+  border-bottom: 1px solid #E1AD01 !important; 
+  resize: none !important; 
+}
+
+select.custom-select-placeholder.placeholder-active,
+textarea.form-control.custom-select-placeholder:placeholder-shown {
+  color: red !important;
+  border: 1px solid #ced4da !important;
+  background-color: #fff !important;
+}
+
+textarea.form-control.custom-select-placeholder::placeholder {
+  color: red !important;
+  opacity: 0.7;
+}
+
+select.custom-select-placeholder.has-value,
+textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
+  color: #0a0a0a !important; 
+  border-bottom: 1px solid #E1AD01 !important; 
+  background-color: transparent !important;
+}
+
+.form-control,
+.form-control-sm,
+input.form-control,
+select.form-control,
+textarea.form-control {
+  background: #fff !important;
+  color: black !important;
+  border-bottom: 1px solid #E1AD01 !important; 
+}
+
+
+.form-control:focus,
+.form-control-sm:focus,
+input.form-control:focus,
+select.form-control:focus,
+textarea.form-control:focus {
+  box-shadow: 0 10px 18px rgba(17,24,39,.06);
+  border-color: rgba(137, 103, 11, 0.87) !important;
 }
 </style>
 <div id="welcomeModal" class="modal-overlay" style="display: none;">
@@ -555,11 +623,11 @@ Start of Add/Edit Modal
                 
 
 
-                <div class="form-group col-12">
+                <div class="form-group col-4">
                   <label>SUBJECT/CONCERN</label>
-                  <textarea name="subjct" id="subjct" class="form-control form-control-sm"
+                  <input type="text" name="subjct" id="subjct" class="form-control form-control-sm"
                     placeholder="Input Concern" style="text-transform:uppercase"
-                    onkeyup="this.value = this.value;"></textarea>
+                    onkeyup="this.value = this.value;"></input>
                 </div>
 
                 <div class="form-group col-12 col-md-4">

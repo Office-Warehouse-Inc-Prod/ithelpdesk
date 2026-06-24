@@ -73,9 +73,11 @@ $user = NULL;
     $_SESSION['PRICE_LVL'] = $results['PRICE_LVL'];
 
   
-    $success = $conn->prepare("UPDATE users SET last_login_date = NOW() WHERE id = ?");
-    $success->execute([$results['id']]);
-
+    $success = $conn->prepare("INSERT INTO user_login (user_id, dept_id, login_date) VALUES (:tech_id, :dept_id, NOW())");
+    $success->execute([
+    ':tech_id' => $results['tech_id'], 
+    ':dept_id' => $results['dept_id']  
+]);
   // if(count($results) > 0 && password_verify($_POST['password'], $results['password']) && $results['role'] == 'admin' )
   if(count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'admin' )
 

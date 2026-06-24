@@ -566,7 +566,16 @@ var dataTable = $('#report_data').removeAttr('width').DataTable({
     processData:false,
     success:function(data)
     {
-     alert(data);
+     var message = data;
+     if (typeof data === 'object') {
+       message = data.message || JSON.stringify(data);
+     }
+     Swal.fire({
+       icon: 'success',
+       title: message,
+       showConfirmButton: false,
+       timer: 1500
+     });
      $('#report_form')[0].reset();
      $('#userModal').modal('hide');
      location.reload();
@@ -732,7 +741,16 @@ $('#userModal').modal('show');}
     data:{user_id:user_id},
     success:function(data)
     {
-     alert(data);
+     var message = data;
+     if (typeof data === 'object') {
+       message = data.message || JSON.stringify(data);
+     }
+     Swal.fire({
+       icon: 'success',
+       title: message,
+       showConfirmButton: false,
+       timer: 1500
+     });
      location.reload();
     }
    });

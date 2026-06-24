@@ -110,7 +110,7 @@ if ($_SESSION['login'] != 'true') {
   }
 
   .owi-navbar .nav-link i {
-    margin-right: 6px;
+    margin-right: 2px;
   }
 
   .owi-navbar .nav-link:hover,

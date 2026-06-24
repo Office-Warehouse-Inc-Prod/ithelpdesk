@@ -30,19 +30,13 @@ include '../condb.php';
     --card-shadow: 0 4px 12px 0 rgba(58, 53, 65, 0.1);
   }
 
-  body {
-    font-family: 'Public Sans', sans-serif;
-    background-color: var(--bg-body);
-    color: #3A3541DE;
-    overflow-x: hidden;
-    background: linear-gradient(rgba(218, 219, 207, 0.3), rgba(113, 114, 136, 0.27)), url('images/bg_login.png');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-    background-repeat: no-repeat;
-    min-height: 100vh;
-  }
 
+body {
+  background: linear-gradient(to bottom, #ffffff, #99aac8);
+  background-attachment: fixed; 
+  margin: 0; 
+  height: 100vh; 
+} 
   .owi-navbar {
     background-color: #213456 !important;
     box-shadow: 0 2px 10px 2px #66738e;
@@ -756,19 +750,15 @@ select.form-control, .form-control, .form-select {
           $('#createReportModal').modal({ backdrop: 'static', keyboard: false });
         }
       });
-
-      // Handle query param create=true on load
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.get('create') === 'true') {
         $('#createReportModal').modal({ backdrop: 'static', keyboard: false });
-        // Clean up url parameters without reloading
         window.history.replaceState({}, document.title, window.location.pathname);
       }
 
-      // Reset Form when Modal Closes or Opens
       $('#createReportModal').on('show.bs.modal', function () {
         $('#create_report_form').trigger('reset');
-        $('#create_store').val('201'); // Auto-select CEN | CENTRAL OFFICE - LIBIS
+        $('#create_store').val('201'); 
         $('#create_subject').val(null).trigger('change');
         $('#create_sub').val(null).trigger('change');
         $('#create_sub_group').hide();
@@ -776,7 +766,6 @@ select.form-control, .form-control, .form-select {
         $('#create_ticket_no').val('');
       });
 
-      // Populate dynamic categories and fetch ticket numbers when Attention To Department changes
       $("#create_deptsel").on("change", function () {
         $('#create_subject').val(null).trigger('change');
         $('#create_sub').val(null).trigger('change');
@@ -807,7 +796,6 @@ select.form-control, .form-control, .form-select {
           }
         });
 
-        // Dynamic Ticket Number Generation Fetch
         $.post('../users/fetch.php', { operation: 'search_tkt', iN: val }, function (data) {
           if (data && data[0]) {
             let next_tktno = data[0].ticket_no;
@@ -837,7 +825,6 @@ select.form-control, .form-control, .form-select {
         });
       });
 
-      // Validate uploaded file size and extensions
       $('#create_file-input').on('change', function () {
         for (var i = 0; i < this.files.length; ++i) {
           var file = this.files[i];
@@ -864,7 +851,6 @@ select.form-control, .form-control, .form-select {
         }
       });
 
-      // Handle AJAX Submission of Department Ticket
       $('#create_report_form').on('submit', function (e) {
         e.preventDefault();
 

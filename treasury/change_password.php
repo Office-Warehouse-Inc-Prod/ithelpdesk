@@ -168,7 +168,16 @@ $(document).ready(function() {
                 $('#btn_chngepass').html('<i class="fas fa-spinner fa-spin"></i> Processing...').attr('disabled', true);
             },
             success: function (data) {
-                alert(data); // Replace with SweetAlert for better look
+                var message = data;
+                if (typeof data === 'object') {
+                    message = data.message || JSON.stringify(data);
+                }
+                Swal.fire({
+                    icon: 'success',
+                    title: message,
+                    showConfirmButton: false,
+                    timer: 1500
+                });
                 $("#change_passform")[0].reset();
                 $("#changepass_modal").modal("hide");
                 location.replace("adminpanel.php");

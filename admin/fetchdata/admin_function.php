@@ -17,7 +17,7 @@ $yr = isset($_POST['yr']) ? intval($_POST['yr']) : date('Y');
 
 $dept_ids = isset($_POST['dept_id'])
     ? $_POST['dept_id']
-    : '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17';
+    : '1,2,3,6,7,8,9,10,11,12,13,14,15,16,17';
 
 		$output = array();
 
@@ -40,27 +40,38 @@ $dept_ids_clean = implode(',', $dept_ids_array);
         COUNT(CASE 
             WHEN reports.`status` = 'ASSIGNED' 
             THEN 1 ELSE NULL 
-        END) AS t_open,
+        END) AS t_assigned,
 
         COUNT(CASE 
             WHEN reports.`status` = 'ON PROCESS' 
             THEN 1 ELSE NULL 
-        END) AS t_owfa,
+        END) AS t_onprocess,
+
+		COUNT(CASE 
+            WHEN reports.`status` = 'PENDING' 
+            THEN 1 ELSE NULL 
+        END) AS t_pending,
 
         COUNT(CASE 
-            WHEN reports.`status` = 'CLOSED' 
+            WHEN reports.`status` = 'NON ESCALATED' 
             THEN 1 ELSE NULL 
-        END) AS t_close,
+        END) AS t_nonesca,
 
         COUNT(CASE 
             WHEN reports.`status` = 'SUBJECT FOR CLOSING' 
             THEN 1 ELSE NULL 
-        END) AS t_day,
+        END) AS t_subforclosing,
 
         COUNT(CASE 
+            WHEN reports.`status` = 'CLOSED' 
+            THEN 1 ELSE NULL 
+        END) AS t_closed,
+
+		COUNT(CASE 
             WHEN reports.`status` = 'PENDING' 
             THEN 1 ELSE NULL 
-        END) AS t_pending
+        END) AS t_nonesca
+
 
     FROM reports
     WHERE sub_id NOT IN ('15','28','34','35')
@@ -77,11 +88,12 @@ $dept_ids_clean = implode(',', $dept_ids_array);
         foreach ($result as $row) {
         	$output[] = array(
         		'total_res' => $row["t_all"], 
-        		'open_res' => $row["t_open"], 
-        		'owfa_res' => $row["t_owfa"], 
-        		'cls_res' => $row["t_close"],
-        		't_res' => $row["t_day"],
-        		't_pending' => $row["t_pending"],
+        		'assigned_res' => $row["t_assigned"], 
+        		'onprocess_res' => $row["t_onprocess"], 
+        		'pending_res' => $row["t_pending"],
+        		'nonesca_res' => $row["t_nonesca"],
+				'subforclosing_res' => $row["t_subforclosing"],
+        		'closed_res' => $row["t_closed"],
 
 
         	);
@@ -661,7 +673,6 @@ $query = "
 
     $statement = $this->connection->prepare($query);
     $statement->execute([
-        ':deptsel' => '2',
         ':yr' => $yr
     ]);
 

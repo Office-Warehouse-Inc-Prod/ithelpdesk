@@ -5,6 +5,19 @@ $regcon=new dbconfig();
  ?>
 
 <style>
+
+  body {
+  background: linear-gradient(to bottom, #ffffff, #99aac8);
+  background-attachment: fixed; 
+  margin: 0; 
+   overflow-x: hidden;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+} 
+
 .swal-btn{
   margin: 10px;
 }

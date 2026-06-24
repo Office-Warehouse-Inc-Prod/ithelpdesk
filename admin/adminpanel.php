@@ -33,24 +33,20 @@ include 'sub_graph_modal.php';
   --shadow: 0 14px 32px rgba(17,24,39,.12);
   --radius:16px;
 }
-
-/* Page background + subtle diagonal */
-body{
-  background:
-    linear-gradient(135deg, rgba(18,28,49,.18) 0%, rgba(18,28,49,.18) 12%, transparent 12%) ,
-    linear-gradient(315deg, rgba(18,28,49,.18) 0%, rgba(18,28,49,.18) 12%, transparent 12%),
-    var(--bg) !important;
-  color: var(--text) !important;
-}
-
-/* ===== Top navbar (if applicable) =====  */
+body {
+  background: linear-gradient(to bottom, #ffffff, #6d89b9);
+  margin: 0; 
+  height: 100vh; 
+ 
+} 
 .navbar, header, .topbar, .navbar-default{
-  background: var(--navy) !important;
-  border-color: rgba(255,255,255,.10) !important;
+    background-color: #213456 !important;
+    margin-bottom: 40px;
 }
 .navbar a, .navbar-brand, .navbar-nav > li > a,
 .navbar i, .navbar .fa, .navbar .fas{
   color: #fff !important;
+  font-weight: 600;
 }
 .navbar-nav > li.active > a,
 .navbar-nav > li > a:hover{
@@ -108,54 +104,82 @@ select.form-control:focus, .form-control:focus{
 .dashcard{
   background: var(--card) !important;
   border: 1px solid var(--line) !important;
-  border-radius: var(--radius) !important;
-  box-shadow: var(--shadow) !important;
+  border-radius: 8px !important;
   overflow: hidden;
   position: relative;
+  width: 80px;
 }
 
-/* subtle colored top border per card (keeps bg-* but makes it “corporate”) */
-.dashcard.bg-primary{ border-top: 4px solid #3b82f6 !important; }
-.dashcard.bg-danger{  border-top: 4px solid #ef4444 !important; }
-.dashcard.bg-warning{ border-top: 4px solid var(--yellow) !important; }
-.dashcard.bg-success{ border-top: 4px solid #22c55e !important; }
 
-/* force readable text (your cards had text-white before) */
+.dashcard.bg-assigned { border-top: 4px solid #8CC0EB !important;  }
+.dashcard.bg-assigned:hover { box-shadow: 0 22px 40px -5px rgba(140, 192, 235, 0.3); border-color: #2577ba; }
+
+.dashcard.bg-onprocess { border-top: 4px solid #E9B63B !important;  }
+.dashcard.bg-onprocess:hover { box-shadow: 0 22px 40px -5px rgba(233, 182, 59, 0.3); border-color: #E9B63B; }
+
+.dashcard.bg-pending { border-top: 4px solid #AF3E3E !important; }
+.dashcard.bg-pending:hover { box-shadow: 0 22px 40px -5px rgba(175, 62, 62, 0.3); border-color: #AF3E3E; }
+
+.dashcard.bg-nonesca { border-top: 4px solid #8E7DBE !important;}
+.dashcard.bg-nonesca:hover { box-shadow: 0 22px 40px -5px rgba(142, 125, 190, 0.3); border-color: #260d6d; }
+
+.dashcard.bg-subforclosing { border-top: 4px solid #EDA35A !important; }
+.dashcard.bg-subforclosing:hover { box-shadow: 0 22px 40px -5px rgba(237, 163, 90, 0.3); border-color: #EDA35A; }
+
+.dashcard.bg-closed { border-top: 4px solid #5D866C !important;  }
+.dashcard.bg-closed:hover { box-shadow:0 22px 40px -5px rgba(93, 134, 108, 0.3); border-color: #5D866C; }
+
+
 .dashcard, .dashcard *{ color: var(--text) !important; }
 
 .dashcard .card-body{
-  padding: 16px 18px 10px 18px !important;
 }
 .dashcard .card-title{
+    display: block;
+  text-align: center;
   font-size: 12px !important;
   font-weight: 900 !important;
   letter-spacing: .08em;
   text-transform: uppercase;
-  color: var(--muted) !important;
+  color: black !important;
 }
 .dashcard .card-title span{
-  float: right;
-  font-size: 30px !important;
+  display: block;
+  text-align: center;
+  font-size: 32px !important;
   font-weight: 900 !important;
   color: var(--navy) !important;
+  padding-bottom: -40px;
+  
 }
 
 .dashcard .card-footer{
+  
+  margin-top: -20px;
   background: #fff !important;
   border-top: 1px solid var(--line) !important;
-  padding: 12px 18px !important;
+  padding: 0px 18px !important;
+}
+.dashcard .card-footer:hover{
+  color: #E1AD01;
+  
+  margin-top: -20px;
+  background: #fff !important;
+  border-top: 1px solid var(--line) !important;
+  padding: 0px 18px !important;
 }
 .dashcard .card-footer a{
+    display: block;
+  text-align: center;
   color: var(--muted) !important;
   font-weight: 700 !important;
   text-decoration: none !important;
 }
 .dashcard .card-footer a:hover{
-  color: var(--navy) !important;
+  color: #E1AD01 !important;
   text-decoration: underline !important;
 }
 
-/* ===== Big section cards (Overall Status / IT Support Logs / etc.) ===== */
 .card2{
   background: #fff !important;
   border: 1px solid var(--line) !important;
@@ -619,10 +643,7 @@ background: linear-gradient(135deg, #837031, #E1AD01);
             </div>
           </div>
 
-    <form action="testcalendar.php" method="POST" style="display: inline;">
-    <input type="hidden" name="u_id" value="<?php echo $_SESSION['user_id']; ?>">
-    <button type="submit" id="showCalendarBtn" class="btn btn-primary">Show Calendar</button>
-</form>
+    
         </div>
       </div>
     </div>
@@ -630,65 +651,68 @@ background: linear-gradient(135deg, #837031, #E1AD01);
 
 
 <div class="card-deck align-items-center mb-3">
-<div class="dashcard card text-white mb-4 bg-warning" style="width: 18rem; height: 9rem; ">
-<div class="card-body">
+  <div class="dashcard card text-white bg-assigned mb-2" style="width: 18rem; height: 9rem; ">
+    <div class="card-body">
+      <div class="card-title" style="color:#8CC0EB">ASSIGNED<br> <span class="float-center" id="count_assigned"></span></div>
+    </div>
+    <div class="card-footer d-flex align-items-center justify-content-between">
+      <a class=" text-white stretched-link" id="card_assigned" href="#bottom" value="ASSIGNED" ><span class="small text-white">Click here for more info.</span></a>
+      <div class="go-arrow"></div>
+    </div>
+  </div>
 
-<div class="card-title">ASSIGNED REPORTS: <span class="float-right" id="count_open" style="font-size: 32px;"></span></div>
+  <div class="dashcard card text-white mb-2 bg-onprocess border-dark" style="width: 20rem; height: 9rem;">
+    <div class="card-body">
+      <div class="card-title">ON PROCESS<br> <span class="float-center" id="count_onprocess"></span></div>         
+    </div>                                  
+    <div class="card-footer d-flex align-items-center justify-content-between">
+      <a class=" text-white stretched-link" id="card_onprocess" href="#bottom" value="ON PROCESS" ><span class="small text-white">Click here for more info.</span></a>
+    <div class="go-arrow">  </div>
+    </div>
+  </div>
 
+  <div class="dashcard card text-white bg-pending mb-2" style="width: 20rem; height: 9rem;">
+    <div class="card-body">
+      <div class="card-title" style="font-size: 15px;">Pending<br> <span class="float-center" id="count_pending"></span></div>
+    </div>
+    <div class="card-footer d-flex align-items-center justify-content-between">
+      <a class="text-white stretched-link" id="card_pending" href="#bottom" value="PENDING" ><span class="small text-white">Click here for more info.</span></a>
+      <div class="go-arrow">  </div>
+    </div>
+  </div>
+  
+  <div class="dashcard card text-white bg-nonesca mb-2" style="width: 20rem; height: 9rem;">
+    <div class="card-body">
+      <div class="card-title" style="font-size: 15px;">ESCALATED <br><span class="float-center" id="count_nonesca"></span></div>
+    </div>
+    <div class="card-footer d-flex align-items-center justify-content-between">
+      <a class="text-white stretched-link" id="card_nonesca" href="#bottom" value="NON ESCALATED" ><span class="small text-white">Click here for more info.</span></a>
+      <div class="go-arrow">  </div>
+    </div>
+  </div>
+  
+  <div class="dashcard card text-white bg-subforclosing mb-2" style="width: 20rem; height: 9rem;">
+    <div class="card-body">
+      <div class="card-title">SUBJECT FOR CLOSING <br><span class="float-center" id="count_subforclosing"></span></div>
+    </div>
+    <div class="card-footer d-flex align-items-center justify-content-between">
+      <a class="text-white stretched-link" id="card_subforclosing" href="#bottom" value="SUBJECT FOR CLOSING" ><span class="small text-white">Click here for more info.</span></a>
+      <div class="go-arrow">  </div>
+    </div>
+  </div>
+
+  <div class="dashcard card text-white bg-closed mb-2" style="width: 20rem; height: 9rem;">
+    <div class="card-body">
+      <div class="card-title" style="font-size: 15px;">CLOSED<br> <span class="float-center" id="count_closed"></span></div>
+    </div>
+    <div class="card-footer d-flex align-items-center justify-content-between">
+      <a class="text-white stretched-link" id="card_closed" href="#bottom" value="CLOSED" ><span class="small text-white">Click here for more info.</span></a>
+      <div class="go-arrow">  </div>
+    </div>
+  </div>
 </div>
-<div class="card-footer d-flex align-items-center justify-content-between">
-
-                       <a class=" text-white stretched-link" id="card_openval" href="#bottom" value="ASSIGNED" ><span class="small text-white">Click here for more info.</span></a>
-                   
-
-                          <div class="go-arrow">  </div>
-                      </div>
-</div>
-
-<div class="dashcard card text-white mb-4 bg-primary border-dark" style="width: 18rem; height: 9rem;">
-<div class="card-body">
-
-<div class="card-title">ON PROCESS: <span class="float-right" id="count_total" style="font-size: 32px;"></span></div>
-             
-</div>                                  
-<div class="card-footer d-flex align-items-center justify-content-between">
-<a class=" text-white stretched-link" id="card_totalval" href="#bottom" value="ON PROCESS" ><span class="small text-white">Click here for more info.</span></a>
-                          <div class="go-arrow">  </div>
-                          
-                      </div>
-</div>
 
 
-
-<div class="dashcard card text-white mb-4 bg-danger" style="width: 18rem; height: 9rem;">
-<div class="card-body">
-
-<div class="card-title" style="font-size: 15px;">Pending Reports: <span class="float-right" id="count_owfa" style="font-size: 32px;"></span></div>
-
-</div>
-<div class="card-footer d-flex align-items-center justify-content-between">
-                      
-                           <a class="text-white stretched-link" id="card_openwfaval" href="#bottom" value="PENDING" ><span class="small text-white">Click here for more info.</span></a>
-                          <div class="go-arrow">  </div>
-                      </div>
-
-</div>
-
-<div class="dashcard card text-white mb-4 bg-success" style="width: 18rem; height: 9rem;">
-<div class="card-body">
-
-<div class="card-title">CLOSED REPORTS <span class="float-right" id="count_closed" style="font-size: 32px;"></span></div>
-<div class="card-subtitle clcktxt" value="SUBJECT FOR CLOSING">SUBJECT FOR  CLOSING <span class="float-none" id="today_closed" style="font-size: 23px; margin-left: 15px;"></span></div>
-</div>
-<div class="card-footer d-flex align-items-center justify-content-between">
-                        <a class="text-white stretched-link" id="card_closedval" href="#bottom" value="CLOSED" ><span class="small text-white">Click here for more info.</span> </a><span class="small text-white">CLOSED REPORT HISTORY</span>
-                          <div class="go-arrow">  </div>
-                      </div>
-
-
-</div>
-
-</div>
 
         <div class="row" id="ovrall">
 
@@ -795,7 +819,7 @@ background: linear-gradient(135deg, #837031, #E1AD01);
 <div class="modal-header">
 <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
 <h4 class="modal-title" id="userModal_header" value="Add Report"></h4>
-<!-- <button type="button" id="prntForm" class="btn btn-info float-right" data-dismiss="modal"><i class="fas fa-print"></i></button> -->
+<!-- <button type="button" id="prntForm" class="btn btn-info float-center" data-dismiss="modal"><i class="fas fa-print"></i></button> -->
 </div>
 
 
@@ -928,7 +952,7 @@ style="text-transform:uppercase">
 <input type="submit" name="action" id="action" class="btn btn-success" value="Add" />   
 </div>
 <div class=" col-6 col-md-4 ">
-<button type="button" name="btnClose" id="btnClose" class="btn btn-danger float-right" data-dismiss="modal">Close</button>  
+<button type="button" name="btnClose" id="btnClose" class="btn btn-danger float-center" data-dismiss="modal">Close</button>  
 </div>
 </div>
 

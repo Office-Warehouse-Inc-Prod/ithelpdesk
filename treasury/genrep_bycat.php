@@ -21,7 +21,12 @@ include 'sub_graph_modal.php';
   --owi-gold: #E1AD01;
   -glass-bg: rgba(255, 255, 255, 0.95);
 }
-
+body {
+  background: linear-gradient(to bottom, #ffffff, #99aac8);
+  background-attachment: fixed; 
+  margin: 0; 
+  height: 100vh; 
+} 
 /* --- Dashboard Cards --- */
 .card2 {
   border: none;

@@ -104,10 +104,10 @@
     getdata();
 
     var table
-    /**
-     * Admin datatable.
-     */
-    function admin_datatable(t) {
+  /**
+   * Admin datatable.
+   */
+  function admin_datatable(t) {
       const dataset = t.rptdata;
       table = $("#report_data").DataTable({
 
@@ -232,7 +232,6 @@
           { title: "Date Created", data: "date_created", "defaultContent": "" },
           { title: "Subject", data: "subject", "defaultContent": "" },
           // {title:"Concern", data:"concern","defaultContent": ""},
-          //{ title: "Via", data: "via", "defaultContent": "" },
           { title: "STATUS", data: "status", "defaultContent": "" },
           { title: "Assigned Support", data: "it_desc", "defaultContent": "" },
           { title: "CATEGORY", data: "category", "defaultContent": "" },
@@ -688,15 +687,27 @@
           data: formData,
           contentType: false,
           processData: false,
-          success: function (data) {
-            // alert(addmsgx);
-            // $("#report_form")[0].reset();
-            Swal.fire({
-              icon: 'success',
-              title: 'Your work has been saved',
-              showConfirmButton: false,
-              timer: 1500
-            });
+          dataType: 'json',
+          cache: false,
+          success: function (response) {
+            if (typeof response !== 'object') {
+              response = { status: 'error', message: 'Invalid server response.' };
+            }
+
+            if (response.status === 'success' || response.status === true) {
+              Swal.fire({
+                icon: 'success',
+                title: response.message || 'Your work has been saved',
+                showConfirmButton: false,
+                timer: 1500
+              });
+            } else {
+              Swal.fire({
+                icon: 'error',
+                title: 'Save failed',
+                text: response.message || 'Please try again.'
+              });
+            }
             $("#userModal").modal("hide");
             getdata(yr);
             get_card_data(yr);
@@ -704,6 +715,19 @@
             //      location.reload(); // then reload the page.(3)
             // }, 2000); 
           },
+          error: function (xhr, status, error) {
+            var message = 'Please try again.';
+            if (xhr.responseJSON && xhr.responseJSON.message) {
+              message = xhr.responseJSON.message;
+            } else if (xhr.responseText) {
+              message = xhr.responseText.trim();
+            }
+            Swal.fire({
+              icon: 'error',
+              title: 'Save failed',
+              text: message
+            });
+          }
         });
       } else {
         alert("All Fields are Required");

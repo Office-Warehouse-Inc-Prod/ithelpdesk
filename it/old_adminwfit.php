@@ -455,7 +455,16 @@ $(document).on('submit', '#newrpt_form', function(event)
     processData:false,
     success:function(data)
     {
-     alert(data);
+     var message = data;
+     if (typeof data === 'object') {
+       message = data.message || JSON.stringify(data);
+     }
+     Swal.fire({
+       icon: 'success',
+       title: message,
+       showConfirmButton: false,
+       timer: 1500
+     });
      $('#newrpt_form')[0].reset();
      $('#newrpt_Modal').modal('hide');
      getdata();

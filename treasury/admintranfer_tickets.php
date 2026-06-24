@@ -563,7 +563,7 @@ background: linear-gradient(135deg, #837031, #E1AD01);
         <select class="form-control form-control-sm" name="itsup" id="itsup">
         <option value="">Assign support...</option>  
           <?php
-            $query="select * from it_tech WHERE itsup NOT IN ('4','7','8','12','14') AND deptsel = '1'";
+            $query="select * from it_tech WHERE itsup NOT IN ('4','7','8','12','14') AND deptsel = '15'";
             $run=$con1->prepare($query);
             $run->execute();
             $rs=$run->get_result();
@@ -583,7 +583,7 @@ background: linear-gradient(135deg, #837031, #E1AD01);
         <select class="form-control form-control-sm" name="cat" id="cat" required >
         <option value=""> &larr; CATEGORY &rarr;</option>  
         <?php
-          $query="select * from categories WHERE deptsel = '1' AND (old_tag IS NULL OR old_tag <> 'Y') ORDER BY order_id ASC";
+          $query="select * from categories WHERE deptsel = '15' AND (old_tag IS NULL OR old_tag <> 'Y') ORDER BY order_id ASC";
           $run=$con1->prepare($query);
           $run->execute();
           $rs=$run->get_result();

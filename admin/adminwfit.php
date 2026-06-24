@@ -436,15 +436,12 @@ hr{
 
 html, body{ height:100%; }
 
-body{
-  background:
-    linear-gradient(135deg, rgba(18,28,49,.16) 0%, rgba(18,28,49,.16) 12%, transparent 12%),
-    linear-gradient(315deg, rgba(18,28,49,.14) 0%, rgba(18,28,49,.14) 12%, transparent 12%),
-    var(--bg);
-  color: var(--text);
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
-}
-
+body {
+  background: linear-gradient(to bottom, #ffffff, #99aac8);
+  background-attachment: fixed; 
+  margin: 0; 
+  height: 100vh; 
+} 
 /* container spacing */
 .container.mt-3{ padding-top: 10px; padding-bottom: 24px; }
 
@@ -452,12 +449,15 @@ body{
 
 /* ===== Top navbar (if applicable) =====  */
 .navbar, header, .topbar, .navbar-default{
-  background: var(--navy) !important;
+  
+    background-color: #213456 !important;
   border-color: rgba(255,255,255,.10) !important;
+   margin-bottom: 40px;
 }
 .navbar a, .navbar-brand, .navbar-nav > li > a,
 .navbar i, .navbar .fa, .navbar .fas{
   color: #fff !important;
+   font-weight: 600;
 }
 .navbar-nav > li.active > a,
 .navbar-nav > li > a:hover{
@@ -466,111 +466,102 @@ body{
 .navbar-nav > li.active > a{
   border-bottom: 3px solid var(--yellow);
 }
-.table-wrap{
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 14px;
-}
+#new_rep_table { width:100% !important; }
 
-/* If you can't add wrapper div, style DataTables container instead */
-.dataTables_wrapper{
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 14px;
-}
+  .table-wrap {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 14px;
+  }
 
-/* DataTables header controls */
-.dataTables_wrapper .dataTables_length label,
-.dataTables_wrapper .dataTables_filter label,
-.dataTables_wrapper .dataTables_info{
-  color: var(--muted) !important;
-  font-weight: 600;
-}
+  /* If you can't add wrapper div, style DataTables container instead */
+  .dataTables_wrapper {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 14px;
+  }
 
-/* Search + length */
-.dataTables_wrapper .dataTables_filter input,
-.dataTables_wrapper .dataTables_length select{
-  background: #fff !important;
-  border: 1px solid var(--line) !important;
-  border-radius: 12px !important;
-  color: var(--text) !important;
-  padding: 8px 10px !important;
-  outline: none !important;
-}
+  /* DataTables header controls */
+  .dataTables_wrapper .dataTables_length label,
+  .dataTables_wrapper .dataTables_filter label,
+  .dataTables_wrapper .dataTables_info {
+    color: var(--muted) !important;
+    font-weight: 600;
+  }
 
-.dataTables_wrapper .dataTables_filter input:focus,
-.dataTables_wrapper .dataTables_length select:focus{
-  box-shadow: var(--focus) !important;
-  border-color: rgba(234,170,0,.45) !important;
-}
+  .dataTables_wrapper .dataTables_filter input:focus,
+  .dataTables_wrapper .dataTables_length select:focus {
+    box-shadow: var(--focus) !important;
+    border-color: rgba(234,170,0,.45) !important;
+  }
 
-/* Pagination */
-.dataTables_wrapper .dataTables_paginate .paginate_button{
-  border-radius: 12px !important;
-  border: 1px solid transparent !important;
-  color: var(--text) !important;
-  background: transparent !important;
-}
-.dataTables_wrapper .dataTables_paginate .paginate_button:hover{
-  border-color: var(--line) !important;
-  background: #F8FAFC !important;
-}
-.dataTables_wrapper .dataTables_paginate .paginate_button.current{
-  background: rgba(234,170,0,.18) !important;
-  border-color: rgba(234,170,0,.35) !important;
-}
+  /* Pagination */
+  .dataTables_wrapper .dataTables_paginate .paginate_button {
+    border-radius: 12px !important;
+    border: 1px solid transparent !important;
+    color: var(--text) !important;
+    background: transparent !important;
+  }
+  .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    border-color: var(--line) !important;
+    background: #F8FAFC !important;
+  }
+  .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    background: rgba(234,170,0,.18) !important;
+    border-color: rgba(234,170,0,.35) !important;
+  }
 
-/* ===== Table modern look ===== */
-table.dataTable{
-  border-collapse: separate !important;
-  border-spacing: 0 10px !important; /* row gaps */
-}
+  /* ===== Table modern look ===== */
+  table.dataTable {
+    border-collapse: separate !important;
+    border-spacing: 0 10px !important; /* row gaps */
+  }
 
-table.dataTable thead th{
-  color: white !important;
-  font-weight: 900;
-  letter-spacing: .04em;
-  text-transform: uppercase;
-  border: none !important;
-  background: #4667a0!important;
-  padding: 14px 12px !important;
-}
+  table.dataTable thead th {
+    color: white !important;
+    font-weight: 900;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    border: none !important;
+    background: #5273ad !important;
+    padding: 14px 12px !important;
+  }
 
-/* “Floating rows” on light mode */
-table.dataTable tbody tr{
-  background: #ffffff !important;
-  border: 1px solid var(--line) !important;
-  box-shadow: 0 10px 22px rgba(17,24,39,.08);
-  border-radius: 14px;
-  overflow: hidden;
-}
+  /* “Floating rows” on light mode */
+  table.dataTable tbody tr {
+    background: #ffffff !important;
+    border: 1px solid var(--line) !important;
+    box-shadow: 0 10px 22px rgba(17,24,39,.08);
+    border-radius: 14px;
+    overflow: hidden;
+  }
 
-table.dataTable tbody td{
-  border-top: 1px solid transparent !important;
-  border-bottom: 1px solid transparent !important;
-  color: rgba(17,24,39,.85) !important;
-  padding: 14px 12px !important;
-}
+  table.dataTable tbody td {
+    border-top: 1px solid transparent !important;
+    border-bottom: 1px solid transparent !important;
+    color: rgba(17,24,39,.85) !important;
+    padding: 14px 12px !important;
+  }
 
-table.dataTable tbody tr:hover{
-  transform: translateY(-1px);
-  transition: .15s ease;
-  background: #F8FAFF !important;
-}
+  table.dataTable tbody tr:hover {
+    transform: translateY(-1px);
+    transition: .15s ease;
+    background: #F8FAFF !important;
+  }
 
-/* Fix the rounded row corners */
-table.dataTable tbody tr td:first-child{
-  border-top-left-radius: 14px;
-  border-bottom-left-radius: 14px;
-}
-table.dataTable tbody tr td:last-child{
-  border-top-right-radius: 14px;
-  border-bottom-right-radius: 14px;
-}
+  /* Fix the rounded row corners */
+  table.dataTable tbody tr td:first-child {
+    border-top-left-radius: 14px;
+    border-bottom-left-radius: 14px;
+  }
+  table.dataTable tbody tr td:last-child {
+    border-top-right-radius: 14px;
+    border-bottom-right-radius: 14px;
+  }
 
 /* ===== Modal (clean light) ===== */
 .modal-content{
@@ -599,16 +590,46 @@ table.dataTable tbody tr td:last-child{
   padding: 14px 18px !important;
 }
 
-/* Labels */
-label{
+label {
   font-size: 11px;
   font-weight: 900;
-  color: rgba(17,24,39,.65);
+  color: #213456;
   letter-spacing: .08em;
   text-transform: uppercase;
   margin-bottom: 6px;
 }
 
+input.form-control,
+textarea.form-control {
+  color: #6c757d !important;
+  background-color: transparent !important; 
+  border: none !important; 
+  border-bottom: 1px solid #213456 !important; 
+  border-radius: 0px !important; 
+  resize: none !important; 
+}
+
+select.custom-select-placeholder.placeholder-active,
+textarea.form-control.custom-select-placeholder:placeholder-shown {
+  color: red !important;
+  border: 1px solid #ced4da !important;
+  border-radius: .2rem !important;
+  background-color: #fff !important;
+}
+
+textarea.form-control.custom-select-placeholder::placeholder {
+  color: red !important;
+  opacity: 0.7;
+}
+
+select.custom-select-placeholder.has-value,
+textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
+  color: #212529 !important; 
+  border: none !important; 
+  border-bottom: 1px solid #213456 !important; 
+  border-radius: 0px !important;
+  background-color: transparent !important;
+}
 /* Inputs / Select / Textarea */
 .form-control,
 .form-control-sm,
@@ -618,7 +639,6 @@ textarea.form-control{
   border: 1px solid var(--line) !important;
   color: var(--text) !important;
   border-radius: 14px !important;
-  padding: 10px 12px !important;
 }
 
 .form-control:focus,
@@ -788,7 +808,7 @@ background: linear-gradient(135deg, #837031, #E1AD01);
 .owi-navbar {
   background-color: #213456 !important;
   box-shadow: 0 2px 10px 2px #66738e;
-  margin-bottom: 10px;
+  margin-bottom: 40px;
 }
 
 /* Make links clean + readable */
@@ -954,7 +974,7 @@ background: linear-gradient(135deg, #837031, #E1AD01);
         <button onclick="location.reload();" class="btn btn-primary btn-sm">
     <i class="fas fa-sync-alt"></i> Reload
 </button>
-      <table class="table table-responsive table-condensed" id="new_rep_table"></table>
+      <table class="table table-hover" id="new_rep_table"></table>
       </div>
 
       <!-- Start of Add/Edit Modal -->
@@ -994,10 +1014,10 @@ background: linear-gradient(135deg, #837031, #E1AD01);
       </div>
 
       <!-- ✅ FIX 1: SUBJECT must NOT use name="concern" (it was duplicated) -->
-      <div class="form-group col-md-12">
+      <div class="form-group col-md-4">
       <label>SUBJECT</label>
-      <textarea name="subject" id="concern" class="form-control form-control-sm"
-      style="text-transform:uppercase" readonly></textarea>
+      <input type="text" name="subject" id="concern" class="form-control form-control-sm"
+      style="text-transform:uppercase" readonly></input>
       </div>
 
       <div class="form-group col-md-4">
@@ -1032,7 +1052,7 @@ background: linear-gradient(135deg, #837031, #E1AD01);
       <input type="hidden" name="old_dept" id="old_dept" readonly value="0">
 
       <!-- new field name expected by updated insert.php -->
-      <select class="form-control form-control-sm" name="f_deptsel" id="f_deptsel" required>
+      <select class="form-control form-control-sm custom-select-placeholder placeholder-active" name="f_deptsel" id="f_deptsel" required onchange="handleDropdownChange(this)">
       <option value="">Assign department...</option>
       <?php
       $query="SELECT * FROM tbl_dept WHERE dept_id NOT IN ('7','8','12','14') ";
@@ -1068,7 +1088,7 @@ background: linear-gradient(135deg, #837031, #E1AD01);
 
       <div class="form-group col-md-4">
       <label>PRIORITY LEVEL</label>
-      <select class="form-control form-control-xl" name="priority_level" id="priority_level" required>
+      <select class="form-control form-control-sm custom-select-placeholder placeholder-active" name="priority_level" id="priority_level" required onchange="handleDropdownChange(this)">
       <option value=""> &larr; PRIORITY &rarr;</option>
       <option value="4">LOW</option>
       <option value="3">NORMAL</option>
@@ -1078,9 +1098,9 @@ background: linear-gradient(135deg, #837031, #E1AD01);
       </div>
 
 
-      <div class="form-group col-xl 4">
+      <div class="form-group col-md-8">
     <label for="sla_days">Service Level Agreement (SLA)</label>
-    <select name="sla_days" id="sla_days" class="form-control" required>
+    <select name="sla_days" id="sla_days" class="form-control form-control-sm custom-select-placeholder placeholder-active" required onchange="handleDropdownChange(this)">
         <option value="">Select SLA</option>
         <option value="2">24 – 48 hours</option>
         <option value="5">3 – 5 days</option>
@@ -1102,8 +1122,8 @@ background: linear-gradient(135deg, #837031, #E1AD01);
 
       <div class="form-group col-md-12">
       <label>Work Output:</label>
-      <textarea name="remarks" id="remarks" class="form-control form-control-sm"
-      placeholder="Your Workoutput" style="text-transform:uppercase"></textarea>
+      <textarea name="remarks" id="remarks" class="form-control form-control-sm custom-select-placeholder placeholder-active"
+      placeholder="Your Workoutput" style="text-transform:uppercase" required onchange="handleDropdownChange(this)"></textarea>
       </div>
 
       <hr/>
@@ -1178,7 +1198,15 @@ let inactivityTime = function(){
 
 inactivityTime();
 
-
+function handleDropdownChange(selectElement) {
+  if (selectElement.value === "") {
+    selectElement.classList.add("placeholder-active");
+    selectElement.classList.remove("has-value");
+  } else {
+    selectElement.classList.remove("placeholder-active");
+    selectElement.classList.add("has-value");
+  }
+}
 </script>
 
 

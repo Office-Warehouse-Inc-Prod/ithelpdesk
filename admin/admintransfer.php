@@ -1,8 +1,9 @@
-      <?php
-      include 'admin.php';
-      include '../condb.php';
-      $con1 = new dbconfig();
-      ?>
+<?php
+include 'admin.php';
+include '../condb.php';
+$con1 = new dbconfig();
+
+?>
 
       <head>
       <link rel="stylesheet" href="../css/bootstrap-datetimepicker.min.css"/>
@@ -387,14 +388,12 @@ hr{
 
 html, body{ height:100%; }
 
-body{
-  background:
-    linear-gradient(135deg, rgba(18,28,49,.16) 0%, rgba(18,28,49,.16) 12%, transparent 12%),
-    linear-gradient(315deg, rgba(18,28,49,.14) 0%, rgba(18,28,49,.14) 12%, transparent 12%),
-    var(--bg);
-  color: var(--text);
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
-}
+body {
+  background: linear-gradient(to bottom, #ffffff, #99aac8);
+  background-attachment: fixed; 
+  margin: 0; 
+  height: 100vh; 
+} 
 
 /* container spacing */
 .container.mt-3{ padding-top: 10px; padding-bottom: 24px; }
@@ -403,12 +402,14 @@ body{
 
 /* ===== Top navbar (if applicable) =====  */
 .navbar, header, .topbar, .navbar-default{
-  background: var(--navy) !important;
+  
+    background-color: #213456 !important;
   border-color: rgba(255,255,255,.10) !important;
 }
 .navbar a, .navbar-brand, .navbar-nav > li > a,
 .navbar i, .navbar .fa, .navbar .fas{
   color: #fff !important;
+   font-weight: 600;
 }
 .navbar-nav > li.active > a,
 .navbar-nav > li > a:hover{
@@ -549,42 +550,6 @@ table.dataTable tbody tr td:last-child{
   border-top: 1px solid var(--line) !important;
   padding: 14px 18px !important;
 }
-
-/* Labels */
-label{
-  font-size: 11px;
-  font-weight: 900;
-  color: rgba(17,24,39,.65);
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  margin-bottom: 6px;
-}
-
-/* Inputs / Select / Textarea */
-.form-control,
-.form-control-sm,
-select.form-control,
-textarea.form-control{
-  background: #fff !important;
-  border: 1px solid var(--line) !important;
-  color: var(--text) !important;
-  border-radius: 14px !important;
-  padding: 10px 12px !important;
-}
-
-.form-control:focus,
-.form-control-sm:focus,
-select.form-control:focus,
-textarea.form-control:focus{
-  box-shadow: var(--focus) !important;
-  border-color: rgba(234,170,0,.45) !important;
-}
-
-.form-control[readonly],
-textarea[readonly]{ opacity: .95; }
-
-/* Spacing in grid */
-.form-group{ margin-bottom: 14px !important; }
 
 /* ===== Buttons (OWI style) ===== */
 .btn{
@@ -898,206 +863,236 @@ background: linear-gradient(135deg, #837031, #E1AD01);
   border-top: 3px solid var(--primary-color);
   margin-top: 10px;
 }
+label {
+  font-size: 11px;
+  font-weight: 900;
+  color: #213456;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+input.form-control,
+textarea.form-control {
+  color: #6c757d !important;
+  background-color: transparent !important; 
+  border: none !important; 
+  border-bottom: 1px solid #213456 !important; 
+  border-radius: 0px !important; 
+  resize: none !important; 
+}
+
+select.custom-select-placeholder.placeholder-active,
+textarea.form-control.custom-select-placeholder:placeholder-shown {
+  color: red !important;
+  border: 1px solid #ced4da !important;
+  border-radius: .2rem !important;
+  background-color: #fff !important;
+}
+
+textarea.form-control.custom-select-placeholder::placeholder {
+  color: red !important;
+  opacity: 0.7;
+}
+
+select.custom-select-placeholder.has-value,
+textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
+  color: #212529 !important; 
+  border: none !important; 
+  border-bottom: 1px solid #213456 !important; 
+  border-radius: 0px !important;
+  background-color: transparent !important;
+}
+
+  /* Inputs / Select / Textarea */
+  .form-control,
+  .form-control-sm,
+  select.form-control,
+  textarea.form-control {
+    background: #fff !important;
+    border: 1px solid var(--line) !important;
+    color: var(--text) !important;
+    border-radius: 14px !important;
+  }
+
+  .form-control:focus,
+  .form-control-sm:focus,
+  select.form-control:focus,
+  textarea.form-control:focus {
+    box-shadow: var(--focus) !important;
+    border-color: rgba(234,170,0,.45) !important;
+  }
+
+  .form-control[readonly],
+  textarea[readonly] { opacity: .95; }
+
+  .form-group { margin-bottom: 14px !important; }
 </style>
       </head>
-
-      <div class="container mt-3">
-        <button onclick="location.reload();" class="btn btn-primary btn-sm">
+<div class="container mt-3">
+  <button onclick="location.reload();" class="btn btn-primary btn-sm">
     <i class="fas fa-sync-alt"></i> Reload
-</button>
-      <table class="table table-responsive table-condensed" id="new_rep_table"></table>
-      </div>
-
-      <!-- Start of Add/Edit Modal -->
-      <script src="../js/coms.js"></script> 
-
-      <div class="modal fade" id="newrpt_Modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true"
-      data-backdrop="static" data-keyboard="false">
-      <div class="modal-dialog modal-lg">
-      <form method="post" id="newrpt_form" enctype="multipart/form-data">
-      <div class="modal-content">
-      <div class="modal-header">
-      <h4 class="modal-title" id="tick_title" value=""></h4>
-      </div>
-
-      <div class="modal-body">
-      <div class="row">
-
-      <div class="form-group col-md-4">
-        
-      <label>STORE</label>
-      
-      <input type="hidden" name="store" id="store" readonly value="">
-      <input type="text" class="form-control form-control-sm" name="str_desc" id="str_desc" readonly value="">
-      </div>
-
-      <div class="form-group col-md-4">
-      <label>Created By:</label>
-      <input type="text" class="form-control form-control-sm" name="crtd_by" id="crtd_by" readonly>
-      </div>
-
-      <input type="hidden" class="form-control form-control-sm" name="ticket_no" id="ticket_no">
-
-      <div class="form-group col-md-4">
-      <label>DATE CREATED</label>
-      <input type="text" class="form-control form-control-sm" name="date_createdx" id="date_createdx" readonly value="">
-      <div></div>
-      </div>
-
-      <!-- ✅ FIX 1: SUBJECT must NOT use name="concern" (it was duplicated) -->
-      <div class="form-group col-md-12">
-      <label>SUBJECT</label>
-      <textarea name="subject" id="concern" class="form-control form-control-sm"
-      style="text-transform:uppercase" readonly></textarea>
-      </div>
-
-      <div class="form-group col-md-4">
-      <label>Service Requested:</label>
-      <input type="text" class="form-control form-control-sm" name="tos" id="tos" readonly>
-      </div>
-
-      <!-- ✅ FIX 2: CONCERN uses name="concern" (kept correct) -->
-      <div class="form-group col-md-12">
-      <label>CONCERN</label>
-      <textarea name="concern" id="message" class="form-control form-control-sm"
-      style="text-transform:uppercase" readonly></textarea>
-      </div>
-
-      <!-- <div class="form-group col-md-12"> -->
-
-
-
-      <!-- </div> -->
-
-      <!-- ✅ FIX 3: Assigned Support -> Assigned Department (itsup -> f_deptsel) -->
-      <div class="form-group col-md-8">
-      <label>ASSIGNED DEPARTMENT</label>
-
-      <!-- old value for reassignment history -->
-      <input type="hidden" name="old_dept" id="old_dept" readonly value="0">
-
-      <!-- new field name expected by updated insert.php -->
-      <select class="form-control form-control-sm" name="f_deptsel" id="f_deptsel" required>
-      <option value="">Assign department...</option>
-      <?php
-      $query="SELECT * FROM tbl_dept WHERE dept_id NOT IN ('7','8') ";
-      $run=$con1->prepare($query);
-      $run->execute();
-      $rs=$run->get_result();
-      while ($res=$rs->fetch_assoc()) {
-      $dept_id = $res['dept_id'];
-      $dept_desc = $res['dept_desc'];
-      ?>
-      <option value="<?php echo $dept_id; ?>"><?php echo $dept_desc; ?></option>
-      <?php } ?>
-      </select>
-      </div>
-
-
-      <input type="hidden" name="setStatus" id="setStatus" value="Assigned" required>
-
-      <!-- <select id="setStatus" name="setStatus" class="form-control form-control-sm" required>
-    <option value="">Select Status</option>
-    <option value="Assigned">Assigned</option>
-    <option value="Closed">Closed</option>
-</select> -->
-
-      <input type="hidden" name="contactNumber" id="contactNumber">
-      <input type="hidden" name="dept_email" id="dept_email">
-
-
-
-
-
-
-
-      <div class="form-group col-md-4">
-      <label>PRIORITY LEVEL</label>
-      <select class="form-control form-control-xl" name="priority_level" id="priority_level" required>
-      <option value=""> &larr; PRIORITY &rarr;</option>
-      <option value="4">LOW</option>
-      <option value="3">NORMAL</option>
-      <option value="2">HIGH</option>
-      <option value="1">CRITICAL</option>
-      </select>
-      </div>
-
-
-      <div class="form-group col-xl 4">
-    <label for="sla_days">Service Level Agreement (SLA)</label>
-    <select name="sla_days" id="sla_days" class="form-control" required>
-        <option value="">Select SLA</option>
-        <option value="2">24 – 48 hours</option>
-        <option value="5">3 – 5 days</option>
-        <option value="7">5 – 7 days</option>
-        <option value="14">1 – 2 weeks</option>
-        <option value="21">2 – 3 weeks</option>
-        <option value="28">3 – 4 weeks</option>
-    </select>
+  </button>
+  <table class="table table-responsive table-condensed" id="new_rep_table"></table>
 </div>
 
+<script src="../js/coms.js"></script> 
+
+<div class="modal fade" id="newrpt_Modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-lg">
+    <form method="post" id="newrpt_form" enctype="multipart/form-data">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title" id="tick_title" value=""></h4>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="form-group col-md-4">
+              <label>STORE</label>
+              <input type="hidden" name="store" id="store" readonly value="">
+              <input type="text" class="form-control form-control-sm" name="str_desc" id="str_desc" readonly value="">
+            </div>
+            <div class="form-group col-md-4">
+              <label>Created By:</label>
+              <input type="text" class="form-control form-control-sm" name="crtd_by" id="crtd_by" readonly>
+            </div>
+            <input type="hidden" class="form-control form-control-sm" name="ticket_no" id="ticket_no">
+            <div class="form-group col-md-4">
+              <label>DATE CREATED</label>
+              <input type="text" class="form-control form-control-sm" name="date_createdx" id="date_createdx" readonly value="">
+            </div>
+            
+            <div class="form-group col-md-4">
+              <label>SUBJECT</label>
+              <input type="text" name="subject" id="concern" class="form-control form-control-sm" style="text-transform:uppercase" readonly></input>
+            </div>
+            
+            <div class="form-group col-md-4">
+              <label>Service Requested:</label>
+              <input type="text" class="form-control form-control-sm" name="tos" id="tos" readonly>
+            </div>
+            
+            <div class="form-group col-md-12">
+              <label>CONCERN</label>
+              <textarea name="concern" id="message" class="form-control form-control-sm" style="text-transform:uppercase" readonly></textarea>
+            </div>
+
+      
+                 <input type="hidden" class="form-control form-control-sm w-25" name="old_dept" id="old_dept" readonly placeholder="ID">
+                 <input type="hidden" class="form-control form-control-sm w-75 ml-2" name="deptsel" id="deptsel" readonly placeholder="Fetching...">
+           
 
 
-      <!-- <div class="form-group col-md-4"> -->
-      <label id="clby_label" class="hidden">CLOSED BY</label>
-      <input type="hidden" name="close_by" id="close_by" value="<?php echo $_SESSION['tech_id'];?>">
-      <input type="hidden" class="form-control form-control-sm" name="cl_desc" id="cl_desc" readonly
-      value="<?php echo $_SESSION['fname'].'  '.$_SESSION['lstname'];?>">
-      <!-- </div> -->
+            <div class="form-group col-md-6">
+              <label>ASSIGNED DEPARTMENT</label>
+             
 
-      <div class="form-group col-md-12">
-      <label>Work Output:</label>
-      <textarea name="remarks" id="remarks" class="form-control form-control-sm"
-      placeholder="Your Workoutput" style="text-transform:uppercase"></textarea>
-      </div>
+              <select class="form-control form-control-sm custom-select-placeholder placeholder-active" name="f_deptsel" id="f_deptsel" required onchange="handleDropdownChange(this)">
+                <option value="">Assign department...</option>
+                <?php
+                  $query="SELECT * FROM tbl_dept WHERE dept_id NOT IN ('7','8') ";
+                  $run=$con1->prepare($query);
+                  $run->execute();
+                  $rs=$run->get_result();
+                  while ($res=$rs->fetch_assoc()) {
+                    $dept_id = $res['dept_id'];
+                    $dept_desc = $res['dept_desc'];
+                ?>
+                  <option value="<?php echo $dept_id; ?>"style="color: #333;"><?php echo $dept_desc; ?></option>
+                <?php } ?>
+              </select>
+            </div>
 
-      <hr/>
+            <input type="hidden" name="setStatus" id="setStatus" value="Assigned" required>
+            <input type="hidden" name="contactNumber" id="contactNumber">
+            <input type="hidden" name="dept_email" id="dept_email">
 
-      <div class="form-group col-md-12">
-      <p>
-      <button class="btn btn-primary float-right mr-2" type="button" name="msgbtn" id="msgbtn" value="show">
-      Show Message Thread
-      </button>
-      </p>
-      </div>
+            <div class="form-group col-md-6">
+              <label>PRIORITY LEVEL</label>
+              <select class="form-control form-control-sm custom-select-placeholder placeholder-active" name="priority_level" id="priority_level" required onchange="handleDropdownChange(this)">
+                <option value=""> &larr; PRIORITY &rarr;</option>
+                <option value="4"style="color:black;">LOW</option>
+                <option value="3" style="color:black;">NORMAL</option>
+                <option value="2" style="color:black;">HIGH</option>
+                <option value="1" style="color:black;">CRITICAL</option>
+              </select>
+            </div>
 
-      <div class="col-md-12 collapse" id="msg_thread">
-      <div class="card card-body">
-      <div class="row">
-      <div class="col-md-12 dv_msg">
-      <label style="font-weight: bold; color:white;">Add Message:</label>
+            <div class="form-group col-md-6">
+              <label for="sla_days">Service Level Agreement (SLA)</label>
+              <select name="sla_days" id="sla_days" class="form-control form-control-sm custom-select-placeholder placeholder-active" required onchange="handleDropdownChange(this)">
+                  <option value="">Select SLA</option>
+                  <option value="2" style="color:black;">24 – 48 hours</option>
+                  <option value="5" style="color:black;">3 – 5 days</option>
+                  <option value="7" style="color:black;">5 – 7 days</option>
+                  <option value="14" style="color:black;">1 – 2 weeks</option>
+                  <option value="21" style="color:black;">2 – 3 weeks</option>
+                  <option value="28"style="color:black;">3 – 4 weeks</option>
+              </select>
+            </div>
 
-      <!-- keep same POST key admsg -->
-      <textarea name="admsg" id="admsg" class="form-control form-control-sm"
-        placeholder="Reply to their message or give updates regarding this ticket..."></textarea>
-      </div>
+            <label id="clby_label" class="hidden">CLOSED BY</label>
+            <input type="hidden" name="close_by" id="close_by" value="<?php echo $_SESSION['tech_id'];?>">
+            <input type="hidden" class="form-control form-control-sm" name="cl_desc" id="cl_desc" readonly value="<?php echo $_SESSION['fname'].'  '.$_SESSION['lstname'];?>">
 
-      <div class="col-md-12 mt-4 mb-2 dv_msg">
-      <label for="remarks_view" style="font-weight: bold;color:white;">Ticket Thread:</label>
-      <div class="container_remarks">
-      <div id="remarks_view"><ul></ul></div>
-      </div>
-      </div>
-      </div>
+            <div class="form-group col-md-12">
+              <label>Work Output:</label>
+              <textarea name="remarks" id="remarks" class="form-control form-control-sm custom-select-placeholder placeholder-active" placeholder="Your Workoutput" style="text-transform:uppercase" required onchange="handleDropdownChange(this)"></textarea>
+            </div>
 
-      <div class="col-md-12">
-      <input type="submit" name="action" id="action" class="btn btn-success" value="Add" />
-      <button type="button" name="btnClose" id="btnClose" class="btn btn-danger float-right" data-dismiss="modal">Close</button>
-      </div>
-      </div>
-      </div>
+            <hr/>
 
-      </div>
-      </div>
+            <div class="form-group col-md-12">
+              <p>
+                <button class="btn btn-primary float-right mr-2" type="button" name="msgbtn" id="msgbtn" value="show">Show Message Thread</button>
+              </p>
+            </div>
 
-      <div class="modal-footer">
-      <input type="hidden" name="operation" id="operation" />
-      <input type="hidden" name="u_id" id="u_id" value="<?php echo $_SESSION['user_id']; ?>">
-      </div>
+            <div class="col-md-12 collapse" id="msg_thread">
+              <div class="card card-body">
+                <div class="row">
+                  <div class="col-md-12 dv_msg">
+                    <label style="font-weight: bold; color:white;">Add Message:</label>
+                    <textarea name="admsg" id="admsg" class="form-control form-control-sm" placeholder="Reply to their message or give updates regarding this ticket..."></textarea>
+                  </div>
 
-      </div>
-      </form>
-      </div>
-      </div>
+                  <div class="col-md-12 mt-4 mb-2 dv_msg">
+                    <label for="remarks_view" style="font-weight: bold;color:white;">Ticket Thread:</label>
+                    <div class="container_remarks">
+                      <div id="remarks_view"><ul></ul></div>
+                    </div>
+                  </div>
+                </div>
 
+                <div class="col-md-12">
+                  <input type="submit" name="action" id="action" class="btn btn-success" value="Add" />
+                  <button type="button" name="btnClose" id="btnClose" class="btn btn-danger float-right" data-dismiss="modal">Close</button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div class="modal-footer">
+          <input type="hidden" name="operation" id="operation" />
+          <input type="hidden" name="u_id" id="u_id" value="<?php echo $_SESSION['user_id']; ?>">
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<script>
+
+  
+
+function handleDropdownChange(selectElement) {
+  if (selectElement.value === "") {
+    selectElement.classList.add("placeholder-active");
+    selectElement.classList.remove("has-value");
+  } else {
+    selectElement.classList.remove("placeholder-active");
+    selectElement.classList.add("has-value");
+  }
+}
+  </script>
 <?php include 'admintransfer_obj.php'; ?>

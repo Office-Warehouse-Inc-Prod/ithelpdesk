@@ -49,14 +49,14 @@ if(/Android|webOS|iPhone|iPad|Mac|Macintosh|iPod|BlackBerry|IEMobile|Opera Mini/
 var user_id = <?= $_SESSION['user_id']; ?>
 
 let val = '';
-$('#card_totalval').click(function(e) {
+$('#count_assigned').click(function(e) {
 e.preventDefault();
 val =  $(this).attr("value");
     $('html, body').animate({
         scrollTop: $('#report_data').offset().top - 80
     }, 600);
 });
-$('#card_openval').click(function(e) {
+$('#count_onprocess').click(function(e) {
 e.preventDefault();
 val =  $(this).attr("value");
 // console.log(val)
@@ -65,14 +65,31 @@ val =  $(this).attr("value");
     }, 600);
 });
 
-$('#card_openwfaval').click(function(e) {
+$('#count_pending').click(function(e) {
+e.preventDefault();
+val =  $(this).attr("value");
+// console.log(val)
+    $('html, body').animate({
+        scrollTop: $('#report_data').offset().top - 80
+    }, 600);
+});
+
+$('#count_nonesca').click(function(e) {
 e.preventDefault();
 val =  $(this).attr("value");
     $('html, body').animate({
         scrollTop: $('#report_data').offset().top - 80
     }, 600);
 });
-$('#card_closedval').click(function(e) {
+$('#count_subforclosing').click(function(e) {
+e.preventDefault();
+val =  $(this).attr("value");
+    $('html, body').animate({
+        scrollTop: $('#report_data').offset().top - 80
+    }, 600);
+});
+
+$('#count_closed').click(function(e) {
 e.preventDefault();
 val =  $(this).attr("value");
     $('html, body').animate({
@@ -306,6 +323,13 @@ render:function(data,type,row){
         return `<span class="${cls} px-2 py-1">${data}</span>`;
       }
     },
+    {
+      title: "Non Escalated",
+      data: "non_escalated_tag",
+      defaultContent: "",
+      visible: false,
+      searchable: true
+    },
 
     // ✅ Assigned Department (new) with fallback to old it_desc
     {
@@ -405,6 +429,7 @@ $('#report_data tbody').on('dblclick', 'tr', function () {
   $('#concern').val(data['concern']);
   // $('#via').val(data['via']);
   $('#status').val(data['status']);
+  $('#non_escalated_tag').val(data['non_escalated_tag']);
   // console.log(data['priority_desc']);
   $('#priority_desc').val(data['priority_desc']);
   $('#close_by').val(data['close_by']);
@@ -501,39 +526,49 @@ table
 } );
 
 
-$('#card_openval').on('click', function () {
-// var val =  $(this).attr("value");
-var val =  ('ASSIGNED');
-// alert(val);
-table
-.columns( 7 )
-.search(val)
-.draw();
-} );
+function filterStatus(status, nonEscalated = false) {
+  table.columns(7).search(status);
+  table.columns(8).search(nonEscalated ? 'Y' : '');
+  table.draw();
+}
 
-$('#card_openwfaval').on('click', function () {
-var val =  $(this).attr("value");
-// alert(val);
-table
-.columns( 7 )
-.search(val)
-.draw();
-} );
+$('#card_assigned').on('click', function () {
+  filterStatus('ASSIGNED');
+});
 
-$('#card_closedval').on('click', function () {
-var val =  $(this).attr("value");
-// alert(val);
-table
-.columns( 7 )
-.search(val)
-.draw();
-} );
+$('#card_onprocess').on('click', function () {
+  filterStatus('PENDING', true);
+});
+
+$('#card_pending').on('click', function () {
+  var val = $(this).attr("value");
+  filterStatus(val);
+});
+
+$('#card_nonesca').on('click', function () {
+  var val = $(this).attr("value");
+  filterStatus(val);
+});
+
+$('#card_subforclosing').on('click', function () {
+  var val = $(this).attr("value");
+  filterStatus(val);
+});
+$('#card_closed').on('click', function () {
+  var val = $(this).attr("value");
+  filterStatus(val);
+});
+
 
 
 $('.clcktxt').click(function () { 
   var val =  $(this).attr("value");
-// alert(val);
-table.columns(7).search(val).draw();
+  if (val === 'NON ESCALATED') {
+    filterStatus('PENDING', true);
+  } else {
+    filterStatus(val);
+  }
+
 $('#network_tb').slideToggle();
     $('html, body').animate({
         scrollTop: 1600
@@ -572,11 +607,12 @@ function get_card_data(yr) {
             let card_data = jQuery.parseJSON(data);
             const a = card_data;
 
-            $('#count_total').html(a[0].owfa_res);
-            $('#count_open').html(a[0].open_res);
-            $('#count_owfa').html(a[0].t_pending);
-            $('#count_closed').html(a[0].cls_res);
-            $('#today_closed').html(a[0].t_res);
+            $('#count_assigned').html(a[0].assigned_res);
+            $('#count_onprocess').html(a[0].onprocess_res);
+            $('#count_pending').html(a[0].pending_res);
+            $('#count_nonesca').html(a[0].nonesca_res);
+            $('#count_subforclosing').html(a[0].subforclosing_res);
+            $('#count_closed').html(a[0].closed_res);
         }
     );
 }

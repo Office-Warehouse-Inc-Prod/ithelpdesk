@@ -56,7 +56,6 @@ if ($system === 'dts') {
         color: white;
     }
 
-    /* Animated background elements */
     body::before {
         content: "";
         position: absolute;

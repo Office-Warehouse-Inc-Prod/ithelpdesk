@@ -104,7 +104,7 @@ class dbconfig extends dbconn
 				LEFT JOIN reports ON reports.itsup = it_tech.itsup
 				INNER JOIN users ON users.tech_id = it_tech.itsup
 				WHERE
-				reports.sub_id NOT IN (15,28,34,35) AND reports.itsup NOT IN ('8') AND reports.f_deptsel = '1' AND
+				reports.sub_id NOT IN (15,28,34,35) AND reports.itsup IN (1,2,5,7,10,11,14,44,45,47,77) AND reports.f_deptsel = '1' AND
 				YEAR(reports.date_created) IN (" . $_POST['yr'] . ")
 				GROUP BY
 				reports.itsup

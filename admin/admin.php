@@ -104,7 +104,7 @@ exit();
 
 /* Hover behavior */
 .dropdown-menu .dropdown-item:hover {
-    background-color: #f3f4f6;
+  background-color: #405f9e;
     color: inherit !important;
 }
 
@@ -149,9 +149,10 @@ body {
 }
 
 .owi-navbar {
-  background-color: #213456 !important;
+  
+    background-color: #213456 !important;
   box-shadow: 0 2px 10px 2px #66738e;
-  margin-bottom: 10px;
+  margin-bottom: 40px;
 }
 
 /* Make links clean + readable */
@@ -199,7 +200,7 @@ body {
 
 
 .owi-navbar .dropdown-item:hover {
-  background-color: #54699e;
+  background-color: #768cc5;
   color: #fff;
 }
 
@@ -312,11 +313,16 @@ body {
   border-top: 3px solid var(--primary-color);
   margin-top: 10px;
 }
+.owi-navbar .dropdown-menu:hover {
+  border-top: 3px solid var(--primary-color);
+  margin-top: 10px;
+  background-color: #213456;
+}
   </style>
 
 <body>
   
-<nav class="navbar navbar-icon-top navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-icon-top navbar-expand-lg navbar-dark bg-dark sticky-top">
 <a class="navbar-brand" href="#">OWI HELPDESK</a>
 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 <span class="navbar-toggler-icon"></span>
@@ -341,7 +347,7 @@ NEW REPORTS
 </li>
 <li class="nav-item">
 <a class="nav-link " href="admintransfer.php">
-<i class="fa fa-envelope-o">
+<i class="fas fa-exchange-alt">
   <span class="badge badge-danger" id="notif_transfer"></span>
 </i>
 REQUEST TO TRANSFER
@@ -358,14 +364,25 @@ REQUEST TO TRANSFER
 NEW SUPPLIES REQUEST
 </a>
 </li> -->
-        <li class="nav-item">
-          <a class="nav-link" href="adminreports.php">
-            <i class="fa-solid fa-chart-bar">
-              <span class="badge badge-danger" id="admin_reports"></span>
-            </i>
-            REPORTS
-          </a>
-        </li>
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="genReportDrop" role="button" data-toggle="dropdown">
+              <i class="fa fa-chart-line"></i> REPORTS
+            </a>
+            <div class="dropdown-menu" aria-labelledby="genReportDrop">
+              <a class="dropdown-item" href="adminreports.php#admin_report">
+                <i class="fa fa-calendar-day"></i> Department Tickets Report
+              </a>
+              <a class="dropdown-item" href="adminreports.php#admin_report_escalated">
+                <i class="fa-solid fa-arrow-trend-up"></i> Escalated Tickets Report
+              </a>
+
+              <a class="dropdown-item" href="adminreports.php#searchTransferLog"><i class="fas fa-ticket"></i> Transfer Ticket Logs
+              </a>
+              <a class="dropdown-item" href="adminreports.php#user_activity"><i class="fa-regular fa-clock"></i> User Activity Logs
+              </a>
+            </div>
+          </li>
+
 
 </ul>
 <ul class="navbar-nav ml-auto"> 
@@ -376,20 +393,22 @@ NEW SUPPLIES REQUEST
   </a>
 </li> -->
 <!-- Changed mr-auto to ml-auto for right alignment -->
-  <li class="nav-item dropdown">
-    <a class="nav-link" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-      <i class="fa fa-sliders-h"></i>
-      Maintenance
-    </a>
-    <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="background-color: rgb(52,58,64);">
-      <a class="dropdown-item text-white" href="user_maintenance.php">
-        <i class="fas fa-user-cog"></i> User Maintenance
-      </a>
-      <a class="dropdown-item text-white" href="store_maintenance.php">
-        <i class="fas fa-store"></i> Store Maintenance
-      </a>
-    </div>
-  </li>
+ 
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="genReportDrop" role="button" data-toggle="dropdown">
+               <i class="fa fa-sliders-h"></i> MAINTENANCE
+            </a>
+            <div class="dropdown-menu" aria-labelledby="genReportDrop">
+              <a class="dropdown-item" href="user_maintenance.php">
+               <i class="fas fa-user-cog"></i> User Maintenance
+              </a>
+              <a class="dropdown-item" href="store_maintenance.php">
+                <i class="fas fa-store"></i> Store Maintenance
+              </a>
+
+             
+            </div>
+          </li>
   
   <li class="nav-item dropdown">
     <a class="nav-link" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

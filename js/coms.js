@@ -34,7 +34,6 @@ function getinfo(tid, gettype, usrid) {
     "../users/fetch.php",
     { tickid: tid, operation: gettype },
     function (data) {
-      // var obj = JSON.parse(data);${ (uid==comments.usrid) ? "time-right":"time-left"}
       getcomments(data, usrid);
     },
     "json"

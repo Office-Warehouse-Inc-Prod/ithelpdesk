@@ -229,6 +229,13 @@ $con1 = new dbconfig();
     --radius-sm:14px;
     --focus: 0 0 0 .2rem rgba(234,170,0,.18);
   }
+  
+body {
+  background: linear-gradient(to bottom, #ffffff, #99aac8);
+  background-attachment: fixed; 
+  margin: 0; 
+  height: 100vh; 
+} 
 
   /* container spacing */
   .container.mt-3 { padding-top: 10px; padding-bottom: 24px; }
@@ -359,16 +366,46 @@ $con1 = new dbconfig();
     border-top: 1px solid var(--line) !important;
     padding: 14px 18px !important;
   }
+label {
+  font-size: 11px;
+  font-weight: 900;
+  color: #213456;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
 
-  /* Labels */
-  label {
-    font-size: 11px;
-    font-weight: 900;
-    color: rgba(17,24,39,.65);
-    letter-spacing: .08em;
-    text-transform: uppercase;
-    margin-bottom: 6px;
-  }
+input.form-control,
+textarea.form-control {
+  color: #6c757d !important;
+  background-color: transparent !important; 
+  border: none !important; 
+  border-bottom: 1px solid #213456 !important; 
+  border-radius: 0px !important; 
+  resize: none !important; 
+}
+
+select.custom-select-placeholder.placeholder-active,
+textarea.form-control.custom-select-placeholder:placeholder-shown {
+  color: red !important;
+  border: 1px solid #ced4da !important;
+  border-radius: .2rem !important;
+  background-color: #fff !important;
+}
+
+textarea.form-control.custom-select-placeholder::placeholder {
+  color: red !important;
+  opacity: 0.7;
+}
+
+select.custom-select-placeholder.has-value,
+textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
+  color: #212529 !important; 
+  border: none !important; 
+  border-bottom: 1px solid #213456 !important; 
+  border-radius: 0px !important;
+  background-color: transparent !important;
+}
 
   /* Inputs / Select / Textarea */
   .form-control,
@@ -556,9 +593,9 @@ $con1 = new dbconfig();
               <input type="text" class="form-control form-control-sm" name="date_createdx" id="date_createdx" readonly value="">
             </div>
 
-            <div class="form-group col-md-12">
+            <div class="form-group col-md-4">
               <label>SUBJECT</label>
-              <textarea name="concern" id="concern" class="form-control form-control-sm" placeholder="Input Concern" style="text-transform:uppercase" readonly></textarea>
+              <input type="text" name="concern" id="concern" class="form-control form-control-sm" placeholder="Input Concern" style="text-transform:uppercase" readonly></input>
             </div>
 
             <div class="form-group col-md-4">
@@ -579,10 +616,12 @@ $con1 = new dbconfig();
               </div>
             </div>
 
+             <hr style="border:2px solid #333; width: 100%; ">
+
             <div class="form-group col-md-4">
               <label>VIA</label>
-              <select class="form-control form-control-sm" name="via" id="via" required>
-                <option value=""> &larr; VIA &rarr;</option>
+               <select class="form-control form-control-sm custom-select-placeholder placeholder-active" name="via" id="via" required onchange="handleDropdownChange(this)">
+                <option value=""style="color:red;"> &larr; VIA &rarr;</option>
                 <?php
                   $query = "select * from via_main";
                   $run = $con1->prepare($query);
@@ -590,7 +629,7 @@ $con1 = new dbconfig();
                   $rs = $run->get_result();
                   while ($res = $rs->fetch_assoc()) {
                 ?>
-                <option value="<?=$res['via_desc']?>"><?=$res['via_desc']?></option>
+                <option value="<?=$res['via_desc']?>"style="color: #333;"><?=$res['via_desc']?></option>
                 <?php } ?>
               </select>
             </div>
@@ -598,8 +637,8 @@ $con1 = new dbconfig();
             <div class="form-group col-md-8">
               <label>ASSIGNED SUPPORT</label>
               <input type="hidden" name="it_num" id="it_num" readonly>
-              <select class="form-control form-control-sm" name="itsup" id="itsup">
-                <option value="">Assign support...</option>  
+              <select class="form-control form-control-sm custom-select-placeholder placeholder-active" name="itsup" id="itsup"required onchange="handleDropdownChange(this)">
+                <option value=""style="color:red;"> &larr;ASSIGN SUPPORT&larr;</option>  
                 <?php
                   $query="select * from it_tech WHERE itsup NOT IN ('4','7','8','12','14') AND deptsel = '1'";
                   $run=$con1->prepare($query);
@@ -609,7 +648,7 @@ $con1 = new dbconfig();
                     $tchid = $res['itsup'];
                     $tchdesc = $res['it_desc'];
                 ?>
-                <option value="<?php echo $tchid;?>"><?= $tchdesc; ?></option>
+                <option value="<?php echo $tchid;?>"style="color: #333;"><?= $tchdesc; ?></option>
                 <?php } ?>    
               </select> 
             </div>
@@ -617,8 +656,8 @@ $con1 = new dbconfig();
             <div class="form-group col-md-6">
               <label>CATEGORY</label>
               <input type="hidden" name="cat_num" id="cat_num" readonly>
-              <select class="form-control form-control-sm" name="cat" id="cat" required>
-                <option value=""> &larr; CATEGORY &rarr;</option>  
+              <select class="form-control form-control-sm custom-select-placeholder placeholder-active" name="cat" id="cat" required onchange="handleDropdownChange(this)">
+                <option value=""style="color:red;"> &larr; CATEGORY &rarr;</option>  
                 <?php
                   $query="select * from categories WHERE deptsel = '1' AND (old_tag IS NULL OR old_tag <> 'Y') ORDER BY order_id ASC";
                   $run=$con1->prepare($query);
@@ -628,7 +667,7 @@ $con1 = new dbconfig();
                     $supid = $res['cat_id'];
                     $suppdesc = $res['cat_desc'];
                 ?>
-                <option value="<?php echo $supid;?>"><?= $suppdesc; ?></option>
+                <option value="<?php echo $supid;?>" style="color: #333;"><?= $suppdesc; ?></option>
                 <?php } ?>
               </select> 
             </div>
@@ -636,7 +675,7 @@ $con1 = new dbconfig();
             <div class="form-group col-md-6">
               <label>SUB CATEGORY</label>
               <input type="hidden" name="sub_num" id="sub_num" readonly>
-              <select class="form-control form-control-sm" name="sub" id="sub"></select>
+              <select class="form-control form-control-sm custom-select-placeholder placeholder-active" name="sub" id="sub" required onchange="handleDropdownChange(this)"></select>
             </div>
 
             <div class="form-group col-md-4 hide_isp">
@@ -653,7 +692,7 @@ $con1 = new dbconfig();
                     $ispid = $res['isp_id'];
                     $ispdesc = $res['isp_shortDesc'];
                 ?>
-                <option value="<?php echo $ispid;?>"><?= $ispdesc; ?></option>
+                <option value="<?php echo $ispid;?>"style="color: #333;"><?= $ispdesc; ?></option>
                 <?php } ?>
               </select> 
             </div> 
@@ -673,10 +712,10 @@ $con1 = new dbconfig();
               </div>
             </div>
 
-            <div class="form-group col-md-4 selected">
+            <div class="form-group col-md-4">
               <label>STATUS</label>
-              <select class="form-control form-control-sm" name="status" id="status" required>
-                <option value=""> &larr; Status &rarr;</option>
+              <select class="form-control form-control-sm custom-select-placeholder placeholder-active" name="status" id="status" required onchange="handleDropdownChange(this)">
+                <option value=""style="color:red;"> &larr; STATUS &rarr;</option>
                 <?php
                   $query="select * from status WHERE it_module_tag = 'Y' AND stat_id <> '29'";
                   $run=$con1->prepare($query);
@@ -684,7 +723,7 @@ $con1 = new dbconfig();
                   $rs=$run->get_result();
                   while ($res=$rs->fetch_assoc()) {
                 ?>
-                <option><?=$res['stat_desc'] ?></option>
+                    <option value="<?=$res['stat_desc'] ?>" style="color: #333;"><?=$res['stat_desc'] ?></option>
                 <?php } ?>
               </select>
             </div>
@@ -706,7 +745,7 @@ $con1 = new dbconfig();
 
             <div class="form-group col-md-12">
               <label>Work Output: </label>
-              <textarea name="remarks" id="remarks" class="form-control form-control-sm" placeholder="Your Workoutput" style="text-transform:uppercase" required></textarea>
+              <textarea name="remarks" id="remarks" class="form-control form-control-sm custom-select-placeholder placeholder-active" placeholder="Your Workoutput" style="text-transform:uppercase" required onchange="handleDropdownChange(this)"></textarea>
             </div>
             <hr/>
 
@@ -753,9 +792,6 @@ $con1 = new dbconfig();
 <script type="text/javascript">
 $(document).ready(function(){
 
-  /**
-   * Get url param.
-   */
   function getUrlParam(param) {
     var urlParams = new URLSearchParams(window.location.search);
     return urlParams.get(param);
@@ -792,15 +828,12 @@ $(document).ready(function(){
     }, 600);
   }
 
-  // for Status Open    
+
   $("div.selected select").val("OPEN");
 
   var reptable;
-  var user_id = <?= $_SESSION['user_id']; ?>; // Added missing semi-colon
+  var user_id = <?= $_SESSION['user_id']; ?>; 
 
-  /**
-   * Getdata.
-   */
   function getdata(){
     $.post('fetchdata/fetch_data.php',{mode:'newrpt_tbl'},function(data){
       admin_datatable(data);
@@ -808,9 +841,6 @@ $(document).ready(function(){
   }
   getdata();
 
-  /**
-   * Admin datatable.
-   */
   function admin_datatable(t){
     const dataset = t.newrptdata;
     reptable = $("#new_rep_table").DataTable({
@@ -840,7 +870,6 @@ $(document).ready(function(){
       ],
       rowCallback: function(row, data, index){
         if(data['msg_cnt'] == '1'){
-          // Fixed out of bounds column count loops crashing assignments
           $(row).find('td').css("font-weight", "bold");
         }
       }
@@ -897,7 +926,6 @@ $('#new_rep_table tbody').off('click', 'button').on('click', 'button', function 
     $('#datetimepicker2, #datetimepicker3').datetimepicker();
   });
 
-  // Keep checks active if functions are defined externally
   if (typeof slct_isp === "function") slct_isp();
   if (typeof slct_sub === "function") slct_sub();
   if (typeof gtsub_id === "function") gtsub_id();
@@ -906,18 +934,57 @@ $('#new_rep_table tbody').off('click', 'button').on('click', 'button', function 
   $(document).on('submit', '#newrpt_form', function(event) {
     event.preventDefault();
     event.stopImmediatePropagation();
+    var formData = new FormData(this);
+
     $.ajax({
       url: "insert.php",
       method: 'POST',
-      data: new FormData(this),
+      data: formData,
       contentType: false,
       processData: false,
-      success: function(data) {
-        alert(data);
-        $('#newrpt_form')[0].reset();
-        $('#newrpt_Modal').modal('hide');
-        getdata();
-        location.reload(); 
+      dataType: 'json',
+      cache: false,
+      success: function(response) {
+        if (typeof response !== 'object') {
+          try {
+            response = JSON.parse(response);
+          } catch (e) {
+            response = { status: 'error', message: String(response) };
+          }
+        }
+
+        if (response.status === 'success' || response.status === true) {
+          Swal.fire({
+            icon: 'success',
+            title: response.message || 'Saved successfully',
+            showConfirmButton: false,
+            timer: 1500
+          }).then(function() {
+            $('#newrpt_form')[0].reset();
+            $('#newrpt_Modal').modal('hide');
+            getdata();
+            location.reload();
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Save failed',
+            text: response.message || 'Please try again.'
+          });
+        }
+      },
+      error: function(xhr, status, error) {
+        var message = 'Please try again.';
+        if (xhr.responseJSON && xhr.responseJSON.message) {
+          message = xhr.responseJSON.message;
+        } else if (xhr.responseText) {
+          message = xhr.responseText.trim();
+        }
+        Swal.fire({
+          icon: 'error',
+          title: 'Save failed',
+          text: message
+        });
       }
     });
   });
@@ -941,9 +1008,6 @@ $(document).on('click', '#msgbtn', function(){
 });
 
 
-/**
- * Display attachments from data.
- */
 function displayAttachmentsFromData(data) {
     const container = document.getElementById('attachments-container');
     if (!container) {
@@ -951,13 +1015,10 @@ function displayAttachmentsFromData(data) {
         return;
     }
     
-    // Clear previous content
     container.innerHTML = '';
 
-    // Get attachment files from the row data
     const attachmentFiles = data.attachment_files;
 
-    // If no attachments
     if (!attachmentFiles) {
         container.innerHTML = '<span class="text-muted">No attachments for this ticket.</span>';
         return;
@@ -1022,4 +1083,13 @@ let inactivityTime = function(){
 inactivityTime();
 
 
+function handleDropdownChange(selectElement) {
+  if (selectElement.value === "") {
+    selectElement.classList.add("placeholder-active");
+    selectElement.classList.remove("has-value");
+  } else {
+    selectElement.classList.remove("placeholder-active");
+    selectElement.classList.add("has-value");
+  }
+}
 </script>

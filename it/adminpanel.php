@@ -26,18 +26,18 @@ include 'sub_graph_modal.php';
     --card-shadow: 0 4px 12px 0 rgba(58, 53, 65, 0.1);
   }
 
-  body {
-    font-family: 'Public Sans', sans-serif;
-    background-color: var(--bg-body);
-    color: #3A3541DE;
-    overflow-x: hidden;
-    background: linear-gradient(rgba(218, 219, 207, 0.3), rgba(113, 114, 136, 0.27)), url('images/bg_login.png');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-    background-repeat: no-repeat;
-    min-height: 100vh;
-  }
+ 
+body {
+  background: linear-gradient(to bottom, #ffffff, #99aac8);
+  background-attachment: fixed; 
+  margin: 0; 
+   overflow-x: hidden;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+} 
 
   .owi-navbar {
     background-color: #213456 !important;
@@ -201,24 +201,21 @@ include 'sub_graph_modal.php';
     0% { background-color: #ffff99; }
     100% { background-color: transparent; }
   }
-  ::-webkit-scrollbar {
-    width: 8px;
-  }
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+background: linear-gradient(135deg, #837031, #E1AD01);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #837031, #E1AD01);
+}
 
-  ::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg, #837031, #E1AD01);
-    border-radius: 10px;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(135deg, #837031, #E1AD01);
-  }
-  
  .modal-overlay {
             display: none; 
             position: fixed;
@@ -334,6 +331,63 @@ include 'sub_graph_modal.php';
   background: #213456;
   outline: 2px solid red;
   outline-offset: -2px; 
+}
+
+
+label {
+  font-size: 11px;
+  font-weight: 900;
+  color: #e1ad01; 
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+input.form-control,
+textarea.form-control {
+  color: #6c757d !important;
+  background-color: transparent !important; 
+  border: black !important; 
+  border-bottom: 1px solid #E1AD01 !important; 
+  resize: none !important; 
+}
+
+select.custom-select-placeholder.placeholder-active,
+textarea.form-control.custom-select-placeholder:placeholder-shown {
+  color: red !important;
+  border: 1px solid #ced4da !important;
+  background-color: #fff !important;
+}
+
+textarea.form-control.custom-select-placeholder::placeholder {
+  color: red !important;
+  opacity: 0.7;
+}
+
+select.custom-select-placeholder.has-value,
+textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
+  color: #0a0a0a !important; 
+  border-bottom: 1px solid #E1AD01 !important; 
+  background-color: transparent !important;
+}
+
+.form-control,
+.form-control-sm,
+input.form-control,
+select.form-control,
+textarea.form-control {
+  background: #fff !important;
+  color: black !important;
+  border-bottom: 1px solid #E1AD01 !important; 
+}
+
+.form-control:focus,
+.form-control-sm:focus,
+input.form-control:focus,
+select.form-control:focus,
+textarea.form-control:focus {
+  box-shadow: 0 10px 18px rgba(17,24,39,.06);
+  border-color: 2px solid rgba(114, 89, 21, 0.94) !important;
 }
 </style>
         
@@ -506,7 +560,6 @@ include 'sub_graph_modal.php';
         </div>
       </div>
 
-      <!-- KPI CARDS (replaces card-deck properly) -->
       <div class="main-container">
         <main class="p-4">
           <div class="row g-4">
@@ -780,10 +833,10 @@ Start of Add/Edit Modal
 
 
 
-                  <div class="form-group col-12">
+                  <div class="form-group col-4">
                     <label>SUBJECT/CONCERN</label>
-                    <textarea name="subjct" id="subjct" class="form-control form-control-sm" placeholder="Input Concern"
-                      style="text-transform:uppercase" onkeyup="this.value = this.value;"></textarea>
+                    <input type="text" name="subjct" id="subjct" class="form-control form-control-sm" placeholder="Input Concern"
+                      style="text-transform:uppercase" onkeyup="this.value = this.value;"></input>
                   </div>
 
                   <div class="form-group col-12 col-md-4">
@@ -901,7 +954,7 @@ Start of Add/Edit Modal
                       $rs = $run->get_result();
                       while ($res = $rs->fetch_assoc()) {
                         ?>
-                        <option><?= $res['stat_desc'] ?></option>
+                                   <option value="<?=$res['stat_desc'] ?>" style="color: #333;"><?=$res['stat_desc'] ?></option>
                       <?php } ?>
                     </select>
                   </div>
