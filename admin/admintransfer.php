@@ -990,7 +990,7 @@ textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
               <select class="form-control form-control-sm custom-select-placeholder placeholder-active" name="f_deptsel" id="f_deptsel" required onchange="handleDropdownChange(this)">
                 <option value="">Assign department...</option>
                 <?php
-                  $query="SELECT * FROM tbl_dept WHERE dept_id NOT IN ('7','8') ";
+                  $query="SELECT * FROM tbl_dept WHERE dept_id NOT IN ('4','5','7','8','9','10','12','14','17','18') ";
                   $run=$con1->prepare($query);
                   $run->execute();
                   $rs=$run->get_result();

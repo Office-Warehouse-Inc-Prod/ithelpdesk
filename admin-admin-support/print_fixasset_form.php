@@ -18,7 +18,8 @@ $pdf->SetFont("Arial", "", 8);
 $pdf->Cell(75, 35, 'CENTRAL OFFICE - LIBIS', 0, 0,'R');
 $pdf->Cell(100, 35, '06/24/2026', 0, 0,'R');
 $pdf->Cell(-99, 45, 'KARL ANGELO MAGPAYO', 0, 0,'R');
-$pdf->Cell(-99, 55, 'NOT WORKING', 0, 0,'R');
+$pdf->Cell(-14, 70, 'POS MONITOR', 0, 0,'R');
+$pdf->Cell(0.1, 82, 'NOT WORKING', 0, 0,'R');
 
 
 

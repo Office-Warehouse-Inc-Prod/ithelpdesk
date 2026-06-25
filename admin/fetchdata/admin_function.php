@@ -17,7 +17,7 @@ $yr = isset($_POST['yr']) ? intval($_POST['yr']) : date('Y');
 
 $dept_ids = isset($_POST['dept_id'])
     ? $_POST['dept_id']
-    : '1,2,3,6,7,8,9,10,11,12,13,14,15,16,17';
+    : '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17';
 
 		$output = array();
 
@@ -261,7 +261,7 @@ $query = "
     FROM tbl_dept T0
     INNER JOIN reports T1
         ON T1.f_deptsel = T0.dept_id
-    WHERE T0.dept_id NOT IN (4, 7, 5, 12)
+    WHERE T0.dept_id NOT IN ( 7, 12)
     GROUP BY T0.dept_id, T0.dept_desc
     ORDER BY T0.dept_desc ASC
 ";

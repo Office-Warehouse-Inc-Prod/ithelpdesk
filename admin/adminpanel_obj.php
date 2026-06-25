@@ -351,7 +351,7 @@ render:function(data,type,row){
     { title: "Dept Personnel", data: "category", defaultContent: "" },
 
     // { title: "Category", data: "category", defaultContent: "" },
-    // { title: "Subcategory", data: "sub_category", defaultContent: "" },
+    // { title: "Subcategory", data: "sub_category", defaultContent: "" },zz
 
     // Date Closed clean
     {
