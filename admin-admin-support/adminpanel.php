@@ -163,7 +163,7 @@ background: linear-gradient(135deg, #837031, #E1AD01);
 label {
   font-size: 11px;
   font-weight: 900;
-  color: #e1ad01; 
+  color: #213456; 
   letter-spacing: .08em;
   text-transform: uppercase;
   margin-bottom: 6px;
@@ -173,7 +173,7 @@ input.form-control,
 textarea.form-control {
   color: #6c757d !important;
   background-color: transparent !important; 
-  border: black !important; 
+ 
   border-bottom: 1px solid #E1AD01 !important; 
   resize: none !important; 
 }
@@ -946,7 +946,27 @@ Start of Create Department Report Modal
       </form>
     </div>
   </div>
-
+<div class="modal fade" id="printModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header"><h5 class="modal-title">Enter Asset Details</h5></div>
+            <div class="modal-body">
+                <input type="hidden" id="print_ticket_no">
+                <div class="form-group">
+                    <label>Serial Number</label>
+                    <input type="text" id="serial_number" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Asset Tag Number</label>
+                    <input type="text" id="asset_tag" class="form-control">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success" id="confirmPrint">Print/Preview</button>
+            </div>
+        </div>
+    </div>
+</div>
  
   <script>
     $(document).ready(function () {

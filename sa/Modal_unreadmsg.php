@@ -699,7 +699,16 @@ newmes($(this).parent().siblings(':first').html(),$(this).parent().siblings(':nt
                 processData: false,
                 success:function(data)
                 {
-                  alert(data);
+                  var message = data;
+                  if (typeof data === 'object') {
+                    message = data.message || JSON.stringify(data);
+                  }
+                  Swal.fire({
+                    icon: 'success',
+                    title: message,
+                    showConfirmButton: false,
+                    timer: 1500
+                  });
                   $('#modal_form, #Modal_Reply').val('');
                   // $('#mss').append('<div class="alert alert-success">'+data+'</div>')
                   getinfo($('#ModalTicket_no').val(), 'remarks');

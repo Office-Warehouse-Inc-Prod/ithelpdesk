@@ -30,19 +30,13 @@ include '../condb.php';
     --card-shadow: 0 4px 12px 0 rgba(58, 53, 65, 0.1);
   }
 
-  body {
-    font-family: 'Public Sans', sans-serif;
-    background-color: var(--bg-body);
-    color: #3A3541DE;
-    overflow-x: hidden;
-    background: linear-gradient(rgba(218, 219, 207, 0.3), rgba(113, 114, 136, 0.27)), url('images/bg_login.png');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-    background-repeat: no-repeat;
-    min-height: 100vh;
-  }
 
+body {
+  background: linear-gradient(to bottom, #ffffff, #99aac8);
+  background-attachment: fixed; 
+  margin: 0; 
+  height: 100vh; 
+} 
   .owi-navbar {
     background-color: #213456 !important;
     box-shadow: 0 2px 10px 2px #66738e;
@@ -598,7 +592,7 @@ select.form-control, .form-control, .form-select {
               
               <div class="card-header d-flex flex-wrap justify-content-between align-items-center text-dark py-2 gap-2" style="border-bottom: 1px solid rgba(0,0,0,0.05);">
                 <h5 class="m-0 font-weight-bold no-print-header" style="letter-spacing: 0.3px; font-size: 1.15rem;">
-                  <i class="fa-solid fa-circle text-success me-2"></i>I.T HELPDESK DEPARTMENT TICKET SUMMARY
+                  <i class="fa-solid fa-circle text-success me-2"></i>ICG HELPDESK DEPARTMENT TICKET SUMMARY
                 </h5>
                 <div class="d-flex gap-2">
                   <button type="button" class="btn text-white d-flex align-items-center gap-2" style="border-radius: 6px; font-size: 13px; background-color: #12922a; padding: 4px 12px;" onclick="window.print()">

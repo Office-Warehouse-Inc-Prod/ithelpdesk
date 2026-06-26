@@ -225,8 +225,25 @@
 
         "columns": [
 
-          { title: "Update", data: null, "defaultContent": "<Button class='btn btn-danger' name='update' id='dtbsecond'><i class='fas fa-edit'></i></Button>" },
-          { title: ".", data: "msg_cnt", "defaultContent": "" },
+          { 
+        title: "Edit", 
+        data: null, 
+        render: function(data, type, row) {
+            return `
+                <button class='btn btn-danger btn-sm' name='update' id='dtbsecond'><i class='fas fa-edit'></i></button>
+             
+            `;
+        }
+    },
+        { 
+        title: "Print", 
+        data: null, 
+        render: function(data, type, row) {
+            return `
+                <button class='btn btn-primary btn-sm print-btn' data-id='${row.ticket_no}'><i class='fas fa-print'></i></button>
+            `;
+        }
+    },
           { title: "TicketNo", data: "ticket_no", "defaultContent": "" },
           { title: "  Store", data: "str_code", "defaultContent": "" },
           { title: "Date Created", data: "date_created", "defaultContent": "" },
@@ -865,6 +882,143 @@
 
   });//document ready close
 
-
-
 </script>
+
+<script>
+$(document).on('click', '.print-btn', function() {
+    let ticket_no = $(this).data('id');
+    
+    // 1. Reset the form fields to clear previous data
+    $('#pdfForm')[0].reset();
+    
+    // 2. Set the hidden input value
+    $('#modal_ticket_no').val(ticket_no);
+    
+    // 3. Show the modal
+    $('#dataModal').modal('show');
+});
+</script>
+
+<div class="modal fade" id="dataModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+       <form id="pdfForm" action="print_form.php" method="POST">
+        <input type="hidden" name="ticket_no" id="modal_ticket_no">
+
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Fixed Asset Information</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+
+                   <div class="mb-3">
+                    <label>Description</label>
+                    <textarea class="form-control" 
+                              name="desc" 
+                              rows="3" 
+                              required></textarea>
+                </div>
+
+                    <div class="mb-3">
+                        <label>Serial Number</label>
+                        <input type="text"
+                               class="form-control"
+                               name="serial"
+                               required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Asset Tag</label>
+                        <input type="text"
+                               class="form-control"
+                               name="asset_tag"
+                               >
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">
+                        Generate PDF
+                    </button>
+                </div>
+
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<style>
+  #dataModal .modal-content {
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+}
+
+#dataModal .modal-header {
+  background-color: #213456;
+  color: #fff;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+  border-bottom: 4px solid #E1AD01;
+}
+
+#dataModal .modal-title {
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+}
+
+#dataModal .input-group-text {
+  background-color: #f8f9fa;
+  border-right: none;
+  color: #213456;
+}
+
+#dataModal .form-control {
+  border-left: none;
+  height: 45px;
+  
+}
+
+#dataModal .form-control:focus {
+  border-color: #213456;
+  box-shadow: none;
+}
+
+#dataModal .input-group:focus-within {
+  box-shadow: 0 0 0 0.2rem rgba(225, 173, 1, 0.25);
+  border-radius: 8px;
+}
+
+#btn_chngepass {
+  background-color: #E1AD01;
+  border: none;
+  color: #213456;
+  font-weight: 700;
+  padding: 10px 40px;
+  border-radius: 30px;
+  transition: all 0.3s ease;
+}
+
+#btn_chngepass:hover {
+  background-color: #213456;
+  color: #E1AD01;
+  transform: translateY(-2px);
+}
+
+
+.toggle-password {
+  cursor: pointer;
+  position: absolute;
+  right: 15px;
+  top: 13px;
+  z-index: 10;
+  color: #6c757d;
+}
+  </style>
+

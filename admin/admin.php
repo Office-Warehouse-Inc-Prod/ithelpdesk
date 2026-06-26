@@ -383,18 +383,13 @@ NEW SUPPLIES REQUEST
             </div>
           </li>
 
+          <li class="nav-item">
+            <a class="nav-link" href="adminpanel.php?create=true" id="navCreateReport">
+              <i class="fas fa-headset" style="color: var(--primary-color);"></i> CREATE TICKET
+            </a>
+          </li>
 
-</ul>
-<ul class="navbar-nav ml-auto"> 
-<!-- <li class="nav-item">
-  <a class="nav-link" href="networkpanel.php" >
-    <i class="fa-solid fa-ethernet"></i>
-    <span>Network Maintenance</span>V
-  </a>
-</li> -->
-<!-- Changed mr-auto to ml-auto for right alignment -->
- 
-          <li class="nav-item dropdown">
+           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="genReportDrop" role="button" data-toggle="dropdown">
                <i class="fa fa-sliders-h"></i> MAINTENANCE
             </a>
@@ -409,6 +404,19 @@ NEW SUPPLIES REQUEST
              
             </div>
           </li>
+
+
+</ul>
+<ul class="navbar-nav ml-auto"> 
+<!-- <li class="nav-item">
+  <a class="nav-link" href="networkpanel.php" >
+    <i class="fa-solid fa-ethernet"></i>
+    <span>Network Maintenance</span>V
+  </a>
+</li> -->
+<!-- Changed mr-auto to ml-auto for right alignment -->
+ 
+         
   
   <li class="nav-item dropdown">
     <a class="nav-link" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

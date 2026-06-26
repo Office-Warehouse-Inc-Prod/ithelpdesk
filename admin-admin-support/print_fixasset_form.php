@@ -1,27 +1,53 @@
-<?php
-include('../fpdf/fpdf.php');
+<!-- Modal -->
+<div class="modal fade" id="dataModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+       <form id="pdfForm" action="print_form.php" method="POST">
+        <input type="hidden" name="ticket_no" id="modal_ticket_no">
 
-$pdf = new FPDF('P', 'mm', 'A4'); 
+            <div class="modal-content">
 
-$pdf->SetAutoPageBreak(false, 0);
-$pdf->AddPage();
+                <div class="modal-header">
+                    <h5 class="modal-title">Fixed Asset Information</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
 
-$pdf->Image('C:\xampp\htdocs\helpdesk\ithelpdesk\Fixed_Asset_Requisition_Transfer Form.jpg', 0, 0, 210, 297);
+                <div class="modal-body">
 
-$pdf->SetAutoPageBreak(true, 15);
+                    <div class="mb-3">
+                        <label>Description</label>
+                        <input type="text"
+                               class="form-control"
+                               name="desc"
+                               required>
+                    </div>
 
+                    <div class="mb-3">
+                        <label>Serial Number</label>
+                        <input type="text"
+                               class="form-control"
+                               name="serial"
+                               required>
+                    </div>
 
-$pdf->SetXY(10, 10); 
+                    <div class="mb-3">
+                        <label>Asset Tag</label>
+                        <input type="text"
+                               class="form-control"
+                               name="asset_tag"
+                               required>
+                    </div>
 
-$pdf->SetFont("Arial", "", 8);
+                </div>
 
-$pdf->Cell(75, 35, 'CENTRAL OFFICE - LIBIS', 0, 0,'R');
-$pdf->Cell(100, 35, '06/24/2026', 0, 0,'R');
-$pdf->Cell(-99, 45, 'KARL ANGELO MAGPAYO', 0, 0,'R');
-$pdf->Cell(-14, 70, 'POS MONITOR', 0, 0,'R');
-$pdf->Cell(0.1, 82, 'NOT WORKING', 0, 0,'R');
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">
+                        Generate PDF
+                    </button>
+                </div>
 
+            </div>
 
+        </form>
+    </div>
+</div>
 
-$pdf->Output();
-?>

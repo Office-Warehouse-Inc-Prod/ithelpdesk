@@ -24,6 +24,14 @@ $regcon=new dbconfig();
 </head>
 
 <style>
+
+  
+body {
+  background: linear-gradient(to bottom, #ffffff, #99aac8);
+  background-attachment: fixed; 
+  margin: 0; 
+  height: 100vh; 
+} 
 .table{
   background-color: #ffffff;
   border-collapse: separate;

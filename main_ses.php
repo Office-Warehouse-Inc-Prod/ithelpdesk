@@ -246,6 +246,25 @@ $user = NULL;
     exit();
    } 
 
+    //Newly Added MSSD -Admin 
+    elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'mssd-admin' ) {
+    $_SESSION['login'] = 'true';
+    $_SESSION['user_id'] = $results['id'];
+    $_SESSION['deptsel'] = $results['deptsel'];
+    header("Location: msm/adminpanel.php");
+    exit();
+   } 
+
+       //Newly Added Merchandising -Admin 
+    elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'merch-admin' ) {
+    $_SESSION['login'] = 'true';
+    $_SESSION['user_id'] = $results['id'];
+    $_SESSION['deptsel'] = $results['deptsel'];
+    header("Location: merchandising/adminpanel.php");
+    exit();
+   } 
+
+
    //Admin Admin Support
     elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'admin-admin-support' ) {
     $_SESSION['login'] = 'true';

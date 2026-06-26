@@ -13,7 +13,7 @@ $query1 = "SELECT MONTH(r.date_created) AS MONTH_NUM,
     FROM reports r 
     WHERE r.status IN ('Assigned', 'ON PROCESS', 'PENDING', 'CLOSED') 
       AND YEAR(r.date_created) = 2026 
-      AND r.f_deptsel = 1 
+      AND r.f_deptsel = 14
     GROUP BY MONTH(r.date_created)
     ORDER BY MONTH_NUM ASC";
 
@@ -38,7 +38,7 @@ $query2 = "SELECT
     LEFT JOIN tbl_isp isp ON isp.isp_id = r.isp_id
     WHERE r.status IN ('PENDING', 'ASSIGNED', 'ON PROCESS')
       AND YEAR(r.date_created) = 2026 
-      AND r.f_deptsel = 1 
+      AND r.f_deptsel = 14 
     ORDER BY r.date_created ASC";
 
 $query_totals = "SELECT 
@@ -51,7 +51,7 @@ $query_totals = "SELECT
     FROM reports r
     WHERE status IN ('Assigned', 'ON PROCESS', 'PENDING', 'CLOSED') 
       AND YEAR(r.date_created) = 2026 
-      AND r.f_deptsel = 1";
+      AND r.f_deptsel = 14";
 
 try {
     $db = new dbconfig();

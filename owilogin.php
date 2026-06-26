@@ -357,6 +357,8 @@ if ($system === 'dts') {
             </div>
             <h1><?php echo $display_name; ?></h1>
         </div>
+        
+<p class="text-muted">Helpdesk V.3.25</p>
        
     </div>
 
@@ -384,6 +386,7 @@ if ($system === 'dts') {
 
 <button type="submit" class="btn btn-primary w-100 shadow btn-login">LOGIN</button>
     </form>
+    
 </div>
 </div>
                     </form>

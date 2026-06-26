@@ -796,8 +796,8 @@ $('#action').click(function () {
 // end of validition for file upload size
 
 let endDate = new Date();
-endDate.setDate(endDate.getDate() - 1); // Set to yesterday
-let startDate = new Date(endDate); // Copy the same date (yesterday)
+endDate.setDate(endDate.getDate() - 1); 
+let startDate = new Date(endDate); 
 
 $('#frompolDate').val(startDate.toISOString().split('T')[0]);
 $('#topolDate').val(endDate.toISOString().split('T')[0]);

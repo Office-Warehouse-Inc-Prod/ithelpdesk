@@ -127,7 +127,7 @@ $ticknum = $res['ticket_no']+1;
     ':remarks' => ucfirst($_POST["remarks"]),
     ':isp_id' => '0',
     ':date_refNo' => date('Y-m-d H:i:s',strtotime($_POST["date_refNo"])),
-    ':deptsel' => '1' // it dept
+    ':deptsel' => '12' // it dept
 
     
    )
@@ -297,12 +297,11 @@ else{
   );
 
   $result = $statement->execute($data);
-
   if($_POST['it_num'] != $_POST['itsup'])
   {
      $reasgn = $connection->prepare("
-    INSERT INTO tbl_reassigned (ticket_no, date_created, itsup, nw_sup, r_remarks, date_rasigned) 
-   VALUES (:ticket_no, :date_created, :itsup, :nw_sup, :r_remarks, :date_rasigned )
+    INSERT INTO tbl_reassigned (ticket_no, date_created, itsup, nw_sup, r_remarks, date_rasigned, deptsel) 
+   VALUES (:ticket_no, :date_created, :itsup, :nw_sup, :r_remarks, :date_rasigned, :deptsel )
   ");
   $reasgnres= $reasgn->execute(
     array(
@@ -311,10 +310,10 @@ else{
       ':itsup' => $_POST["it_num"],
       ':nw_sup' => $_POST["itsup"],
       ':r_remarks' => $_POST["remarks"],
-      ':date_rasigned' => date('Y-m-d H:i:s')
+      ':date_rasigned' => date('Y-m-d H:i:s'),
+      ':deptsel' => $_POST["deptsel"]
     ));
   }
-
   $msgcntres = $connection->prepare("
    UPDATE reports_msgcnt
    SET msg_cnt = :msg_cnt
@@ -585,301 +584,312 @@ else{
 
 
 
+if ($_POST["operation"] == "Save and Reply") { 
+    try {
+        if (ob_get_length() !== false) {
+            ob_clean();
+        }
 
-// } // old code working without transfer feature......
+        $connection->beginTransaction();
 
+        // Map local tracking variables from Post/Session context
+        $computed_ticket = $_POST["ticket_no"];
+        $userId          = $_POST["u_id"] ?? $_SESSION["user_id"] ?? ""; // Fallback mapping
+        $tchnum          = $_POST["u_id"] ?? ""; 
+        $userid          = $_POST["u_id"] ?? ""; 
 
-if($_POST["operation"] == "Save and Reply")
-{ 
-    $optbrval = $_POST["store"];
-    $optval   = $_POST["itsup"];
-    $optcval  = $_POST["cat"];
-    $optsval  = $_POST["sub_num"];
-    $opclbval = $_POST["close_by"];
+        $optbrval = $_POST["store"];
+        $optval   = $_POST["itsup"];
+        $optcval  = $_POST["cat"];
+        $optsval  = $_POST["sub_num"];
+        $opclbval = $_POST["close_by"];
 
-    $is_transfer = isset($_POST['is_transfer']) ? 1 : 0;
+        $is_transfer = isset($_POST['is_transfer']) ? 1 : 0;
 
-    if (($optbrval == '0') || ($optval == '0') || ($optcval == '0') || ($optsval == '0') || ($opclbval == '0')) {
-        $brid  = "";
-        $itsup = "";
-        $cat_id = "";
-        $sub_id = "";
-        $clby  = "";
-        $ispid = "";
+        // Evaluate dynamic fields conditional block
+        if (($optbrval == '0') || ($optval == '0') || ($optcval == '0') || ($optsval == '0') || ($opclbval == '0')) {
+            $brid   = "";
+            $itsup  = "";
+            $cat_id = "";
+            $sub_id = "";
+            $clby   = "";
+            $ispid  = "";
 
-        $data = array(
-            ':ticket_no'     => $_POST["ticket_no"],
-            ':date_created'  => !empty($_POST["date_createdx"]) ? date('Y-m-d H:i:s', strtotime($_POST["date_createdx"])) : null,
-            ':via'           => $_POST["via"],
-            ':status'        => $_POST["status"],
-            ':date_closed'   => !empty($_POST["date_closed"]) ? date('Y-m-d H:i:s', strtotime($_POST["date_closed"])) : null,
-            ':close_by'      => $_POST["close_by"],
-            ':remarks'       => $_POST["remarks"],
-            ':refNo'         => $_POST["refNo"],
-            ':date_refNo'    => !empty($_POST["date_refNo"]) ? date('Y-m-d H:i:s', strtotime($_POST["date_refNo"])) : null,
-            ':is_transfer'   => $is_transfer
+            $data = array(
+                ':ticket_no'     => $_POST["ticket_no"],
+                ':date_created'  => !empty($_POST["date_createdx"]) ? date('Y-m-d H:i:s', strtotime($_POST["date_createdx"])) : null,
+                ':via'           => $_POST["via"],
+                ':status'        => $_POST["status"],
+                ':date_closed'   => !empty($_POST["date_closed"]) ? date('Y-m-d H:i:s', strtotime($_POST["date_closed"])) : null,
+                ':remarks'       => $_POST["remarks"],
+                ':refNo'         => $_POST["refNo"],
+                ':date_refNo'    => !empty($_POST["date_refNo"]) ? date('Y-m-d H:i:s', strtotime($_POST["date_refNo"])) : null,
+                ':is_transfer'   => $is_transfer
+            );
+        } else {
+            $brid   = "store = :store,";
+            $itsup  = "itsup = :itsup,";
+            $cat_id = "cat_id = :cat_id,";
+            $sub_id = "sub_id = :sub_id,";
+            $clby   = "close_by = :close_by,";
+            $ispid  = "isp_id = :isp_id,";
+
+            $data = array(
+                ':ticket_no'     => $_POST["ticket_no"],
+                ':store'         => $_POST["store"],
+                ':date_created'  => !empty($_POST["date_createdx"]) ? date('Y-m-d H:i:s', strtotime($_POST["date_createdx"])) : null,
+                ':via'           => $_POST["via"],
+                ':status'        => $_POST["status"],
+                ':itsup'         => $_POST["itsup"],
+                ':cat_id'        => $_POST["cat"],
+                ':sub_id'        => $_POST["sub_num"],
+                ':isp_id'        => '0',
+                ':refNo'         => $_POST["refNo"],
+                ':date_refNo'    => !empty($_POST["date_refNo"]) ? date('Y-m-d H:i:s', strtotime($_POST["date_refNo"])) : null,
+                ':date_closed'   => !empty($_POST["date_closed"]) ? date('Y-m-d H:i:s', strtotime($_POST["date_closed"])) : null,
+                ':close_by'      => $_POST["close_by"],
+                ':remarks'       => $_POST["remarks"],
+                ':is_transfer'   => $is_transfer
+            );
+        }
+
+        // UPDATE PRIMARY REPORTS TABLE
+        $statement = $connection->prepare(
+            "UPDATE reports
+             SET ticket_no = :ticket_no,
+                 $brid
+                 date_created = :date_created,
+                 via = :via,
+                 status = :status,
+                 $itsup
+                 $cat_id
+                 $sub_id
+                 $ispid
+                 refNo = :refNo,
+                 date_refNo = :date_refNo,
+                 date_closed = :date_closed,
+                 $clby
+                 remarks = :remarks,
+                 is_transfer = :is_transfer
+             WHERE ticket_no = :ticket_no"
         );
-    } 
-    else {
-        $brid   = "store = :store,";
-        $itsup  = "itsup = :itsup,";
-        $cat_id = "cat_id = :cat_id,";
-        $sub_id = "sub_id = :sub_id,";
-        $clby   = "close_by = :close_by,";
-        $ispid  = "isp_id = :isp_id,";
 
-        $data = array(
-            ':ticket_no'     => $_POST["ticket_no"],
-            ':store'         => $_POST["store"],
-            ':date_created'  => !empty($_POST["date_createdx"]) ? date('Y-m-d H:i:s', strtotime($_POST["date_createdx"])) : null,
-            ':via'           => $_POST["via"],
-            ':status'        => $_POST["status"],
-            ':itsup'         => $_POST["itsup"],
-            ':cat_id'        => $_POST["cat"],
-            ':sub_id'        => $_POST["sub_num"],
-            ':isp_id'        => '0',
-            ':refNo'         => $_POST["refNo"],
-            ':date_refNo'    => !empty($_POST["date_refNo"]) ? date('Y-m-d H:i:s', strtotime($_POST["date_refNo"])) : null,
-            ':date_closed'   => !empty($_POST["date_closed"]) ? date('Y-m-d H:i:s', strtotime($_POST["date_closed"])) : null,
-            ':close_by'      => $_POST["close_by"],
-            ':remarks'       => $_POST["remarks"],
-            ':is_transfer'   => $is_transfer
-        );
-    }
+        $result = $statement->execute($data);
 
-    $statement = $connection->prepare(
-        "UPDATE reports
-         SET ticket_no = :ticket_no,
-             $brid
-             date_created = :date_created,
-             via = :via,
-             status = :status,
-             $itsup
-             $cat_id
-             $sub_id
-             $ispid
-             refNo = :refNo,
-             date_refNo = :date_refNo,
-             date_closed = :date_closed,
-             $clby
-             remarks = :remarks,
-             is_transfer = :is_transfer
-         WHERE ticket_no = :ticket_no"
-    );
-
-    $result = $statement->execute($data);
-
+       
     $statement2 = $connection->prepare("
-    UPDATE tbl_notif 
-    SET 
-        store      = :store, 
-        itsup      = :itsup, 
-        notif_data = :notif_data, 
-        notif_val  = :notif_val, 
-        notif_date = :notif_date
-    WHERE ticket_no = :ticket_no
-");
-
-$statement2->execute(array(
-    ':ticket_no'  => $computed_ticket,
-    ':store'      => $_SESSION["str_num"] ?? "",
-    ':itsup'      => $userId,
-    ':notif_data' => "Ticket $computed_ticket is On Process.",
-    ':notif_val'  => '0', // Set to 0 as requested
-    ':notif_date' => date('Y-m-d H:i:s')
-));
-
-    // REASSIGNED SUPPORT
-    if($_POST['it_num'] != $_POST['itsup'])
-    {
-        $reasgn = $connection->prepare("
-            INSERT INTO tbl_reassigned (ticket_no, date_created, itsup, nw_sup, r_remarks, date_rasigned) 
-            VALUES (:ticket_no, :date_created, :itsup, :nw_sup, :r_remarks, :date_rasigned )
-        ");
-
-        $reasgnres = $reasgn->execute(array(
-            ':ticket_no'     => $_POST["ticket_no"],
-            ':date_created'  => !empty($_POST["date_createdx"]) ? date('Y-m-d H:i:s', strtotime($_POST["date_createdx"])) : date('Y-m-d H:i:s'),
-            ':itsup'         => $_POST["it_num"],
-            ':nw_sup'        => $_POST["itsup"],
-            ':r_remarks'     => $_POST["remarks"],
-            ':date_rasigned' => date('Y-m-d H:i:s')
-        ));
-    }
-
-    if(!empty($result))
-    {
-        $restat = $connection->prepare("
-            INSERT INTO reports_remarks (ticket_no, remarks_detail, remarks_date, itsup) 
-            VALUES (:ticket_no, :remarks_detail, :remarks_date, :itsup )
-        ");
-
-        $remarkres1 = $restat->execute(array(
-            ':ticket_no'      => $_POST["ticket_no"],
-            ':remarks_detail' => $_POST["remarks"],
-            ':remarks_date'   => date('Y-m-d H:i:s'),
-            ':itsup'          => $tchnum
-        ));
-    }
-
-    // UPDATE MESSAGE COUNTER
-    $msgcntres = $connection->prepare("
-        UPDATE reports_msgcnt
-        SET msg_cnt = :msg_cnt
+        UPDATE tbl_notif 
+        SET 
+            store      = :store, 
+            itsup      = :itsup, 
+            notif_data = :notif_data, 
+            notif_val  = :notif_val, 
+            notif_date = :notif_date
         WHERE ticket_no = :ticket_no
     ");
 
-    $makemsgcnt = $msgcntres->execute(array(
-        ':ticket_no' => $_POST["ticket_no"],
-        ':msg_cnt'   => '0'
+    $statement2->execute(array(
+        ':ticket_no'  => $computed_ticket,
+        ':store'      => $_SESSION["str_num"] ?? "",
+        ':itsup'      => $userId,
+        ':notif_data' => "Ticket $computed_ticket is On Process.",
+        ':notif_val'  => '0', // Set to 0 as requested
+        ':notif_date' => date('Y-m-d H:i:s')
     ));
 
-    // NOTIFICATION
-    if(!empty($result)) {
-        $resasgn = $connection->prepare("
-            INSERT INTO tbl_notif (ticket_no, store, itsup, notif_data, notif_val, notif_date, assigned_by)
-            VALUES (:ticket_no, :store, :itsup, :notif_data, :notif_val, :notif_date, :assigned_by)
-        ");
+      // REASSIGNED SUPPORT LOGIC - UPDATE nw_sup ONLY
+        if (isset($_POST['itsup']) && !empty($_POST['itsup'])) {
+            
+            $updateReassign = $connection->prepare("
+                UPDATE tbl_reassigned 
+                SET nw_sup = :nw_sup,
+                    date_rasigned = :date_rasigned,
+                    r_remarks = :r_remarks
+                WHERE ticket_no = :ticket_no 
+                  AND (nw_sup IS NULL OR nw_sup = '' OR nw_sup = '0')
+            ");
+            
+            $updateReassign->execute(array(
+                ':nw_sup'        => $_POST["itsup"], 
+                ':date_rasigned' => date('Y-m-d H:i:s'),
+                ':r_remarks'     => $_POST["remarks"],
+                ':ticket_no'     => $_POST["ticket_no"]
+            ));
+        }
+        if (!empty($result)) {
+            $restat = $connection->prepare("
+                INSERT INTO reports_remarks (ticket_no, remarks_detail, remarks_date, itsup) 
+                VALUES (:ticket_no, :remarks_detail, :remarks_date, :itsup )
+            ");
 
-        $assigned = $resasgn->execute(array(
-            ':ticket_no'   => $_POST["ticket_no"],
-            ':store'       => $_POST["store"],
-            ':itsup'       => $_POST["itsup"],
-            ':notif_data'  => "New Ticket ".$_POST["ticket_no"]." Has been assigned.",
-            ':notif_val'   => '1',
-            ':notif_date'  => date('Y-m-d H:i:s'),
-            ':assigned_by' => $userid
-        ));
-    }
+            $restat->execute(array(
+                ':ticket_no'      => $_POST["ticket_no"],
+                ':remarks_detail' => $_POST["remarks"],
+                ':remarks_date'   => date('Y-m-d H:i:s'),
+                ':itsup'          => $tchnum
+            ));
+        }
 
-    // COMMENT
-    $addmsg = array(
-        ':comment_details' => $_POST["admsg"],
-    );
-
-    if(!empty($addmsg))
-    {
-        $makecom = $connection->prepare("
-            INSERT INTO reports_comments (ticket_no, comment_details, comment_date, userId) 
-            VALUES (:ticket_no, :comment_details, :comment_date, :userId )
-        ");
-
-        $remarkres = $makecom->execute(array(
-            ':ticket_no'       => $_POST["ticket_no"],
-            ':comment_details' => $_POST["admsg"],
-            ':comment_date'    => date('Y-m-d H:i:s'),
-            ':userId'          => $_POST["u_id"]
-        ));
-
-        $nmsgcntres = $connection->prepare("
-            UPDATE reports_newmsg
-            SET nmsg_stat = :nmsg_stat
+        // UPDATE MESSAGE COUNTER
+        $msgcntres = $connection->prepare("
+            UPDATE reports_msgcnt
+            SET msg_cnt = :msg_cnt
             WHERE ticket_no = :ticket_no
         ");
 
-        $nmakemsgcnt = $nmsgcntres->execute(array(
+        $msgcntres->execute(array(
             ':ticket_no' => $_POST["ticket_no"],
-            ':nmsg_stat' => '2'
-        ));
-    }
-
-    // TICKET HISTORY
-    if(!empty($addmsg))
-    {
-        $tickhisres = $connection->prepare("
-            INSERT INTO tbl_tickethist (ticket_no, date_updated, status, userID) 
-            VALUES (:ticket_no, :date_updated, :status, :userID )
-        ");
-
-        $tickhisres1 = $tickhisres->execute(array(
-            ':ticket_no'    => $_POST["ticket_no"],
-            ':date_updated' => date('Y-m-d H:i:s'),
-            ':status'       => $_POST["status"],
-            ':userID'       => $_POST["u_id"]
-        ));
-    }
-
-    // TRANSFER REQUEST LOGIC
-    if(!empty($result) && $is_transfer == 1)
-    {
-        $checkTransfer = $connection->prepare("
-            SELECT transfer_id
-            FROM tbl_reports_transfer_logs
-            WHERE ticket_no = :ticket_no
-            LIMIT 1
-        ");
-        $checkTransfer->execute(array(
-            ':ticket_no' => $_POST["ticket_no"]
+            ':msg_cnt'   => '0'
         ));
 
-        $existingTransfer = $checkTransfer->fetch(PDO::FETCH_ASSOC);
+        // NOTIFICATION: ASSIGNED STATE
+        if (!empty($result)) {
+            $resasgn = $connection->prepare("
+                INSERT INTO tbl_notif (ticket_no, store, itsup, notif_data, notif_val, notif_date, assigned_by)
+                VALUES (:ticket_no, :store, :itsup, :notif_data, :notif_val, :notif_date, :assigned_by)
+            ");
 
-        if($existingTransfer)
-        {
-            $updateTransfer = $connection->prepare("
-                UPDATE tbl_reports_transfer_logs
-                SET store = :store,
-                    itsup = :itsup,
-                    cat_id = :cat_id,
-                    sub_id = :sub_id,
-                    status = :status,
-                    remarks = :remarks,
-                    updated_at = :updated_at
+            $resasgn->execute(array(
+                ':ticket_no'   => $_POST["ticket_no"],
+                ':store'       => $_POST["store"],
+                ':itsup'       => $_POST["itsup"],
+                ':notif_data'  => "New Ticket ".$_POST["ticket_no"]." Has been assigned.",
+                ':notif_val'   => '0',
+                ':notif_date'  => date('Y-m-d H:i:s'),
+                ':assigned_by' => $userid
+            ));
+        }
+
+        // COMMENT & NEW MESSAGE FLAGS
+        if (!empty($_POST["admsg"])) {
+            $makecom = $connection->prepare("
+                INSERT INTO reports_comments (ticket_no, comment_details, comment_date, userId) 
+                VALUES (:ticket_no, :comment_details, :comment_date, :userId )
+            ");
+
+            $makecom->execute(array(
+                ':ticket_no'       => $_POST["ticket_no"],
+                ':comment_details' => $_POST["admsg"],
+                ':comment_date'    => date('Y-m-d H:i:s'),
+                ':userId'          => $_POST["u_id"]
+            ));
+
+            $nmsgcntres = $connection->prepare("
+                UPDATE reports_newmsg
+                SET nmsg_stat = :nmsg_stat
                 WHERE ticket_no = :ticket_no
             ");
 
-            $updateTransfer->execute(array(
-                ':ticket_no'  => $_POST["ticket_no"],
-                ':store'      => $_POST["store"],
-                ':itsup'      => $_POST["itsup"],
-                ':cat_id'     => $_POST["cat"],
-                ':sub_id'     => $_POST["sub_num"],
-                ':status'     => $_POST["status"],
-                ':remarks'    => $_POST["remarks"],
-                ':updated_at' => date('Y-m-d H:i:s')
+            $nmsgcntres->execute(array(
+                ':ticket_no' => $_POST["ticket_no"],
+                ':nmsg_stat' => '2'
             ));
-        }
-        else
-        {
-            $insertTransfer = $connection->prepare("
-                INSERT INTO tbl_reports_transfer_logs
-                (ticket_no, store, itsup, cat_id, sub_id, status, remarks, created_by, created_at)
-                VALUES
-                (:ticket_no, :store, :itsup, :cat_id, :sub_id, :status, :remarks, :created_by, :created_at)
+
+            // TICKET HISTORY LOGS
+            $tickhisres = $connection->prepare("
+                INSERT INTO tbl_tickethist (ticket_no, date_updated, status, userID) 
+                VALUES (:ticket_no, :date_updated, :status, :userID )
             ");
 
-            $insertTransfer->execute(array(
-                ':ticket_no'  => $_POST["ticket_no"],
-                ':store'      => $_POST["store"],
-                ':itsup'      => $_POST["itsup"],
-                ':cat_id'     => $_POST["cat"],
-                ':sub_id'     => $_POST["sub_num"],
-                ':status'     => $_POST["status"],
-                ':remarks'    => $_POST["remarks"],
-                ':created_by' => $_POST["u_id"],
-                ':created_at' => date('Y-m-d H:i:s')
+            $tickhisres->execute(array(
+                ':ticket_no'    => $_POST["ticket_no"],
+                ':date_updated' => date('Y-m-d H:i:s'),
+                ':status'       => $_POST["status"],
+                ':userID'       => $_POST["u_id"]
             ));
         }
-    }
 
-    // OPTIONAL: if unchecked, remove transfer log
-    /*
-    if(!empty($result) && $is_transfer == 0)
-    {
-        $deleteTransfer = $connection->prepare("
-            DELETE FROM tbl_reports_transfer_logs
-            WHERE ticket_no = :ticket_no
-        ");
-        $deleteTransfer->execute(array(
-            ':ticket_no' => $_POST["ticket_no"]
-        ));
-    }
-    */
-  $connection->commit();
+        // TRANSFER REQUEST LOGIC
+        if (!empty($result) && $is_transfer == 1) {
+            $checkTransfer = $connection->prepare("
+                SELECT transfer_id
+                FROM tbl_reports_transfer_logs
+                WHERE ticket_no = :ticket_no
+                LIMIT 1
+            ");
+            $checkTransfer->execute(array(
+                ':ticket_no' => $_POST["ticket_no"]
+            ));
 
-    header('Content-Type: text/plain; charset=utf-8');
-    echo 'Data Inserted.';
-    exit;
+            $existingTransfer = $checkTransfer->fetch(PDO::FETCH_ASSOC);
+
+            if ($existingTransfer) {
+                $updateTransfer = $connection->prepare("
+                    UPDATE tbl_reports_transfer_logs
+                    SET store = :store,
+                        itsup = :itsup,
+                        cat_id = :cat_id,
+                        sub_id = :sub_id,
+                        status = :status,
+                        remarks = :remarks,
+                        updated_at = :updated_at
+                    WHERE ticket_no = :ticket_no
+                ");
+
+                $updateTransfer->execute(array(
+                    ':ticket_no'  => $_POST["ticket_no"],
+                    ':store'      => $_POST["store"],
+                    ':itsup'      => $_POST["itsup"],
+                    ':cat_id'     => $_POST["cat"],
+                    ':sub_id'     => $_POST["sub_num"],
+                    ':status'     => $_POST["status"],
+                    ':remarks'    => $_POST["remarks"],
+                    ':updated_at' => date('Y-m-d H:i:s')
+                ));
+            } else {
+                $insertTransfer = $connection->prepare("
+                    INSERT INTO tbl_reports_transfer_logs
+                    (ticket_no, store, itsup, cat_id, sub_id, status, remarks, created_by, created_at)
+                    VALUES
+                    (:ticket_no, :store, :itsup, :cat_id, :sub_id, :status, :remarks, :created_by, :created_at)
+                ");
+
+                $insertTransfer->execute(array(
+                    ':ticket_no'  => $_POST["ticket_no"],
+                    ':store'      => $_POST["store"],
+                    ':itsup'      => $_POST["itsup"],
+                    ':cat_id'     => $_POST["cat"],
+                    ':sub_id'     => $_POST["sub_num"],
+                    ':status'     => $_POST["status"],
+                    ':remarks'    => $_POST["remarks"],
+                    ':created_by' => $_POST["u_id"],
+                    ':created_at' => date('Y-m-d H:i:s')
+                ));
+            }
+        }
+
+        // Optional Clean-up Logic
+        if (!empty($result) && $is_transfer == 0) {
+            $deleteTransfer = $connection->prepare("
+                DELETE FROM tbl_reports_transfer_logs
+                WHERE ticket_no = :ticket_no
+            ");
+            $deleteTransfer->execute(array(
+                ':ticket_no' => $_POST["ticket_no"]
+            ));
+        }
+        $connection->commit();
+
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode([
+            'status' => 'success',
+            'message' => 'Ticket saved successfully.'
+        ]);
+        exit;
+    } catch (Exception $e) {
+        if ($connection->inTransaction()) {
+            $connection->rollBack();
+        }
+        if (ob_get_length() !== false) {
+            ob_clean();
+        }
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode([
+            'status' => 'error',
+            'message' => $e->getMessage()
+        ]);
+        exit;
+    }
 }
 
 
