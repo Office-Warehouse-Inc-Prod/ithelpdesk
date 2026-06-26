@@ -49,7 +49,7 @@ $pdf = new FPDF('P', 'mm', 'A4');
 $pdf->SetAutoPageBreak(false);
 $pdf->AddPage();
 
-$pdf->Image('C:\xampp\htdocs\helpdesk\ithelpdesk\Fixed_Asset_Requisition_Transfer Form.jpg', 0, 0, 210, 297);
+$pdf->Image('../Fixed_Asset_Requisition_Transfer Form.jpg', 0, 0, 210, 297);
 
 if (file_exists($bg_image)) {
     $pdf->Image($bg_image, 0, 0, 210, 297);
