@@ -358,7 +358,7 @@ if ($system === 'dts') {
             <h1><?php echo $display_name; ?></h1>
         </div>
         
-<p class="text-muted">Helpdesk V.3.25</p>
+<p class="text-muted">Helpdesk V.3.26</p>
        
     </div>
 

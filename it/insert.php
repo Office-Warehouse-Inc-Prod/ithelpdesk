@@ -918,47 +918,39 @@ WHERE id = $userid");
         }
  }
 
- if($_POST["operation"] == "3")
- { 
-$defrole = 'user'; //default value of role when registered. 
-$tmppas = 'owi123456';
-$preset_username = substr($_POST['fname'], 0, 1).$_POST['lstname'];
-$preset_username2 = substr($_POST['fname'], 0, 2).$_POST['lstname'];
-$set_username = str_replace(" ", "", trim($preset_username));
-$set_username2 = str_replace(" ", "", trim($preset_username2));
-$techid = '0';
-$isrtmalepic = 'default_male.jpg';
-$isrtfmalepic = 'default_female.jpg';
-$qry = $connection->prepare(" SELECT * FROM users");
-$qry->execute();
-$res = $qry->fetch(PDO::FETCH_ASSOC);
-$valdtuser = $res['email'];
-$statement = $connection->prepare("
-INSERT INTO users (fname, lstname, dept_id, email, password, role, str_num , gender_id, img_name, usr_stat) VALUES (:fname, :lstname, :dept_id, :email, :password, :role, :str_num, :gender_id, :img_name, :usr_stat)
-");
-// $statement = $connection->prepare("
-// INSERT INTO users (fname, lstname, email) VALUES (:fname, :lstname, :email)
-// ");
+ if ($_POST["operation"] == "3") { 
+    $defrole = 'user';
+    $tmppas = 'owi123456';
+    $preset_username = substr($_POST['fname'], 0, 1) . $_POST['lstname'];
+    $set_username = str_replace(" ", "", trim($preset_username));
+    
+    // Convert array of branches into a string: "201,202,203"
+    $selected_branches = isset($_POST['select_strcd']) ? implode(",", $_POST['select_strcd']) : "";
 
-   $result = $statement->execute(
-   array(
-    ':fname' => strtoupper($_POST["fname"]),
-    ':lstname' => strtoupper($_POST["lstname"]),
-    ':email' => str_replace(" ", "", trim($set_username)),
-    // // ':email' => ($valdtuser == "TDoe") ? $set_username2 : $set_username,
-    ':dept_id' => $_POST["select_dept"],
-    ':password' => base64_encode($tmppas),
-    ':role' => $defrole,
-    ':str_num' => $_POST["strslt_num"],
-    ':gender_id' => $_POST["slct_gender"],
-    ':img_name' => ($_POST["slct_gender"] == '1') ? $isrtmalepic : $isrtfmalepic,
-    ':usr_stat' => 'A'
-   )
-  ); 
+    $statement = $connection->prepare("
+        INSERT INTO users (fname, lstname, dept_id, email, password, role, str_num, gender_id, img_name, usr_stat) 
+        VALUES (:fname, :lstname, :dept_id, :email, :password, :role, :str_num, :gender_id, :img_name, :usr_stat)
+    ");
 
-  echo ("INSERTED");
- }
+    $result = $statement->execute(array(
+        ':fname'     => strtoupper($_POST["fname"]),
+        ':lstname'   => strtoupper($_POST["lstname"]),
+        ':email'     => str_replace(" ", "", trim($set_username)),
+        ':dept_id'   => $_POST["select_dept"],
+        ':password'  => base64_encode($tmppas),
+        ':role'      => $defrole,
+        ':str_num'   => $selected_branches, // This stores multiple values as "201,202"
+        ':gender_id' => $_POST["slct_gender"],
+        ':img_name'  => ($_POST["slct_gender"] == '1') ? 'default_male.jpg' : 'default_female.jpg',
+        ':usr_stat'  => 'A'
+    )); 
 
+    if ($result) {
+        echo "SUCCESS";
+    } else {
+        echo "ERROR";
+    }
+}
 
  if($_POST['operation'] == "4")
  {

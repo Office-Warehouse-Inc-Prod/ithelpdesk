@@ -1101,6 +1101,7 @@ Start of Create Department Report Modal
                     <option value="6">VISUAL</option>
                     <option value="11">H.R</option>
                     <option value="13">ACCOUNTS PAYABLE</option>
+                    <option value="15">TREASURY</option>
                     <option value="16">ACCOUNT RECEIVABLE</option>
                   </select>
                 </div>

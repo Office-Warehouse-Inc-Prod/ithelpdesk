@@ -129,7 +129,7 @@ $user = NULL;
   elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'ld-admin' ) {
     $_SESSION['login'] = 'true';
     $_SESSION['user_id'] = $results['id'];
-    header("Location: ldlocal/adminpanel.php");
+    header("Location: ld/adminpanel.php");
     exit();
    } 
    elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'ld-user' ) {
@@ -246,12 +246,21 @@ $user = NULL;
     exit();
    } 
 
+   //Newly Added Sales Accounting -Admin 
+    elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'busdev-admin' ) {
+    $_SESSION['login'] = 'true';
+    $_SESSION['user_id'] = $results['id'];
+    $_SESSION['deptsel'] = $results['deptsel'];
+    header("Location: businessdev/adminpanel.php");
+    exit();
+   } 
+
     //Newly Added MSSD -Admin 
     elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'mssd-admin' ) {
     $_SESSION['login'] = 'true';
     $_SESSION['user_id'] = $results['id'];
     $_SESSION['deptsel'] = $results['deptsel'];
-    header("Location: msm/adminpanel.php");
+    header("Location: mss/adminpanel.php");
     exit();
    } 
 

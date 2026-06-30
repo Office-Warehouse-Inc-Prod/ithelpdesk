@@ -218,7 +218,9 @@ body {
   padding: 15px;
   font-size: 13px;
 }
-
+.select2-container--open {
+    z-index: 9999999 !important;
+}
 </style>
 
 
@@ -243,15 +245,15 @@ body {
           <div class="row">
           <input type="hidden" name="usrID" id="usrID">
            <div class="col-md-6 form-group">
-            <!-- <label for="fname">First Name</label> -->
+            <label for="fname">First Name</label>
             <input type="text" class="form-control form-control-sm" name="fname" id="fname" aria-describedby="emailHelp" placeholder="Name" required>
           </div>
           <div class="col-md-6 form-group">
-            <!-- <label for="lstname">Last Name</label> -->
+             <label for="lstname">Last Name</label>
             <input type="text" class="form-control form-control-sm" name="lstname" id="lstname" aria-describedby="emailHelp" placeholder="Last Name" required>
           </div>
           <div class="col-md-12 form-group">
-          <!-- <label for="select_dept">Department</label> -->
+           <label for="select_dept">Department</label> 
           <input type="hidden" name="strslt_num" id="strslt_num" value="201" >
 
           <select class="form-control form-control-sm" name="select_dept" id="select_dept" >
@@ -271,24 +273,24 @@ body {
          </select>   
           </div>
           <div class="col-md-12 form-group strcol">
-           <select class="form-control form-control-sm" name="select_strcd" id="select_strcd">
-           <option value="">Assign Branch</option>
-                 <?php
-                          $query="select * from tbl_branch";
-                          $run=$regcon->prepare($query);
-                          $run->execute();
-                          $rs=$run->get_result();
-                          while ($res=$rs->fetch_assoc()) {
-                              $str_id = $res['str_num'];
-                              $str_desc = $res['str_code'];
-                              $str_fulldesc = $res['str_name'];
-                          ?>
-                          <option value="<?php echo $str_id;?>"><?=$str_desc." - ". $str_fulldesc; ?></option>
-                          <?php }?>
-                          ?>   
-              </select>  
-          </div>
+            <label for="select_strcd">Branch</label> 
+            <select class="form-control form-control-sm" name="select_strcd[]" id="select_strcd" multiple>
+                <?php
+                    $query="select * from tbl_branch";
+                    $run=$regcon->prepare($query);
+                    $run->execute();
+                    $rs=$run->get_result();
+                    while ($res=$rs->fetch_assoc()) {
+                        $str_id = $res['str_num'];
+                        $str_desc = $res['str_code'];
+                        $str_fulldesc = $res['str_name'];
+                ?>
+                <option value="<?php echo $str_id;?>"><?=$str_desc." - ". $str_fulldesc; ?></option>
+                <?php }?>
+            </select>
+        </div>
           <div class="col-md-12 form-group">
+               <label for="slct_gender">Gender</label> 
                 <select class="form-control form-control-sm" name="slct_gender" id="slct_gender" require>
                   <option value="">Select User Gender</option>
                   <option value="1">Male</option>
@@ -369,8 +371,7 @@ const dataset=t.usermtc_data;
                {title:"Full Name", data:"flName","defaultContent": ""},
                {title:"Role", data:"role","width": "5%", "defaultContent": ""},
                {title:"Username", data:"username","defaultContent": ""},
-               {title:"Department", data:"dept_desc","defaultContent": ""},
-               {title:"Store Code", data:"str_code","defaultContent": ""},
+               {title:"Department", data:"dept_desc","defaultContent": ""},{title:"Store Code", data:"str_code", "defaultContent": ""},
                {title:"Status", data:"usr_stat","defaultContent": ""},
               //  {title:"Update", data:null,"defaultContent": "<Button class='GetName btn btn-info mr-2' name='BtnVw' id='BtnVw'><i class='fas fa-eye'></i></Button>"}
 	       {title:"Update", data:null,"width": "20%","defaultContent": "<Button class='GetName btn btn-info mr-2' name='BtnVw' id='BtnVw'><i class='fas fa-eye'></i></Button> <Button class=' GetPosition btn btn-success mr-2' name='BtnEdit' id='BtnEdit'><i class='fas fa-edit'></i></Button> <Button class=' GetPositions btn btn-danger' name='BtnDact' id='BtnDact'><i class='fas fa-window-close'></i></Button>"}
@@ -481,30 +482,28 @@ $('#usermtc_table tbody').on('click', 'button', function () {
             }
 
      
-         if(action == 'BtnEdit'){
-
-            
-          // alert( 'This is the Position: '+data[1]);
-          // alert('beta phase');
-            $("#usr_crt_modal").modal("show");
-
-            $(".strcol").show();
-            $("#select_dept").show();
-            $('#slct_gender').hide();
-            $('#slct_gender').removeAttr('required');
-            $('#usr_crt_modal #operation').val("stredit");
-            $('#usrID').val(data['user_id']);
-            $('#fname').val(data['fname']);
-            $('#lstname').val(data['lstname']);
-            $('#strslt_num').val(data['dept_id']);
-            $('#select_dept').val(data['dept_desc']);
-            $('#select_strcd').val(data['str_num']);
-          //  $('#slct_gender').val(data['gender_id']);
-        
-                //  $("#exampleModalLongTitle #menu_value").val();
-                // $('#restusr_id').val(data['user_id']);
+        if(action == 'BtnEdit'){
+    $("#usr_crt_modal").modal("show");
+    $(".strcol").show();
+    $("#select_dept").show();
+    $('#slct_gender').hide().removeAttr('required');
+    $('#usr_crt_modal #operation').val("stredit");
     
-	 }
+    // Fill basic fields
+    $('#usrID').val(data['user_id']);
+    $('#fname').val(data['fname']);
+    $('#lstname').val(data['lstname']);
+    $('#select_dept').val(data['dept_id']);
+    
+    // --- FIX FOR MULTIPLE SELECTION ---
+    // If str_num is like "10,59,30", split it into an array
+    if(data['str_num']) {
+        var branches = data['str_num'].split(',');
+        $('#select_strcd').val(branches).trigger('change');
+    } else {
+        $('#select_strcd').val(null).trigger('change');
+    }
+}
 
 	           if (action == 'BtnDact') {
         //  alert(IDx);
@@ -597,7 +596,21 @@ $('#select_strcd').change(function() {
 });
 
 
-      $('#btn_submit').on("click", function () {
+     $('#btn_submit').on("click", function (e) {
+    e.preventDefault(); 
+    
+    let selectedBranches = $('#select_strcd').val(); 
+    if(selectedBranches) {
+        $('#strslt_num').val(selectedBranches.join(',')); 
+    }
+
+    $.ajax({
+        url: "insert.php",
+        method: "POST",
+        data: $('#reg_form').serialize(),
+        success: function (data) {
+        }
+    });
 
 
 
@@ -648,5 +661,10 @@ if (FName !== "" && LstName !== "") {
   });
 
 
-
+$(document).ready(function() {
+    $('#select_strcd').select2({
+        placeholder: "Select Branches",
+        width: '100%'
+    });
+});
 </script>

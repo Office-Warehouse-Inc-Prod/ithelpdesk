@@ -385,7 +385,7 @@ NEW SUPPLIES REQUEST
 
           <li class="nav-item">
             <a class="nav-link" href="adminpanel.php?create=true" id="navCreateReport">
-              <i class="fas fa-headset" style="color: var(--primary-color);"></i> CREATE TICKET
+              <i class="fas fa-headset" style="color: var(--primary-color);"></i> REPORT BUG
             </a>
           </li>
 
@@ -423,13 +423,14 @@ NEW SUPPLIES REQUEST
       <i class="fa fa-bell">
         <span class="badge badge-info" id="notif_newmsg"></span>
       </i>
-      Notification
     </a>
-    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-      <div class="col-md-12 col-xs-12">
-        <table id="notif_dataxx" class="table text-dark table-dark table-responsive table-sm bg-dark" style="width: auto;"></table>
-      </div>
-    </div>
+    <div class="dropdown-menu dropdown-menu-right notif-dropdown" aria-labelledby="notifDrop">
+            <h6 class="dropdown-header text-dark">Recent Notifications</h6>
+  
+          <div style="max-height: 400px; overflow-y: auto;">
+            <table id="notif_dataxx" class="table table-sm mb-0" style="width:100%;"></table>
+          </div>
+        </div>
   </li>
   
   <li class="nav-item dropdown">

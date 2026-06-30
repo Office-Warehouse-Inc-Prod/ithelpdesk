@@ -326,12 +326,13 @@ if ($_SESSION['login'] != 'true') {
                 <span class="badge badge-info" id="notif_newmsg"></span>
               </i>
             </a>
-            <div class="dropdown-menu dropdown-menu-right notif-dropdown" aria-labelledby="notifDrop">
-              <div class="px-2 py-2">
-                <h6 class="dropdown-header text-dark">Recent Notifications</h6>
-                <table id="notif_dataxx" class="table table-sm mb-0" style="width:100%;"></table>
-              </div>
-            </div>
+           <div class="dropdown-menu dropdown-menu-right notif-dropdown" aria-labelledby="notifDrop">
+            <h6 class="dropdown-header text-dark">Recent Notifications</h6>
+  
+          <div style="max-height: 400px; overflow-y: auto;">
+            <table id="notif_dataxx" class="table table-sm mb-0" style="width:100%;"></table>
+          </div>
+        </div>
           </li>
 
           <li class="nav-item dropdown">

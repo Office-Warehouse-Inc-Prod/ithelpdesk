@@ -224,26 +224,17 @@
         "order": [[2, "Desc"]],
 
         "columns": [
-
-          { 
-        title: "Edit", 
-        data: null, 
+    { 
+        title: "ACTION",
+        data: null,
         render: function(data, type, row) {
             return `
-             <div style="display: flex; gap: 5px;">
-                <button class='btn btn-danger btn-sm' name='update' id='dtbsecond'><i class='fas fa-edit'></i></button>
-                 <button class='btn btn-primary btn-sm print-btn' data-id='${row.ticket_no}'><i class='fas fa-print'></i></button>
-                 </div>
-             
-            `;
-        }
-    },
-        { 
-        title: "", 
-        data: null, 
-        render: function(data, type, row) {
-            return `
-               
+                <div style="display: flex; gap: 5px;">
+                    <button class='btn btn-danger btn-sm' name='update' id='dtbsecond'>
+                        <i class='fa fa-pencil-square-o'></i>
+                    </button> 
+                         <button class='btn btn-primary btn-sm print-btn' data-id='${row.ticket_no}'><i class='fa fa-print'></i></button>
+                </div>
             `;
         }
     },
@@ -279,7 +270,7 @@
         "columnDefs": [
           {
 
-            targets: [7, 11, 12],
+            "targets": "_all",
             "width": "2%",
             render: function (data, type, row) {
               if (type === 'display') {
@@ -917,7 +908,7 @@ $(document).on('click', '.print-btn', function() {
                 </div>
 
                 <div class="modal-body">
-                   <div class="row">
+                  <div class="row">
 
                    <div class="form-group col-md-12">
                     <label>Description</label>
@@ -951,8 +942,7 @@ $(document).on('click', '.print-btn', function() {
                               required></textarea>
                 </div>
 
-               
-                  <div class="form-group col-md-6">
+                <div class="form-group col-md-6">
                     <label>Item Received By</label>
                     <input type="text" class="form-control" name="received_by" required>
                 </div>
@@ -966,15 +956,15 @@ $(document).on('click', '.print-btn', function() {
                     <label>Noted By</label>
                     <input type="text" class="form-control" name="noted_by" required>
                 </div>
-                 <div class="modal-footer">
+
+                </div>
+
+                <div class="modal-footer">
                     <button type="submit" class="btn btn-primary">
                         Generate PDF
                     </button>
                 </div>
 </div>
-
-                </div>
-
             </div>
 
         </form>
@@ -982,10 +972,15 @@ $(document).on('click', '.print-btn', function() {
 </div>
 
 <style>
+
+  #dataModal{
+     padding:10px;
+  }
   #dataModal .modal-content {
   border: none;
   border-radius: 15px;
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+ 
 }
 
 #dataModal .modal-header {
@@ -1005,7 +1000,6 @@ $(document).on('click', '.print-btn', function() {
 
 #dataModal .input-group-text {
   background-color: #f8f9fa;
-  border-right: none;
   color: #213456;
 }
 
