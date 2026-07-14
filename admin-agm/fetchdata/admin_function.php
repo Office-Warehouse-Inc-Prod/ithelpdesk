@@ -868,7 +868,7 @@ public function fathist() {
             LEFT JOIN reports r ON ar.ticket_no = r.ticket_no
             LEFT JOIN users u ON r.userId = u.id
 			LEFT JOIN it_tech itt ON ar.noted_by = itt.itsup
-            LEFT JOIN tbl_branch b ON r.store = b.str_num  WHERE ar.status = 'VERIFIED'   ORDER BY ar.created_at ASC";
+            LEFT JOIN tbl_branch b ON r.store = b.str_num  WHERE ar.status = 'RECORDED'   ORDER BY ar.created_at ASC";
         $statement = $this->connection->prepare($query);
         $statement->execute();
         $result = $statement->fetchAll();
