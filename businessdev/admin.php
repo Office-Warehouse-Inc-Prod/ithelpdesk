@@ -249,7 +249,6 @@ if ($_SESSION['login'] != 'true') {
     margin-top: 10px;
   }
 
-  /* Smooth flash styling for highlighting rows */
   .highlight-row {
     animation: flashYellow 2.5s ease-in-out;
   }
@@ -258,6 +257,23 @@ if ($_SESSION['login'] != 'true') {
     0% { background-color: #ffff99; }
     100% { background-color: transparent; }
   }
+
+  .custom-notif-icon-badge {
+  background-color: #213456 !important;
+  color: #ffffff !important;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%; 
+  font-size: 0.85rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.notif-cell {
+  padding: 12px 16px !important;
+}
 </style>
 
 <body>
@@ -303,7 +319,7 @@ if ($_SESSION['login'] != 'true') {
               </a>
             </div>
           </li>
-          <li class="nav-item dropdown">
+         <!-- <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="maintDrop" role="button" data-toggle="dropdown">
               <i class="fa fa-sliders-h"></i> MAINTENANCE
             </a>
@@ -311,9 +327,9 @@ if ($_SESSION['login'] != 'true') {
               <a class="dropdown-item" href="user_maintenance.php"><i class="fas fa-user-cog"></i> User Maintenance</a>
               <a class="dropdown-item" href="store_maintenance.php"><i class="fas fa-store"></i> Store Maintenance</a>
             </div>
-          </li>
+          </li>-->
           <li class="nav-item">
-            <a class="nav-link" href="adminpanel.php?create=true" id="navCreateReport">
+            <a class="nav-link" href="admincreateticket.php">
               <i class="fa fa-plus-circle" style="color: var(--primary-color);"></i> CREATE TICKET
             </a>
           </li>
@@ -392,9 +408,63 @@ if ($_SESSION['login'] != 'true') {
             "emptyTable": "No new Notification"
           },
           "data": dataset,
-          "columns": [
-            { title: "NOTIFICATION", data: 'notif_data', "defaultContent": "" }
-          ],
+        "columns": [
+  { 
+    title: "NOTIFICATION", 
+    data: null, 
+    "defaultContent": "",
+    "render": function (data, type, row) {
+      let timeAgo = '';
+      if (row.notif_date) {
+        timeAgo = moment(row.notif_date).fromNow(); 
+      }
+
+      let iconHtml = '';
+      switch (String(row.notif_val)) {
+        case '1':
+          iconHtml = '<span class="custom-notif-icon-badge"><i class="fa-solid fa-ticket"></i></span>';
+          break;
+        case '2':
+          iconHtml = '<span class="custom-notif-icon-badge"><i class="fa-solid fa-comment"></i></span>';
+          break;
+        case '3':
+          iconHtml = '<span class="custom-notif-icon-badge"><i class="fa-solid fa-circle-check"></i></span>';
+          break;
+        case '4':
+          iconHtml = '<span class="custom-notif-icon-badge"><i class="fa-solid fa-spinner fa-spin-pulse"></i></span>';
+          break;
+        case '5':
+          iconHtml = '<span class="custom-notif-icon-badge"><i class="fa-solid fa-boxes-stacked"></i></span>';
+          break;
+           case '6':
+          iconHtml = '<span class="custom-notif-icon-badge"><i class="fa-solid fa-boxes-stacked"></i></span>';
+          break;
+           case '7':
+          iconHtml = '<span class="custom-notif-icon-badge"><i class="fa-solid fa-boxes-stacked"></i></span>';
+          break;
+           case '8':
+          iconHtml = '<span class="custom-notif-icon-badge"><i class="fa-solid fa-boxes-stacked"></i></span>';
+          break;
+           case '9':
+          iconHtml = '<span class="custom-notif-icon-badge"><i class="fa-solid fa-boxes-stacked"></i></span>';
+          break;
+        default:
+          iconHtml = '<span class="custom-notif-icon-badge"><i class="fa-solid fa-bell"></i></span>';
+          break;
+      }
+
+      return `
+        <div class="notif-cell d-flex align-items-start">
+          <div class="mt-1 me-2">${iconHtml}</div>
+          <div class="flex-grow-1">
+            <div class="notif-text">${row.notif_data}</div>
+            <span class="notif-date text-muted"><i class="fa-regular fa-clock mr-1"></i>${timeAgo}</span>
+          </div>
+        </div>
+      `;
+    }
+  }
+],
           "columnDefs": [
             {
               targets: 0,

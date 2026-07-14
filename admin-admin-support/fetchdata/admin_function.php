@@ -136,6 +136,190 @@ class dbconfig extends dbconn
 		return $data;
 
 	}
+	
+public function fathist() {
+        $query="   SELECT 
+                ar.ticket_no, 
+                b.str_name, 
+                CONCAT(u.fname, ' ', u.lstname) AS full_name, 
+                ar.ticket_created, 
+                ar.item_code,
+                ar.description, 
+                ar.serial_number, 
+                ar.asset_tag_number, 
+                ar.purpose_of_request, 
+                it.it_desc,
+                it.itsup,          
+                ar.date_received, 
+                ar.created_at,
+                itt.it_desc AS noted_by_desc,       
+                ar.status          
+            FROM asset_requests ar
+            LEFT JOIN it_tech it ON ar.item_received_by = it.itsup
+            LEFT JOIN reports r ON ar.ticket_no = r.ticket_no
+            LEFT JOIN users u ON r.userId = u.id
+			LEFT JOIN it_tech itt ON ar.noted_by = itt.itsup
+            LEFT JOIN tbl_branch b ON r.store = b.str_num  WHERE ar.status = 'NOTED'   ORDER BY ar.created_at ASC";
+        $statement = $this->connection->prepare($query);
+        $statement->execute();
+        $result = $statement->fetchAll();
+        $fetchdata = array();
+        foreach ($result as $row) {
+            $fetchdata[] = array(
+                'ticket_no' => $row["ticket_no"],
+                'str_name' => $row["str_name"],
+                'full_name' => $row['full_name'],
+                'ticket_created' => $row['ticket_created'],
+                'item_code' => $row['item_code'],
+                'description'=>$row["description"],
+                'serial_number'=> $row["serial_number"],
+                'asset_tag_number' => $row["asset_tag_number"],
+                'purpose_of_request' => $row["purpose_of_request"],
+                'it_desc' => $row["it_desc"],
+				'noted_by_desc' => $row["noted_by_desc"],
+                'date_received' => $row["date_received"],    
+                'status' => $row["status"]
+            );
+        }   
+        return array_filter($fetchdata);
+    }
+
+	
+public function faprintingthist() {
+        $query="SELECT 
+                ar.ticket_no, 
+                b.str_name, 
+                CONCAT(u.fname, ' ', u.lstname) AS full_name, 
+                ar.ticket_created, 
+                ar.item_code,
+                ar.description, 
+                ar.serial_number, 
+                ar.asset_tag_number, 
+                ar.purpose_of_request, 
+				ar.revised_request,
+                it.it_desc,
+                it.itsup,          
+                ar.date_received, 
+                ar.created_at,
+                     itt.it_desc AS noted_by_desc,          
+                ar.status          
+            FROM asset_requests ar
+            LEFT JOIN it_tech it ON ar.item_received_by = it.itsup
+            LEFT JOIN reports r ON ar.ticket_no = r.ticket_no
+            LEFT JOIN users u ON r.userId = u.id
+			  LEFT JOIN it_tech itt ON ar.noted_by = itt.itsup
+            LEFT JOIN tbl_branch b ON r.store = b.str_num  WHERE ar.status = 'VALIDATED'   ORDER BY ar.created_at ASC";
+        $statement = $this->connection->prepare($query);
+        $statement->execute();
+        $result = $statement->fetchAll();
+        $fetchdata = array();
+        foreach ($result as $row) {
+            $fetchdata[] = array(
+                'ticket_no' => $row["ticket_no"],
+                'str_name' => $row["str_name"],
+                'full_name' => $row['full_name'],
+                'ticket_created' => $row['ticket_created'],
+                'item_code' => $row['item_code'],
+                'description'=>$row["description"],
+                'serial_number'=> $row["serial_number"],
+                'asset_tag_number' => $row["asset_tag_number"],
+                'purpose_of_request' => $row["purpose_of_request"],
+				 'revised_request' => $row["revised_request"],
+                'it_desc' => $row["it_desc"],
+                'date_received' => $row["date_received"],    
+                'noted_by_desc' => $row["noted_by_desc"],  
+                'status' => $row["status"]
+            );
+        }   
+        return array_filter($fetchdata);
+    }
+public function fareportsthist() {
+    $month = $_POST['month'] ?? '';
+    $year = $_POST['year'] ?? '';
+    $status = $_POST['status'] ?? ''; 
+
+    $where = " WHERE 1=1 ";
+    $params = [];
+
+    if (!empty($month)) {
+        $where .= " AND MONTH(...) = :month "; 
+        $params[':month'] = $month;
+    }
+    if (!empty($year)) {
+        $where .= " AND YEAR(...) = :year "; 
+        $params[':year'] = $year;
+    }
+    // ADD STATUS FILTER
+    if (!empty($status)) {
+        $where .= " AND ar.status = :status ";
+        $params[':status'] = $status;
+    }
+
+    // Get counts for Metric Cards
+    $metricQuery = "SELECT status, COUNT(*) as count 
+                    FROM asset_requests ar 
+                    $where 
+                    GROUP BY status";
+    $mStmt = $this->connection->prepare($metricQuery);
+    $mStmt->execute($params); 
+    $metrics = $mStmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Primary data selection query
+    $query = "SELECT 
+                ar.ticket_no, 
+                b.str_name, 
+                CONCAT(u.fname, ' ', u.lstname) AS full_name, 
+                ar.ticket_created, 
+                ar.item_code,
+                ar.description, 
+                ar.serial_number, 
+                ar.asset_tag_number, 
+                ar.purpose_of_request, 
+				ar.revised_request,
+                it.it_desc,
+                it.itsup,           
+                ar.date_received, 
+                ar.created_at,
+                itt.it_desc AS noted_by_desc,        
+                ar.status           
+            FROM asset_requests ar
+            LEFT JOIN it_tech it ON ar.item_received_by = it.itsup
+            LEFT JOIN reports r ON ar.ticket_no = r.ticket_no
+            LEFT JOIN users u ON r.userId = u.id
+            LEFT JOIN tbl_branch b ON r.store = b.str_num 
+            LEFT JOIN it_tech itt ON ar.noted_by = itt.itsup
+            $where 
+            ORDER BY COALESCE(NULLIF(ar.created_at, ''), ar.ticket_created) DESC";
+
+    $statement = $this->connection->prepare($query);
+    $statement->execute($params); 
+    $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+    
+    $fetchdata = array();
+    foreach ($result as $row) {
+        $fetchdata[] = array(
+            'ticket_no'          => $row["ticket_no"],
+            'str_name'           => $row["str_name"],
+            'full_name'          => $row['full_name'],
+            'ticket_created'     => $row['ticket_created'],
+            'item_code'          => $row['item_code'],
+            'description'        => $row["description"],
+            'serial_number'      => $row["serial_number"],
+            'asset_tag_number'   => $row["asset_tag_number"],
+            'purpose_of_request' => $row["purpose_of_request"],
+			 'revised_request' => $row["revised_request"],
+            'it_desc'            => $row["it_desc"],
+            'date_received'      => $row["date_received"],    
+            'noted_by_desc'      => $row["noted_by_desc"],  
+            'status'             => $row["status"]
+        );
+    } 
+
+    return [
+        'table_data' => $fetchdata,
+        'metrics'    => $metrics
+    ];
+}
 
 	/**
 	 * Linegraph.
@@ -634,10 +818,12 @@ FROM
 	ON 
 		tbl_notif.ticket_no = reports.ticket_no
 WHERE
-	notif_val IN ('1','2') AND
-	reports.f_deptsel = 2
+
+    (tbl_notif.notif_val IN ('1', '2') AND reports.f_deptsel = 2)
+    OR 
+    (tbl_notif.notif_val IN ('6') AND reports.f_deptsel IS NOT NULL);
 ORDER BY
-	notif_date ASC";
+	notif_date DESC";
 		$statement = $this->connection->prepare($query);
 		$statement->execute();
 		$result = $statement->fetchAll();
@@ -648,7 +834,8 @@ ORDER BY
 				'notif_data' => $row["notif_data"],
 				'ticket_no' => $row["ticket_no"],
 				'notif_val' => $row["notif_val"],
-				'status' => $row["status"]
+				'status' => $row["status"],
+				'notif_date' => $row["notif_date"]
 
 			);
 		}
@@ -708,6 +895,78 @@ ORDER BY
 
 	}
 
+public function deptthist() {
+    $query = "SELECT
+        `reports`.`f_deptsel` AS `deptsel`,
+        `reports`.`ticket_no` AS `ticket_no`,
+        `reports`.`date_created` AS `date_created`,
+        `reports`.`store` AS `store`,
+        `tbl_branch`.`str_name` AS `str_name`,
+        `reports`.`concern` AS `concern`,
+        `reports`.`service_desc` AS `service_desc`,
+        `reports`.`subject` AS `subject`,
+        `reports`.`status` AS `status`,
+        `reports`.`userId` AS `userId`,
+        `reports`.`via` AS `via`,
+        `reports`.`itsup` AS `itsup`,
+        `it_tech`.`it_desc` AS `it_desc`,
+        `reports`.`cat_id` AS `cat_id`,
+        `categories`.`cat_desc` AS `cat_desc`,
+        CONCAT_WS('-', `reports`.`cat_id`, `categories`.`cat_desc`) AS `cat_x`,
+        `reports`.`sub_id` AS `sub_id`,
+        `subcat`.`sub_cat` AS `sub_cat`,
+        `reports`.`date_closed` AS `date_closed`,
+        `reports`.`remarks` AS `remarks`,
+        `reports_msgcnt`.`msg_cnt` AS `msg_cnt`,
+        `reports_newmsg`.`nmsg_stat` AS `nmsg_stat`,
+        `tbl_dept`.`dept_desc` AS `dept`,
+		     `reports`.`status` AS `status`,
+        `users`.`fname` AS `fname`,
+        `users`.`lstname` AS `lstname`,
+        CONCAT_WS(' ', `users`.`fname`, `users`.`lstname`) AS `full_name`,
+        GROUP_CONCAT(`images`.`files_name` SEPARATOR '|') AS `attachment_files` 
+    FROM `reports`
+    JOIN `tbl_branch` ON `tbl_branch`.`str_num` = `reports`.`store`
+    LEFT JOIN `it_tech` ON `it_tech`.`itsup` = `reports`.`itsup`
+     LEFT JOIN `tbl_dept` ON `tbl_dept`.`dept_id` = `reports`.`deptsel`
+    LEFT JOIN `categories` ON `categories`.`cat_id` = `reports`.`cat_id`
+    LEFT JOIN `subcat` ON `subcat`.`sub_id` = `reports`.`sub_id`
+    LEFT JOIN `reports_msgcnt` ON `reports_msgcnt`.`ticket_no` = `reports`.`ticket_no`
+    LEFT JOIN `reports_newmsg` ON `reports_newmsg`.`ticket_no` = `reports`.`ticket_no`
+    LEFT JOIN `users` ON `users`.`id` = `reports`.`userId`
+    LEFT JOIN `images` ON `images`.`ticket_no` = `reports`.`ticket_no`
+    WHERE `reports`.`userId` = :userId
+    GROUP BY `reports`.`ticket_no`
+    ORDER BY `reports`.`ticket_no` DESC";
+
+    $statement = $this->connection->prepare($query);
+    
+    $statement->execute([
+        ':userId' => $_SESSION['user_id']
+    ]);
+    
+    $result = $statement->fetchAll();
+    $fetchdata = array();
+    
+    foreach ($result as $row) {
+        $fetchdata[] = array(
+            'ticket_no'        => $row["ticket_no"],
+            'str_name'         => $row["str_name"],
+            'full_name'        => $row['full_name'],
+            'date_created'   => $row['date_created'],
+			  'dept'   => $row['dept'],
+            'concern'          => $row['concern'],
+            'service_desc'     => $row['service_desc'],
+            'subject'          => $row['subject'],
+           
+            'status'           => $row['status'],
+            'cat_x'            => $row['cat_x'],
+            'attachment_files' => $row['attachment_files']
+        );
+    }   
+    
+    return array_filter($fetchdata);
+}
 	/**
 	 * Admin get reports bycat.
 	 */

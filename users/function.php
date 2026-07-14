@@ -287,6 +287,56 @@ class dbconfig extends dbconn
     }
 
     /**
+     * Get ticket details for modal editing.
+     */
+    public function get_ticket_details()
+    {
+        $ticketNo = isset($_POST['ticket_no']) ? trim($_POST['ticket_no']) : '';
+
+        if ($ticketNo === '') {
+            return [];
+        }
+
+        $query = "SELECT
+            r.ticket_no,
+            r.store,
+            b.str_name,
+            CONCAT_WS(' ', u.fname, u.lstname) AS crtd_by,
+            r.date_created,
+            r.subject,
+            r.concern,
+            r.service_desc,
+            r.via,
+            r.itsup,
+            r.cat_id,
+            c.cat_desc,
+            r.sub_id,
+            sc.sub_cat,
+            r.status,
+            r.remarks,
+            r.date_closed,
+            r.close_by,
+            r.isp_id,
+            r.refNo,
+            r.date_refNo,
+            r.deptsel,
+            GROUP_CONCAT(i.files_name SEPARATOR '|') AS attachment_files
+        FROM reports r
+        LEFT JOIN tbl_branch b ON b.str_num = r.store
+        LEFT JOIN users u ON u.id = r.userId
+        LEFT JOIN categories c ON c.cat_id = r.cat_id
+        LEFT JOIN subcat sc ON sc.sub_id = r.sub_id
+        LEFT JOIN images i ON i.ticket_no = r.ticket_no
+        WHERE r.ticket_no = :ticket_no
+        GROUP BY r.ticket_no";
+
+        $statement = $this->connection->prepare($query);
+        $statement->execute([':ticket_no' => $ticketNo]);
+
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
      * Search tkt.
      */
     public function search_tkt()

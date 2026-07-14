@@ -7,39 +7,49 @@ date_default_timezone_set("Asia/Manila");
  */
 class dbconfig extends dbconn
 {
-	/**
-	 * Fetch cards result.
-	 */
-	public function fetch_cards_result(){
-		$query = '';
+public function fetch_cards_result()
+	{
 		$output = array();
-		$query = "SELECT 
-        YEAR(date_created) as date_created,
-        COUNT(reports.`status`) AS t_all,
-        COUNT(CASE WHEN reports.`status` = 'ON PROCESS' then 1 else NULL end ) as t_open,
-        COUNT(CASE WHEN reports.`status` = 'PENDING' then 1 else NULL end) as t_owfa,
-        COUNT(CASE WHEN reports.`status` = 'CLOSED' then 1 else NULL end) as t_close,
-		COUNT(CASE WHEN reports.`status` = 'SUBJECT FOR CLOSING' then 1 else NULL END) AS t_day
-		-- COUNT(CASE WHEN reports.`status` = 'CLOSED' AND DATE(reports.date_closed) = CURRENT_DATE THEN 1 else NULL END) AS t_day
-        FROM
-        reports WHERE sub_id NOT IN ('15','28','34','35') AND `status` NOT IN ('WAITING FOR IT HELDESK RESPONSE','NEW REPORT') AND itsup = '{$_SESSION['tech_id']}'";
+        $years = isset($_POST['yr']) ? preg_replace('/[^0-9,]/', '', $_POST['yr']) : '';
+        if ($years === '') {
+            $years = date('Y');
+        }
+
+        $yearList = array_values(array_filter(array_map('trim', explode(',', $years)), function ($year) {
+            return $year !== '';
+        }));
+
+        if (empty($yearList)) {
+            $yearList = array(date('Y'));
+        }
+
+        $placeholders = implode(',', array_fill(0, count($yearList), '?'));
+
+        $query = "SELECT
+                    COUNT(*) AS t_all,
+                    SUM(CASE WHEN reports.`status` = 'ON PROCESS' THEN 1 ELSE 0 END) AS t_open,
+                    SUM(CASE WHEN reports.`status` = 'PENDING' THEN 1 ELSE 0 END) AS t_owfa,
+                    SUM(CASE WHEN reports.`status` = 'CLOSED' THEN 1 ELSE 0 END) AS t_close,
+                    SUM(CASE WHEN reports.`status` = 'SUBJECT FOR CLOSING' THEN 1 ELSE 0 END) AS t_day
+                FROM reports
+                WHERE reports.sub_id NOT IN ('15','28','34','35')
+                  AND reports.`status` NOT IN ('WAITING FOR IT HELDESK RESPONSE','NEW REPORT')
+                  AND reports.f_deptsel = '1' AND itsup = '{$_SESSION['tech_id']}'
+                  AND YEAR(reports.date_created) IN ($placeholders)";
 
         $statement = $this->connection->prepare($query);
-        $statement-> execute();
-        $result = $statement->fetchAll();
-        $data = array();
+        $statement->execute($yearList);
+        $row = $statement->fetch(PDO::FETCH_ASSOC);
 
-        foreach ($result as $row) {
-        	$output[] = array(
-        		'total_res' => $row["t_all"], 
-        		'open_res' => $row["t_open"], 
-        		'owfa_res' => $row["t_owfa"], 
-        		'cls_res' => $row["t_close"],
-        		't_res' => $row["t_day"]
+        $output[] = array(
+            'total_res' => (int) ($row['t_all'] ?? 0),
+            'open_res' => (int) ($row['t_open'] ?? 0),
+            'owfa_res' => (int) ($row['t_owfa'] ?? 0),
+            'cls_res' => (int) ($row['t_close'] ?? 0),
+            't_res' => (int) ($row['t_day'] ?? 0)
+        );
 
-        	);
-        }
-        return $output;
+		return $output;
 
 	}
 
@@ -298,68 +308,114 @@ public function admin_data_table_res()
 /**
  * Newreporthist.
  */
-public function newreporthist(){
+public function newreporthist() {
+    $query = "
+        SELECT 
+            ar.ticket_no, 
+            b.str_name, 
+            CONCAT(u.fname, ' ', u.lstname) AS full_name, 
+            ar.ticket_created, 
+            ar.item_code,
+            ar.description, 
+            ar.serial_number, 
+            ar.asset_tag_number, 
+            ar.purpose_of_request, 
+            it.it_desc,
+            it.itsup,          
+            ar.date_received, 
+            ar.created_at,
+            ar.noted_by,       
+            ar.status          
+        FROM asset_requests ar
+        LEFT JOIN it_tech it ON ar.item_received_by = it.itsup
+        LEFT JOIN reports r ON ar.ticket_no = r.ticket_no
+        LEFT JOIN users u ON r.userId = u.id
+        LEFT JOIN tbl_branch b ON r.store = b.str_num 
+        WHERE ar.item_received_by = :tech_id
+        ORDER BY ar.created_at ASC
+    ";
 
-	$query="SELECT * FROM vw_wfittable";
-	$statement = $this->connection->prepare($query);
-	$statement-> execute();
-	$result = $statement->fetchAll();
-	$data[] = array();
-	$fetchdata = array();
+    $statement = $this->connection->prepare($query);
+    
+    // Bind the session variable to the :tech_id placeholder
+    $statement->execute([':tech_id' => $_SESSION['tech_id']]);
+    
+    // FETCH_ASSOC returns the array exactly how your foreach loop was building it.
+    // We can just return it directly and save processing power.
+    return $statement->fetchAll(PDO::FETCH_ASSOC);
+
+    
+    $fetchdata = [];
+	
 	foreach ($result as $row) {
 		$fetchdata[] = array(
 			'ticket_no' => $row["ticket_no"],
-			'store' => $row['store'],
-			'str_code'=>$row["str_code"],
-			'date_created' => date('m/d/Y H:i',strtotime($row["date_created"])), 
-			'concern'=> $row["concern"],
-			'service_desc' => $row["service_desc"],
-			'subject' => $row["subject"],
-			'via' => $row["via"],
-			'status' => $row["status"],            
-			'itsup' => $row["itsup"],
+			'str_name' => $row["str_name"],
+			'full_name' => $row['full_name'],
+			'ticket_created' => $row['ticket_created'],
+			'item_code' => $row['item_code'],
+			'description'=>$row["description"],
+			'serial_number'=> $row["serial_number"],
+			'asset_tag_number' => $row["asset_tag_number"],
+			'purpose_of_request' => $row["purpose_of_request"],
 			'it_desc' => $row["it_desc"],
-			'cat_desc' => $row["cat_desc"],
-			'sub_cat' => $row["sub_cat"],
-			'msg_cnt' => $row["msg_cnt"],
-			'full_name' => $row["full_name"]
+			'date_received' => $row["date_received"],    
+			'noted_by' => $row["noted_by"],  
+			'status' => $row["status"]
 			// 'sub_cat' => $row["sub_cat"],
 		);
 	}	
 
-	$data = array_filter($fetchdata);
 
 		return $data;
 
 }
 
 
-/**
- * Notif techsupp.
- */
 public function notif_techsupp(){
+  
+    $query = "SELECT
+        tbl_notif.ticket_no, 
+        tbl_notif.store, 
+        tbl_notif.notif_data, 
+        tbl_notif.notif_date, 
+        tbl_notif.notif_val, 
+        reports.status AS status,
+        tbl_notif.assigned_by
+    FROM
+        tbl_notif
+    LEFT JOIN
+        reports ON tbl_notif.ticket_no = reports.ticket_no 
+    WHERE 
+        reports.itsup = :tech_id 
+        AND (
+            (tbl_notif.notif_val IN ('1', '2') AND reports.f_deptsel = 1)
+            OR 
+            (tbl_notif.notif_val IN ('9','10') AND reports.f_deptsel IS NOT NULL)
+        )
+    ORDER BY 
+        tbl_notif.notif_date DESC";
 
-	$query="SELECT * FROM tbl_notif WHERE itsup = '{$_SESSION['tech_id']}' AND notif_val = '1' AND
-	tbl_notif.ticket_no NOT LIKE '%MKTG%' OR '%ADMIN%' OR '%VISUAL%' OR '%PD%' OR '%LD%' ORDER BY notif_date ASC ";
-	$statement = $this->connection->prepare($query);
-	$statement-> execute();
-	$result = $statement->fetchAll();
-	$data[] = array();
-	$fetchdata = array();
-	foreach ($result as $row) {
-		$fetchdata[] = array(
-			'notif_data' => $row["notif_data"],
-			'ticket_no' => $row["ticket_no"],
-			'notif_val' => $row["notif_val"]
+    $statement = $this->connection->prepare($query);
+    
+    $statement->execute([
+        ':tech_id' => $_SESSION['tech_id']
+    ]);
+    
+    $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+    $fetchdata = array();
+    
+    foreach ($result as $row) {
+        $fetchdata[] = array(
+            'notif_data' => $row["notif_data"],
+            'ticket_no'  => $row["ticket_no"],
+            'notif_val'  => $row["notif_val"],
+            'status'     => $row["status"],
+            'notif_date' => $row["notif_date"]
+        );
+    }   
 
-		);
-	}	
-
-	$data = array_filter($fetchdata);
-
-		return $data;
-	// echo json_encode($data);
-
+    return array_filter($fetchdata);
 }
 
 /**

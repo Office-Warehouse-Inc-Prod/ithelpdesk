@@ -240,105 +240,88 @@ body {
   /* container spacing */
   .container.mt-3 { padding-top: 10px; padding-bottom: 24px; }
 
-  /* ===== Wrapper / Card around table ===== */
-  #new_rep_table { width:100% !important; }
+ #new_rep_table { width:100% !important; }
 
-  .table-wrap {
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    padding: 14px;
-  }
+.table-wrap {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px;
+}
 
-  /* If you can't add wrapper div, style DataTables container instead */
-  .dataTables_wrapper {
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    padding: 14px;
-  }
+/* If you can't add wrapper div, style DataTables container instead */
+.dataTables_wrapper {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px;
+}
 
-  /* DataTables header controls */
-  .dataTables_wrapper .dataTables_length label,
-  .dataTables_wrapper .dataTables_filter label,
-  .dataTables_wrapper .dataTables_info {
-    color: var(--muted) !important;
-    font-weight: 600;
-  }
+/* DataTables header controls */
+.dataTables_wrapper .dataTables_length label,
+.dataTables_wrapper .dataTables_filter label,
+.dataTables_wrapper .dataTables_info {
+  color: var(--muted) !important;
+  font-weight: 600;
+}
 
-  .dataTables_wrapper .dataTables_filter input:focus,
-  .dataTables_wrapper .dataTables_length select:focus {
-    box-shadow: var(--focus) !important;
-    border-color: rgba(234,170,0,.45) !important;
-  }
+.dataTables_wrapper .dataTables_filter input:focus,
+.dataTables_wrapper .dataTables_length select:focus {
+  box-shadow: var(--focus) !important;
+  border-color: rgba(234,170,0,.45) !important;
+}
 
-  /* Pagination */
-  .dataTables_wrapper .dataTables_paginate .paginate_button {
-    border-radius: 12px !important;
-    border: 1px solid transparent !important;
-    color: var(--text) !important;
-    background: transparent !important;
-  }
-  .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
-    border-color: var(--line) !important;
-    background: #F8FAFC !important;
-  }
-  .dataTables_wrapper .dataTables_paginate .paginate_button.current {
-    background: rgba(234,170,0,.18) !important;
-    border-color: rgba(234,170,0,.35) !important;
-  }
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+  border-radius: 12px !important;
+  border: 1px solid transparent !important;
+  color: var(--text) !important;
+  background: transparent !important;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+  border-color: var(--line) !important;
+  background: #F8FAFC !important;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+  background: rgba(234,170,0,.18) !important;
+  border-color: rgba(234,170,0,.35) !important;
+}
 
-  /* ===== Table modern look ===== */
-  table.dataTable {
-    border-collapse: separate !important;
-    border-spacing: 0 10px !important; /* row gaps */
-  }
+table.dataTable {
+  border-collapse: collapse !important; 
+  width: 100% !important;
+}
 
-  table.dataTable thead th {
-    color: white !important;
-    font-weight: 900;
-    letter-spacing: .04em;
-    text-transform: uppercase;
-    border: none !important;
-    background: #5273ad !important;
-    padding: 14px 12px !important;
-  }
+table.dataTable thead th {
+  color: white !important;
+  font-weight: 900;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  border: none !important;
+  border-bottom: 2px solid #213456 !important; 
+  background: #5273ad !important;
+  padding: 14px 12px !important;
+}
 
-  /* “Floating rows” on light mode */
-  table.dataTable tbody tr {
-    background: #ffffff !important;
-    border: 1px solid var(--line) !important;
-    box-shadow: 0 10px 22px rgba(17,24,39,.08);
-    border-radius: 14px;
-    overflow: hidden;
-  }
+table.dataTable tbody tr {
+  background: #ffffff !important;
+  box-shadow: 0 10px 22px rgba(17,24,39,.08);
+}
 
-  table.dataTable tbody td {
-    border-top: 1px solid transparent !important;
-    border-bottom: 1px solid transparent !important;
-    color: rgba(17,24,39,.85) !important;
-    padding: 14px 12px !important;
-  }
+table.dataTable tbody td {
+  border-top: none !important;
+  border-bottom: 1px solid #213456 !important; 
+  color: rgba(17,24,39,.85) !important;
+  padding: 14px 12px !important;
+}
 
-  table.dataTable tbody tr:hover {
-    transform: translateY(-1px);
-    transition: .15s ease;
-    background: #F8FAFF !important;
-  }
+table.dataTable tbody tr:hover {
+  transition: .15s ease;
+  background: #F8FAFF !important;
+}
 
-  /* Fix the rounded row corners */
-  table.dataTable tbody tr td:first-child {
-    border-top-left-radius: 14px;
-    border-bottom-left-radius: 14px;
-  }
-  table.dataTable tbody tr td:last-child {
-    border-top-right-radius: 14px;
-    border-bottom-right-radius: 14px;
-  }
 
-  /* ===== Modal (clean light) ===== */
   .modal-content {
     border: 1px solid var(--line) !important;
     border-radius: var(--radius) !important;
@@ -407,7 +390,6 @@ textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
   background-color: transparent !important;
 }
 
-  /* Inputs / Select / Textarea */
   .form-control,
   .form-control-sm,
   select.form-control,
@@ -430,10 +412,8 @@ textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
   .form-control[readonly],
   textarea[readonly] { opacity: .95; }
 
-  /* Spacing in grid */
   .form-group { margin-bottom: 14px !important; }
 
-  /* ===== Buttons (OWI style) ===== */
   .btn-danger {
     background: rgba(239,68,68,.14) !important;
     border-color: rgba(239,68,68,.28) !important;
@@ -441,14 +421,12 @@ textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
   }
   .btn-danger:hover { background: rgba(239,68,68,.18) !important; }
 
-  /* Collapse thread card */
   #msg_thread .card.card-body {
     background: #213456 !important;
     border: 1px solid var(--line) !important;
     border-radius: var(--radius-sm) !important;
   }
 
-  /* Thread container */
   .container_remarks {
     background: #F8FAFF;
     border: 1px solid var(--line);
@@ -472,7 +450,6 @@ textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
 
   hr { border-top: 1px solid var(--line) !important; }
 
-  /* ===== Priority chips (same but readable on light bg) ===== */
   .priority-chip {
     padding:4px 10px;
     border-radius:999px;
@@ -515,7 +492,6 @@ textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
     background: rgba(234,170,0,.16) !important;
     color: var(--text) !important;
   }
-  /* --- Buttons --- */
   .btn {  
     background-color: white !important;
     border: 2px solid #213456;
@@ -530,7 +506,6 @@ textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
     color: white;
   }
 
-  /* --- Buttons --- */
   .btn-success {  
     background-color: #7a5200 !important;
     border: 2px solid #213456;
@@ -634,7 +609,7 @@ textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
               </select>
             </div>
 
-            <div class="form-group col-md-8">
+            <div class="form-group col-md-12">
               <label>ASSIGNED SUPPORT</label>
               <input type="hidden" name="it_num" id="it_num" readonly>
               <select class="form-control form-control-sm custom-select-placeholder placeholder-active" name="itsup" id="itsup"required onchange="handleDropdownChange(this)">

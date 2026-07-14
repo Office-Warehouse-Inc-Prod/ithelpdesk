@@ -1,6 +1,9 @@
+
+
 <?php
 
-
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 session_start();
 
 if ($_SESSION['login']!='true'){
@@ -199,9 +202,176 @@ else{
 
 
 }
+if (isset($_POST["operation"]) && $_POST["operation"] == "submit_request") {
+    try {
+        $connection->beginTransaction();
+        $statement = $connection->prepare("
+            INSERT INTO asset_requests (
+                ticket_no, requested_db, requested_by, ticket_created, 
+                item_code, description, serial_number, purpose_of_request, 
+                item_received_by, date_received, status, date_submitted
+            ) VALUES (
+                :ticket_no, :requested_db, :requested_by, :ticket_created, 
+                :item_code, :description, :serial_number, :purpose_of_request, 
+                :item_received_by, :date_received, :status, :date_submitted
+            )
+        ");
 
+        $ticketNo = $_POST['ticket_no'] ?? $computed_ticket ?? null;
+        $currentDate = date('Y-m-d H:i:s');
 
-if ($_POST["operation"] == "Save and Reply") {
+        $result = $statement->execute([
+            ':ticket_no'          => $ticketNo,
+            ':requested_db'       => $_POST['requesting_dept'] ?? null,
+            ':requested_by'       => $_POST['requesting_employee'] ?? null,
+            ':ticket_created'     => $_POST['date_created'] ?? null,
+            ':item_code'          => $_POST['item_code'] ?? null,
+            ':description'        => $_POST['description'] ?? null,
+            ':serial_number'      => $_POST['serial_number'] ?? null,
+            ':purpose_of_request' => $_POST['purpose_of_request'] ?? null,
+            ':item_received_by'   => $_POST['received_by'] ?? null,
+            ':date_received'      => $_POST['date_received'] ?? null,
+            ':status'             => 'SUBMITTED',
+            ':date_submitted'     => $currentDate
+        ]);
+
+        $statement2 = $connection->prepare("
+            INSERT INTO tbl_notif (
+                ticket_no, store, itsup, notif_data, notif_val, notif_date
+            ) VALUES (
+                :ticket_no, :store, :itsup, :notif_data, :notif_val, :notif_date
+            )
+        ");
+
+        $result2 = $statement2->execute([
+            ':ticket_no'  => $computed_ticket ?? $ticketNo,
+            ':store'      => $_SESSION["str_num"] ?? "",
+            ':itsup'      => $_SESSION["tech_id"] ?? "",
+            ':notif_data' => "Fixed asset " . ($computed_ticket ?? $ticketNo) . " submitted and for approval",
+            ':notif_val'  => '5',
+            ':notif_date' => $currentDate
+        ]);
+
+        if ($result && $result2) {
+            $connection->commit();
+            echo "success";
+        } else {
+            $connection->rollBack();
+            echo "SQL Error: Execution failed.";
+        }
+
+    } catch (PDOException $e) {
+        if ($connection->inTransaction()) {
+            $connection->rollBack();
+        }
+        echo "SQL Error: " . $e->getMessage();
+        exit();
+    }
+}
+if(isset($_POST["operation"]) && $_POST["operation"] == "update_request") {
+    try {
+        $statement = $connection->prepare("
+            UPDATE asset_requests
+            SET
+               
+                serial_number = :serial_number,
+               
+                date_received = :date_received
+      
+            WHERE ticket_no = :ticket_no
+        ");
+
+        $result = $statement->execute([
+        
+            ':serial_number'      => $_POST['serial_number'],
+            ':date_received'      => $_POST['date_received'],
+            ':ticket_no'          => $_POST['ticket_no']
+        ]);
+
+        if($result){
+            echo json_encode(["status" => "success", "message" => "Request updated successfully."]);
+        } else {
+            echo json_encode(["status" => "error", "message" => "Failed to update the database."]);
+        }
+
+    } catch(PDOException $e) {
+        echo json_encode(["status" => "error", "message" => "SQL Error: " . $e->getMessage()]);
+    }
+    exit(); // Ensure the script stops here so it doesn't output trailing HTML
+}
+}
+
+if (isset($_POST["operation"]) && $_POST["operation"] === "add_remarks_only") {
+    
+    header('Content-Type: application/json');
+    
+    if (empty($_POST['ticket_no'])) {
+        echo json_encode(["status" => "error", "message" => "Missing Ticket Number."]);
+        exit();
+    }
+    if (empty($_POST['remarks_adtech'])) {
+        echo json_encode(["status" => "error", "message" => "Remarks details cannot be empty."]);
+        exit();
+    }
+
+    try {
+        $connection->beginTransaction();
+
+        $ticketNo = $_POST['ticket_no'];
+        $currentDate = date('Y-m-d H:i:s');
+        $techId = $_SESSION['tech_id'] ?? $_POST['tech_id'] ?? 'Unknown Tech';
+        $remarksNote = trim($_POST['remarks_adtech']);
+
+        $statementRemarks = $connection->prepare("
+            INSERT INTO fixed_asset_remarks (
+                ticket_no, remarks_note, remarks_by, date_remarks
+            ) VALUES (
+                :ticket_no, :remarks_note, :remarks_by, :date_remarks
+            )
+        ");
+
+        $resultRemarks = $statementRemarks->execute([
+            ':ticket_no'    => $ticketNo,
+            ':remarks_note' => $remarksNote,
+            ':remarks_by'   => $techId,
+            ':date_remarks' => $currentDate
+        ]);
+
+        $statementNotif = $connection->prepare("
+            INSERT INTO tbl_notif (
+                ticket_no, store, itsup, notif_data, notif_val, notif_date
+            ) VALUES (
+                :ticket_no, :store, :itsup, :notif_data, :notif_val, :notif_date
+            )
+        ");
+
+        $resultNotif = $statementNotif->execute([
+            ':ticket_no'  => $ticketNo,
+            ':store'      => $_SESSION["str_num"] ?? "",
+            ':itsup'      => $_SESSION["tech_id"] ?? "",
+            ':notif_data' => "You added a remarks on fixed asset ticket no " . $ticketNo,
+            ':notif_val'  => '10',
+            ':notif_date' => $currentDate
+        ]);
+
+        if ($resultRemarks && $resultNotif) {
+            $connection->commit();
+            echo json_encode(["status" => "success", "message" => "Remarks saved successfully."]);
+        } else {
+            $connection->rollBack();
+            echo json_encode(["status" => "error", "message" => "SQL Error: Saving remarks failed."]);
+        }
+
+    } catch (PDOException $e) {
+        if ($connection->inTransaction()) {
+            $connection->rollBack();
+        }
+        echo json_encode(["status" => "error", "message" => "Database error: " . $e->getMessage()]);
+        exit();
+    }
+}
+
+if (isset($_POST["operation"]) && $_POST["operation"] == "Save and Reply") {
 
     $optbrval = $_POST["store"] ?? '0';
     $optval   = $_POST["itsup"] ?? '0';
@@ -324,6 +494,6 @@ if ($_POST["operation"] == "Save and Reply") {
     } else {
         echo 'Update failed';
     }
-}
+
 } // end 
 ?>

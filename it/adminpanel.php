@@ -229,7 +229,7 @@ background: linear-gradient(135deg, #837031, #E1AD01);
             z-index: 1000;
         }
        .modal-overlay .modal-content {
-            background: white;
+             background: linear-gradient(to bottom, #ffffff, #99aac8);
             padding: 25px;
             border-radius: 8px;
             width: 70%;
@@ -325,7 +325,7 @@ background: linear-gradient(135deg, #837031, #E1AD01);
   padding:10px;
   width: 30%;
   color: white;
-  background-color: #156436;
+  background-color: #213456;
 }
  .modal-overlay .month-row[data-month="6"] {
   background: #213456;

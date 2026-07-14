@@ -30,7 +30,7 @@ $ph_datetime = date('l, F d, Y - h:i A');
 }
 
 :root {
-  --navy: #121C31;
+  --navy: #213456;
   --navy2: #1a2a4a;
   --yellow: #EAAA00;
   --bg: #EEF2F7;
@@ -41,6 +41,7 @@ $ph_datetime = date('l, F d, Y - h:i A');
   --shadow: 0 14px 32px rgba(17,24,39,.12);
   --radius: 12px;
   --bg-body: #F4F5FA;
+  --theme-color: #213456;
 }
 
 body {
@@ -50,7 +51,7 @@ body {
   height: 100vh; 
 } 
 .navbar, header, .topbar, .navbar-default{
-    background-color: #213456 !important;
+    background-color: var(--theme-color) !important;
     margin-bottom: 40px;
 }
 .navbar a, .navbar-brand, .navbar-nav > li > a,
@@ -66,13 +67,12 @@ body {
   border-bottom: 3px solid var(--yellow);
 }
 
-
 .action-bar-container {
   padding: 10px 15px !important;
   margin-bottom: 12px !important;
 }
 .input-group-text {
-  background: var(--navy) !important;
+  background: var(--theme-color) !important;
   color: #fff !important;
   border: 1px solid rgba(0,0,0,.08) !important;
   font-weight: 700 !important;
@@ -93,57 +93,73 @@ select.form-control, .form-control, .form-select {
 }
 .card{ 
   padding: 25px;
- }
+}
 .overall-table {
    margin: 15px 0; 
    width: 100%; 
-  }
+}
+
+/* Master Table Styling - Flat Horizontal Borders Only */
 .admin-table {
    width: 100%; 
    box-shadow: 0 4px 12px rgba(0,0,0,0.05); 
    background-color: #fff; 
-  }
+   border-collapse: collapse;
+   border: none;
+}
 .admin-table th { 
-  background-color: #3d4e6d; 
+  background-color: var(--theme-color); 
   color: #ffffff !important; 
   font-weight: 700; 
   text-transform: uppercase; 
   font-size: 13px !important; 
   letter-spacing: 0.5px; 
   padding: 10px 8px !important; 
+  border: none;
 }
 .admin-table td { 
   padding: 10px 8px !important; 
   vertical-align: middle; 
   color: #2D3748; 
   font-size: 13px !important; 
-  border-bottom: 1px solid var(--line); 
+  border: none;
+  border-bottom: 1px solid var(--theme-color); 
+}
+.admin-table tfoot {
+  border: none !important;
+  border-top: 2px solid var(--theme-color) !important;
+  border-bottom: 2px solid var(--theme-color) !important;
 }
 .admin-table tbody tr:hover { 
-  background-color: rgba(151, 178, 205, 0.2) !important; 
+  background-color: rgba(33, 52, 86, 0.1) !important; 
 }
 
-.department-table tbody tr:hover { 
-  background-color: rgba(151, 178, 205, 0.2) !important; 
-}
-.dept-badge-title { 
-  font-weight: 700; 
-  color: #1A202C; 
-}
+/* Department Detail Table Styling */
 .department-table { 
   width: 100%; 
+  border-collapse: collapse;
+  border: none;
 }
 .department-table th { 
-  background-color: #213456; 
+  background-color: var(--theme-color); 
   color: #ffffff !important; 
   font-weight: 600; 
   font-size: 13px; 
   padding: 10px; 
+  border: none;
 }
 .department-table td { 
   padding: 10px; 
   font-size: 13px; 
-  border-bottom: 1px solid var(--line); 
+  border: none;
+  border-bottom: 1px solid var(--theme-color); 
+}
+.department-table tbody tr:hover { 
+  background-color: rgba(33, 52, 86, 0.1) !important; 
+}
+.dept-badge-title { 
+  font-weight: 700; 
+  color: #1A202C; 
 }
 
 @media print {
@@ -161,16 +177,18 @@ select.form-control, .form-control, .form-select {
   #print-filter-badge-header { 
     display: block !important; 
     margin-bottom: 5px !important; 
-    border-bottom: 2px dashed #3d4e6d; 
+    border-bottom: 2px dashed var(--theme-color); 
     padding-bottom: 8px; 
-    box-shadow: 0 0 10px rgba(0, 255, 255, 0.1); 
+    box-shadow: none !important; 
   }
   .action-bar-container, .card-header .d-flex, .btn, #layoutSidenav_nav, nav, header, .owi-navbar, .noExl, .no-print-header { 
     display: none !important;
+    background: #95a2b9b4;
   }
   .card-header { 
     padding: 0 !important; 
     border-bottom: none !important; 
+     background: #95a2b9b4;
   }
   .container-fluid, #wrapper, #layoutSidenav_content { 
     padding: 0 !important; 
@@ -197,17 +215,20 @@ select.form-control, .form-control, .form-select {
     width: 100% !important; 
     table-layout: auto !important; 
     page-break-inside: avoid; 
+    border: none !important;
   }
   .admin-table th { 
-    background-color: #213456 !important; 
+    background-color: var(--theme-color) !important; 
     color: #fff !important; 
     padding: 6px 4px !important; 
     font-size: 11px !important; 
+    border: none !important;
   }
   .admin-table td { 
     padding: 6px 4px !important; 
     font-size: 11px !important; 
-    border-bottom: 1px solid #0e0e0ea1 !important; 
+    border: none !important;
+    border-bottom: 1px solid var(--theme-color) !important; 
   }
   .progress { 
     border: 1px solid #999 !important; 
@@ -216,14 +237,17 @@ select.form-control, .form-control, .form-select {
     print-color-adjust: exact !important; 
   }
   #dept-table-footer, #dept-table-footer-non-escalated { 
-    border: 2px solid #2d3c59; 
+    border: none !important;
+    border-top: 2px solid var(--theme-color) !important;
+    border-bottom: 2px solid var(--theme-color) !important;
     background-color: #f4e9d7 !important; 
   }
-  * { -webkit-print-color-adjust: exact !important; 
-  print-color-adjust: exact !important; 
-  color-adjust: exact !important; 
-  box-shadow: none !important; 
-}
+  * { 
+    -webkit-print-color-adjust: exact !important; 
+    print-color-adjust: exact !important; 
+    color-adjust: exact !important; 
+    box-shadow: none !important; 
+  }
 }
 </style>
 </head>
@@ -244,9 +268,9 @@ select.form-control, .form-control, .form-select {
           <div class="datetime-container" style=" margin-top:1px; display: flex; align-items: center; justify-content: center; text-align: center; margin-bottom: 8px;">
             <p>As of: <strong><?php echo $ph_datetime; ?></strong></p>
           </div>
-          <table style="width: 100%; margin-top:10px; font-family: sans-serif;padding:60px; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6);color: #121C31;">
+          <table style="width: 100%; margin-top:10px; font-family: sans-serif; padding:15px; color: #213456; border-collapse: collapse; border: none; border-top: 1px solid #213456; border-bottom: 1px solid #213456;">
             <tr>
-              <td style="text-align: right; font-size: 13px; border:none; padding:0;">
+              <td style="text-align: right; font-size: 13px; border: none; padding: 5px 0;">
                 <strong>LOGS IN YEAR OF:</strong> <span id="print-year-val">--</span> &nbsp;|&nbsp; 
                 <strong>FILTER BY MONTH:</strong> <span id="print-month-val">--</span>
               </td>
@@ -290,8 +314,8 @@ select.form-control, .form-control, .form-select {
 
         <div class="row mb-4">
           <div class="col-12">
-            <div class="card card2 border-0 shadow-sm" style="border-radius: 12px; background: rgba(255, 255, 255, 0.95);">
-              <div class="card-header d-flex flex-wrap justify-content-between align-items-center text-dark py-2 gap-2" style="border-bottom: 1px solid rgba(0,0,0,0.05);">
+            <div class="card card2 border-0 shadow-sm" style="border-radius: 12px;   background: linear-gradient(to bottom, #ffffff, #99aac8);">
+              <div class="card-header d-flex flex-wrap justify-content-between align-items-center text-dark py-2 gap-2" style="border-bottom: 1px solid rgba(0,0,0,0.05); background: ">
                 <h5 class="m-0 font-weight-bold no-print-header" style="letter-spacing: 0.3px; font-size: 1.15rem;">
                   <i class="fa-solid fa-circle text-success me-2"></i> HELPDESK DEPARTMENT TICKET SUMMARY
                 </h5>
@@ -309,10 +333,10 @@ select.form-control, .form-control, .form-select {
                   <table id="admin_report" class="table admin-table m-0">
                     <thead>  
                       <tr>
-                        <th colspan="5" class="text-center" style="background-color: #2b9827; color: #fff; font-weight: 700; text-transform: uppercase; font-size: 13px; padding: 6px;">ACTIVE/RUNNING TICKET REPORTS</th>
+                        <th colspan="5" class="text-center" style="background-color: var(--theme-color); color: #fff; font-weight: 700; text-transform: uppercase; font-size: 13px; padding: 6px;">ACTIVE/RUNNING TICKET REPORTS</th>
                         <th colspan="4" class="text-center" style="background-color: #a29341; color: #fff; font-weight: 700; text-transform: uppercase; font-size: 13px; padding: 6px;">COMPLIANCE TICKET REPORTS</th>
                       </tr>
-                      <tr style="background-color: #213456; color: #ffffff;">
+                      <tr style="background-color: var(--theme-color); color: #ffffff;">
                         <th style="font-size: 12px; vertical-align: middle;">DEPARTMENT</th>
                         <th class="text-center fw-bold" style="font-size: 12px; vertical-align: middle;">ASSIGNED</th>
                         <th class="text-center fw-bold" style="font-size: 12px; vertical-align: middle;">ON PROCESS</th>
@@ -331,7 +355,7 @@ select.form-control, .form-control, .form-select {
                         </td>
                       </tr>
                     </tbody>
-                    <tfoot id="dept-table-footer" class="bg-light" style="border: 2px solid #2d3c59; background: #F4E9D7;"></tfoot>
+                    <tfoot id="dept-table-footer" class="bg-light" style="background: #F4E9D7;"></tfoot>
                   </table>
                 </div>
               </div>
@@ -341,8 +365,8 @@ select.form-control, .form-control, .form-select {
 
         <div class="row mb-4">
           <div class="col-12">
-            <div class="card card2 border-0 shadow-sm" style="border-radius: 12px; background: rgba(255, 255, 255, 0.95);">
-              <div class="card-header d-flex flex-wrap justify-content-between align-items-center text-dark py-2 gap-2" style="border-bottom: 1px solid rgba(0,0,0,0.05);">
+            <div class="card card2 border-0 shadow-sm" style="border-radius: 12px;   background: linear-gradient(to bottom, #ffffff, #99aac8);">
+              <div class="card-header d-flex flex-wrap justify-content-between align-items-center text-dark py-2 gap-2" style=" background-color: #95a2b9b4; border-bottom: 1px solid rgba(0,0,0,0.05);">
                 <h5 class="m-0 font-weight-bold no-print-header" style="letter-spacing: 0.3px; font-size: 1.15rem;">
                   <i class="fa-solid fa-circle text-success me-2"></i> ESCALATED REPORTS FOR NON-ACTION
                 </h5>
@@ -351,7 +375,7 @@ select.form-control, .form-control, .form-select {
                 <div class="table-responsive">
                   <table id="admin_report_escalated" class="table admin-table m-0">
                     <thead>  
-                      <tr style="background-color: #213456; color: #ffffff;">
+                      <tr style="background-color: var(--theme-color); color: #ffffff;">
                         <th style="font-size: 12px; vertical-align: middle;">DEPARTMENT</th>
                         <th class="text-center fw-bold" style="font-size: 12px; vertical-align: middle;">TOTAL NUMBER OF ESCALATED REPORTS FOR NON-ACTION</th>
                         <th class="text-center fw-bold" style="font-size: 12px; vertical-align: middle;">PERCENTAGE SHARE</th>
@@ -364,16 +388,17 @@ select.form-control, .form-control, .form-select {
                         </td>
                       </tr>
                     </tbody>
-                    <tfoot id="dept-table-footer-non-escalated" class="bg-light" style="border: 2px solid #2d3c59; background: #F4E9D7;"></tfoot>
+                    <tfoot id="dept-table-footer-non-escalated" class="bg-light" style="background: #F4E9D7;"></tfoot>
                   </table>
                 </div>
               </div>
             </div>
           </div>
         </div> 
+        
         <div class="row">
           <div class="col-12">
-            <div class="card card2 border-0 shadow-sm" style="border-radius: 12px; background: rgba(255, 255, 255, 0.95); margin-top: 20px;">
+            <div class="card card2 border-0 shadow-sm" style="border-radius: 12px;   background: linear-gradient(to bottom, #ffffff, #99aac8); margin-top: 20px;">
               <div class="card-header d-flex flex-wrap justify-content-between align-items-center text-dark py-2 gap-2" style="border-bottom: 1px solid rgba(0,0,0,0.05);">
                 <h5 class="m-0 font-weight-bold no-print-header" style="letter-spacing: 0.3px; font-size: 1.15rem;">
                   <i class="fa-solid fa-circle text-success me-2"></i> Ticket Transfer Logs
@@ -389,11 +414,11 @@ select.form-control, .form-control, .form-select {
                 <div class="table-responsive">
                   <table id="transfer_logs_table" class="table admin-table m-0">
                     <thead>  
-                      <tr style="background-color: #213456; color: #ffffff;">
+                      <tr style="background-color: var(--theme-color); color: #ffffff;">
                         <th style="font-size: 12px; vertical-align: middle;">TICKET NO</th>
                         <th class="text-center fw-bold" style="font-size: 12px; vertical-align: middle;">STORE</th>
-                        <th class="text-center fw-bold" style="font-size: 12px; vertical-align: middle;">FROM DEPT</th>
                         <th class="text-center fw-bold" style="font-size: 12px; vertical-align: middle;">TO DEPT</th>
+                        <th class="text-center fw-bold" style="font-size: 12px; vertical-align: middle;">FROM DEPT</th>
                          <th class="text-center fw-bold" style="font-size: 12px; vertical-align: middle;">ORIGINAL TECH</th>
                           <th class="text-center fw-bold" style="font-size: 12px; vertical-align: middle;">NEW TECH</th>
                           <th class="text-center fw-bold" style="font-size: 12px; vertical-align: middle;">REQUESTED DATE</th>
@@ -403,7 +428,7 @@ select.form-control, .form-control, .form-select {
                     </thead>
                     <tbody id="transfer-logs-table-body">
                       <tr>
-                        <td colspan="8" class="text-center py-4 text-muted">
+                        <td colspan="9" class="text-center py-4 text-muted">
                           <div class="spinner-border spinner-border-sm me-2 text-warning" role="status"></div> Loading Transfer Logs...
                         </td>
                       </tr>
@@ -426,7 +451,7 @@ select.form-control, .form-control, .form-select {
 
         <div class="row">
           <div class="col-12">
-            <div class="card card2 border-0 shadow-sm" style="border-radius: 12px; background: rgba(255, 255, 255, 0.95); margin-top: 20px;">
+            <div class="card card2 border-0 shadow-sm" style="border-radius: 12px;  background: linear-gradient(to bottom, #ffffff, #99aac8); margin-top: 20px;">
               <div class="card-header d-flex flex-wrap justify-content-between align-items-center text-dark py-2 gap-2" style="border-bottom: 1px solid rgba(0,0,0,0.05);">
                 <h5 class="m-0 font-weight-bold no-print-header" style="letter-spacing: 0.3px; font-size: 1.15rem;">
                   <i class="fa-solid fa-circle text-success me-2"></i> User Activity Logs
@@ -442,7 +467,7 @@ select.form-control, .form-control, .form-select {
                 <div class="table-responsive">
                   <table id="user_activity" class="table admin-table m-0">
                     <thead>  
-                      <tr style="background-color: #213456; color: #ffffff;">
+                      <tr style="background-color: var(--theme-color); color: #ffffff;">
                         <th style="font-size: 12px; vertical-align: middle;">HELPDESK USER</th>
                         <th class="text-center fw-bold" style="font-size: 12px; vertical-align: middle;">DEPARTMENT</th>
                         <th class="text-center fw-bold" style="font-size: 12px; vertical-align: middle;">LOG IN DATE</th>
@@ -471,8 +496,6 @@ select.form-control, .form-control, .form-select {
           </div>
         </div> 
 
-        
-
       </div>
     </div>
   </div>
@@ -481,7 +504,7 @@ select.form-control, .form-control, .form-select {
 <div class="modal fade" id="deptDetailsModal" tabindex="-1" aria-labelledby="deptModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-xl" style="max-width: 95%;">
     <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; background: rgba(255, 255, 255, 0.95);">
-      <div class="modal-header border-0 pb-0" style="background-color: #213456; color: #fff;">
+      <div class="modal-header border-0 pb-0" style="background-color: var(--theme-color); color: #fff;">
         <h5 class="modal-title font-weight-bold" id="deptModalLabel" style="font-size:1.5rem;">TICKET DETAILS OVERVIEW</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
@@ -522,7 +545,7 @@ select.form-control, .form-control, .form-select {
 <div class="modal fade" id="nonescaTicketDetails" tabindex="-1" aria-labelledby="nonEscaModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-xl" style="max-width: 95%;">
     <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; background: rgba(255, 255, 255, 0.95);">
-      <div class="modal-header border-0 pb-0" style="background-color: #213456; color: #fff;">
+      <div class="modal-header border-0 pb-0" style="background-color: var(--theme-color); color: #fff;">
         <h5 class="modal-title font-weight-bold" id="nonEscaModalLabel" style="font-size:1.5rem;">DEPARTMENT OVERVIEW (NON-ESCALATED)</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
@@ -687,9 +710,8 @@ $(document).ready(function() {
                     <tr>
                         <td><strong>${row.ticket_no || 'N/A'}</strong></td>
                         <td class="text-center" style="font-size:13px;">${row.store_name || 'Unknown'}</td>
-                                                <td class="text-center"><span class="badge" style="background-color: #a09e08; color: #fff; padding: 4px 8px;">${row.to_department || 'N/A'}</span></td>
+                        <td class="text-center"><span class="badge" style="background-color: #a09e08; color: #fff; padding: 4px 8px;">${row.to_department || 'N/A'}</span></td>
                         <td class="text-center"><span class="badge bg-secondary text-white px-2 py-1">${row.from_department || 'N/A'}</span></td>
-
                         <td class="text-center" style="font-size:13px;">${row.original_support || 'N/A'}</td>
                         <td class="text-center" style="font-size:13px;">${row.new_support || 'N/A'}</td>
                         <td class="text-center" style="font-size:13px;">${row.request_date || 'N/A'}</td>
@@ -816,7 +838,6 @@ $(document).ready(function() {
                     $('#dept-table-footer').html('');
                 }
 
-
                 let html2 = '';
                 let footerHtml2 = '';
                 let nonEscalatedTotalCount = 0; 
@@ -850,7 +871,6 @@ $(document).ready(function() {
                     $('#dept-table-footer-non-escalated').html('');
                 }
 
-                // Initial Load for Transfer Logs
                 if(response && response.transfer_logs && response.transfer_logs.length > 0) {
                     globalTransferLogs = response.transfer_logs;
                 } else {

@@ -5,7 +5,8 @@ include 'admin_function.php';
 $fn = new dbconfig();
 // $fn->fetch_cards_result();
 
-$mode= $_POST['mode'];
+$records = [];
+$mode = isset($_POST['mode']) ? $_POST['mode'] : '';
 switch ($mode) {
     case 'yearch':
       $records= $fn->fetch_cards_result();

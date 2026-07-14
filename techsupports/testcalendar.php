@@ -62,27 +62,46 @@ $holidays = getPhilippineHolidays($currentYear);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Employee Calendar</title>
-    <style>
-        body {
-            margin: 32px 12px;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
-            Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-            background: #f5f7fa;
-            color: #222;
+     <style>
+        :root {
+            --primary-color: #213456;
+            --primary-light: #F4F0FF;
+            --bg-body: #F4F5FA;
+            --accent-color: #E1AD01;  /* Gold */
+            --accent-hover: #c99a01;
+            --text-light: #ffffff;
+            --bg-body: #F4F5FA;
+            --sidebar-width: 260px;
+            --topbar-height: 70px;
+            --card-shadow: 0 4px 12px 0 rgba(58, 53, 65, 0.1);
         }
-        
+
+        body {
+            font-family: 'Public Sans', sans-serif;
+            background: linear-gradient(to bottom, #ffffff, #99aac8);
+  background-attachment: fixed; 
+  margin: 0; 
+   overflow-x: hidden;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+        }
+
         .calendar-wrapper {
             max-width: 1200px;
             margin: 0 auto;
+            margin-top:10px;
             background: white;
             border-radius: 12px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            box-shadow: 20px 20px 20px rgba(33, 16, 118, 0.1);
             overflow: hidden;
         }
         
         .calendar-header {
             padding: 16px;
-            background: #4f46e5;
+            background: #213456;
             color: white;
             display: flex;
             justify-content: space-between;
@@ -190,7 +209,7 @@ $holidays = getPhilippineHolidays($currentYear);
         }
         
         .event {
-            background: #4f46e5;
+            background: #213456;
             color: white;
             padding: 4px 6px; /* Reduced padding */
             border-radius: 4px;
@@ -285,7 +304,7 @@ $holidays = getPhilippineHolidays($currentYear);
         }
         
         .btn-primary {
-            background: #4f46e5;
+            background: #213456;
             color: white;
         }
         
@@ -371,28 +390,26 @@ $holidays = getPhilippineHolidays($currentYear);
             opacity: 0.8;
             margin-top: 1px;
             font-style: italic;
-      }
-      
-      .sunday-cell {
-    background-color: #4d5656 !important;
-    position: relative;
-}
+        }
+        .sunday-cell{
+            background-color: #4d5656 !important;
+            position: relative;
+        }
+        .sunday-cell::after{
+            content:'';
+            position: absolute;
+            left:0;
+            top:0;
+            bottom:0;
+            width:3px;
+            background-color: #adb5bd;
+        }
 
-.sunday-cell::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 3px;
-    background-color: #adb5bd;
-}
-
-.holiday-cell {
+        .holiday-cell{
             background-color: #ffebee !important;
             position: relative;
         }
-        
+
         .holiday-cell::after {
             content: '';
             position: absolute;
@@ -417,6 +434,129 @@ $holidays = getPhilippineHolidays($currentYear);
             z-index: 1;
         }
 
+        .calendar-header{
+            padding: 20px;
+            background: var(--primary-color);
+            border-bottom: 4px solid var(--accent-color);
+            display:flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            gap:15px;
+            flex-wrap: wrap;
+        }
+
+        .calendar-header h2{
+            color: var(----accent-color);
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-size: 1.25rem;
+            margin: 0;
+        }
+
+        .header-nav{
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn{
+            display:inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size:0.9rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .btn-home{
+            background-color: var(--accent-color);
+            color:var(--primary-color) !important;
+            box-shadow: 0 4px 0px #b08701;
+        }
+
+        .btn-home:hover{
+            background-color: var(--accent-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 0px #b08701;
+        }
+
+        .btn-nav{
+            background-color: rgba(255,255,255,0.1);
+            color:white;
+            border:1px solid rgba(255,173,1,0.5);
+        }
+
+        .btn-nav:hover{
+            background-color: var(--accent-color);
+            color: var(--primary-color);
+            border-color: var(--accent-color);
+
+        }
+
+        .week-display{
+            color:white;
+            font-weight: 700;
+            font-size: 1rem;
+            padding: 0 10px;
+            text-align: center;
+            min-width:150px;
+        }
+
+        @media(max-width:768px){
+            .calendar-header{
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .header-nav{
+                justify-content: center;
+                width: 100%;
+            }
+
+            .employee-column{
+                width:120px;
+            }
+            .employee-name{
+                font-size: 0.9rem;
+            }
+            .week-display{
+                width:100%;
+                order:-1;
+                margin-bottom: 10px;
+            }
+        }
+
+        .calendar-cell::-webkit-scrollbar{
+            width:4px;
+        }
+
+        .calendar-cell::-webkit-scrollbar-thumb{
+            background: var(--accent-color);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+background: linear-gradient(135deg, #837031, #E1AD01);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #837031, #E1AD01);
+}
     </style>
 </head>
 <body>

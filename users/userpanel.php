@@ -20,9 +20,17 @@ $con1 = new dbconfig();
     --topbar-height: 70px;
     --card-shadow: 0 4px 12px 0 rgba(58, 53, 65, 0.1);
   }
-  body {
-   font-family: "Arial", "Helvetica", sans-serif;
-}
+body {
+  background: linear-gradient(to bottom, #ffffff, #99aac8);
+  background-attachment: fixed; 
+  margin: 0; 
+   overflow-x: hidden;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+} 
 
   .navbar,
   header,
@@ -72,14 +80,16 @@ $con1 = new dbconfig();
 
   /* inputs */
   .form-control,
+  .textarea,
   .custom-select,
   select.form-control {
     background: #fff !important;
     color: var(--text) !important;
-    border: 1px solid var(--border) !important;
-    padding: 10px 12px !important;
+    border: 1px solid #21345658 !important;
+    padding: 10px  !important;
     height: auto !important;
     transition: .15s ease;
+    margin: 2px;
   }
 
   .form-control:focus,
@@ -101,7 +111,7 @@ $con1 = new dbconfig();
     resize: vertical;
     background: #fff;
     color: var(--text);
-    border: 1px solid var(--border);
+    border: 1px solid #21345658 !important;
     border-radius: 14px;
     padding: 12px;
     line-height: 1.35;
@@ -130,10 +140,7 @@ $con1 = new dbconfig();
     box-shadow: 0 10px 18px rgba(37, 99, 235, .18);
   }
 
-  .btn-primary:hover {
-    background: #213456 !important;
-    border-color: #E1AD01 !important;
-  }
+  
 
   .btn-success {
     background: var(--success) !important;
@@ -148,6 +155,9 @@ $con1 = new dbconfig();
     margin: 12px 0 14px;
   }
 
+  .card-body {
+      padding: 14px !important;
+    }
   /* mobile */
   @media (max-width: 767.98px) {
     .container-fluid.mt-4 {
@@ -164,7 +174,7 @@ $con1 = new dbconfig();
 
     #stat_picker {
       width: 100%;
-      margin-top: 8px;
+      margin-top: -20px;
     }
 
     .w-100-mobile {
@@ -178,6 +188,7 @@ $con1 = new dbconfig();
     align-items: center;
     justify-content: space-between;
     gap: 10px;
+    color: #E1AD01;
   }
 
   .section-title small {
@@ -271,7 +282,7 @@ $con1 = new dbconfig();
   header,
   .topbar,
   .navbar-default {
-    background: #121C31 !important;
+    background: #213456 !important;
     border-color: rgba(255, 255, 255, .12) !important;
   }
 
@@ -312,24 +323,6 @@ $con1 = new dbconfig();
   .navbar .fas {
     color: #ffffff !important;
   }
-
-
-
-  .card {
-    border-radius: 10px;
-    border: none;
-    position: relative;
-    margin-bottom: 0;
-    box-shadow: 0 4px 15px rgba(42, 9, 100, 0.25);
-    color: #465172;
-    overflow-x: hidden;
-    border: 2px solid transparent;
-    transition: border-color 0.3 ease, color 0.3s ease;
-    background-color: whitesmoke;
-
-
-  }
-
   .card .card-header {
     color: white;
     border-bottom-color: #213456;
@@ -347,17 +340,96 @@ $con1 = new dbconfig();
     border-radius: calc(.25rem -1px)calc(.25rem -1px)00;
   }
 
-  /* Your existing hover rule */
 
-  .card:hover {
-    border-color:  #E5BA41;
-    border: solid 4px #E5BA41;
-  }
 
-  .card:hover .card-header,
-  .card:hover a {
-    color: #E1AD01 !important;
-  }
+ .card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: scale(1.02); 
+  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+.card:hover .card-header,
+.card:hover a {
+  color: #E1AD01 !important;
+}
+
+
+
+.follow-up-btn {
+    background: linear-gradient(135deg, #E1AD01, #d4a300) !important;
+    color: #213456 !important;
+    border: none !important;
+    padding: 8px 16px !important;
+    font-weight: 800 !important;
+    font-size: 12px !important;
+    border-radius: 6px !important;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(225, 173, 1, 0.2);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.follow-up-btn:hover {
+  color: #E1AD01;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(225, 173, 1, 0.3);
+}
+
+#reports_table tbody tr:nth-child(even) {
+    background-color: #fdfdfd;
+}
+
+.flex-row-center {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.card-body {
+    background-color: #ffffff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+#items_table {
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+}
+
+#items_table thead th {
+    background-color: #213456;
+    color: #E1AD01;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    padding: 15px 12px;
+    border-bottom: 3px solid #E1AD01; /* The accent stripe */
+}
+
+#items_table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+#items_table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+#items_table td {
+    padding: 12px;
+    color: #333;
+    border-bottom: 1px solid #e9ecef;
+}
+
+#items_table tbody tr td[colspan] {
+    color: #6c757d;
+    font-style: italic;
+    padding: 30px;
+}
 </style>
 
 
@@ -369,7 +441,7 @@ $con1 = new dbconfig();
       <div class="card w-100">
         <div class="card-header">
           <div class="section-title">
-            <span><i class="fa-regular fa-square-plus"></i>CREATE TICKET</span>
+            <span><i class="fa-regular fa-square-plus"></i><strong>CREATE TICKET</strong></span>
             <small>Unified Helpdesk</small>
           </div>
         </div>
@@ -392,16 +464,9 @@ $con1 = new dbconfig();
                 <!-- <input type="hidden" name="deptsel" id="deptsel" value="2">       1=IT default (change if needed) -->
                 <input type="hidden" name="select_tos" id="select_tos" value="GENERAL"> <!-- default TOS -->
 
-
-                <div class="col-xl-12 d-inline-flex p-2">
-                  <!-- <label class="" style="font-weight: bold;">SELECT DEPARTMENT:</label> -->
-
-                  <div class="input-group xl-2">
-                    <div class="input-group-prepend">
-                      <div class="input-group-text">Attention To:</div>
-                    </div>
-                    <select class="form-control" name="deptsel" id="deptsel" required>
-                      <option value="" selected disabled>Select Here</option>
+                <label><i class="fa fa-user-circle-o"></i>  Attention To:</label>
+                <select class="form-control" id="deptsel" name="deptsel" required>
+                   <option value="" selected disabled>---Select Department---</option>
                       <option value="1">IT</option>
                       <option value="2">ADMIN</option>
                       <option value="3">MARKETING</option>
@@ -413,9 +478,10 @@ $con1 = new dbconfig();
                       <!-- <option value="14">SALES ACCOUNTING</option> -->
                       <option value="15">TREASURY</option>
                       <option value="16">ACCOUNT RECEIVABLE</option>
-                    </select>
-                  </div>
-                </div>
+                </select>
+
+
+                    
 
                 <!-- SUBJECT -->
                 <label><i class="fas fa-envelope"></i> Subject</label>
@@ -528,7 +594,7 @@ $con1 = new dbconfig();
       <div class="card" id="dvtables" style="width:auto;">
         <div class="card-header">
           <div class="section-title">
-            <span >CREATED TICKETS</span>
+            <span ><strong>TICKETS CREATED</strong></span>
             <small>Track and follow up</small>
           </div>
         </div>
@@ -537,9 +603,9 @@ $con1 = new dbconfig();
 
           <div class="ticket-controls">
             <div class="left-actions">
-              <button type="button" id="addmsg" class="btn btn-primary">
+              <!--<button type="button" id="addmsg" class="btn btn-primary">
                 Follow up report <i class="fa fa-comment" aria-hidden="true"></i>
-              </button>
+              </button>-->
 
               <input type="hidden" class="form-control form-control-sm" name="slctdtick" id="slctdtick">
             </div>
@@ -579,16 +645,21 @@ $con1 = new dbconfig();
         </div>
 
         <div class="card-body p-0">
-          <div class="dt-wrap">
-            <table id="items_table" class="table hover table-bordered table-condensed text-center mb-0">
-              <tbody>
-                <tr>
-                  <td colspan="X">No data available</td>
-                </tr>
-              </tbody>
+    <div class="dt-wrap">
+        <div class="table-responsive">
+            <table id="items_table" class="table-hover text-center mb-0">
+                <tbody>
+                    <tr>
+                        <td colspan="6" class="text-muted">
+                            <i class="fas fa-box-open" style="color: #E1AD01; margin-right: 8px;"></i>
+                            No items found in this ticket.
+                        </td>
+                    </tr>
+                </tbody>
             </table>
-          </div>
         </div>
+    </div>
+</div>
       </div>
 
 
@@ -681,20 +752,7 @@ $con1 = new dbconfig();
           <!-- Items table -->
           <div class="table-responsive mt-3">
             <table class="table table-bordered table-hover mb-0" id="merchItemsTable" style="font-size:13px;">
-              <thead class="thead-light">
-                <tr>
-                  <th style="width:55px;">#</th>
-                  <th>ALU</th>
-                  <th>Description</th>
-                  <th>Serial #</th>
-                  <th>Nature of Defect</th>
-                  <th>Vendor</th>
-                  <th style="width:90px;">Qty</th>
-                  <th style="width:160px;">Classification</th>
-                  <th style="width:90px;">Action</th>
-                </tr>
-              </thead>
-              <tbody></tbody>
+              
             </table>
           </div>
 

@@ -859,15 +859,7 @@ if ($_POST["operation"] == "Save and Reply") {
         }
 
         // Optional Clean-up Logic
-        if (!empty($result) && $is_transfer == 0) {
-            $deleteTransfer = $connection->prepare("
-                DELETE FROM tbl_reports_transfer_logs
-                WHERE ticket_no = :ticket_no
-            ");
-            $deleteTransfer->execute(array(
-                ':ticket_no' => $_POST["ticket_no"]
-            ));
-        }
+        
         $connection->commit();
 
         header('Content-Type: application/json; charset=utf-8');

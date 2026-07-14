@@ -28,8 +28,9 @@ reports
 ON 
     tbl_notif.ticket_no = reports.ticket_no
 WHERE
-notif_val IN ('1','2') AND 
-reports.f_deptsel = 2 ";
+    (tbl_notif.notif_val IN ('1', '2') AND reports.f_deptsel = 2)
+    OR 
+    (tbl_notif.notif_val IN ('6') AND reports.f_deptsel IS NOT NULL);";
 $result = $conn->query($sql);
 
 echo $result->num_rows;

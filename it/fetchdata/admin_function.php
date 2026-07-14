@@ -645,7 +645,7 @@ WHERE
 	notif_val IN ('1','2') AND
 	reports.f_deptsel = 1 
 ORDER BY
-	notif_date ASC";
+	notif_date DESC";
 		$statement = $this->connection->prepare($query);
 		$statement->execute();
 		$result = $statement->fetchAll();
@@ -656,7 +656,8 @@ ORDER BY
 				'notif_data' => $row["notif_data"],
 				'ticket_no' => $row["ticket_no"],
 				'notif_val' => $row["notif_val"],
-				'status' => $row["status"]
+				'status' => $row["status"],
+				'notif_date' => $row["notif_date"]
 
 			);
 		}

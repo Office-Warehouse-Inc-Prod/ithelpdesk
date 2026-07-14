@@ -25,6 +25,9 @@ switch ($mode) {
         case 'search_tkt':
             $output= $fn->search_tkt();
             break;
+        case 'search_tkt_details':
+            $output = $fn->get_ticket_details();
+            break;
         case 'pditems':
             $output['rptpd']=$fn->pditems();
         break;

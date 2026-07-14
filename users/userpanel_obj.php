@@ -449,6 +449,17 @@ pageLength: 5,
 data: dataset,
   "order": [[ 7, "Desc" ]],
 columns: [
+{ 
+        title: "ACTION", 
+        data: null, 
+        render: function(data, type, row) {
+    return `
+        <button type="button" class="btn btn-primary follow-up-btn flex-row-center" data-ticket="${row.TicketNum}">
+            <i class="fa fa-paper-plane-o" aria-hidden="true"></i>
+        </button>
+    `;
+}
+    },
 {title:"Date Created",data: "Dt_Created"},
 { title:"Ticket Number",data: "TicketNum" },
 { title:"ASSIGNED TO:",data: "deptsel_val" },
@@ -495,7 +506,7 @@ $(row).find('td:eq(8)').css("font-weight", "bold");
 
 else if (data['Status'].toUpperCase() == 'ASSIGNED' && data['NewRpt'] =='0' ){
 $(row).find('td:eq(0)').css("color", "red")
-.addClass('fas fa-envelope');
+
 $(row).find('td:eq(1)').css({"font-weight": "bold", "color": "red"});
 $(row).find('td:eq(2)').css({"font-weight": "bold", "color": "red"});
 $(row).find('td:eq(3)').css({"font-weight": "bold", "color": "red"});
@@ -507,7 +518,7 @@ $(row).find('td:eq(8)').css({"font-weight": "bold", "color": "red"});
 }
 else if (data['Status'].toUpperCase() == 'PENDING' && data['NewRpt'] =='0' ){
 $(row).find('td:eq(0)').css("color", "red")
-.addClass('fas fa-envelope');
+
 $(row).find('td:eq(1)').css({"font-weight": "bold", "color": "red"});
 $(row).find('td:eq(2)').css({"font-weight": "bold", "color": "red"});
 $(row).find('td:eq(3)').css({"font-weight": "bold", "color": "red"});
@@ -656,28 +667,35 @@ $(row).find('td:eq(8)').css({"font-weight": "bold", "color": "#890188"});
 
 });
 }
+$('#reports_table').on('click', '.follow-up-btn', function(e) {
+    e.stopPropagation();
+    
+    var row = $(this).closest('tr');
+    var rowData = table.row(row).data();
+    var ticketNo = $(this).data('ticket');
 
-$("#addmsg").click(function(){
-if ($("#slctdtick").val()==""){
-noslctd('#msg')
-$('#msg').append('<div class=" alert alert-warning  col-md-12"><i class="fa fa-exclamation-circle fa-lg" aria-hidden="true"></i> Select ticket first </div>')
-return false;
-}
+    $('#slctdtick').val(ticketNo);
+    $('#ModalTicket_no').val(ticketNo);
+    $('#ModalDate_create').val(rowData['Dt_Created']);
+    $('#ModalStore').val(rowData['Scode']);
+    $('#ModalSubject').val(rowData['Concern']);
+    $('#ModalTOS').val(rowData['Tos']);
+    $('#ModalStatus').val(rowData['Status']);
+    
+    // Hidden fields for submission logic
+    $('#nticknum').val(ticketNo);
+    $('#statOps').val(rowData['Status']);
+    getinfo(ticketNo, 'remarks', uid); 
 
-getinfo($("#slctdtick").val(),'remarks',uid);
+    $('#ticket_modal').modal('show');
 
-$('#ticket_modal').modal('show')
-
-var TktNoxx = $('#ModalTicket_no').val();
-
-if (TktNoxx.includes("PD")) {
-  // alert("GOOD");
-  $('#rars').show();
-}
-else{
-  $('#rars').hide();
-}
-
+    if (ticketNo.includes("PD")) {
+        $('#rars').show();
+    } else {
+        $('#rars').hide();
+    }
+    
+    (rowData['Status'] == 'CLOSED') ? $("#addmsg").attr('disabled', true) : $("#addmsg").attr('disabled', false);
 });
 
 /**

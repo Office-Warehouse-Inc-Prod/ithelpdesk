@@ -307,7 +307,7 @@ else{
   $reasgnres= $reasgn->execute(
     array(
       ':ticket_no' => $_POST["ticket_no"],
-      ':date_created' => date('Y-m-d H:i:s',strtotime($_POST["date_created"])),
+      ':date_created' => date('Y-m-d H:i:s'),
       ':itsup' => $_POST["it_num"],
       ':nw_sup' => $_POST["itsup"],
       ':r_remarks' => $_POST["remarks"],
@@ -372,6 +372,197 @@ else{
 }
 
 
+
+if (isset($_POST["operation"]) && $_POST["operation"] === "update_request") {
+    
+    if (empty($_POST['ticket_no'])) {
+        echo json_encode(["status" => "error", "message" => "Missing Ticket Number."]);
+        exit();
+    }
+
+    try {
+        
+
+        $statement = $connection->prepare("
+            UPDATE asset_requests
+            SET
+                serial_number = :serial_number,
+                asset_tag_number = :asset_tag_number,
+                revised_request = :revised_request,
+                date_received = :date_received,
+                date_validated    = :date_validated,
+                status        = :status
+            WHERE ticket_no   = :ticket_no
+        ");
+
+       $result = $statement->execute([
+            ':serial_number' => $_POST['serial_number'] ?? '',
+             ':asset_tag_number' => $_POST['asset_tag_number'] ?? '',
+              ':revised_request' => $_POST['revised_request'] ?? '',
+            ':date_received' => $_POST['date_received'] ?? '',
+            ':date_validated'    => date('Y-m-d H:i:s'),
+            ':status'        => 'VALIDATED',
+            ':ticket_no'     => $_POST['ticket_no']
+        ]);
+
+        if ($result) {
+            echo json_encode(["status" => "success", "message" => "Request approved successfully."]);
+        } else {
+            echo json_encode(["status" => "error", "message" => "Failed to update the database."]);
+        }
+
+    } catch (PDOException $e) {
+        echo json_encode(["status" => "error", "message" => "SQL Error: " . $e->getMessage()]);
+    }
+    
+    exit(); 
+}
+if (isset($_POST["operation"]) && $_POST["operation"] === "save_request") {
+    
+    if (empty($_POST['ticket_no'])) {
+        echo json_encode(["status" => "error", "message" => "Missing Ticket Number."]);
+        exit();
+    }
+
+    $status = !empty($_POST['status']) ? $_POST['status'] : null;
+    $ticket_no = $_POST['ticket_no'];
+    $currentDate = date('Y-m-d H:i:s'); 
+
+    $allowed_statuses = [
+        'PRINTED'   => 'date_printed',
+        'RECORDED'  => 'date_recorded',
+        'VERIFIED'  => 'date_verified',
+        'APPROVED'  => 'date_approved',
+        'COMPLETED' => 'date_completed'
+    ];
+
+    try {
+        $sql = "UPDATE asset_requests SET status = :status";
+        $params = [
+            ':status'    => $status,
+            ':ticket_no' => $ticket_no
+        ];
+
+        if (array_key_exists($status, $allowed_statuses)) {
+            $target_column = $allowed_statuses[$status];
+            
+            $posted_date = !empty($_POST[$target_column]) ? $_POST[$target_column] : $currentDate;
+            
+            $formatted_date = str_replace('T', ' ', $posted_date);
+
+            $sql .= ", {$target_column} = :target_date";
+            $params[':target_date'] = $formatted_date;
+        }
+
+        $sql .= " WHERE ticket_no = :ticket_no";
+
+        $statement = $connection->prepare($sql);
+        $result = $statement->execute($params);
+
+        if ($result) {
+    
+            if ($status === 'RECORDED') {
+                $statement2 = $connection->prepare("
+                    INSERT INTO tbl_notif (
+                        ticket_no, store, itsup, notif_data, notif_val, notif_date
+                    ) VALUES (
+                        :ticket_no, :store, :itsup, :notif_data, :notif_val, :notif_date
+                    )
+                ");
+
+                $statement2->execute([
+                    ':ticket_no'  => $ticket_no,
+                    ':store'      => $_SESSION["str_num"] ?? "",
+                    ':itsup'      => $_SESSION["tech_id"] ?? "",
+                    ':notif_data' => "Fixed asset " . $ticket_no . " has been already validated and recorded and waiting for verification",
+                    ':notif_val'  => '7',
+                    ':notif_date' => $currentDate
+                ]);
+            }
+
+            echo json_encode(["status" => "success", "message" => "Request updated successfully."]);
+        } else {
+            echo json_encode(["status" => "error", "message" => "Failed to update the database."]);
+        }
+
+    } catch (PDOException $e) {
+        echo json_encode(["status" => "error", "message" => "SQL Error: " . $e->getMessage()]);
+    }
+    
+    exit(); 
+}
+
+
+
+if (isset($_POST["operation"]) && $_POST["operation"] === "add_remarks_only") {
+    
+    header('Content-Type: application/json');
+    
+    if (empty($_POST['ticket_no'])) {
+        echo json_encode(["status" => "error", "message" => "Missing Ticket Number."]);
+        exit();
+    }
+    if (empty($_POST['remarks_adtech'])) {
+        echo json_encode(["status" => "error", "message" => "Remarks details cannot be empty."]);
+        exit();
+    }
+
+    try {
+        $connection->beginTransaction();
+
+        $ticketNo = $_POST['ticket_no'];
+        $currentDate = date('Y-m-d H:i:s');
+        $techId = $_SESSION['tech_id'] ?? $_POST['tech_id'] ?? 'Unknown Tech';
+        $remarksNote = trim($_POST['remarks_adtech']);
+
+        $statementRemarks = $connection->prepare("
+            INSERT INTO fixed_asset_remarks (
+                ticket_no, remarks_note, remarks_by, date_remarks
+            ) VALUES (
+                :ticket_no, :remarks_note, :remarks_by, :date_remarks
+            )
+        ");
+
+        $resultRemarks = $statementRemarks->execute([
+            ':ticket_no'    => $ticketNo,
+            ':remarks_note' => $remarksNote,
+            ':remarks_by'   => $techId,
+            ':date_remarks' => $currentDate
+        ]);
+
+        $statementNotif = $connection->prepare("
+            INSERT INTO tbl_notif (
+                ticket_no, store, itsup, notif_data, notif_val, notif_date
+            ) VALUES (
+                :ticket_no, :store, :itsup, :notif_data, :notif_val, :notif_date
+            )
+        ");
+
+        $resultNotif = $statementNotif->execute([
+            ':ticket_no'  => $ticketNo,
+            ':store'      => $_SESSION["str_num"] ?? "",
+            ':itsup'      => $_SESSION["tech_id"] ?? "",
+            ':notif_data' => "Admin Support added a remarks on fixed asset ticket no " . $ticketNo,
+            ':notif_val'  => '10',
+            ':notif_date' => $currentDate
+        ]);
+
+        if ($resultRemarks && $resultNotif) {
+            $connection->commit();
+            echo json_encode(["status" => "success", "message" => "Remarks saved successfully."]);
+        } else {
+            $connection->rollBack();
+            echo json_encode(["status" => "error", "message" => "SQL Error: Saving remarks failed."]);
+        }
+
+    } catch (PDOException $e) {
+        if ($connection->inTransaction()) {
+            $connection->rollBack();
+        }
+        echo json_encode(["status" => "error", "message" => "Database error: " . $e->getMessage()]);
+        exit();
+    }
+}
 // if($_POST["operation"] == "Save and Reply")
 //  { 
 //      $optbrval = $_POST["store"];
@@ -879,16 +1070,7 @@ if ($_POST["operation"] == "Save and Reply") {
             }
         }
 
-        // Optional Clean-up Logic
-        if (!empty($result) && $is_transfer == 0) {
-            $deleteTransfer = $connection->prepare("
-                DELETE FROM tbl_reports_transfer_logs
-                WHERE ticket_no = :ticket_no
-            ");
-            $deleteTransfer->execute(array(
-                ':ticket_no' => $_POST["ticket_no"]
-            ));
-        }
+      
         $connection->commit();
 
         header('Content-Type: application/json; charset=utf-8');
@@ -912,6 +1094,8 @@ if ($_POST["operation"] == "Save and Reply") {
         exit;
     }
 }
+
+
 
 
  if($_POST["operation"] == "changepass")

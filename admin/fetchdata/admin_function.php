@@ -1008,7 +1008,7 @@ FROM
 WHERE
 	notif_val IN ('1','2','3') AND reports.status NOT IN ('ON PROCESS','Assigned')
 ORDER BY
-	notif_date ASC";
+	notif_date DESC";
 	$statement = $this->connection->prepare($query);
 	$statement-> execute();
 	$result = $statement->fetchAll();
@@ -1018,7 +1018,8 @@ ORDER BY
 		$fetchdata[] = array(
 			'notif_data' => $row["notif_data"],
 			'ticket_no' => $row["ticket_no"],
-			'notif_val' => $row["notif_val"]
+			'notif_val' => $row["notif_val"],
+			'notif_date' => $row["notif_date"]
 
 		);
 	}	

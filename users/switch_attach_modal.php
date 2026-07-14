@@ -1,39 +1,188 @@
 <style>
-    .modal-body {
-    overflow-x: hidden;
+
+#ViewFile .modal-dialog{
+  max-width: 1100px; /* desktop width */
+  margin: 1.25rem auto;
 }
 
-.modal-dialog-scrollable {
+#ViewFile .modal-content{
+  border-radius: 16px;
+  border: 1px solid rgba(0,0,0,0.08);
+  overflow: hidden;
+}
+
+/* Header with hierarchy */
+#ViewFile .modal-header{
+  background: linear-gradient(180deg, rgba(79,70,229,0.08), rgba(255,255,255,0));
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+  padding: 16px 18px;
+}
+
+#ViewFile_header{
+  font-weight: 700;
+  font-size: 18px;
+  margin: 0;
+}
+
+/* Body spacing */
+#ViewFile .modal-body{
+  padding: 16px 18px;
+}
+
+/* Section cards inside modal */
+.modal-section{
+  background: rgba(255,255,255,0.75);
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.04);
+}
+
+/* Section title */
+.modal-section-title{
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: .6px;
+  text-transform: uppercase;
+  color: rgba(0,0,0,0.55);
   display: flex;
-  flex-direction: column;
-  max-height: 100vh;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
 }
 
-.modal-dialog-scrollable .modal-content {
-  flex-grow: 1;
+.modal-section-title:before{
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  background: rgba(79,70,229,0.55);
+}
+
+/* Make inputs feel “premium” */
+#ViewFile .form-control,
+#ViewFile select,
+#ViewFile textarea{
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.12);
+  background: white;
+}
+
+#ViewFile label{
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: .4px;
+  text-transform: uppercase;
+  color: #213456;
+}
+
+/* Comment thread container: scrollable, not endless */
+.container_remarks{
+  max-height: 480px;
+  overflow: auto;
+  padding-right: 6px;
+}
+
+/* Thread message card look (works with your existing markup) */
+#remarks_view .msg-item{
+  border: 1px solid rgba(0,0,0,0.08);
+  background: rgba(255,255,255,0.90);
+  border-radius: 14px;
+  padding: 12px 12px;
+  margin-bottom: 10px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.04);
+}
+
+#remarks_view .msg-head{
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 6px;
 }
 
-.modal-dialog-scrollable .modal-body {
-  overflow-y: auto;
-  flex-grow: 1;
+#remarks_view .msg-name{
+  font-weight: 800;
+  font-size: 14px;
 }
 
-.modal-dialog-scrollable .modal-header {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  background-color: #fff;
+#remarks_view .msg-meta{
+  font-size: 12px;
+  color: rgba(0,0,0,0.55);
 }
 
-.modal-dialog-scrollable .modal-footer {
+#remarks_view .msg-body{
+  font-size: 13px;
+  color: rgba(0,0,0,0.80);
+  line-height: 1.35;
+  white-space: pre-wrap;
+}
+
+/* Sticky footer actions (great on mobile) */
+#ViewFile .modal-footer{
+  border-top: 1px solid rgba(0,0,0,0.08);
+  background: rgba(255,255,255,0.92);
   position: sticky;
   bottom: 0;
-  z-index: 10;
-  padding: 10px;
-  background-color: #f0f0f0;
-  border-top: 1px solid #ddd;
+  z-index: 5;
+  padding: 12px 14px;
+}
+
+
+label {
+  font-size: 11px;
+  font-weight: 900;
+  color: #e1ad01; 
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+input.form-control,
+textarea.form-control {
+  color: #6c757d !important;
+  background-color: #fcfcfc; !important; 
+  border: black !important; 
+  border-bottom: 1px solid #E1AD01 !important; 
+  resize: none !important; 
+  margin-bottom: -10px;
+}
+
+select.custom-select-placeholder.placeholder-active,
+textarea.form-control.custom-select-placeholder:placeholder-shown {
+  color: red !important;
+  background-color: #fcfcfc; !important;
+}
+
+textarea.form-control.custom-select-placeholder::placeholder {
+  color: red !important;
+  opacity: 0.7;
+}
+
+select.custom-select-placeholder.has-value,
+textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
+  color: #0a0a0a !important; 
+  border-bottom: 1px solid #E1AD01 !important; 
+  background-color: #fcfcfc; !important;
+}
+
+.form-control,
+.form-control-sm,
+input.form-control,
+select.form-control,
+textarea.form-control {
+  background: #fff !important;
+  color: black !important;
+  border-bottom: 1px solid #E1AD01 !important; 
+}
+
+.form-control:focus,
+.form-control-sm:focus,
+input.form-control:focus,
+select.form-control:focus,
+textarea.form-control:focus {
+  box-shadow: 0 10px 18px rgba(17,24,39,.06);
+  border-color: 2px solid rgba(114, 89, 21, 0.94) !important;
 }
 
 </style>
@@ -42,12 +191,14 @@
 <div class="modal fade" id="ViewFile" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="ViewFileLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-scrollable">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="ViewFileLabel">Attached Files</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
+      <div class="modal-header"
+            style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: white; border-top-left-radius: 15px; border-top-right-radius: 15px;">
+            <h5 class="modal-title font-weight-bold" id="createReportModalLabel"><i class="fa fa-file-image-o" aria-hidden="true"></i> Attached Files</h5>
+            <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close"
+              style="opacity: 0.8; outline: none; background: none; border: none;">
+              <span aria-hidden="true" style="font-size: 28px;">&times;</span>
+            </button>
+          </div>
       <div class="modal-body col-12">
         <input type="hidden" id="ticketxxx" name="ticketxxx">
       <div id="images" name="images"> </div>
@@ -93,7 +244,7 @@ $('#save_file').click(function () {
             success: function (data) {
                 // alert(response);
         $('#ViewFile').modal('hide');
-        $('#ticket_modal').modal('show');
+        $('#ViewFile').modal('show');
         
 
             }
@@ -151,7 +302,7 @@ uploadField.addEventListener('change', function() {
 $('#cls_view').click(function (e) { 
     e.preventDefault();
     $('#ViewFile').modal('hide');
-    $('#ticket_modal').modal('show');
+    $('#ViewFile').modal('show');
 
     
 });

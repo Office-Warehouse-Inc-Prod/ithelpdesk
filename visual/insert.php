@@ -307,7 +307,7 @@ else{
   $reasgnres= $reasgn->execute(
     array(
       ':ticket_no' => $_POST["ticket_no"],
-      ':date_created' => date('Y-m-d H:i:s',strtotime($_POST["date_created"])),
+      ':date_created' => date('Y-m-d H:i:s'),
       ':itsup' => $_POST["it_num"],
       ':nw_sup' => $_POST["itsup"],
       ':r_remarks' => $_POST["remarks"],
@@ -834,26 +834,21 @@ if ($_POST["operation"] == "Save and Reply") {
 
             if ($existingTransfer) {
                 $updateTransfer = $connection->prepare("
-                    UPDATE tbl_reports_transfer_logs
-                    SET store = :store,
-                        itsup = :itsup,
-                        cat_id = :cat_id,
-                        sub_id = :sub_id,
-                        status = :status,
-                        remarks = :remarks,
-                        updated_at = :updated_at
-                    WHERE ticket_no = :ticket_no
+                   INSERT INTO tbl_reports_transfer_logs
+                    (ticket_no, store, itsup, cat_id, sub_id, status, remarks, created_by, created_at)
+                    VALUES
+                    (:ticket_no, :store, :itsup, :cat_id, :sub_id, :status, :remarks, :created_by, :created_at)
                 ");
-
                 $updateTransfer->execute(array(
-                    ':ticket_no'  => $_POST["ticket_no"],
+                   ':ticket_no'  => $_POST["ticket_no"],
                     ':store'      => $_POST["store"],
                     ':itsup'      => $_POST["itsup"],
                     ':cat_id'     => $_POST["cat"],
                     ':sub_id'     => $_POST["sub_num"],
                     ':status'     => $_POST["status"],
                     ':remarks'    => $_POST["remarks"],
-                    ':updated_at' => date('Y-m-d H:i:s')
+                    ':created_by' => $_POST["u_id"],
+                    ':created_at' => date('Y-m-d H:i:s')
                 ));
             } else {
                 $insertTransfer = $connection->prepare("
@@ -877,16 +872,7 @@ if ($_POST["operation"] == "Save and Reply") {
             }
         }
 
-        // Optional Clean-up Logic
-        if (!empty($result) && $is_transfer == 0) {
-            $deleteTransfer = $connection->prepare("
-                DELETE FROM tbl_reports_transfer_logs
-                WHERE ticket_no = :ticket_no
-            ");
-            $deleteTransfer->execute(array(
-                ':ticket_no' => $_POST["ticket_no"]
-            ));
-        }
+      
         $connection->commit();
 
         header('Content-Type: application/json; charset=utf-8');

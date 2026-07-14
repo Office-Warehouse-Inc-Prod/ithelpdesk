@@ -546,12 +546,12 @@ textarea.form-control:focus {
             </div>
           </div>
           <div class="d-flex align-items-center gap-3">
-            <form action="testcalendar.php" method="POST" class="m-0">
+            <!--<form action="testcalendar.php" method="POST" class="m-0">
               <input type="hidden" name="u_id" value="<?php echo $_SESSION['user_id']; ?>">
               <button type="submit" id="showCalendarBtn" class="btn">
                 <i class="fas fa-calendar-alt me-2"></i>CALENDAR
               </button>
-            </form>
+            </form>-->
             <div class="form-check form-switch float-right m-3">
               <input class="form-check-input" style="margin-left:-50px;" type="checkbox" id="darkModeToggle">
               <label class="form-check-label text-dark" for="darkModeToggle">Dark Mode</label>
@@ -1101,6 +1101,7 @@ Start of Create Department Report Modal
                     <option value="6">VISUAL</option>
                     <option value="11">H.R</option>
                     <option value="13">ACCOUNTS PAYABLE</option>
+                      <option value="15">TREASURY</option>
                     <option value="16">ACCOUNT RECEIVABLE</option>
                   </select>
                 </div>

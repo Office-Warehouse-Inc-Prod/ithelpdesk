@@ -318,13 +318,12 @@ $old_dept = trim($_POST['old_dept'] ?? '');
 
   if ($old_dept !== '' && $old_dept !== $new_dept) {
       $reasgn = $connection->prepare("
-          INSERT INTO tbl_reassigned (ticket_no, date_created, itsup, deptsel, f_deptsel, r_remarks, date_rasigned) 
-          VALUES (:ticket_no, :date_created, :itsup, :deptsel, :f_deptsel, :r_remarks, :date_rasigned)
+          INSERT INTO tbl_reassigned (ticket_no,  itsup, deptsel, f_deptsel, r_remarks, date_rasigned) 
+          VALUES (:ticket_no,  :itsup, :deptsel, :f_deptsel, :r_remarks, :date_rasigned)
       ");
       $reasgn->execute(
         array(
           ':ticket_no'     => $_POST["ticket_no"],
-          ':date_created'  => date('Y-m-d H:i:s', strtotime($_POST["date_created"])),
           ':itsup'         => $old_dept,
           ':deptsel'       => $_POST["deptsel"] ?? '0',
           ':f_deptsel'     => $new_dept,
@@ -764,13 +763,12 @@ if ($_POST["operation"] == "New_Report") {
    $old_dept = trim($_POST['old_dept'] ?? '');
     if ($old_dept !== '' && $old_dept !== $dept) {
         $reasgn = $connection->prepare("
-            INSERT INTO tbl_reassigned (ticket_no, date_created, itsup, deptsel, f_deptsel, r_remarks, date_rasigned) 
-            VALUES (:ticket_no, :date_created, :itsup, :deptsel, :f_deptsel, :r_remarks, :date_rasigned)
+            INSERT INTO tbl_reassigned (ticket_no,  itsup, deptsel, f_deptsel, r_remarks, date_rasigned) 
+            VALUES (:ticket_no, :itsup, :deptsel, :f_deptsel, :r_remarks, :date_rasigned)
         ");
 
         $reasgn->execute(array(
             ':ticket_no'     => $ticket_no,
-            ':date_created'  => $date_created, 
             ':itsup'         => $old_dept,    
             ':deptsel'       => $_POST["deptsel"] ?? '0',
             ':f_deptsel'     => $dept,        

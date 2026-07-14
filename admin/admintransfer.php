@@ -367,7 +367,6 @@ hr{
    Navy #121C31 + Yellow #EAAA00
    Works with Bootstrap + DataTables + Select2
    ========================= */
-
 :root{
   --navy:#121C31;
   --navy2:#1a2a4a;
@@ -398,18 +397,15 @@ body {
 /* container spacing */
 .container.mt-3{ padding-top: 10px; padding-bottom: 24px; }
 
-
-
 /* ===== Top navbar (if applicable) =====  */
 .navbar, header, .topbar, .navbar-default{
-  
-    background-color: #213456 !important;
+  background-color: #213456 !important;
   border-color: rgba(255,255,255,.10) !important;
 }
 .navbar a, .navbar-brand, .navbar-nav > li > a,
 .navbar i, .navbar .fa, .navbar .fas{
   color: #fff !important;
-   font-weight: 600;
+  font-weight: 600;
 }
 .navbar-nav > li.active > a,
 .navbar-nav > li > a:hover{
@@ -418,7 +414,7 @@ body {
 .navbar-nav > li.active > a{
   border-bottom: 3px solid var(--yellow);
 }
-.table-wrap{
+.table-wrap {
   background: var(--card);
   border: 1px solid var(--line);
   border-radius: var(--radius);
@@ -426,8 +422,7 @@ body {
   padding: 14px;
 }
 
-/* If you can't add wrapper div, style DataTables container instead */
-.dataTables_wrapper{
+.dataTables_wrapper {
   background: var(--card);
   border: 1px solid var(--line);
   border-radius: var(--radius);
@@ -435,95 +430,74 @@ body {
   padding: 14px;
 }
 
-/* DataTables header controls */
 .dataTables_wrapper .dataTables_length label,
 .dataTables_wrapper .dataTables_filter label,
-.dataTables_wrapper .dataTables_info{
+.dataTables_wrapper .dataTables_info {
   color: var(--muted) !important;
   font-weight: 600;
 }
 
-/* Search + length */
-.dataTables_wrapper .dataTables_filter input,
-.dataTables_wrapper .dataTables_length select{
-  background: #fff !important;
-  border: 1px solid var(--line) !important;
-  border-radius: 12px !important;
-  color: var(--text) !important;
-  padding: 8px 10px !important;
-  outline: none !important;
-}
-
 .dataTables_wrapper .dataTables_filter input:focus,
-.dataTables_wrapper .dataTables_length select:focus{
+.dataTables_wrapper .dataTables_length select:focus {
   box-shadow: var(--focus) !important;
   border-color: rgba(234,170,0,.45) !important;
 }
 
-/* Pagination */
-.dataTables_wrapper .dataTables_paginate .paginate_button{
+.dataTables_wrapper .dataTables_paginate .paginate_button {
   border-radius: 12px !important;
   border: 1px solid transparent !important;
   color: var(--text) !important;
   background: transparent !important;
 }
-.dataTables_wrapper .dataTables_paginate .paginate_button:hover{
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
   border-color: var(--line) !important;
   background: #F8FAFC !important;
 }
-.dataTables_wrapper .dataTables_paginate .paginate_button.current{
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
   background: rgba(234,170,0,.18) !important;
   border-color: rgba(234,170,0,.35) !important;
 }
 
-/* ===== Table modern look ===== */
-table.dataTable{
-  border-collapse: separate !important;
-  border-spacing: 0 10px !important; /* row gaps */
+/* Base table configurations */
+table.dataTable {
+  border-collapse: collapse !important; 
+  width: 100% !important;
+  border: none !important; /* Strips external table wrapper border */
 }
 
-table.dataTable thead th{
+/* Header line config */
+table.dataTable thead th {
   color: white !important;
   font-weight: 900;
   letter-spacing: .04em;
   text-transform: uppercase;
-  border: none !important;
-  background: #4667a0!important;
+  background: #5273ad !important;
   padding: 14px 12px !important;
+  /* Strip all borders except bottom horizontal line */
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-bottom: 2px solid #213456 !important; 
 }
 
-/* “Floating rows” on light mode */
-table.dataTable tbody tr{
+table.dataTable tbody tr {
   background: #ffffff !important;
-  border: 1px solid var(--line) !important;
   box-shadow: 0 10px 22px rgba(17,24,39,.08);
-  border-radius: 14px;
-  overflow: hidden;
 }
 
-table.dataTable tbody td{
-  border-top: 1px solid transparent !important;
-  border-bottom: 1px solid transparent !important;
+table.dataTable tbody td {
   color: rgba(17,24,39,.85) !important;
   padding: 14px 12px !important;
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-bottom: 1px solid #213456 !important;
 }
 
-table.dataTable tbody tr:hover{
-  transform: translateY(-1px);
+table.dataTable tbody tr:hover {
   transition: .15s ease;
   background: #F8FAFF !important;
 }
-
-/* Fix the rounded row corners */
-table.dataTable tbody tr td:first-child{
-  border-top-left-radius: 14px;
-  border-bottom-left-radius: 14px;
-}
-table.dataTable tbody tr td:last-child{
-  border-top-right-radius: 14px;
-  border-bottom-right-radius: 14px;
-}
-
 /* ===== Modal (clean light) ===== */
 .modal-content{
   border: 1px solid var(--line) !important;
@@ -595,7 +569,7 @@ table.dataTable tbody tr td:last-child{
   border-radius: var(--radius-sm);
   padding: 12px;
   max-height: 280px;
-    box-shadow: 0 20px 60px rgba(123, 128, 44, 0.605);
+  box-shadow: 0 20px 60px rgba(123, 128, 44, 0.605);
   overflow: auto;
 }
 
@@ -609,7 +583,6 @@ table.dataTable tbody tr td:last-child{
   margin-bottom: 10px;
   box-shadow: 0 10px 18px rgba(17,24,39,.06);
 }
-
 
 hr{ border-top: 1px solid var(--line) !important; }
 
@@ -656,11 +629,12 @@ hr{ border-top: 1px solid var(--line) !important; }
   background: rgba(234,170,0,.16) !important;
   color: var(--text) !important;
 }
+
 /* --- Buttons --- */
 .btn {  
     background-color: white !important;
     border: 2px solid #213456;
-      border-color: var(--gold-accent);
+    border-color: var(--gold-accent);
     font-weight: 700;
     color: #213456;
 }
@@ -693,13 +667,12 @@ hr{ border-top: 1px solid var(--line) !important; }
   border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb {
-background: linear-gradient(135deg, #837031, #E1AD01);
+  background: linear-gradient(135deg, #837031, #E1AD01);
   border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(135deg, #837031, #E1AD01);
 }
-
 
 .owi-navbar {
   background-color: #213456 !important;
@@ -748,7 +721,6 @@ background: linear-gradient(135deg, #837031, #E1AD01);
   margin-right: 8px;
 }
 
-
 .owi-navbar .dropdown-item:hover {
   background-color: #54699e;
   color: #fff;
@@ -788,7 +760,6 @@ background: linear-gradient(135deg, #837031, #E1AD01);
   filter: brightness(0) invert(1);
 }
 
-/* Modern Underline Animation */
 /* Modern Underline Animation Refined */
 .owi-navbar .nav-item {
   position: relative;
@@ -810,7 +781,7 @@ background: linear-gradient(135deg, #837031, #E1AD01);
   position: absolute;
   width: 0;
   height: 3px;
-  bottom: 5px; /* Lifted slightly from the bottom */
+  bottom: 5px; 
   left: 50%;
   background-color: var(--primary-color);
   transition: width 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), left 0.3s ease;
@@ -904,29 +875,29 @@ textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
   background-color: transparent !important;
 }
 
-  /* Inputs / Select / Textarea */
-  .form-control,
-  .form-control-sm,
-  select.form-control,
-  textarea.form-control {
-    background: #fff !important;
-    border: 1px solid var(--line) !important;
-    color: var(--text) !important;
-    border-radius: 14px !important;
-  }
+/* Inputs / Select / Textarea */
+.form-control,
+.form-control-sm,
+select.form-control,
+textarea.form-control {
+  background: #fff !important;
+  border: 1px solid var(--line) !important;
+  color: var(--text) !important;
+  border-radius: 14px !important;
+}
 
-  .form-control:focus,
-  .form-control-sm:focus,
-  select.form-control:focus,
-  textarea.form-control:focus {
-    box-shadow: var(--focus) !important;
-    border-color: rgba(234,170,0,.45) !important;
-  }
+.form-control:focus,
+.form-control-sm:focus,
+select.form-control:focus,
+textarea.form-control:focus {
+  box-shadow: var(--focus) !important;
+  border-color: rgba(234,170,0,.45) !important;
+}
 
-  .form-control[readonly],
-  textarea[readonly] { opacity: .95; }
+.form-control[readonly],
+textarea[readonly] { opacity: .95; }
 
-  .form-group { margin-bottom: 14px !important; }
+.form-group { margin-bottom: 14px !important; }
 </style>
       </head>
 <div class="container mt-3">

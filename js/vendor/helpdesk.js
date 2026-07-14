@@ -109,48 +109,64 @@ function gtsub_id() {
 }
 
 function slct_sub() {
-  $("#sub").change(function () {
-    if ($(this).val() == "75" || $(this).val() == "76" || $(this).val() == "77" || $(this).val() == "78" ||
-    $(this).val() == "79" || $(this).val() == "80" || $(this).val() == "81" ) 
-    {
-       $(".hide_isp").show();
+  var $sub = $("#sub");
+  if (!$sub.length) {
+    return;
+  }
+
+  var lblIsp = document.getElementById("lbl_isp");
+  var lblRefNo = document.getElementById("lbl_refNo");
+  var lblDtRefNo = document.getElementById("lbl_DtRefNo");
+
+  $sub.change(function () {
+    var value = $(this).val();
+    var needsIsp = ["75", "76", "77", "78", "79", "80", "81"].includes(value);
+
+    if (needsIsp) {
+      $(".hide_isp").show();
       $("#isp").attr("required", "true");
-      document.getElementById("lbl_isp").className = "";
-      document.getElementById("lbl_refNo").className = "";
-      document.getElementById("lbl_DtRefNo").className = "";
-      // document.getElementById("ico_cal3").className = '';
-      // alert('data');
+      if (lblIsp) lblIsp.className = "";
+      if (lblRefNo) lblRefNo.className = "";
+      if (lblDtRefNo) lblDtRefNo.className = "";
     } else {
-      // alert('not 59');
       $(".hide_isp").hide();
       $("#date_closed").removeAttr("required");
       $("#date_closed").removeAttr("data-error");
-      document.getElementById("lbl_isp").className = "hidden";
-      document.getElementById("lbl_refNo").className = "hidden";
-      document.getElementById("lbl_DtRefNo").className = "hidden";
-      // document.getElementById("ico_cal3").className = 'hidden';
+      if (lblIsp) lblIsp.className = "hidden";
+      if (lblRefNo) lblRefNo.className = "hidden";
+      if (lblDtRefNo) lblDtRefNo.className = "hidden";
     }
   });
-  $("#sub").trigger("change");
+
+  $sub.trigger("change");
 }
 
 function unilayout_netshowmodalform(){
-  if ($('#sub_num').val() == "75" || $('#sub_num').val() == "76" || $('#sub_num').val() == "77" || $('#sub_num').val() == "78" ||
-    $('#sub_num').val() == "79" || $('#sub_num').val() == "80" || $('#sub_num').val() == "81" ) 
-  {
+  var lblIsp = document.getElementById("lbl_isp");
+  var lblRefNo = document.getElementById("lbl_refNo");
+  var lblDtRefNo = document.getElementById("lbl_DtRefNo");
+  var subNum = $("#sub_num");
+
+  if (!subNum.length) {
+    return;
+  }
+
+  var needsIsp = ["75", "76", "77", "78", "79", "80", "81"].includes(subNum.val());
+
+  if (needsIsp) {
       $(".hide_isp").show();
       $("#isp").attr("required", "true");
-      document.getElementById("lbl_isp").className = "";
-      document.getElementById("lbl_refNo").className = "";
-      document.getElementById("lbl_DtRefNo").className = "";
+      if (lblIsp) lblIsp.className = "";
+      if (lblRefNo) lblRefNo.className = "";
+      if (lblDtRefNo) lblDtRefNo.className = "";
   }
   else{
      $(".hide_isp").hide();
       $("#date_closed").removeAttr("required");
       $("#date_closed").removeAttr("data-error");
-      document.getElementById("lbl_isp").className = "hidden";
-      document.getElementById("lbl_refNo").className = "hidden";
-      document.getElementById("lbl_DtRefNo").className = "hidden";
+      if (lblIsp) lblIsp.className = "hidden";
+      if (lblRefNo) lblRefNo.className = "hidden";
+      if (lblDtRefNo) lblDtRefNo.className = "hidden";
   }
 }
 

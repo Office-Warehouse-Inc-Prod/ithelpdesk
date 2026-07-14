@@ -226,13 +226,12 @@
         "columns": [
 
           { 
-        title: "Edit", 
+        title: "ACTION", 
         data: null, 
         render: function(data, type, row) {
             return `
              <div style="display: flex; gap: 5px;">
                 <button class='btn btn-danger btn-sm' name='update' id='dtbsecond'><i class='fas fa-edit'></i></button>
-                 <button class='btn btn-primary btn-sm print-btn' data-id='${row.ticket_no}'><i class='fas fa-print'></i></button>
                  </div>
              
             `;
@@ -891,13 +890,10 @@
 $(document).on('click', '.print-btn', function() {
     let ticket_no = $(this).data('id');
     
-    // 1. Reset the form fields to clear previous data
     $('#pdfForm')[0].reset();
     
-    // 2. Set the hidden input value
     $('#modal_ticket_no').val(ticket_no);
     
-    // 3. Show the modal
     $('#dataModal').modal('show');
 });
 </script>

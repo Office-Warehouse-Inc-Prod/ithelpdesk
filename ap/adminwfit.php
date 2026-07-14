@@ -246,104 +246,86 @@ $con1 = new dbconfig();
   /* container spacing */
   .container.mt-3 { padding-top: 10px; padding-bottom: 24px; }
 
-  /* ===== Wrapper / Card around table ===== */
-  #new_rep_table { width:100% !important; }
+#new_rep_table { width:100% !important; }
 
-  .table-wrap {
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    padding: 14px;
-  }
+.table-wrap {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px;
+}
 
-  /* If you can't add wrapper div, style DataTables container instead */
-  .dataTables_wrapper {
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    padding: 14px;
-  }
 
-  /* DataTables header controls */
-  .dataTables_wrapper .dataTables_length label,
-  .dataTables_wrapper .dataTables_filter label,
-  .dataTables_wrapper .dataTables_info {
-    color: var(--muted) !important;
-    font-weight: 600;
-  }
+.dataTables_wrapper {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px;
+}
 
-  .dataTables_wrapper .dataTables_filter input:focus,
-  .dataTables_wrapper .dataTables_length select:focus {
-    box-shadow: var(--focus) !important;
-    border-color: rgba(234,170,0,.45) !important;
-  }
+.dataTables_wrapper .dataTables_length label,
+.dataTables_wrapper .dataTables_filter label,
+.dataTables_wrapper .dataTables_info {
+  color: var(--muted) !important;
+  font-weight: 600;
+}
 
-  /* Pagination */
-  .dataTables_wrapper .dataTables_paginate .paginate_button {
-    border-radius: 12px !important;
-    border: 1px solid transparent !important;
-    color: var(--text) !important;
-    background: transparent !important;
-  }
-  .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
-    border-color: var(--line) !important;
-    background: #F8FAFC !important;
-  }
-  .dataTables_wrapper .dataTables_paginate .paginate_button.current {
-    background: rgba(234,170,0,.18) !important;
-    border-color: rgba(234,170,0,.35) !important;
-  }
+.dataTables_wrapper .dataTables_filter input:focus,
+.dataTables_wrapper .dataTables_length select:focus {
+  box-shadow: var(--focus) !important;
+  border-color: rgba(234,170,0,.45) !important;
+}
 
-  /* ===== Table modern look ===== */
-  table.dataTable {
-    border-collapse: separate !important;
-    border-spacing: 0 10px !important; /* row gaps */
-  }
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+  border-radius: 12px !important;
+  border: 1px solid transparent !important;
+  color: var(--text) !important;
+  background: transparent !important;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+  border-color: var(--line) !important;
+  background: #F8FAFC !important;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+  background: rgba(234,170,0,.18) !important;
+  border-color: rgba(234,170,0,.35) !important;
+}
 
-  table.dataTable thead th {
-    color: white !important;
-    font-weight: 900;
-    letter-spacing: .04em;
-    text-transform: uppercase;
-    border: none !important;
-    background: #5273ad !important;
-    padding: 14px 12px !important;
-  }
+table.dataTable {
+  border-collapse: collapse !important; 
+  width: 100% !important;
+}
 
-  /* “Floating rows” on light mode */
-  table.dataTable tbody tr {
-    background: #ffffff !important;
-    border: 1px solid var(--line) !important;
-    box-shadow: 0 10px 22px rgba(17,24,39,.08);
-    border-radius: 14px;
-    overflow: hidden;
-  }
+table.dataTable thead th {
+  color: white !important;
+  font-weight: 900;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  border: none !important;
+  border-bottom: 2px solid #213456 !important; 
+  background: #5273ad !important;
+  padding: 14px 12px !important;
+}
 
-  table.dataTable tbody td {
-    border-top: 1px solid transparent !important;
-    border-bottom: 1px solid transparent !important;
-    color: rgba(17,24,39,.85) !important;
-    padding: 14px 12px !important;
-  }
 
-  table.dataTable tbody tr:hover {
-    transform: translateY(-1px);
-    transition: .15s ease;
-    background: #F8FAFF !important;
-  }
+table.dataTable tbody tr {
+  background: #ffffff !important;
+  box-shadow: 0 10px 22px rgba(17,24,39,.08);
+}
 
-  /* Fix the rounded row corners */
-  table.dataTable tbody tr td:first-child {
-    border-top-left-radius: 14px;
-    border-bottom-left-radius: 14px;
-  }
-  table.dataTable tbody tr td:last-child {
-    border-top-right-radius: 14px;
-    border-bottom-right-radius: 14px;
-  }
+table.dataTable tbody td {
+  border-top: none !important;
+  border-bottom: 1px solid #213456 !important;
+  color: rgba(17,24,39,.85) !important;
+  padding: 14px 12px !important;
+}
 
+table.dataTable tbody tr:hover {
+  transition: .15s ease;
+  background: #F8FAFF !important;
+}
   /* ===== Modal (clean light) ===== */
   .modal-content {
     border: 1px solid var(--line) !important;
