@@ -148,6 +148,7 @@ public function fathist() {
                 ar.serial_number, 
                 ar.asset_tag_number, 
                 ar.purpose_of_request, 
+				  ar.technical_workoutput, 
                 it.it_desc,
                 it.itsup,          
                 ar.date_received, 
@@ -175,6 +176,7 @@ public function fathist() {
                 'serial_number'=> $row["serial_number"],
                 'asset_tag_number' => $row["asset_tag_number"],
                 'purpose_of_request' => $row["purpose_of_request"],
+				   'technical_workoutput' => $row["technical_workoutput"],
                 'it_desc' => $row["it_desc"],
 				'noted_by_desc' => $row["noted_by_desc"],
                 'date_received' => $row["date_received"],    
@@ -208,7 +210,7 @@ public function faprintingthist() {
             LEFT JOIN reports r ON ar.ticket_no = r.ticket_no
             LEFT JOIN users u ON r.userId = u.id
 			  LEFT JOIN it_tech itt ON ar.noted_by = itt.itsup
-            LEFT JOIN tbl_branch b ON r.store = b.str_num  WHERE ar.status = 'VALIDATED'   ORDER BY ar.created_at ASC";
+            LEFT JOIN tbl_branch b ON r.store = b.str_num  WHERE ar.status = 'VERIFIED'   ORDER BY ar.created_at ASC";
         $statement = $this->connection->prepare($query);
         $statement->execute();
         $result = $statement->fetchAll();

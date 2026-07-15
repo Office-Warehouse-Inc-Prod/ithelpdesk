@@ -159,32 +159,258 @@ textarea.form-control:focus {
 }
 
 .container_remarks {
-  max-height: 320px;
-  overflow-y: auto;
-  padding-right: 6px;
+    display: flex !important;
+    flex-direction: column;
+    max-height: 480px;
+    overflow-y: auto;
+    background-color: #f0f2f5 !important;
+    border: 1px solid #dee2e6;
+    border-radius: 12px;
+    padding: 15px;
+    margin-top: 10px;
+}
+
+.dv_msg {
+    display: block !important;
 }
 
 #remarks_view {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
 }
 
-.comment-item {
-  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-  border: 1px solid #e5e7eb;
-  border-left: 4px solid #E1AD01;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+#userModal .modal-dialog{
+  max-width: 1100px; 
+  margin: 1.25rem auto;
 }
 
-.comment-item .fw-bold {
-  color: #213456;
-  margin-bottom: 2px;
+#userModal .modal-content{
+  border-radius: 16px;
+  border: none;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
 }
 
-.comment-item .small {
-  color: #6b7280;
+#userModal .modal-header{
+    background-color: #213456;
+    color: #fff;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    border-bottom: 4px solid #E1AD01; 
+}
+
+#userModal_header{
+  font-weight: 700;
+  font-size: 18px;
+  margin: 0;
+}
+
+#userModal .modal-body{
+  padding: 16px 18px;
+}
+
+#userModal .modal-title {
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+}
+
+#userModal .input-group-text {
+    background-color: white;
+    border-right: none;
+    color: #213456;
+}
+
+#userModal .form-control {
+    border-left: none;
+    height: 45px;
+    border-radius: 0 8px 8px 0;
+}
+
+#userModal .form-control:focus {
+    border-color: #213456;
+    box-shadow: none;
+}
+
+#userModal .input-group:focus-within {
+    box-shadow: 0 0 0 0.2rem rgba(225, 173, 1, 0.25);
+    border-radius: 8px;
+}
+
+.m_col {
+    background: #ffffff;
+    padding: 2rem !important;
+    border-right: 1px solid #edf2f7;
+}
+
+.m_col label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #718096;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.m_col .form-control {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 0.6rem 0.75rem;
+    transition: all 0.2s ease;
+    background-color: #f8fafc;
+}
+
+.m_col .form-control:focus {
+    background-color: #fff;
+    border-color: #1C0770;
+    box-shadow: 0 0 0 3px rgba(28, 7, 112, 0.1);
+    outline: none;
+}
+
+.m_col textarea {
+    min-height: 80px;
+}
+
+#msg_thread {
+    padding: 1rem 1.5rem;
+    background: linear-gradient(to bottom, #ffffff, #99aac8);
+    height: 100%;
+}
+
+#addmsg {
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 1rem;
+    background: #ffffff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.chat-bubble {
+    max-width: 85%;
+    padding: 10px 14px;
+    border-radius: 18px;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    position: relative;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    word-wrap: break-word;
+}
+
+.chat-left {
+    align-self: flex-start;
+    background: #ffffff;
+    color: #1e293b;
+    border-bottom-left-radius: 4px;
+    border: 1px solid #e5e7eb;
+}
+
+.chat-right {
+    align-self: flex-end;
+    background: #1C0770;
+    color: #ffffff;
+    border-bottom-right-radius: 4px;
+}
+
+.msg-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    font-size: 0.7rem;
+    margin-bottom: 4px;
+}
+
+.chat-left .msg-meta {
+    color: #64748b;
+}
+
+.chat-right .msg-meta {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.chat-left .msg-meta-name {
+    color: #213456;
+    font-weight: bold;
+}
+
+.chat-right .msg-meta-name {
+    color: #ffffff;
+    font-weight: bold;
+}
+
+.btn-success {
+    background-color: #1C0770 !important;
+    border: none;
+    padding: 0.6rem 2rem;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: transform 0.2s ease;
+}
+
+.btn-success:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(28, 7, 112, 0.2);
+}
+
+.btn-danger {
+    background-color: #fff;
+    border: 1px solid #e2e8f0;
+    color: #e53e3e;
+    padding: 0.6rem 1.5rem;
+    font-weight: 600;
+    border-radius: 8px;
+}
+
+.btn-danger:hover {
+    background-color: #fff5f5;
+    color: #c53030;
+}
+
+#userModal .modal-footer{
+  border-top: 1px solid rgba(0,0,0,0.08);
+  background: rgba(255,255,255,0.92);
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  padding: 12px 14px;
+}
+
+@media (max-width: 991px){
+  #userModal .modal-dialog{
+    max-width: 96%;
+    margin: .75rem auto;
+  }
+
+  .container_remarks{
+    max-height: 350px;
+  }
+
+  #action, #btnClose{
+    width: 100%;
+  }
+}
+
+
+.year-picker-group {
+    flex: 1;
+    min-width: 300px; 
+}
+#showCalendarBtn {
+    background-color: #213456;
+    color: white;
+    border-radius: 8px;
+    padding: 8px 20px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+#showCalendarBtn:hover {
+    background-color: var(--owi-gold, #E1AD01);
+    color: #213456;
 }
 
 </style>
@@ -194,16 +420,16 @@ textarea.form-control:focus {
 <link rel="stylesheet" href="//cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css"/>
 <link rel="stylesheet" href="../assets/Date-Time-Picker-Bootstrap-4/src/sass/bootstrap-datetimepicker-build.css" />
 <script src="../assets/Date-Time-Picker-Bootstrap-4/src/js/bootstrap-datetimepicker.js"></script>
-
-
 <script src="../plugins/DataTables-1.10.25/media/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+</head>
+
 <script src="../js/ellipsis.js"></script>
-  <link rel="stylesheet" href="adminpanel.css">
 </head>
 
 
 <div class="container-fluid">
-        <!-- Hidden Form -->
         <form method="post" name="cof_form" id="cof_form" enctype="multipart/form-data">
           <div class="row">
             <input type="hidden" name="chcksbjcls" id="chcksbjcls" value="check">
@@ -233,15 +459,13 @@ textarea.form-control:focus {
 
 <div class="container-fluid mt-4">
 
-
-
  <div class="row g-4 mb-4" >
               <div class="col-xl-3 col-lg-6 col-md-6">
                 <div class="card h-100 dashcard-clickable" data-filter="" style="margin-top:15px;border-radius: 15px; cursor:pointer;">
                   <div class="card-body p-4">
                     <div class="d-flex align-items-center justify-content-between mb-3">
                       <div class=" bg-opacity-10 p-3 rounded-circle " style="color: #576A8F;">
-                        <i class="fas fa-file-alt fa-2x"></i>
+                        <i class="fas fa-file-alt fa-2x"  style="font-size: 3rem;"></i>
                       </div>
                       <h2 class="fw-black mb-1" id="count_total" style="font-size:2.2rem; letter-spacing: -1px; ">0</h2>
                     </div>
@@ -264,7 +488,7 @@ textarea.form-control:focus {
                   <div class="card-body p-4">
                     <div class="d-flex align-items-center justify-content-between mb-3">
                       <div class=" bg-opacity-10 p-3 rounded-circle" style="color: #E5BA41;">
-                        <i class="fas fa-spinner fa-2x"></i>
+                        <i class="fas fa-spinner fa-2x"  style="font-size: 3rem;"></i>
                       </div>
                       <h2 class="fw-black mb-1" id="count_open" style="font-size: 2.2rem; letter-spacing: -1px;">0</h2>
                     </div>
@@ -286,8 +510,8 @@ textarea.form-control:focus {
                   style="border-radius: 15px; margin-top:15px;cursor:pointer;">
                   <div class="card-body p-4">
                     <div class="d-flex align-items-center justify-content-between mb-3">
-                      <div class="bg-danger bg-opacity-10 p-3 rounded-circle text-danger" style="color: #D25353;">
-                        <i class="fas fa-exclamation-triangle fa-2x"></i>
+                      <div class=" bg-opacity-10 p-1 rounded-circle text-danger" style="color: #D25353;">
+                     <i class="bi bi-exclamation-triangle-fill fs-1"  style="font-size: 3rem;"></i>
                       </div>
                       <h2 class="fw-black mb-1" id="count_owfa" style="font-size:2.2rem; letter-spacing: -1px;">0</h2>
                     </div>
@@ -309,9 +533,9 @@ textarea.form-control:focus {
                   style="border-radius: 15px; margin-top:15px;cursor:pointer;">
                   <div class="card-body p-4">
                     <div class="d-flex align-items-center justify-content-between mb-2">
-                      <div class="bg-success bg-opacity-10 p-3 rounded-circle text-success" style="color: #94A378;">
-                        <i class="fas fa-check-double fa-2x"></i>
-                      </div>
+                      <div class="bg-opacity-10 p-1 rounded-circle text-success" style="color: #94A378;">
+    <i class="bi bi-check-all" style="font-size: 3rem;"></i>
+</div>
                       <h2 class="fw-black mb-1" id="count_closed" style="font-size:2.2rem; letter-spacing: -1px;">0</h2>
                     </div>
                     <div class="mb-2">
@@ -331,65 +555,6 @@ textarea.form-control:focus {
               </div>
             </div>
   
-
-
-<!--<div class="card-deck mb-3 align-items-center">
-
-
-<div class="dashcard card text-white mb-4 bg-primary border-dark" style="width: 20rem; height: 9rem;">
-<div class="card-body">
-
-<div class="card-title">THIS YEAR TOTAL REPORTS: <span class="" id="count_total" style="font-size: 18px;"></span></div>
-                          
-</div>                                  
-<div class="card-footer d-flex align-items-center justify-content-between">
-
-                     <a class=" second small text-white stretched-link" id="card_totalval" href="#bottom" value="" >Click here for more info.</a>
-                          <div class="go-arrow">  </div>
-                          
-                      </div>
-</div>
-
-<div class="dashcard card text-white mb-4 bg-warning" style="width: 20rem; height: 9rem; ">
-<div class="card-body">
-
-<div class="card-title">ASSIGNED / ON PROCESS: <span class="" id="count_open" style="font-size: 18px;"></span></div>
-</div>
-<div class="card-footer d-flex align-items-center justify-content-between">
-                       
-                          <a class="small text-white stretched-link" id="card_openval" href="#bottom" value="ON PROCESS" >Click here for more info.</a>
-                          <div class="go-arrow">  </div>
-                      </div>
-</div>
-
-<div class="dashcard card text-white mb-4 bg-danger" style="width: 20rem; height: 9rem;">
-<div class="card-body">
-
-<div class="card-title" style="font-size: 15px;">PENDING: <span class="" id="count_owfa" style="font-size: 18px;"></span></div>
-
-</div>
-<div class="card-footer d-flex align-items-center justify-content-between">
-                      
-                           <a class="small text-white stretched-link" id="card_openwfaval" href="#bottom" value="ATTENDED WITH FIX ASSET" >Click here for more info.</a>
-                          <div class="go-arrow">  </div>
-                      </div>
-
-</div>
-
-<div class="dashcard card text-white mb-4 bg-success" style="width: 20rem; height: 9rem;">
-<div class="card-body">
-
-<div class="card-title">CLOSED REPORTS <span class="" id="count_closed" style="font-size: 18px;"></span></div>
-</div>
-<div class="card-footer d-flex align-items-center justify-content-between">
-                        <a class="small text-white stretched-link" id="card_closedval" href="#bottom" value="CLOSED" >Click here for more info.</a>
-                          <div class="go-arrow">  </div>
-                      </div>
-
-
-</div>
--->
-
 </div>
 
 
@@ -410,7 +575,7 @@ textarea.form-control:focus {
 </div>
 
                   </div>
-           
+            
               </div>
 
 <!--end of container-->
@@ -468,9 +633,7 @@ textarea.form-control:focus {
                         class="form-control form-control-sm datetimepicker-input"
                         data-target="#datetimepicker1"
                         value="<?php echo $datetime->format('m/d/Y g:i A'); ?>" />
-                      <div class="input-group-append" data-target="#date_created" data-toggle="datetimepicker">
-                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                      </div>
+                     
                     </div>
                   </div>
 
@@ -496,7 +659,7 @@ textarea.form-control:focus {
                     </select>
                   </div>
 
-                  <div class="form-group col-12 col-md-8">
+                  <div class="form-group col-12 col-md-4">
                     <label>I.T SUPPORT</label>
                     <input type="hidden" name="it_num" id="it_num" readonly>
                     <select class="form-control form-control-sm" name="itsup" id="itsup" required>
@@ -540,13 +703,13 @@ textarea.form-control:focus {
                     <input type="hidden" name="sub_num" id="sub_num" readonly>
                     <select class="form-control form-control-sm" name="sub" id="sub"></select>
                   </div>
-                  <div class="form-group col-12 col-md-4">
+                  <!--<div class="form-group col-12 col-md-4">
                     <label style="font-weight: bold;">TRANSFER REQUEST</label>
                     <div>
                       <input type="checkbox" name="is_transfer" id="is_transfer" value="1">
                       <label for="is_transfer"> Mark as Transfer Request</label>
                     </div>
-                  </div>
+                  </div>-->
                   <div class="form-group col-12 col-md-4 hide_isp">
                     <label for="isp" id="lbl_isp">Service Provider</label>
                     <input type="hidden" name="isp_num" id="isp_num" readonly>
@@ -657,14 +820,14 @@ textarea.form-control:focus {
                 <div id="msg_thread">
 
                   <div class="col-12 mb-3 px-0">
-                    <label style="font-weight: bold; color:white;">Add Comment:</label>
+                    <label style="font-weight: bold; color:#213456;">Add Comment:</label>
                     <textarea name="admsg" id="addmsg" class="form-control form-control-sm"
-                      placeholder="Reply to their message or give an updates regarding on this ticket..."
+                      placeholder="Reply to their message or give updates regarding this ticket..."
                       required></textarea>
                   </div>
 
                   <div class="col-12 mt-4 mb-2 dv_msg px-0">
-                    <label for="remarks_view" style="font-weight: bold; color:white;">Comment Thread:</label>
+                    <label for="remarks_view" style="font-weight: bold; color:#213456;">Comment Thread:</label>
                     <hr>
                     <div class="container_remarks">
                       <div id="remarks_view"></div>
@@ -697,6 +860,7 @@ $( document ).ready(function() {
 
 
 var user_id = "<?= $_SESSION['user_id'] ?? '' ?>";
+var currentUserName = "<?= trim($_SESSION['fname'] ?? '') ?>";
 
 function loadSubCategories(categoryId, selectedValue) {
     if (!categoryId) {
@@ -777,66 +941,86 @@ function syncHiddenFields() {
 
 function loadCommentThread(ticket_no) {
     const $remarksView = $('#remarks_view');
-    const $threadPanel = $('#msg_thread');
     const ticketValue = (ticket_no || '').toString().trim();
 
-    $remarksView.empty().html('<div class="text-muted">Loading comments...</div>');
-    $('.dv_msg').show();
-    $threadPanel.show();
+    if (!ticketValue) return;
 
-    if (!ticketValue) {
-        $remarksView.html('<div class="text-muted">No ticket selected.</div>');
-        return;
-    }
+    $remarksView.html('<div class="text-center text-muted mt-3">Loading comments...</div>');
 
     $.ajax({
-        url: 'get_first_comment.php',
+        url: 'get_comments.php', 
         type: 'POST',
         dataType: 'json',
-        data: { ticket_no: ticketValue, thread: 1 },
+        data: { ticket_no: ticketValue },
         success: function(response) {
             let html = '';
-            let comments = [];
+            
+            if (Array.isArray(response) && response.length > 0) {
+                var currentUserIdStr = "<?= $_SESSION['user_id'] ?? '' ?>";
+                var currentUserNameStr = "<?= $_SESSION['fname'] ?? '' ?>";
 
-            if (Array.isArray(response)) {
-                comments = response;
-            } else if (response && typeof response === 'object') {
-                if (Array.isArray(response.thread)) {
-                    comments = response.thread;
-                } else if (Array.isArray(response.comments)) {
-                    comments = response.comments;
-                }
-            }
-
-            if (comments.length > 0) {
-                comments.forEach(function(comment) {
-                    const userName = (comment.user || comment.name || 'System').toString().trim();
-                    const commentDate = (comment.date || comment.comment_date || '').toString().trim();
-                    const commentText = (comment.comment || comment.comment_details || '').toString().trim();
-
+                response.forEach(function(comment) {
+                    let sender = comment.userId || 'Unknown';
+                    
+                    // Determine if the message belongs to the current user (sent by ME)
+                    let isMe = false;
+                    if(currentUserIdStr !== "" && sender === currentUserIdStr) isMe = true;
+                    if(currentUserNameStr !== "" && sender.includes(currentUserNameStr)) isMe = true;
+                    
+                    let bubbleClass = isMe ? 'chat-right' : 'chat-left';
+                    
                     html += `
-                        <div class="comment-item p-3">
-                            <div class="fw-bold">${userName}</div>
-                            <div class="small mb-1">${commentDate}</div>
-                            <div style="white-space: pre-wrap;">${commentText}</div>
+                        <div class="chat-bubble ${bubbleClass}">
+                            <div class="msg-meta">
+                                <span class="msg-meta-name">${sender}</span>
+                                <span>${comment.comment_date}</span>
+                            </div>
+                            <div style="white-space: pre-wrap;">${comment.comment_details}</div>
                         </div>
                     `;
                 });
             } else {
-                html = '<div class="text-muted">No comments yet.</div>';
+                html = '<div class="text-center text-muted mt-3" style="font-size:13px;">No comments yet. Start the conversation!</div>';
             }
-
+            
             $remarksView.html(html);
-            $threadPanel.show();
+            $remarksView.show();
+            $('.dv_msg').show(); 
+            $('.container_remarks').show();
+
+            // Auto Scroll to the bottom of the chat container
+            setTimeout(() => {
+                const container = document.querySelector('.container_remarks');
+                if (container) {
+                    container.scrollTop = container.scrollHeight;
+                }
+            }, 100);
         },
         error: function(xhr) {
-            console.error('Comment thread load failed', xhr.responseText || xhr.statusText);
-            $remarksView.html('<div class="text-danger">Unable to load comment thread.</div>');
-            $threadPanel.show();
+            $remarksView.html('<div class="text-danger text-center mt-3">Error loading comments.</div>');
         }
     });
 }
+function loadTechnicalWorkOutput(ticket_no) {
+    $('textarea[name="technical_workoutput"]').val('Loading technical output...');
 
+    $.ajax({
+        url: 'get_tech_workoutput.php', 
+        type: 'POST',
+        dataType: 'json',
+        data: { ticket_no: ticket_no },
+        success: function(response) {
+            if (response && response.comment_details) {
+                $('textarea[name="technical_workoutput"]').val(response.comment_details);
+            } else {
+                $('textarea[name="technical_workoutput"]').val('No previous technical output found for your session.');
+            }
+        },
+        error: function(xhr) {
+            $('textarea[name="technical_workoutput"]').val('Error loading data.');
+        }
+    });
+}
 /**
  * Getdata.
  */
@@ -857,7 +1041,6 @@ table =  $("#report_data").DataTable({
 
 "dom":
 '<"pull-left"lf><"pull-right">tip',
-// stateSave: true,
 "pagingType": "full_numbers",
 "bDestroy": true,
 "responsive": true, "lengthChange": false, "autoWidth": false,
@@ -882,13 +1065,12 @@ columns: [
             `;
         }
     },
-    // ... rest of your columns
-{title:"TicketNo", data:"ticket_no","defaultContent": ""},
-{title:"Date Created", data:"date_created","defaultContent": ""},
-{title:"  Store", data:"str_code","defaultContent": ""},
-{title:"Subject", data:"subject","defaultContent": ""},
+{title:"TICKET NO", data:"ticket_no","defaultContent": ""},
+{title:"DATE CREATED", data:"date_created","defaultContent": ""},
+{title:"STORE", data:"str_code","defaultContent": ""},
+{title:"SUBJECT", data:"subject","defaultContent": ""},
 // {title:"Concern", data:"concern","defaultContent": ""},
-{title:"Via", data:"via","defaultContent": ""},
+{title:"VIA", data:"via","defaultContent": ""},
 {title:"STATUS", data:"status","defaultContent": ""},
 // {title:"Assigned Support", data:"it_desc","defaultContent": ""},
 {title:"CATEGORY", data:"category","defaultContent": ""},
@@ -955,7 +1137,7 @@ $('#report_data tbody').on('click', '.edit-btn', function(e) {
         $('#dataModal').modal('hide');
 
         var data = table.row($(this).parents('tr')).data();
-        var tid = $(this).parent().siblings(':first').html();
+        var ticketNo = data['ticket_no'];
 
         $('#ticket_no').val(data['ticket_no']);
         $('#str_num').val(data['store']);
@@ -977,6 +1159,8 @@ $('#report_data tbody').on('click', '.edit-btn', function(e) {
         admin_hideshowforms();
         $('#date_closed').val(data['date_closed']);
         $('#remarks').val(data['remarks']);
+        $('.dv_msg').show();
+        $('#remarks_view').show();
         loadCommentThread(data['ticket_no']);
 
         // Manage status/input state
@@ -985,7 +1169,7 @@ $('#report_data tbody').on('click', '.edit-btn', function(e) {
         $('#date_created, #date_refNo, #date_closed, #remarks').prop('readonly', isClosed);
         $('#via, #status, #itsup, #cat, #sub, #isp').prop("disabled", isClosed);
 
-        $('.modal-title').text("Ticket Number: " + tid);
+        $('.modal-title').text("Ticket Number: " + ticketNo);
         $('#action').val("Save and Reply");
         $('#operation').val("Save and Reply");
         $('#userModal').modal({ "show": true, "backdrop": 'static' });
@@ -994,19 +1178,14 @@ $('#report_data tbody').on('click', '.edit-btn', function(e) {
     $('#userModal').on('shown.bs.modal', function () {
         const ticketNo = $('#ticket_no').val();
         if (ticketNo) {
+          $('.dv_msg').show();
+          $('.container_remarks').show();
             loadCommentThread(ticketNo);
         }
     });
 
-
-// table
-// .search( '' )
-// .columns().search( '' )
-// .draw();
-
 $('#card_totalval').on('click', function () {
 var val =  $(this).attr("value");
-// alert(val);
 table
 .columns( 6 )
 .search(val)
@@ -1015,9 +1194,7 @@ table
 
 
 $('#card_openval').on('click', function () {
-// var val =  $(this).attr("value");
 var val =  $(this).attr("value");
-// alert(val);
 table
 .columns( 6 )
 .search(val)
@@ -1026,7 +1203,6 @@ table
 
 $('#card_openwfaval').on('click', function () {
 var val =  $(this).attr("value");
-// alert(val);
 table
 .columns( 6 )
 .search(val)
@@ -1035,7 +1211,6 @@ table
 
 $('#card_closedval').on('click', function () {
 var val =  $(this).attr("value");
-// alert(val);
 table
 .columns( 6 )
 .search(val)
@@ -1052,9 +1227,7 @@ $('#myInput').on( 'input', function () {
 
 $('#store_graph_modal').modal('hide'); 
 
-//crd_btm();
 slct_isp();
-// slct_itsup();
 slct_sub();
 gtsub_id();
 admin_hideshowforms();  
@@ -1076,10 +1249,9 @@ function get_card_data(y){
     $.ajax({
         url: 'fetchdata/fetch_data.php',
         type: 'POST',
-        dataType: 'json', // Forces jQuery to handle the JSON automatically
+        dataType: 'json', 
         data: { yr: y, mode: 'yearch' },
         success: function(card_data) {
-            console.log('Card data response:', card_data);
             var records = [];
             if (Array.isArray(card_data)) {
                 records = card_data;
@@ -1100,7 +1272,6 @@ function get_card_data(y){
             }
         },
         error: function(xhr, status, error) {
-            console.error("Card Data Error: ", status, error, xhr.responseText);
         }
     });
 }
@@ -1111,7 +1282,6 @@ $('#datetimepicker1, #datetimepicker2, #datetimepicker3').datetimepicker()
 
 $("#yearpicker").on('change',function(){
 const yr =$("#yearpicker").val()
-// reports_total(this.value);
 get_card_data(this.value);
 _techgraph(yr);
 _overallpie(yr);
@@ -1167,7 +1337,6 @@ syncHiddenFields();
 admin_hideshowforms();
 $("#userModal").on('hidden.bs.modal', function(){
 
-
 });
 $('#userModal').modal({backdrop: 'static', keyboard: false}) 
 $("#userModal").off('hidden.bs.modal').on('hidden.bs.modal', function(){
@@ -1176,13 +1345,9 @@ $("#userModal").off('hidden.bs.modal').on('hidden.bs.modal', function(){
 
 });
 
-// _insert_data();
-
-
 $(document).on('click', '#dtbsecond', function(){
 
   var val = jQuery('#ticket_no').val();
-
 
   $.ajax({
       type: 'POST',
@@ -1194,8 +1359,6 @@ $(document).on('click', '#dtbsecond', function(){
     });
 
 });
-
-
 
 
 $(document).on('click', '#msgbtn', function(){
@@ -1217,13 +1380,10 @@ $('#msgbtn').val("show");
 $('#container_remarks').hide('slow');
 }
 
-
-
 });
 
 $('#btnClose').click(function(){
-// alert("working");
-$('report_form').trigger('reset');
+$('#report_form').trigger('reset');
 $('.dv_msg').hide();
 $('#remarks_view').hide();
 $('#tmpsubid').remove();
@@ -1242,14 +1402,9 @@ $('#substr_clsbtn').empty();
 
 });
 
-
-
-});//document ready close
-
 $(document).on("submit", "#report_form", function (e) {
-    // alert("1");
     e.preventDefault();
-    syncHiddenFields();
+    syncHiddenFields(); // Fix: Now completely in-scope
 
     let $submitBtn = $(this).find(':input[type="submit"]');
     $submitBtn.prop('disabled', true);
@@ -1269,6 +1424,7 @@ $(document).on("submit", "#report_form", function (e) {
     var today = new Date();
     DateCreated = new Date(DateCreated);
     DateClosed = new Date(DateClosed);
+    
     if (DateCreated > today) {
       alert("Invalid date");
       $submitBtn.prop('disabled', false); // Re-enable on error
@@ -1313,91 +1469,12 @@ $(document).on("submit", "#report_form", function (e) {
       });
     } else {
       alert("All Fields are Required");
-      $submitBtn.prop('disabled', false); // Re-enable on error
+      $submitBtn.prop('disabled', false); 
     }
 });
 
 
-// $('#action').click(function(event) {
-//   alert("Updated Successfully")
-//   location.reload();
-// });
-
-
-// function _insert_data() {
-//   $(document).on("submit", "#report_form", function (e) {
-//     // alert("1");
-//     e.preventDefault();
-//     var TicketNumber = $("#ticket_no").val();
-//     var Store = $("#store").val();
-//     var DateCreated = $("#date_created").val();
-//     var Concern = $("#concern").val();
-//     var Status = $("#status").val();
-//     var Via = $("#via").val();
-//     var ItSupport = $("#itsup").val();
-//     var cat_id = $("#cat").val();
-//     var sub_id = $("#sub").val();
-//     var DateClosed = $("#date_closed").val();
-//     var CloseBy = $("#close_by").val();
-//     var remarks = $("#remarks").val();
-
-//     var today = new Date();
-//     DateCreated = new Date(DateCreated);
-//     DateClosed = new Date(DateClosed);
-//     if (DateCreated > today) {
-//       alert("Invalid date");
-//       return false;
-//     }
-//     // else if (Status == 'ON PROCESS')
-//     // {
-//     //   if (DateClosed < DateCreated ){
-//     //   alert("Date closed should be greater than date created!");
-//     //   return false;
-//     // }
-//     // }
-
-//     else if (DateClosed > today ){
-//       alert("Invalid Closed_Date");
-//       return false;
-//     }
-
-//     if (
-//       Store != "" &&
-//       DateCreated != "" &&
-//       Concern != "" &&
-//       Status != "" &&
-//       Via != "" &&
-//       ItSupport != "" &&
-//       cat_id != "" &&
-//       sub_id != ""
-//     ) {
-//       $.ajax({
-//         url: "insert.php",
-//         method: "POST",
-//         data: new FormData(this),
-//         contentType: false,
-//         processData: false,
-//         success: function (data) {
-//           // alert(data);
-//           // $("#report_form")[0].reset();
-//           Swal.fire({
-//              icon: 'success',
-//              title: 'Your work has been saved',
-//              showConfirmButton: false,
-//              timer: 1500
-//           });
-//           $("#userModal").modal("hide");
-//       //     setTimeout(function(){// wait for 5 secs(2)
-//       //      location.reload(); // then reload the page.(3)
-//       // }, 2000); 
-//         },
-//       });
-//     } else {
-//       alert("All Fields are Required");
-//     }
-//      clearconsole();
-//   });
-// }
+});
 
 </script>
 
@@ -1421,6 +1498,8 @@ $(document).on("submit", "#report_form", function (e) {
                     <div class="row">
                         <div class="col-md-7 border-right pt-2 pb-2">
                             <h6 class="text-uppercase mb-3" style="color:#213456; font-weight: 800;">Request Details</h6>
+                               <p style="color: red; font-size:12px;font-style: italic;">Labels that have (*) are subject to change.</p>
+
                             <div class="row">
 
                              <div class="form-group col-md-6">
@@ -1440,27 +1519,31 @@ $(document).on("submit", "#report_form", function (e) {
                                     <textarea class="form-control" name="date_created" rows="2" readonly></textarea>
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label>Item Code</label>
+                                     <label>Item Code <span style="color: red; font-size: 10px;">*</span></label>
                                     <textarea class="form-control" name="item_code" rows="2" ></textarea>
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label>Description</label>
+                                    <label>Description <span style="color: red; font-size: 10px;">*</span></label>
                                     <textarea class="form-control" name="description" rows="2" ></textarea>
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label>Serial Number</label>
+                                    <label>Serial Number <span style="color: red; font-size: 10px;">*</span></label>
                                     <input type="text" class="form-control" name="serial_number" required placeholder="Type the serial number here...">
                                 </div>
                                 <div class="form-group col-md-12">
                                     <label>Purpose of Request</label>
                                     <textarea class="form-control" name="purpose_of_request" style="height: 100px;" readonly></textarea>
                                 </div>
+                                 <div class="form-group col-md-12">
+                                    <label>Technical Workoutput</label>
+                                    <textarea class="form-control" name="technical_workoutput" id="technical_workoutput" style="height: 100px;"></textarea>
+                                </div>
                                 <div class="form-group col-md-6">
                                     <label>Item Received By</label>
                                     <input type="text" class="form-control" name="received_name" value="<?php echo ($_SESSION['fname'] ?? '') . ' ' . ($_SESSION['lstname'] ?? ''); ?>" readonly>
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label>Date Received</label>
+                                    <label>Date Received <span style="color: red; font-size: 10px;">*</span></label>
                                     <input type="date" class="form-control" name="date_received" required>
                                 </div>
                             </div>
@@ -1468,7 +1551,7 @@ $(document).on("submit", "#report_form", function (e) {
 
                         <div class="col-md-5 pt-2 pb-2" style=" background: linear-gradient(to bottom, #ffffff, #bbc2cf); border-radius: 8px;">
                             <h6 class="text-uppercase mb-3" style="color:#E1AD01; font-weight: 800;">Asset Request Progress</h6>
-                            <div class="tracking-container" style="max-height: 650px; overflow-y: auto; padding-right: 10px;">
+                            <div class="tracking-container" style="max-height: 950px; overflow-y: auto; padding-right: 10px;">
                                 <ul class="tracking-timeline" id="trackingMap"></ul>
                             </div>
                         </div>
@@ -1659,9 +1742,8 @@ $(document).on("submit", "#report_form", function (e) {
 
                         if ($("#report_data").length && $.fn.DataTable.isDataTable("#report_data")) {
     try {
-        getdata(); // Call your custom refresh function instead of ajax.reload()
+        getdata();
     } catch (err) {
-        console.error("Failed to reload data: ", err);
     }
 }
                     });
@@ -1684,18 +1766,22 @@ $(document).on("submit", "#report_form", function (e) {
         });
     });
 });
-
 $(document).on('click', '.print-btn', function(e) {
     e.preventDefault();
     e.stopPropagation();
-    console.log('FIXED ASSET click', $(this).data('id'));
 
     let ticket_no = $(this).data('id');
+    
     if (!ticket_no) {
         console.error('Missing ticket_no for fixed asset modal');
         return;
     }
 
+    console.log('FIXED ASSET click', ticket_no);
+
+    $('#modal_ticket_no').val(ticket_no);
+    $('textarea[name="technical_workoutput"]').val('Loading...');
+    
     $('#userModal').modal('hide');
 
     $.ajax({
@@ -1711,6 +1797,12 @@ $(document).on('click', '.print-btn', function(e) {
 
             $('#pdfForm').trigger('reset');
             $('#modal_ticket_no').val(ticket_no);
+            
+            if (response.technical_workoutput) {
+                $('textarea[name="technical_workoutput"]').val(response.technical_workoutput);
+            } else {
+                $('textarea[name="technical_workoutput"]').val('No technical comments found for your session.');
+            }
 
             $('textarea[name="purpose_of_request"]').val(response.purpose || '');
             $('textarea[name="item_code"]').val(response.cat_desc || ''); 
@@ -1723,8 +1815,8 @@ $(document).on('click', '.print-btn', function(e) {
             $('input[name="requesting_employee"]').val(response.requesting_employee || '');    
 
             const statusLevels = {
-                'submitted': 1, 'noted': 2, 'validated': 3, 'printed': 4,
-                'recorded': 5, 'verified': 6, 'approved': 7, 'completed': 8
+                'submitted': 1, 'noted': 2, 'validated': 3, 
+                'verified': 4,  'recorded': 5, 'printed': 6, 'approved': 7, 'completed': 8
             };
 
             let dbStatus = (response.status || "").toLowerCase().trim();
@@ -1737,14 +1829,14 @@ $(document).on('click', '.print-btn', function(e) {
                 { desc: "Approved and noted by technical head", date: response.date_noted, reqLevel: 2 },
                 { desc: "For admin support validation", date: null, reqLevel: 2 }, 
                 { desc: "Validated by admin support", date: response.date_validated, reqLevel: 3 },
-                { desc: "For printing request form", date: null, reqLevel: 3 }, 
-                { desc: "Printed", date: response.date_printed, reqLevel: 4 },
+                { desc: "For administrative verification", date: null, reqLevel: 3 }, 
+                { desc: "Verified by the administrator", date: response.date_verified, reqLevel: 4 },
                 { desc: "For recording", date: null, reqLevel: 4 }, 
                 { desc: "Recorded", date: response.date_recorded, reqLevel: 5 },
-                { desc: "For administrative verification", date: null, reqLevel: 5 }, 
-                { desc: "Verified by the administrator", date: response.date_verified, reqLevel: 6 },
-                { desc: "For AGM approval", date: null, reqLevel: 6 }, 
-                { desc: "Approved by AGM", date: response.date_approved, reqLevel: 7 },
+                { desc: "For printing request form", date: null, reqLevel: 5 }, 
+                { desc: "Printed", date: response.date_printed, reqLevel: 6 },
+                { desc: "For General Manager Approval", date: null, reqLevel: 6 }, 
+                { desc: "Approved by General Manager", date: response.date_approved, reqLevel: 7 },
                 { desc: "Ready for asset replacement", date: null, reqLevel: 7 }, 
                 { desc: "Asset replaced / Completed", date: response.date_completed, reqLevel: 8 }
             ];
@@ -1770,6 +1862,7 @@ $(document).on('click', '.print-btn', function(e) {
         error: function(xhr, status, error) {
             console.error('Error fetching asset details:', status, error, xhr.responseText);
             alert('Error fetching asset details. Check console log records.');
+            $('textarea[name="technical_workoutput"]').val('Error loading data.');
         }
     });
 });

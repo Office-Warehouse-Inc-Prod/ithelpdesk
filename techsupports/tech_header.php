@@ -376,7 +376,7 @@ body {
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark owi-navbar sticky-top">
     <div class="container-fluid">
-      <a class="navbar-brand" href="adminpanel.php">
+      <a class="navbar-brand" href="techdashboard.php">
         <img src="../images/owi.ico" width="35" height="35" class="d-inline-block align-top" alt="OWI Logo">
         <span>OWI <span style="color: var(--primary-color);">HELPDESK</span></span>
       </a>
@@ -665,7 +665,7 @@ body {
         if (!badge) return;
 
         if (count === "0" || count === "") {
-          badge.style.display = "none";
+        badge.style.display = "none";
         } else {
           badge.style.display = "inline-block";
           badge.innerHTML = count;

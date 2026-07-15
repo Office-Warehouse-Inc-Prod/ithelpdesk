@@ -57,6 +57,11 @@ switch ($mode) {
         $records = $fn->fareportsthist();
         break;
 
+       
+          case 'printing_tbl':
+        $records['printingdata'] = $fn->faprintingthist();
+        break;
+
     case 'dept_tbl':
         $records['deptdata'] = $fn->deptthist();
         break;

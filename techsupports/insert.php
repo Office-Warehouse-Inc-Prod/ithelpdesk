@@ -208,11 +208,11 @@ if (isset($_POST["operation"]) && $_POST["operation"] == "submit_request") {
         $statement = $connection->prepare("
             INSERT INTO asset_requests (
                 ticket_no, requested_db, requested_by, ticket_created, 
-                item_code, description, serial_number, purpose_of_request, 
+                item_code, description, serial_number, purpose_of_request, technical_workoutput,
                 item_received_by, date_received, status, date_submitted
             ) VALUES (
                 :ticket_no, :requested_db, :requested_by, :ticket_created, 
-                :item_code, :description, :serial_number, :purpose_of_request, 
+                :item_code, :description, :serial_number, :purpose_of_request, :technical_workoutput, 
                 :item_received_by, :date_received, :status, :date_submitted
             )
         ");
@@ -229,6 +229,7 @@ if (isset($_POST["operation"]) && $_POST["operation"] == "submit_request") {
             ':description'        => $_POST['description'] ?? null,
             ':serial_number'      => $_POST['serial_number'] ?? null,
             ':purpose_of_request' => $_POST['purpose_of_request'] ?? null,
+             ':technical_workoutput' => $_POST['technical_workoutput'] ?? null,
             ':item_received_by'   => $_POST['received_by'] ?? null,
             ':date_received'      => $_POST['date_received'] ?? null,
             ':status'             => 'SUBMITTED',

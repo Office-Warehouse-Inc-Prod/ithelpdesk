@@ -1,9 +1,7 @@
 <?php
 include 'tech_header.php';
 include '../condb.php';
-include 'main_js.php';
-include 'chrtdashboard.php';
-include 'sub_graph_modal.php';
+
 ?>
 
 <head>

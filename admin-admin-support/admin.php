@@ -454,22 +454,31 @@ body {
             </a>
           </li>
 
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="genReportDrop" role="button" data-toggle="dropdown">
-              <i class="fa fa-chart-line"> <span class="badge badge-danger" id="notif_fa"></span></i> FIXED ASSET
-            </a>
-            <div class="dropdown-menu" aria-labelledby="genReportDrop">
-              <a class="dropdown-item" href="fix_asset.php">
-                <i class="fa fa-calendar-day"></i><!-- <span class="badge badge-danger" id="notif_validation"></span>-->For Validation
-              </a>
-              <a class="dropdown-item" href="fix_asset_printing.php">
-                <i class="fa-solid fa-print"> <!--<span class="badge badge-danger" id="notif_printing"></span>--></i>For Printing
-              </a>
-              <a class="dropdown-item" href="fix_asset_reports.php">
-               <i class="fa-regular fa-file-lines"></i> Fixed Asset Reports 
-              </a>
-            </div>
-          </li>
+        <li class="nav-item dropdown">
+  <a class="nav-link dropdown-toggle" href="#" id="genReportDrop" role="button" data-toggle="dropdown">
+    <i class="fa fa-chart-line"></i> FIXED ASSET <span class="badge badge-danger ml-1" id="notif_fa"></span>
+  </a>
+  <div class="dropdown-menu" aria-labelledby="genReportDrop">
+    
+    <!-- For Validation -->
+    <a class="dropdown-item d-flex justify-content-between align-items-center" href="fix_asset.php">
+      <span><i class="fa fa-calendar-day"></i> For Validation</span>
+      <span class="badge badge-danger" id="notif_validation" style="position: static;"></span>
+    </a>
+    
+    <!-- For Printing -->
+    <a class="dropdown-item d-flex justify-content-between align-items-center" href="fix_asset_printing.php">
+      <span><i class="fa-solid fa-print"></i> For Printing</span>
+      <span class="badge badge-danger" id="notif_printing" style="position: static;"></span>
+    </a>
+    
+    <!-- Fixed Asset Reports -->
+    <a class="dropdown-item" href="fix_asset_reports.php">
+      <span><i class="fa-regular fa-file-lines"></i> Fixed Asset Reports</span>
+    </a>
+    
+  </div>
+</li>
         </ul>
 
         <ul class="navbar-nav ml-auto">
@@ -633,11 +642,12 @@ body {
               window.location.href = "adminwfit.php?ticket_no=" + encodeURIComponent(ticketVal);
             }
           }
-          else if(notifVal == '5'){
+         else if(notifVal == '5'){
             window.location.href = "fix_asset.php?ticket_no=" + encodeURIComponent(ticketVal);
           }
-           else if(notifVal == '6'){
-            window.location.href = "fix_asset.php?ticket_no=" + encodeURIComponent(ticketVal);
+          else if(notifVal == '6'){
+            // FIXED: Now routes correctly to printing page instead of validation page
+            window.location.href = "fix_asset_printing.php?ticket_no=" + encodeURIComponent(ticketVal); 
           }
           else if(notifVal == '9'){
             window.location.href = "fix_asset_reports.php?ticket_no=" + encodeURIComponent(ticketVal);

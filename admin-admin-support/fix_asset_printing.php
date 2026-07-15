@@ -741,6 +741,11 @@ textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
                     <input type="text" class="form-control" name="asset_tag_number" id="asset_tag_number" required>
                   </div>
 
+                    <div class="form-group col-md-12">
+                    <label>Workoutput (Under Technical Evaluation)</label>
+                    <textarea class="form-control" name="technical_workoutput" id="technical_workoutput" style="height: 150px;" readonly></textarea>
+                  </div>
+
 
                   <div class="form-group col-md-12">
                     <label>Purpose of Request (From Store/Dept User)</label>
@@ -906,6 +911,8 @@ $(document).ready(function(){
       $('#item_code').val(data['item_code']);
       $('#description').val(data['description']);
       $('#serial_number').val(data['serial_number']);
+      
+      $('#technical_workoutput').val(data['technical_workoutput']);
       $('#purpose_of_request').val(data['purpose_of_request']);
        $('#revised_request').val(data['revised_request']);
       $('#it_desc').val(data['it_desc']);
@@ -929,32 +936,32 @@ $(document).ready(function(){
         dataType: 'json', 
         data: { ticket_no: data['ticket_no'] },
         success: function(response) {
-           const statusLevels = {
-                      'submitted': 1, 'noted': 2, 'validated': 3, 'printed': 4,
-                      'verified': 5,  'recorded': 6,'approved': 7, 'completed': 8
-                  };
+          const statusLevels = {
+                'submitted': 1, 'noted': 2, 'validated': 3, 
+                'verified': 4,  'recorded': 5, 'printed': 6, 'approved': 7, 'completed': 8
+            };
 
-                  let dbStatus = (response.status || data['status'] || "").toLowerCase().trim();
-                  let currentLevel = statusLevels[dbStatus] || 0; 
+            let dbStatus = (response.status || "").toLowerCase().trim();
+            let currentLevel = statusLevels[dbStatus] || 0; 
 
-                  const trackSteps = [
-                      { desc: "Request submitted by store/user", date: response.date_created || data['ticket_created'], reqLevel: 0 },
-                      { desc: "Under technical evaluation", date: response.date_created || data['ticket_created'], reqLevel: 0 },
-                      { desc: "Submitted to technical head", date: response.date_submitted, reqLevel: 1 },
-                      { desc: "Approved and noted by technical head", date: response.date_noted, reqLevel: 2 },
-                      { desc: "For admin support validation", date: null, reqLevel: 2 }, 
-                      { desc: "Validated by admin support", date: response.date_validated, reqLevel: 3 },
-                      { desc: "For printing request form", date: null, reqLevel: 3 }, 
-                      { desc: "Printed", date: response.date_printed, reqLevel: 4 },
-                      { desc: "For administrative verification", date: null, reqLevel: 4 }, 
-                      { desc: "Verified by the administrator", date: response.date_verified, reqLevel: 5 },
-                      { desc: "For recording", date: null, reqLevel: 5 }, 
-                      { desc: "Recorded", date: response.date_recorded, reqLevel: 6 },
-                      { desc: "For AGM approval", date: null, reqLevel: 6 }, 
-                      { desc: "Approved by AGM", date: response.date_approved, reqLevel: 7 },
-                      { desc: "Ready for asset replacement", date: null, reqLevel: 7 }, 
-                      { desc: "Asset replaced / Completed", date: response.date_completed, reqLevel: 8 }
-                  ];
+            const trackSteps = [
+                { desc: "Request submitted by store/user", date: response.date_created, reqLevel: 0 },
+                { desc: "Under technical evaluation", date: response.date_created, reqLevel: 0 },
+                { desc: "Submitted to technical head", date: response.date_submitted, reqLevel: 1 },
+                { desc: "Approved and noted by technical head", date: response.date_noted, reqLevel: 2 },
+                { desc: "For admin support validation", date: null, reqLevel: 2 }, 
+                { desc: "Validated by admin support", date: response.date_validated, reqLevel: 3 },
+                { desc: "For administrative verification", date: null, reqLevel: 3 }, 
+                { desc: "Verified by the administrator", date: response.date_verified, reqLevel: 4 },
+                { desc: "For recording", date: null, reqLevel: 4 }, 
+                { desc: "Recorded", date: response.date_recorded, reqLevel: 5 },
+                { desc: "For printing request form", date: null, reqLevel: 5 }, 
+                { desc: "Printed", date: response.date_printed, reqLevel: 6 },
+                { desc: "For General Manager Approval", date: null, reqLevel: 6 }, 
+                { desc: "Approved by General Manager", date: response.date_approved, reqLevel: 7 },
+                { desc: "Ready for asset replacement", date: null, reqLevel: 7 }, 
+                { desc: "Asset replaced / Completed", date: response.date_completed, reqLevel: 8 }
+            ];
 
             let timelineHtml = '';
             

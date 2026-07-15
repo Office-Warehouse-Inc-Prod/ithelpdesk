@@ -1,7 +1,9 @@
 <?php
+session_start(); // Ensure session is started to get the logged-in user
 require_once __DIR__ . '/../condb.php';
 $conn = new dbconfig();
 $ticket_no = isset($_POST['ticket_no']) ? trim($_POST['ticket_no']) : '';
+$user_id = $_SESSION['user_id'] ?? ''; // Get logged-in user ID
 
 $response = [
     'purpose'             => '',
@@ -21,10 +23,12 @@ $response = [
     'date_recorded'       => '',
     'date_verified'       => '',
     'date_approved'       => '',
-    'date_completed'      => ''
+    'date_completed'      => '',
+    'technical_workoutput'=> '' // NEW: Added key for the technical output
 ];
 
 if ($ticket_no !== '') {
+    // 1. Existing query: Get First Comment (Purpose)
     $query = "SELECT comment_details FROM reports_comments WHERE ticket_no = ? ORDER BY comment_date ASC LIMIT 1";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("s", $ticket_no);
@@ -34,6 +38,19 @@ if ($ticket_no !== '') {
         $response['purpose'] = $row['comment_details'];
     }
 
+    // 2. NEW QUERY: Get LAST comment of the LOGGED-IN user (Technical Workoutput)
+    if (!empty($user_id)) {
+        $queryTech = "SELECT comment_details FROM reports_comments WHERE ticket_no = ? AND userId = ? ORDER BY comment_date DESC LIMIT 1";
+        $stmtTech = $conn->prepare($queryTech);
+        $stmtTech->bind_param("ss", $ticket_no, $user_id);
+        $stmtTech->execute();
+        $resultTech = $stmtTech->get_result();
+        if ($rowTech = $resultTech->fetch_assoc()) {
+            $response['technical_workoutput'] = $rowTech['comment_details'];
+        }
+    }
+
+    // 3. Existing query: Get Thread
     $threadQuery = "SELECT rc.comment_details, rc.comment_date, u.fname, u.lstname
                     FROM reports_comments rc
                     LEFT JOIN users u ON rc.userId = u.id
@@ -55,6 +72,7 @@ if ($ticket_no !== '') {
     $response['thread'] = [];
 }
 
+// 4. Existing query: Get Details
 $query2 = "SELECT c.cat_desc, s.sub_cat, r.date_created, u.fname, u.lstname, b.str_name, r.userId, r.store
            FROM reports r
            LEFT JOIN categories c ON r.cat_id = c.cat_id
@@ -77,6 +95,7 @@ if ($row2 = $result2->fetch_assoc()) {
     $response['requesting_employee'] = $row2['userId'];
 }
 
+// 5. Existing query: Asset Requests
 $query3 = "SELECT serial_number, status, date_submitted, date_noted, date_validated, 
                   date_printed, date_recorded, date_verified, date_approved, date_completed 
            FROM asset_requests 
