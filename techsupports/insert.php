@@ -270,7 +270,10 @@ if(isset($_POST["operation"]) && $_POST["operation"] == "update_request") {
             UPDATE asset_requests
             SET
                
-                serial_number = :serial_number,
+               item_code = :item_code,
+                technical_workoutput = :technical_workoutput,
+                  description = :description,
+                    serial_number = :serial_number,
                
                 date_received = :date_received
       
@@ -278,7 +281,7 @@ if(isset($_POST["operation"]) && $_POST["operation"] == "update_request") {
         ");
 
         $result = $statement->execute([
-        
+            ':technical_workoutput'      => $_POST['technical_workoutput'],
             ':serial_number'      => $_POST['serial_number'],
             ':date_received'      => $_POST['date_received'],
             ':ticket_no'          => $_POST['ticket_no']

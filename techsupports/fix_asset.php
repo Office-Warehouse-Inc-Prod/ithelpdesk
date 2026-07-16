@@ -564,7 +564,7 @@ include 'tech_header.php';
 
                    <div class="form-group col-md-12">
                       <label>Technical Workoutput</label>
-                      <textarea class="form-control" name="purpose" id="technical_workoutput" style="height: 100px;" readonly></textarea>
+                      <textarea class="form-control" name="purpose" id="technical_workoutput" style="height: 100px;"></textarea>
                   </div>
 
                   <div class="form-group col-md-6">

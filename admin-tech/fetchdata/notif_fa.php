@@ -7,8 +7,7 @@ if ($conn->connect_error) {
 
 $sql = "SELECT COUNT(*) as total
         FROM asset_requests
-        WHERE status = 'SUBMITTED'
-        AND item_received_by = '47'
+        WHERE status = 'SUBMITTED'z
         ";
 
 $result = $conn->query($sql);
