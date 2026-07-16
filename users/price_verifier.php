@@ -1,5 +1,10 @@
 <?php
 session_start();
+
+if (empty($_SESSION['price_verifier_user_id'])) {
+    header('Location: ../price_verifier_login.php');
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
@@ -201,6 +206,30 @@ session_start();
             display: none;
         }
 
+        .logout-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background-color: #dc3545;
+            color: #ffffff;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .logout-btn:hover {
+            background-color: #c82333;
+        }
+
+        .page-wrapper {
+            position: relative;
+        }
+
         @media screen and (min-width: 768px) {
             .page-wrapper {
                 max-width: 720px;
@@ -263,6 +292,7 @@ session_start();
 
     <div class="pv-header">
         <h3>PRICE VERIFIER</h3>
+        <a href="../price_verifier_logout.php" class="logout-btn">Logout</a>
     </div>
 
     <div class="header-line"></div>
