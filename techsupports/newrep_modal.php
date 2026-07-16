@@ -212,7 +212,7 @@
     <div class="row">
             <div  class="col-md-12 dv_msg">
                      <label style="font-weight: bold;">Add Message:</label>
-     <textarea name="admsg" id="" class="form-control" placeholder="Reply to their message or give an updates regarding on this ticket..."></textarea> 
+     <textarea name="admsg" id="addmsg" class="form-control" placeholder="Reply to their message or give an updates regarding on this ticket..."></textarea> 
       </div>
       <div class="col-md-12 mt-4 mb-2 dv_msg">
             <label for="remarks_view" style="font-weight: bold;">Ticket Thread:</label>

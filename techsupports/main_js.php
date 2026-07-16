@@ -634,7 +634,7 @@
       var TicketNumber = $("#ticket_no").val();
       var Store = $("#store").val();
       var DateCreated = $("#date_created").val();
-      var Concern = $("#concern").val();
+      var Concern = $("#subjct").val();
       var Status = $("#status").val();
       var Via = $("#via").val();
       var ItSupport = $("#itsup").val();
@@ -797,7 +797,7 @@
 
     $('#btnClose').click(function () {
       // alert("working");
-      $('report_form')[0].reset();
+      $('#report_form')[0].reset();
       $('.dv_msg').hide();
       $('#remarks_view').hide();
       $('#tmpsubid').remove();

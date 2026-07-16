@@ -1064,8 +1064,7 @@ textarea.form-control:focus {
                   <div class="col-12 mb-3 px-0">
                     <label style="font-weight: bold; color:#213456;">Add Comment:</label>
                     <textarea name="admsg" id="addmsg" class="form-control form-control-sm"
-                      placeholder="Reply to their message or give updates regarding this ticket..."
-                      required></textarea>
+                      placeholder="Reply to their message or give updates regarding this ticket..."></textarea>
                   </div>
 
                   <div class="col-12 mt-4 mb-2 dv_msg px-0">
@@ -1175,6 +1174,7 @@ function gtsub_id() {
 }
 
 function syncHiddenFields() {
+    $('#str_num').val($('#store').val() || '');
     $('#it_num').val($('#itsup').val() || '');
     $('#cat_num').val($('#cat').val() || '');
     $('#sub_num').val($('#sub').val() || '');
@@ -1389,9 +1389,23 @@ $('#report_data tbody').on('click', '.edit-btn', function(e) {
         $('#it_num').val(data['itsup']);
         $('#itsup').val(data['itsup']);
         $('#cat_num').val(data['cat_id']);
+        if (data['cat_id'] && $('#cat option[value="' + data['cat_id'] + '"]').length === 0) {
+          $('<option>', {
+            value: data['cat_id'],
+            text: data['category'] ? data['category'] : 'Category ID ' + data['cat_id'],
+            class: 'temp-option'
+          }).appendTo('#cat');
+        }
         $('#cat').val(data['cat_id']);
         loadSubCategories(data['cat_id'], data['sub_id']);
         $('#isp_num').val(data['isp_id']);
+        if (data['isp_id'] && $('#isp option[value="' + data['isp_id'] + '"]').length === 0) {
+          $('<option>', {
+            value: data['isp_id'],
+            text: data['isp_shortDesc'] ? data['isp_shortDesc'] : 'ISP ID ' + data['isp_id'],
+            class: 'temp-option'
+          }).appendTo('#isp');
+        }
         $('#isp').val(data['isp_id']);
         $('#refNo').val(data['refNo']);
         $('#date_refNo').val(data['date_refNo']);
@@ -1471,6 +1485,10 @@ slct_isp();
 slct_sub();
 gtsub_id();
 admin_hideshowforms();  
+
+$('#store').on('change', function () {
+    syncHiddenFields();
+});
 
 $('#itsup').on('change', function () {
     syncHiddenFields();
@@ -1688,20 +1706,54 @@ $(document).on("submit", "#report_form", function (e) {
         contentType: false,
         processData: false,
         success: function (data) {
-          const ticketNo = $('#ticket_no').val();
-          Swal.fire({
-             icon: 'success',
-             title: 'Your work has been saved',
-             showConfirmButton: false,
-             timer: 1500
-          });
-
-          if (ticketNo) {
-              $('#addmsg').val('');
-              loadCommentThread(ticketNo);
-          } else {
-              $('#userModal').modal('hide');
+          let response = data;
+          if (typeof response === 'string') {
+            try {
+              response = JSON.parse(response);
+            } catch (err) {
+              response = { raw: response };
+            }
           }
+
+          if (response && response.status === 'success') {
+            Swal.fire({
+              icon: 'success',
+              title: response.message || 'Your work has been saved',
+              showConfirmButton: false,
+              timer: 1500
+            });
+
+            const ticketNo = $('#ticket_no').val();
+            if (ticketNo) {
+                $('#addmsg').val('');
+                loadCommentThread(ticketNo);
+                getdata();
+            } else {
+                $('#userModal').modal('hide');
+                getdata();
+            }
+            return;
+          }
+
+          const errorMessage = response && response.message ? response.message : response && response.raw ? response.raw : 'Please try again.';
+          Swal.fire({
+            icon: 'error',
+            title: 'Save failed',
+            text: errorMessage
+          });
+        },
+        error: function(xhr) {
+          let responseText = 'Please try again.';
+          if (xhr.responseJSON && xhr.responseJSON.message) {
+            responseText = xhr.responseJSON.message;
+          } else if (xhr.responseText) {
+            responseText = xhr.responseText.trim();
+          }
+          Swal.fire({
+            icon: 'error',
+            title: 'Save failed',
+            text: responseText
+          });
         },
         complete: function() {
             $submitBtn.prop('disabled', false); 
