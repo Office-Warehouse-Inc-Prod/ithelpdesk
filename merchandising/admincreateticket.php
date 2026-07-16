@@ -1,7 +1,7 @@
 <?php
 include 'admin.php';
 include '../condb.php';
-include 'main_js.php';
+include 'main_js2.php';
 include 'chrtdashboard.php';
 include 'sub_graph_modal.php';
 ?>
@@ -44,7 +44,6 @@ include 'sub_graph_modal.php';
     box-shadow: var(--card-shadow);
     padding: 24px;
     transition: all 0.3s ease;
-    margin-top: 60px;
   }
 
   .section-title {
@@ -179,6 +178,379 @@ include 'sub_graph_modal.php';
     border: none;
   }
 
+
+.container_remarks {
+    display: flex !important;
+    flex-direction: column;
+    max-height: 480px;
+    overflow-y: auto;
+    background-color: #f0f2f5 !important;
+    border: 1px solid #dee2e6;
+    border-radius: 12px;
+    padding: 15px;
+    margin-top: 10px;
+}
+
+.dv_msg {
+    display: block !important;
+}
+
+#remarks_view {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+#userModal .modal-dialog{
+  max-width: 1100px; 
+  margin: 1.25rem auto;
+}
+
+#userModal .modal-content{
+  border-radius: 16px;
+  border: none;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+#userModal .modal-header{
+    background-color: #213456;
+    color: #fff;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    border-bottom: 4px solid #E1AD01; 
+}
+
+#userModal_header{
+  font-weight: 700;
+  font-size: 18px;
+  margin: 0;
+}
+
+#userModal .modal-body{
+  padding: 16px 18px;
+}
+
+#userModal .modal-title {
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+}
+
+#userModal .input-group-text {
+    background-color: white;
+    border-right: none;
+    color: #213456;
+}
+
+#userModal .form-control {
+    border-left: none;
+    height: 45px;
+    border-radius: 0 8px 8px 0;
+}
+
+#userModal .form-control:focus {
+    border-color: #213456;
+    box-shadow: none;
+}
+
+#userModal .input-group:focus-within {
+    box-shadow: 0 0 0 0.2rem rgba(225, 173, 1, 0.25);
+    border-radius: 8px;
+}
+
+.m_col {
+    background: #ffffff;
+    padding: 2rem !important;
+    border-right: 1px solid #edf2f7;
+}
+
+.m_col label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #718096;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.m_col .form-control {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 0.6rem 0.75rem;
+    transition: all 0.2s ease;
+    background-color: #f8fafc;
+}
+
+.m_col .form-control:focus {
+    background-color: #fff;
+    border-color: #1C0770;
+    box-shadow: 0 0 0 3px rgba(28, 7, 112, 0.1);
+    outline: none;
+}
+
+.m_col textarea {
+    min-height: 80px;
+}
+
+#msg_thread {
+    padding: 1rem 1.5rem;
+    background: linear-gradient(to bottom, #ffffff, #99aac8);
+    height: 100%;
+}
+
+#addmsg {
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 1rem;
+    background: #ffffff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.chat-bubble {
+    max-width: 85%;
+    padding: 10px 14px;
+    border-radius: 18px;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    position: relative;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    word-wrap: break-word;
+}
+
+.chat-left {
+    align-self: flex-start;
+    background: #ffffff;
+    color: #1e293b;
+    border-bottom-left-radius: 4px;
+    border: 1px solid #e5e7eb;
+}
+
+.chat-right {
+    align-self: flex-end;
+    background: #1C0770;
+    color: #ffffff;
+    border-bottom-right-radius: 4px;
+}
+
+.msg-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    font-size: 0.7rem;
+    margin-bottom: 4px;
+}
+
+.chat-left .msg-meta {
+    color: #64748b;
+}
+
+.chat-right .msg-meta {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.chat-left .msg-meta-name {
+    color: #213456;
+    font-weight: bold;
+}
+
+.chat-right .msg-meta-name {
+    color: #ffffff;
+    font-weight: bold;
+}
+
+.btn-success {
+    background-color: #1C0770 !important;
+    border: none;
+    padding: 0.6rem 2rem;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: transform 0.2s ease;
+}
+
+.btn-success:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(28, 7, 112, 0.2);
+}
+
+.btn-danger {
+    background-color: #fff;
+    border: 1px solid #e2e8f0;
+    color: #e53e3e;
+    padding: 0.6rem 1.5rem;
+    font-weight: 600;
+    border-radius: 8px;
+}
+
+.btn-danger:hover {
+    background-color: #fff5f5;
+    color: #c53030;
+}
+
+#userModal .modal-footer{
+  border-top: 1px solid rgba(0,0,0,0.08);
+  background: rgba(255,255,255,0.92);
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  padding: 12px 14px;
+}
+
+@media (max-width: 991px){
+  #userModal .modal-dialog{
+    max-width: 96%;
+    margin: .75rem auto;
+  }
+
+  .container_remarks{
+    max-height: 350px;
+  }
+
+  #action, #btnClose{
+    width: 100%;
+  }
+}
+
+
+.year-picker-group {
+    flex: 1;
+    min-width: 300px; 
+}
+#showCalendarBtn {
+    background-color: #213456;
+    color: white;
+    border-radius: 8px;
+    padding: 8px 20px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+#showCalendarBtn:hover {
+    background-color: var(--owi-gold, #E1AD01);
+    color: #213456;
+}
+
+
+ .modal-overlay {
+            display: none; 
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+       .modal-overlay .modal-content {
+             background: linear-gradient(to bottom, #ffffff, #99aac8);
+            padding: 25px;
+            border-radius: 8px;
+            width: 70%;
+            max-width: 90%;
+            margin-top:30px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+       .modal-overlay .modal-content h3 {
+            margin-top: 0;
+            color: #333;
+        }
+       .modal-overlay .close-btn {
+            background-color: #28a745;
+            margin-top: 15px;
+        }
+ 
+
+        
+  .table-responsive {
+    overflow: visible !important;
+    width: 100% !important;
+  }
+
+  .admin-table {
+    width: 100% !important;
+    table-layout: auto !important;
+    page-break-inside: avoid;
+    
+  }
+
+  .admin-table th {
+    background-color: #213456 !important;
+    color: #fff !important;
+    padding: 6px 4px !important;
+    font-size: 11px !important;
+  }
+
+  #admin_report.admin-table th.active.text-center {
+    background-color: #2b9827 !important;
+    color: #fff !important;
+    padding: 6px 4px !important;
+    font-size: 11px !important;
+  }
+
+  #admin_report.admin-table th.compliance.text-center {
+    background-color: #a29341 !important;
+    color: #fff !important;
+    padding: 6px 4px !important;
+    font-size: 11px !important;
+  }
+
+  .admin-table td {
+    padding: 6px 4px !important;
+    font-size: 11px !important;
+    border-bottom: 1px solid #0e0e0ea1 !important;
+  }
+  .table-responsive{
+    margin-top: -600px;
+  }
+
+  .progress {
+    border: 1px solid #999 !important;
+    background-color: #ddd !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  #dept-table-footer {
+    border: 2px solid #2d3c59;
+    background-color: #f4e9d7 !important; 
+}
+
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+    box-shadow: none !important;
+  }
+.modal-overlay .close-btn:hover{
+   display: block;
+  margin-left: auto;
+  border-radius: 12px;
+  width: 30%;
+
+  background-color: #E1AD01;
+  color: white;
+}
+
+.modal-overlay .close-btn {
+  display: block;
+  margin-left: auto;
+  border-radius: 12px;
+  padding:10px;
+  width: 30%;
+  color: white;
+  background-color: #213456;
+}
+ .modal-overlay .month-row[data-month="6"] {
+  background: #213456;
+  outline: 2px solid red;
+  outline-offset: -2px; 
+}
   
 </style>
 
@@ -302,159 +674,62 @@ Start of Add/Edit Modal
             <div class="row">
 
               <!-- LEFT SIDE -->
-              <div class="m_col col-12 col-lg-6">
-
+            <div class="m_col col-12 col-lg-6">
                 <div class="row">
 
                   <div class="form-group col-12 col-md-6">
-                    <label>STORE</label>
-                    <input type="hidden" name="str_num" id="str_num" readonly value="">
-                    <select class="form-control form-control-sm" name="store" id="store" required>
-                      <option value="">Select Store...</option>
-                      <?php
-                      $query = "select * from tbl_branch ";
-                      $run = $conn->prepare($query);
-                      $run->execute();
-                      $rs = $run->get_result();
-                      while ($res = $rs->fetch_assoc()) {
-                        $brcnhid = $res['str_num'];
-                        $brnchcd = $res['str_code'] . ' | ' . $res['str_name'];
-                        ?>
-                        <option value="<?php echo $brcnhid; ?>"><?= $brnchcd; ?></option>
-                      <?php } ?>
-                    </select>
+                    <label>STORE/BRANCH</label>
+                    <input type="text" id="str_name" name="str_name" class="form-control form-control-sm" readonly value="">
                   </div>
 
+                  <div class="form-group col-12 col-md-6">
+                    <label>DEPARTMENT</label>
+                    <input type="text" id="deptsel" name="deptsel" class="form-control form-control-sm" readonly value="">
+                  </div>
+
+                  <!-- === ADDED MISSING HIDDEN FIELDS FOR BACKEND UPDATE === -->
                   <input type="hidden" class="form-control form-control-sm" name="ticket_no" id="ticket_no">
+                  <input type="hidden" name="store" id="store">
+                  <input type="hidden" name="itsup" id="itsup">
+                  <input type="hidden" name="it_num" id="it_num">
+                  <input type="hidden" name="cat" id="cat">
+                  <input type="hidden" name="sub" id="sub">
+                  <input type="hidden" name="sub_num" id="sub_num">
+                  <input type="hidden" name="via" id="via">
+                  <input type="hidden" name="date_created" id="date_created">
+                  <input type="hidden" name="date_createdx" id="date_createdx">
+                  <input type="hidden" name="refNo" id="refNo">
+                  <input type="hidden" name="date_refNo" id="date_refNo">
+                  <input type="hidden" name="concern" id="concern">
+                  <!-- ====================================================== -->
 
-
-
-
-                  <div class="form-group col-4">
+                  <div class="form-group col-12 col-md-6">
                     <label>SUBJECT/CONCERN</label>
-                    <input type="text" name="subjct" id="subjct" class="form-control form-control-sm" placeholder="Input Concern"
-                      style="text-transform:uppercase" onkeyup="this.value = this.value;"></input>
+                    <input type="text" id="subjct" name="subjct" class="form-control form-control-sm" placeholder="Input Concern"
+                      style="text-transform:uppercase" onkeyup="this.value = this.value;">
                   </div>
 
-                  <div class="form-group col-12 col-md-4">
-                    <label>VIA</label>
-                    <select class="form-control form-control-sm" name="via" id="via" required>
-                      <option value=""> &larr; VIA &rarr;</option>
-                      <?php
-                      $query = "select * from via_main";
-                      $run = $conn->prepare($query);
-                      $run->execute();
-                      $rs = $run->get_result();
-                      while ($res = $rs->fetch_assoc()) {
-                        ?>
-                        <option><?= $res['via_desc'] ?></option>
-                      <?php } ?>
-                    </select>
+                  <div class="form-group col-12 col-md-6">
+                    <label>ASSIGN SUPPORT</label>
+                    <input type="text" id="it_desc" name="it_desc" class="form-control form-control-sm" readonly>
                   </div>
 
-                  <div class="form-group col-12 col-md-8">
-                    <label>I.T SUPPORT</label>
-                    <input type="hidden" name="it_num" id="it_num" readonly>
-                    <select class="form-control form-control-sm" name="itsup" id="itsup" required>
-                      <option value="">Assign support...</option>
-                      <?php
-                      $query = "select * from it_tech WHERE deptsel = '1' AND itsup NOT IN ('4','8','12','14')";
-                      $run = $conn->prepare($query);
-                      $run->execute();
-                      $rs = $run->get_result();
-                      while ($res = $rs->fetch_assoc()) {
-                        $tchid = $res['itsup'];
-                        $tchdesc = $res['it_desc'];
-                        ?>
-                        <option value="<?php echo $tchid; ?>"><?= $tchdesc; ?></option>
-                      <?php } ?>
-                    </select>
-                  </div>
-
-                  <div class="form-group col-12 col-md-4">
+                  <div class="form-group col-12 col-md-6">
                     <label>CATEGORY</label>
-                    <input type="hidden" name="cat_num" id="cat_num" readonly>
-                    <select class="form-control form-control-sm" name="cat" id="cat" required>
-                      <option value=""> &larr; CATEGORY &rarr;</option>
-                      <?php
-                      // $query="select * from category WHERE deptsel = '1'";
-                      $query = "select * from categories WHERE deptsel = '1' AND old_tag IS NULL";
-                      $run = $conn->prepare($query);
-                      $run->execute();
-                      $rs = $run->get_result();
-                      while ($res = $rs->fetch_assoc()) {
-                        $supid = $res['cat_id'];
-                        $suppdesc = $res['cat_desc'];
-                        ?>
-                        <option value="<?php echo $supid; ?>"><?= $suppdesc; ?></option>
-                      <?php } ?>
-                    </select>
+                    <input type="text" id="cat_desc" name="cat_desc" class="form-control form-control-sm" readonly>
                   </div>
 
-                  <div class="form-group col-12 col-md-4">
+                   <div class="form-group col-12 col-md-6">
                     <label>SUB CATEGORY</label>
-                    <input type="hidden" name="sub_num" id="sub_num" readonly>
-                    <select class="form-control form-control-sm" name="sub" id="sub"></select>
-                  </div>
-                  <div class="form-group col-12 col-md-4">
-                    <label style="font-weight: bold;">TRANSFER REQUEST</label>
-                    <div>
-                      <input type="checkbox" name="is_transfer" id="is_transfer" value="1">
-                      <label for="is_transfer"> Mark as Transfer Request</label>
-                    </div>
-                  </div>
-                  <div class="form-group col-12 col-md-4 hide_isp">
-                    <label for="isp" id="lbl_isp">Service Provider</label>
-                    <input type="hidden" name="isp_num" id="isp_num" readonly>
-                    <select class="form-control form-control-sm" name="isp" id="isp">
-                      <option value="">Select Network Provider</option>
-                      <?php
-                      $query = "select * from tbl_isp";
-                      $run = $conn->prepare($query);
-                      $run->execute();
-                      $rs = $run->get_result();
-                      while ($res = $rs->fetch_assoc()) {
-                        $ispid = $res['isp_id'];
-                        $ispdesc = $res['isp_shortDesc'];
-                        ?>
-                        <option value="<?php echo $ispid; ?>"><?= $ispdesc; ?></option>
-                      <?php } ?>
-                    </select>
+                    <input type="text" id="sub_cat" name="sub_cat" class="form-control form-control-sm" readonly>
                   </div>
 
-                  <div class="form-group col-12 col-md-4 hide_isp">
-                    <label id="lbl_refNo" for="refNo">Reference No:</label>
-                    <input type="text" class="form-control form-control-sm" name="refNo" id="refNo">
-                  </div>
-
-                  <div class="form-group col-12 col-md-4 hide_isp">
-                    <label for="date_refNo" class="text" id="lbl_DtRefNo">Date of RefNo</label>
-                    <div class="input-group date" id="datetimepicker3" data-target-input="nearest">
-                      <input type="text" name="date_refNo" id="date_refNo"
-                        class="form-control form-control-sm datetimepicker-input" data-target="#datetimepicker3" />
-                      <div class="input-group-append" data-target="#date_created" data-toggle="datetimepicker">
-                        <input type="hidden" class="form-control form-control-sm" name="date_createdx"
-                          id="date_createdx">
-                        <div class="input-group-text" id="ico_cal3"><i class="fa fa-calendar"></i></div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="form-group col-12 col-md-4">
+                  <div class="form-group col-12 col-md-6">
                     <label>STATUS</label>
-                    <select class="form-control form-control-sm" name="status" id="status" required>
-                      <option value=""> &larr; Status &rarr;</option>
-                      <?php
-                      $query = "select * from status  WHERE it_module_tag = 'Y'";
-                      $run = $conn->prepare($query);
-                      $run->execute();
-                      $rs = $run->get_result();
-                      while ($res = $rs->fetch_assoc()) {
-                        ?>
-                                   <option value="<?=$res['stat_desc'] ?>" style="color: #333;"><?=$res['stat_desc'] ?></option>
-                      <?php } ?>
-                    </select>
+                    <input type="text" id="status" name="status" class="form-control form-control-sm" readonly>
                   </div>
+                  
+                
 
                   <div class="form-group col-12 col-md-4 hide_cl">
                     <label id="dateclabel" class="hidden">DATE CLOSED</label>
@@ -507,20 +782,20 @@ Start of Add/Edit Modal
 
               </div><!-- /.left -->
 
-              <!-- RIGHT SIDE -->
-              <div class="col-12 col-lg-6">
+                <!-- RIGHT SIDE -->
+            <div class="col-12 col-lg-6">
 
                 <div id="msg_thread">
 
                   <div class="col-12 mb-3 px-0">
-                    <label style="font-weight: bold; color:white;">Add Comment:</label>
+                    <label style="font-weight: bold; color:#213456;">Add Comment:</label>
                     <textarea name="admsg" id="addmsg" class="form-control form-control-sm"
-                      placeholder="Reply to their message or give an updates regarding on this ticket..."
+                      placeholder="Reply to their message or give updates regarding this ticket..."
                       required></textarea>
                   </div>
 
                   <div class="col-12 mt-4 mb-2 dv_msg px-0">
-                    <label for="remarks_view" style="font-weight: bold; color:white;">Comment Thread:</label>
+                    <label for="remarks_view" style="font-weight: bold; color:#213456;">Comment Thread:</label>
                     <hr>
                     <div class="container_remarks">
                       <div id="remarks_view"></div>
@@ -813,10 +1088,9 @@ $(document).ready(function(){
 function admin_datatable(t){
   const dataset = t.deptdata;
   
-  // If the table instance already exists, clear it and add the new dataset row vectors smoothly
   if ($.fn.DataTable.isDataTable('#create_dept_table')) {
     var table = $('#create_dept_table').DataTable();
-    table.clear().rows.add(dataset).draw(false); // "false" preserves current page/pagination state
+    table.clear().rows.add(dataset).draw(false); 
     return;
   }
 
@@ -838,7 +1112,6 @@ function admin_datatable(t){
     columns: [
       {title:"Ticket No", data:"ticket_no","defaultContent": ""},
       {title:"SUBJECT", data:"subject","defaultContent": ""},
-      {title:"Types of Service", data:"service_desc","defaultContent": ""},
       {title:"Concern", data:"concern","defaultContent": ""},
       {title:"Date Created", data:"date_created","defaultContent": ""},
       {title:"Status", data:"status","defaultContent": ""},
@@ -850,20 +1123,33 @@ function admin_datatable(t){
       }
     }
   });
-
-  // Event listener attachment layout configuration
+// Event listener attachment layout configuration
   $('#create_dept_table tbody').off('click', 'button').on('click', 'button', function () {
     var data = reptable.row($(this).parents('tr')).data();
     if (!data) return;
     
-    // Data assignment logic blocks to userModal elements...
+    // Map hidden required IDs
     $('#ticket_no').val(data['ticket_no']);
     $('#store').val(data['store']);
+    $('#via').val(data['via'] || 'WEB'); 
+    $('#itsup').val(data['itsup']);
+    $('#it_num').val(data['itsup']);
+    $('#cat').val(data['cat_id']);
+    $('#sub').val(data['sub_id']);
+    $('#sub_num').val(data['sub_id']);
+    $('#date_created').val(data['date_created']);
+    $('#date_createdx').val(data['date_created']);
+    $('#concern').val(data['concern']);
+    
+    // Map visual UI labels
+    if (data['str_name']) $('#str_name').val(data['str_name']);
+    if (data['deptsel']) $('#deptsel').val(data['deptsel']);
     $('#subjct').val(data['subject']);
-    if (data['via']) $('#via').val(data['via']);
-    if (data['itsup']) $('#itsup').val(data['itsup']);
+    if (data['it_desc']) $('#it_desc').val(data['it_desc']);
+    if (data['cat_desc']) $('#cat_desc').val(data['cat_desc']);
+    if (data['sub_cat']) $('#sub_cat').val(data['sub_cat']);
     if (data['status']) $('#status').val(data['status']);
-    if (data['cat_id']) $('#cat').val(data['cat_id']).trigger('change');
+    
     $('#remarks').val(data['concern']); 
     $('#action').val("Update");
     $('#operation').val("Save and Reply"); 

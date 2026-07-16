@@ -692,6 +692,78 @@ public function changepass(){
 		
 }
 
+public function deptthist() {
+    $query = "SELECT
+        `reports`.`f_deptsel` AS `deptsel`,
+        `reports`.`ticket_no` AS `ticket_no`,
+        `reports`.`date_created` AS `date_created`,
+        `reports`.`store` AS `store`,
+        `tbl_branch`.`str_name` AS `str_name`,
+        `reports`.`concern` AS `concern`,
+        `reports`.`service_desc` AS `service_desc`,
+        `reports`.`subject` AS `subject`,
+        `reports`.`status` AS `status`,
+        `reports`.`userId` AS `userId`,
+        `reports`.`via` AS `via`,
+        `reports`.`itsup` AS `itsup`,
+        `it_tech`.`it_desc` AS `it_desc`,
+        `reports`.`cat_id` AS `cat_id`,
+        `categories`.`cat_desc` AS `cat_desc`,
+        CONCAT_WS('-', `reports`.`cat_id`, `categories`.`cat_desc`) AS `cat_x`,
+        `reports`.`sub_id` AS `sub_id`,
+        `subcat`.`sub_cat` AS `sub_cat`,
+        `reports`.`date_closed` AS `date_closed`,
+        `reports`.`remarks` AS `remarks`,
+        `reports_msgcnt`.`msg_cnt` AS `msg_cnt`,
+        `reports_newmsg`.`nmsg_stat` AS `nmsg_stat`,
+        `tbl_dept`.`dept_desc` AS `dept`,
+		     `reports`.`status` AS `status`,
+        `users`.`fname` AS `fname`,
+        `users`.`lstname` AS `lstname`,
+        CONCAT_WS(' ', `users`.`fname`, `users`.`lstname`) AS `full_name`,
+        GROUP_CONCAT(`images`.`files_name` SEPARATOR '|') AS `attachment_files` 
+    FROM `reports`
+    JOIN `tbl_branch` ON `tbl_branch`.`str_num` = `reports`.`store`
+    LEFT JOIN `it_tech` ON `it_tech`.`itsup` = `reports`.`itsup`
+     LEFT JOIN `tbl_dept` ON `tbl_dept`.`dept_id` = `reports`.`deptsel`
+    LEFT JOIN `categories` ON `categories`.`cat_id` = `reports`.`cat_id`
+    LEFT JOIN `subcat` ON `subcat`.`sub_id` = `reports`.`sub_id`
+    LEFT JOIN `reports_msgcnt` ON `reports_msgcnt`.`ticket_no` = `reports`.`ticket_no`
+    LEFT JOIN `reports_newmsg` ON `reports_newmsg`.`ticket_no` = `reports`.`ticket_no`
+    LEFT JOIN `users` ON `users`.`id` = `reports`.`userId`
+    LEFT JOIN `images` ON `images`.`ticket_no` = `reports`.`ticket_no`
+    WHERE `reports`.`userId` = :userId
+    GROUP BY `reports`.`ticket_no`
+    ORDER BY `reports`.`ticket_no` DESC";
+
+    $statement = $this->connection->prepare($query);
+    
+    $statement->execute([
+        ':userId' => $_SESSION['user_id']
+    ]);
+    
+    $result = $statement->fetchAll();
+    $fetchdata = array();
+    
+    foreach ($result as $row) {
+        $fetchdata[] = array(
+            'ticket_no'        => $row["ticket_no"],
+            'str_name'         => $row["str_name"],
+            'full_name'        => $row['full_name'],
+            'date_created'   => $row['date_created'],
+			  'dept'   => $row['dept'],
+            'concern'          => $row['concern'],
+            'service_desc'     => $row['service_desc'],
+            'subject'          => $row['subject'],
+           
+            'status'           => $row['status'],
+            'cat_x'            => $row['cat_x'],
+            'attachment_files' => $row['attachment_files']
+        );
+    }   
+    
+    return array_filter($fetchdata);
+}
 /**
  * Notif techsupp.
  */

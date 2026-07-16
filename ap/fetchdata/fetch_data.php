@@ -48,6 +48,12 @@ switch ($mode) {
     case 'dtb':
         $records['rptdata']= $fn->admin_data_table_res();
         break;
+
+        
+    case 'dept_tbl':
+        $records['deptdata'] = $fn->deptthist();
+        break;
+
     case 'dtbnet':
         $records['rptdatanet']= $fn->admin_data_table_resnet();
         break;  

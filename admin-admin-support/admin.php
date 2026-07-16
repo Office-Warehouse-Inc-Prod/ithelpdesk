@@ -646,8 +646,7 @@ body {
             window.location.href = "fix_asset.php?ticket_no=" + encodeURIComponent(ticketVal);
           }
           else if(notifVal == '6'){
-            // FIXED: Now routes correctly to printing page instead of validation page
-            window.location.href = "fix_asset_printing.php?ticket_no=" + encodeURIComponent(ticketVal); 
+            window.location.href = "fix_asset.php?ticket_no=" + encodeURIComponent(ticketVal); 
           }
           else if(notifVal == '9'){
             window.location.href = "fix_asset_reports.php?ticket_no=" + encodeURIComponent(ticketVal);

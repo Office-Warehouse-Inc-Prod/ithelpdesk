@@ -1,7 +1,17 @@
 <?php
+session_start(); 
+
 include '../condb.php'; 
 
 header('Content-Type: application/json');
+
+if (!isset($_SESSION['tech_id'])) {
+    http_response_code(401);
+    echo json_encode(["error" => "Unauthorized access. Session expired or tech_id not set."]);
+    exit;
+}
+
+$tech_id = $_SESSION['tech_id'];
 
 $query1 = "SELECT MONTH(r.date_created) AS MONTH_NUM,
            SUM(r.status = 'Assigned') AS ASSIGNED,
@@ -14,9 +24,9 @@ $query1 = "SELECT MONTH(r.date_created) AS MONTH_NUM,
     WHERE r.status IN ('Assigned', 'ON PROCESS', 'PENDING', 'CLOSED') 
       AND YEAR(r.date_created) = 2026 
       AND r.f_deptsel = 1 
+      AND r.itsup = ?
     GROUP BY MONTH(r.date_created)
     ORDER BY MONTH_NUM ASC";
-
 $query2 = "SELECT
         r.ticket_no AS ticket_no,
         b.str_code AS str_code,
@@ -39,6 +49,7 @@ $query2 = "SELECT
     WHERE r.status IN ('PENDING', 'ASSIGNED', 'ON PROCESS')
       AND YEAR(r.date_created) = 2026 
       AND r.f_deptsel = 1 
+      AND r.itsup = ?
     ORDER BY r.date_created ASC";
 
 $query_totals = "SELECT 
@@ -51,7 +62,8 @@ $query_totals = "SELECT
     FROM reports r
     WHERE status IN ('Assigned', 'ON PROCESS', 'PENDING', 'CLOSED') 
       AND YEAR(r.date_created) = 2026 
-      AND r.f_deptsel = 1";
+      AND r.f_deptsel = 1 
+      AND r.itsup = ?";
 
 try {
     $db = new dbconfig();
@@ -63,17 +75,19 @@ try {
     ];
 
     $stmt1 = $db->prepare($query1);
+    $stmt1->bind_param("s", $tech_id); 
     $stmt1->execute();
     $output_payload['department_stats'] = $stmt1->get_result()->fetch_all(MYSQLI_ASSOC);
     $stmt1->close();
 
     $stmt2 = $db->prepare($query2);
+    $stmt2->bind_param("s", $tech_id);
     $stmt2->execute();
     $output_payload['ticket_details'] = $stmt2->get_result()->fetch_all(MYSQLI_ASSOC);
     $stmt2->close();
 
- 
     $stmt3 = $db->prepare($query_totals);
+    $stmt3->bind_param("s", $tech_id);
     $stmt3->execute();
     $res_totals = $stmt3->get_result()->fetch_assoc();
     $output_payload['global_totals'] = $res_totals;

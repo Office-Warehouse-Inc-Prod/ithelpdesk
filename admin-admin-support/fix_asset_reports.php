@@ -684,7 +684,11 @@ table.dataTable tbody tr:hover {
 
                    <div class="form-group col-md-5">
                     <label>Asset Tag Number</label>
-                    <input type="text" class="form-control" name="asset_tag_number" id="asset_tag_number" required>
+                    <input type="text" class="form-control" name="asset_tag_number" id="asset_tag_number" >
+                  </div>
+                   <div class="form-group col-md-12">
+                    <label>Workoutput (Under Technical Evaluation)</label>
+                    <textarea class="form-control" name="technical_workoutput" id="technical_workoutput" style="height: 150px;" readonly></textarea>
                   </div>
                   <div class="form-group col-md-12">
                     <label>Purpose of Request (Created by Store/Dept User)</label>
@@ -965,6 +969,7 @@ $(document).ready(function(){
         $('#asset_tag_number').val(data.asset_tag_number || '');
       $('#purpose_of_request').val(data.purpose_of_request || '');
          $('#revised_request').val(data.revised_request || '');
+            $('#technical_workoutput').val(data.technical_workoutput || '');
       $('#it_desc').val(data.it_desc || '');
       $('#noted_by_desc').val(data.noted_by_desc || '');
       $('#date_received').val(data.date_received || '');

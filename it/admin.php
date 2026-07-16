@@ -85,14 +85,13 @@ if ($_SESSION['login'] != 'true') {
 
 body {
   font-family: 'Poppins', sans-serif;
-  background-color: var(--bg-body);
   color: #3A3541DE;
   overflow-x: hidden;
   min-height: 100vh;
 }
 
 .owi-navbar {
-  background-color: #213456 !important;
+  background: linear-gradient(135deg, #213456, #334c7a) !important;
   box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.15);
   padding: 0.5rem 1.5rem !important;
   transition: all 0.3s ease;
@@ -231,11 +230,11 @@ body {
 
 .owi-navbar .dropdown-item:hover {
   background-color: #b5c1d7 !important;
-  color: #213456 !important;
+  color: linear-gradient(135deg, #213456, #334c7a) !important;
 }
 
 .owi-navbar .dropdown-item:hover i {
-  color: #213456 !important; 
+  color: linear-gradient(135deg, #213456, #334c7a) !important; 
 }
 
 .owi-navbar .change-pass {
@@ -379,7 +378,7 @@ body {
 }
 
 .custom-notif-icon-badge {
-  background-color: #213456 !important;
+  background-color: linear-gradient(135deg, #213456, #334c7a) !important;
   color: #ffffff !important;
   width: 32px;
   height: 32px;

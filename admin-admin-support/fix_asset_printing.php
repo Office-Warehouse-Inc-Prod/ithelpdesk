@@ -778,7 +778,7 @@ textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
 
               <div class="col-md-5 pt-2 pb-2" style=" background: linear-gradient(to bottom, #ffffff, #99aac8); border-radius: 8px;">
                             <h6 class="text-uppercase mb-3" style="color:#E1AD01; font-weight: 800;">Asset Request Progress</h6>
-                            <div class="tracking-container" style="max-height: 650px; overflow-y: auto; padding-right: 10px;">
+                            <div class="tracking-container" style="max-height: 950px; overflow-y: auto; padding-right: 10px;">
                                 <ul class="tracking-timeline" id="trackingMap"></ul>
                             </div>
                         </div>

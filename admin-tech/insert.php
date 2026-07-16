@@ -344,7 +344,6 @@ if(!empty($result))
      exit();
  }
  
- 
  if (isset($_POST["operation"]) && $_POST["operation"] === "update_request") {
     
     header('Content-Type: application/json');
@@ -357,63 +356,56 @@ if(!empty($result))
     try {
         $connection->beginTransaction();
 
-        $statement = $connection->prepare("
-            UPDATE asset_requests
-            SET
+        $ticketNo = $_POST['ticket_no'];
+        $currentDate = date('Y-m-d H:i:s');
+        $techId = $_POST['tech_id'] ?? $_SESSION['tech_id'] ?? '';
+
+        $stmt1 = $connection->prepare("
+            UPDATE asset_requests SET
                 serial_number = :serial_number,
                 date_received = :date_received,
                 noted_by      = :noted_by,
                 date_noted    = :date_noted,
-                status        = :status,
-                approve_method_tech =:approve_method_tech
-            WHERE ticket_no   = :ticket_no
+                status        = 'NOTED',
+                approve_method_tech = :approve_method_tech
+            WHERE ticket_no = :ticket_no
         ");
-
-        $ticketNo = $_POST['ticket_no'] ?? $computed_ticket ?? null;
-        $currentDate = date('Y-m-d H:i:s');
-        $techId = $_POST['tech_id'] ?? $_SESSION['tech_id'] ?? '';
-
-        $result = $statement->execute([
+        $stmt1->execute([
             ':serial_number' => $_POST['serial_number'] ?? '',
             ':date_received' => $_POST['date_received'] ?? '',
             ':noted_by'      => $techId, 
             ':date_noted'    => $currentDate,
-            ':status'        => 'NOTED',
-               ':approve_method_tech' => $_POST['approve_method_tech'] ?? '',
+            ':approve_method_tech' => $_POST['approve_method_tech'] ?? '',
             ':ticket_no'     => $ticketNo
         ]);
 
-        $statement2 = $connection->prepare("
-            INSERT INTO tbl_notif (
-                ticket_no, store, itsup, notif_data, notif_val, notif_date
-            ) VALUES (
-                :ticket_no, :store, :itsup, :notif_data, :notif_val, :notif_date
-            )
+        $stmt2 = $connection->prepare("
+            UPDATE tbl_notif 
+            SET notif_val = 0 
+            WHERE ticket_no = :ticket_no
         ");
+        $stmt2->execute([':ticket_no' => $ticketNo]);
 
-        $result2 = $statement2->execute([
+        $stmt3 = $connection->prepare("
+            INSERT INTO tbl_notif (ticket_no, store, itsup, notif_data, notif_val, notif_date) 
+            VALUES (:ticket_no, :store, :itsup, :notif_data, 6, :notif_date)
+        ");
+        $stmt3->execute([
             ':ticket_no'  => $ticketNo,
             ':store'      => $_SESSION["str_num"] ?? "",
-            ':itsup'      => $_SESSION["tech_id"] ?? "",
+            ':itsup'      => $techId,
             ':notif_data' => "Fixed asset " . $ticketNo . " Noted by Technical Head and For Validation",
-            ':notif_val'  => '6',
             ':notif_date' => $currentDate
         ]);
 
-        if ($result && $result2) {
-            $connection->commit();
-            echo json_encode(["status" => "success", "message" => "Request updated successfully."]);
-        } else {
-            $connection->rollBack();
-            echo json_encode(["status" => "error", "message" => "SQL Error: Execution failed."]);
-        }
+        $connection->commit();
+        echo json_encode(["status" => "success", "message" => "Request updated successfully."]);
 
     } catch (PDOException $e) {
         if ($connection->inTransaction()) {
             $connection->rollBack();
         }
         echo json_encode(["status" => "error", "message" => "Database error: " . $e->getMessage()]);
-        exit();
     }
 }
 

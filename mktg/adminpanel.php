@@ -12,7 +12,7 @@ include 'sub_graph_modal.php';
 
 ?>
 <head>
-  <link rel="stylesheet" href="adminpanel.css">
+    <link rel="stylesheet" href="adminpanel.css">
 </head>
 <style>
 
@@ -215,6 +215,381 @@ textarea.form-control:focus {
   box-shadow: 0 10px 18px rgba(17,24,39,.06);
   border-color: 2px solid rgba(114, 89, 21, 0.94) !important;
 }
+
+
+.container_remarks {
+    display: flex !important;
+    flex-direction: column;
+    max-height: 480px;
+    overflow-y: auto;
+    background-color: #f0f2f5 !important;
+    border: 1px solid #dee2e6;
+    border-radius: 12px;
+    padding: 15px;
+    margin-top: 10px;
+}
+
+.dv_msg {
+    display: block !important;
+}
+
+#remarks_view {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+#userModal .modal-dialog{
+  max-width: 1100px; 
+  margin: 1.25rem auto;
+}
+
+#userModal .modal-content{
+  border-radius: 16px;
+  border: none;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+#userModal .modal-header{
+    background-color: #213456;
+    color: #fff;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    border-bottom: 4px solid #E1AD01; 
+}
+
+#userModal_header{
+  font-weight: 700;
+  font-size: 18px;
+  margin: 0;
+}
+
+#userModal .modal-body{
+  padding: 16px 18px;
+}
+
+#userModal .modal-title {
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+}
+
+#userModal .input-group-text {
+    background-color: white;
+    border-right: none;
+    color: #213456;
+}
+
+#userModal .form-control {
+    border-left: none;
+    height: 45px;
+    border-radius: 0 8px 8px 0;
+}
+
+#userModal .form-control:focus {
+    border-color: #213456;
+    box-shadow: none;
+}
+
+#userModal .input-group:focus-within {
+    box-shadow: 0 0 0 0.2rem rgba(225, 173, 1, 0.25);
+    border-radius: 8px;
+}
+
+.m_col {
+    background: #ffffff;
+    padding: 2rem !important;
+    border-right: 1px solid #edf2f7;
+}
+
+.m_col label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #718096;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.m_col .form-control {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 0.6rem 0.75rem;
+    transition: all 0.2s ease;
+    background-color: #f8fafc;
+}
+
+.m_col .form-control:focus {
+    background-color: #fff;
+    border-color: #1C0770;
+    box-shadow: 0 0 0 3px rgba(28, 7, 112, 0.1);
+    outline: none;
+}
+
+.m_col textarea {
+    min-height: 80px;
+}
+
+#msg_thread {
+    padding: 1rem 1.5rem;
+    background: linear-gradient(to bottom, #ffffff, #99aac8);
+    height: 100%;
+}
+
+#addmsg {
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 1rem;
+    background: #ffffff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.chat-bubble {
+    max-width: 85%;
+    padding: 10px 14px;
+    border-radius: 18px;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    position: relative;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    word-wrap: break-word;
+}
+
+.chat-left {
+    align-self: flex-start;
+    background: #ffffff;
+    color: #1e293b;
+    border-bottom-left-radius: 4px;
+    border: 1px solid #e5e7eb;
+}
+
+.chat-right {
+    align-self: flex-end;
+    background: #1C0770;
+    color: #ffffff;
+    border-bottom-right-radius: 4px;
+}
+
+.msg-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    font-size: 0.7rem;
+    margin-bottom: 4px;
+}
+
+.chat-left .msg-meta {
+    color: #64748b;
+}
+
+.chat-right .msg-meta {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.chat-left .msg-meta-name {
+    color: #213456;
+    font-weight: bold;
+}
+
+.chat-right .msg-meta-name {
+    color: #ffffff;
+    font-weight: bold;
+}
+
+.btn-success {
+    background-color: #1C0770 !important;
+    border: none;
+    padding: 0.6rem 2rem;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: transform 0.2s ease;
+}
+
+.btn-success:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(28, 7, 112, 0.2);
+}
+
+.btn-danger {
+    background-color: #fff;
+    border: 1px solid #e2e8f0;
+    color: #e53e3e;
+    padding: 0.6rem 1.5rem;
+    font-weight: 600;
+    border-radius: 8px;
+}
+
+.btn-danger:hover {
+    background-color: #fff5f5;
+    color: #c53030;
+}
+
+#userModal .modal-footer{
+  border-top: 1px solid rgba(0,0,0,0.08);
+  background: rgba(255,255,255,0.92);
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  padding: 12px 14px;
+}
+
+@media (max-width: 991px){
+  #userModal .modal-dialog{
+    max-width: 96%;
+    margin: .75rem auto;
+  }
+
+  .container_remarks{
+    max-height: 350px;
+  }
+
+  #action, #btnClose{
+    width: 100%;
+  }
+}
+
+
+.year-picker-group {
+    flex: 1;
+    min-width: 300px; 
+}
+#showCalendarBtn {
+    background-color: #213456;
+    color: white;
+    border-radius: 8px;
+    padding: 8px 20px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+#showCalendarBtn:hover {
+    background-color: var(--owi-gold, #E1AD01);
+    color: #213456;
+}
+
+
+ .modal-overlay {
+            display: none; 
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+       .modal-overlay .modal-content {
+             background: linear-gradient(to bottom, #ffffff, #99aac8);
+            padding: 25px;
+            border-radius: 8px;
+            width: 70%;
+            max-width: 90%;
+            margin-top:30px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+       .modal-overlay .modal-content h3 {
+            margin-top: 0;
+            color: #333;
+        }
+       .modal-overlay .close-btn {
+            background-color: #28a745;
+            margin-top: 15px;
+        }
+ 
+
+        
+  .table-responsive {
+    overflow: visible !important;
+    width: 100% !important;
+  }
+
+  .admin-table {
+    width: 100% !important;
+    table-layout: auto !important;
+    page-break-inside: avoid;
+    
+  }
+
+  .admin-table th {
+    background-color: #213456 !important;
+    color: #fff !important;
+    padding: 6px 4px !important;
+    font-size: 11px !important;
+  }
+
+  #admin_report.admin-table th.active.text-center {
+    background-color: #2b9827 !important;
+    color: #fff !important;
+    padding: 6px 4px !important;
+    font-size: 11px !important;
+  }
+
+  #admin_report.admin-table th.compliance.text-center {
+    background-color: #a29341 !important;
+    color: #fff !important;
+    padding: 6px 4px !important;
+    font-size: 11px !important;
+  }
+
+  .admin-table td {
+    padding: 6px 4px !important;
+    font-size: 11px !important;
+    border-bottom: 1px solid #0e0e0ea1 !important;
+  }
+  .table-responsive{
+    margin-top: -600px;
+  }
+
+  .progress {
+    border: 1px solid #999 !important;
+    background-color: #ddd !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  #dept-table-footer {
+    border: 2px solid #2d3c59;
+    background-color: #f4e9d7 !important; 
+}
+
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+    box-shadow: none !important;
+  }
+.modal-overlay .close-btn:hover{
+   display: block;
+  margin-left: auto;
+  border-radius: 12px;
+  width: 30%;
+
+  background-color: #E1AD01;
+  color: white;
+}
+
+.modal-overlay .close-btn {
+  display: block;
+  margin-left: auto;
+  border-radius: 12px;
+  padding:10px;
+  width: 30%;
+  color: white;
+  background-color: #213456;
+}
+ .modal-overlay .month-row[data-month="6"] {
+  background: #213456;
+  outline: 2px solid red;
+  outline-offset: -2px; 
+}
+
 </style>
   
 <div id="welcomeModal" class="modal-overlay" style="display: none;">
@@ -813,25 +1188,26 @@ Start of Add/Edit Modal
             <!-- RIGHT SIDE -->
             <div class="col-12 col-lg-6">
 
-              <div id="msg_thread">
+                <div id="msg_thread">
 
-                <div class="col-12 mb-3 px-0">
-                  <label style="font-weight: bold; color:white;">Add Comment:</label>
-                  <textarea name="admsg" id="addmsg" class="form-control form-control-sm"
-                    placeholder="Reply to their message or give an updates regarding on this ticket..." required></textarea>
-                </div>
-
-                <div class="col-12 mt-4 mb-2 dv_msg px-0">
-                  <label for="remarks_view" style="font-weight: bold; color:white;">Comment Thread:</label>
-                  <hr>
-                  <div class="container_remarks">
-                    <div id="remarks_view"></div>
+                  <div class="col-12 mb-3 px-0">
+                    <label style="font-weight: bold; color:#213456;">Add Comment:</label>
+                    <textarea name="admsg" id="addmsg" class="form-control form-control-sm"
+                      placeholder="Reply to their message or give updates regarding this ticket..."
+                      required></textarea>
                   </div>
-                </div>
 
-              </div><!-- /#msg_thread -->
+                  <div class="col-12 mt-4 mb-2 dv_msg px-0">
+                    <label for="remarks_view" style="font-weight: bold; color:#213456;">Comment Thread:</label>
+                    <hr>
+                    <div class="container_remarks">
+                      <div id="remarks_view"></div>
+                    </div>
+                  </div>
 
-            </div><!-- /.right -->
+                </div><!-- /#msg_thread -->
+
+              </div><!-- /.right -->
 
           </div><!-- /.row -->
         </div><!-- /.modal-body -->
@@ -1219,7 +1595,7 @@ function loadDepartmentTable() {
         
             const monthNames = {
                 1: "JANUARY", 2: "FEBRUARY", 3: "MARCH", 
-                4: "APRIL", 5: "MAY", 6: "JUNE"
+                      4: "APRIL", 5: "MAY", 6: "JUNE" , 7: "JULY", 8: "AUGUST", 9: "SEPTEMBER", 10: "OCTOBER", 11: "NOVEMBER" , 12: "DECEMBER"
             };
 
             if (response && response.department_stats) {
@@ -1230,7 +1606,7 @@ function loadDepartmentTable() {
                     statsByMonth[parseInt(row.MONTH_NUM)] = row;
                 });
 
-                for (let m = 1; m <= 6; m++) {
+                for (let m = 1; m <= 8; m++) {
                     let row = statsByMonth[m];
                     let monthName = monthNames[m];
 
