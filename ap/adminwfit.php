@@ -705,7 +705,7 @@ textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
               <select class="form-control form-control-sm custom-select-placeholder placeholder-active" name="status" id="status" required onchange="handleDropdownChange(this)">
                 <option value=""style="color:red;"> &larr; STATUS &rarr;</option>
                 <?php
-                  $query="select * from status WHERE it_module_tag = 'Y' AND stat_id <> '29'";
+                  $query="select * from status WHERE ap_module_tag = 'Y' AND stat_id <> '29'";
                   $run=$con1->prepare($query);
                   $run->execute();
                   $rs=$run->get_result();

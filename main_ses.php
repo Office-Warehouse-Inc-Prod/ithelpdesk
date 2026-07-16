@@ -96,6 +96,13 @@ $user = NULL;
     header("Location: admin/adminpanel.php");
     exit();
    } 
+    elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'admin-admin-test' ) {
+    $_SESSION['login'] = 'true';
+    $_SESSION['user_id'] = $results['id'];
+    $_SESSION['deptsel'] = $results['deptsel'];
+    header("Location: admin/adminpanel.php");
+    exit();
+   } 
    elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'admin-user' ) {
     $_SESSION['login'] = 'true';
     $_SESSION['user_id'] = $results['id'];
@@ -136,6 +143,15 @@ $user = NULL;
     header("Location: hr/adminpanel.php");
     exit();
    } 
+    elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'hr-test' ) {
+    $_SESSION['login'] = 'true';
+    $_SESSION['user_id'] = $results['id'];
+    $_SESSION['deptsel'] = $results['deptsel'];
+    header("Location: hr/adminpanel.php");
+    exit();
+   } 
+
+
   elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'mktg-admin' ) {
     $_SESSION['login'] = 'true';
     $_SESSION['user_id'] = $results['id'];
@@ -143,6 +159,15 @@ $user = NULL;
     header("Location: mktg/adminpanel.php");
     exit();
    } 
+    elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'mktg-test' ) {
+    $_SESSION['login'] = 'true';
+    $_SESSION['user_id'] = $results['id'];
+    $_SESSION['deptsel'] = $results['deptsel'];
+    header("Location: mktg/adminpanel.php");
+    exit();
+   } 
+
+
    elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'mktg-user' ) {
     $_SESSION['login'] = 'true';
     $_SESSION['user_id'] = $results['id'];
@@ -151,6 +176,12 @@ $user = NULL;
     exit();
    } 
   elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'ld-admin' ) {
+    $_SESSION['login'] = 'true';
+    $_SESSION['user_id'] = $results['id'];
+    header("Location: ld/adminpanel.php");
+    exit();
+   } 
+   elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'ld-test' ) {
     $_SESSION['login'] = 'true';
     $_SESSION['user_id'] = $results['id'];
     header("Location: ld/adminpanel.php");
@@ -187,13 +218,36 @@ $user = NULL;
     header("Location: icg/adminpanel.php");
     exit();
    }  
+
+   elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'icg-test' ) {
+    $_SESSION['login'] = 'true';
+    $_SESSION['user_id'] = $results['id'];
+    header("Location: icg/adminpanel.php");
+    exit();
+   } 
   elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'techsup' ) {
     $_SESSION['login'] = 'true';
     $_SESSION['user_id'] = $results['id'];
     header("Location: techsupports/techdashboard.php");
     exit();
    }
+
+    elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'techsup-test' ) {
+    $_SESSION['login'] = 'true';
+    $_SESSION['user_id'] = $results['id'];
+    header("Location: techsupports/techdashboard.php");
+    exit();
+   }
+   
    elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'visual-admin' ) {
+    $_SESSION['login'] = 'true';
+    $_SESSION['user_id'] = $results['id'];
+    $_SESSION['deptsel'] = $results['deptsel'];
+    header("Location: visual/adminpanel.php");
+    exit();
+   } 
+
+   elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'visual-test' ) {
     $_SESSION['login'] = 'true';
     $_SESSION['user_id'] = $results['id'];
     $_SESSION['deptsel'] = $results['deptsel'];
@@ -253,6 +307,14 @@ $user = NULL;
     header("Location: icg/adminpanel.php");
     exit();
    } 
+
+   elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'icg-test' ) {
+    $_SESSION['login'] = 'true';
+    $_SESSION['user_id'] = $results['id'];
+    $_SESSION['deptsel'] = $results['deptsel'];
+    header("Location: icg/adminpanel.php");
+    exit();
+   } 
    //Newly Added Accounts Payable-Admin 
     elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'ap-admin' ) {
     $_SESSION['login'] = 'true';
@@ -261,8 +323,24 @@ $user = NULL;
     header("Location: ap/adminpanel.php");
     exit();
    } 
+
+   elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'ap-test' ) {
+    $_SESSION['login'] = 'true';
+    $_SESSION['user_id'] = $results['id'];
+    $_SESSION['deptsel'] = $results['deptsel'];
+    header("Location: ap/adminpanel.php");
+    exit();
+   } 
    //Newly Added Sales Accounting -Admin 
     elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'sa-admin' ) {
+    $_SESSION['login'] = 'true';
+    $_SESSION['user_id'] = $results['id'];
+    $_SESSION['deptsel'] = $results['deptsel'];
+    header("Location: sa/adminpanel.php");
+    exit();
+   } 
+
+    elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'sa-test' ) {
     $_SESSION['login'] = 'true';
     $_SESSION['user_id'] = $results['id'];
     $_SESSION['deptsel'] = $results['deptsel'];
@@ -279,8 +357,23 @@ $user = NULL;
     exit();
    } 
 
+    elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'busdev-test' ) {
+    $_SESSION['login'] = 'true';
+    $_SESSION['user_id'] = $results['id'];
+    $_SESSION['deptsel'] = $results['deptsel'];
+    header("Location: businessdev/adminpanel.php");
+    exit();
+   } 
+
     //Newly Added MSSD -Admin 
     elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'mssd-admin' ) {
+    $_SESSION['login'] = 'true';
+    $_SESSION['user_id'] = $results['id'];
+    $_SESSION['deptsel'] = $results['deptsel'];
+    header("Location: mss/adminpanel.php");
+    exit();
+   } 
+    elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'mss-test' ) {
     $_SESSION['login'] = 'true';
     $_SESSION['user_id'] = $results['id'];
     $_SESSION['deptsel'] = $results['deptsel'];
@@ -290,6 +383,13 @@ $user = NULL;
 
        //Newly Added Merchandising -Admin 
     elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'merch-admin' ) {
+    $_SESSION['login'] = 'true';
+    $_SESSION['user_id'] = $results['id'];
+    $_SESSION['deptsel'] = $results['deptsel'];
+    header("Location: merchandising/adminpanel.php");
+    exit();
+   } 
+    elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'merch-test' ) {
     $_SESSION['login'] = 'true';
     $_SESSION['user_id'] = $results['id'];
     $_SESSION['deptsel'] = $results['deptsel'];
@@ -306,6 +406,13 @@ $user = NULL;
     header("Location: admin-admin-support/adminpanel.php");
     exit();
    } 
+    elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'admin-test' ) {
+    $_SESSION['login'] = 'true';
+    $_SESSION['user_id'] = $results['id'];
+    $_SESSION['deptsel'] = $results['deptsel'];
+    header("Location: admin-admin-support/adminpanel.php");
+    exit();
+   } 
    //Newly Added Treasury-Admin 
     elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'treasury-admin' ) {
     $_SESSION['login'] = 'true';
@@ -314,8 +421,21 @@ $user = NULL;
     header("Location: treasury/adminpanel.php");
     exit();
    } 
-   //Newly Added Accounts Recievable-Admin 
+   elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'treasury-test' ) {
+    $_SESSION['login'] = 'true';
+    $_SESSION['user_id'] = $results['id'];
+    $_SESSION['deptsel'] = $results['deptsel'];
+    header("Location: treasury/adminpanel.php");
+    exit();
+   } 
     elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'ar-admin' ) {
+    $_SESSION['login'] = 'true';
+    $_SESSION['user_id'] = $results['id'];
+    $_SESSION['deptsel'] = $results['deptsel'];
+    header("Location: ar/adminpanel.php");
+    exit();
+   } 
+   elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'ar-test' ) {
     $_SESSION['login'] = 'true';
     $_SESSION['user_id'] = $results['id'];
     $_SESSION['deptsel'] = $results['deptsel'];

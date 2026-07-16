@@ -1150,7 +1150,7 @@ Start of Add/Edit Modal
                     <select class="form-control form-control-sm" name="status" id="status" required>
                       <option value=""> &larr; Status &rarr;</option>
                       <?php
-                      $query = "select * from status  WHERE it_module_tag = 'Y'";
+                      $query = "select * from status  WHERE mss_module_tag = 'Y1'";
                       $run = $conn->prepare($query);
                       $run->execute();
                       $rs = $run->get_result();
