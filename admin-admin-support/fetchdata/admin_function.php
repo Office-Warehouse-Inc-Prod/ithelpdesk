@@ -199,6 +199,7 @@ public function faprintingthist() {
                 ar.asset_tag_number, 
                 ar.purpose_of_request, 
 				ar.revised_request,
+					ar.technical_workoutput,
                 it.it_desc,
                 it.itsup,          
                 ar.date_received, 
@@ -210,7 +211,7 @@ public function faprintingthist() {
             LEFT JOIN reports r ON ar.ticket_no = r.ticket_no
             LEFT JOIN users u ON r.userId = u.id
 			  LEFT JOIN it_tech itt ON ar.noted_by = itt.itsup
-            LEFT JOIN tbl_branch b ON r.store = b.str_num  WHERE ar.status = 'RECORDED'   ORDER BY ar.created_at ASC";
+            LEFT JOIN tbl_branch b ON r.store = b.str_num  WHERE ar.status IN ('RECORDED')  ORDER BY ar.created_at ASC";
         $statement = $this->connection->prepare($query);
         $statement->execute();
         $result = $statement->fetchAll();
@@ -227,6 +228,7 @@ public function faprintingthist() {
                 'asset_tag_number' => $row["asset_tag_number"],
                 'purpose_of_request' => $row["purpose_of_request"],
 				 'revised_request' => $row["revised_request"],
+				  'technical_workoutput' => $row["technical_workoutput"],
                 'it_desc' => $row["it_desc"],
                 'date_received' => $row["date_received"],    
                 'noted_by_desc' => $row["noted_by_desc"],  
@@ -235,6 +237,60 @@ public function faprintingthist() {
         }   
         return array_filter($fetchdata);
     }
+
+
+	
+public function farecordingthist() {
+        $query="SELECT 
+                ar.ticket_no, 
+                b.str_name, 
+                CONCAT(u.fname, ' ', u.lstname) AS full_name, 
+                ar.ticket_created, 
+                ar.item_code,
+                ar.description, 
+                ar.serial_number, 
+                ar.asset_tag_number, 
+                ar.purpose_of_request, 
+				ar.revised_request,
+					ar.technical_workoutput,
+                it.it_desc,
+                it.itsup,          
+                ar.date_received, 
+                ar.created_at,
+                     itt.it_desc AS noted_by_desc,          
+                ar.status          
+            FROM asset_requests ar
+            LEFT JOIN it_tech it ON ar.item_received_by = it.itsup
+            LEFT JOIN reports r ON ar.ticket_no = r.ticket_no
+            LEFT JOIN users u ON r.userId = u.id
+			  LEFT JOIN it_tech itt ON ar.noted_by = itt.itsup
+            LEFT JOIN tbl_branch b ON r.store = b.str_num  WHERE ar.status IN ('VERIFIED')  ORDER BY ar.created_at ASC";
+        $statement = $this->connection->prepare($query);
+        $statement->execute();
+        $result = $statement->fetchAll();
+        $fetchdata = array();
+        foreach ($result as $row) {
+            $fetchdata[] = array(
+                'ticket_no' => $row["ticket_no"],
+                'str_name' => $row["str_name"],
+                'full_name' => $row['full_name'],
+                'ticket_created' => $row['ticket_created'],
+                'item_code' => $row['item_code'],
+                'description'=>$row["description"],
+                'serial_number'=> $row["serial_number"],
+                'asset_tag_number' => $row["asset_tag_number"],
+                'purpose_of_request' => $row["purpose_of_request"],
+				 'revised_request' => $row["revised_request"],
+				  'technical_workoutput' => $row["technical_workoutput"],
+                'it_desc' => $row["it_desc"],
+                'date_received' => $row["date_received"],    
+                'noted_by_desc' => $row["noted_by_desc"],  
+                'status' => $row["status"]
+            );
+        }   
+        return array_filter($fetchdata);
+    }
+
 public function fareportsthist() {
     $month = $_POST['month'] ?? '';
     $year = $_POST['year'] ?? '';
@@ -900,7 +956,8 @@ ORDER BY
 
 public function deptthist() {
     $query = "SELECT
-        `reports`.`f_deptsel` AS `deptsel`,
+        `reports`.`deptsel` AS `dept_id`,           
+        `tbl_dept`.`dept_desc` AS `deptsel`,        
         `reports`.`ticket_no` AS `ticket_no`,
         `reports`.`date_created` AS `date_created`,
         `reports`.`store` AS `store`,
@@ -913,25 +970,23 @@ public function deptthist() {
         `reports`.`via` AS `via`,
         `reports`.`itsup` AS `itsup`,
         `it_tech`.`it_desc` AS `it_desc`,
-        `reports`.`cat_id` AS `cat_id`,
-        `categories`.`cat_desc` AS `cat_desc`,
+        `reports`.`cat_id` AS `cat_id`,            
+        `categories`.`cat_desc` AS `cat_desc`,      
         CONCAT_WS('-', `reports`.`cat_id`, `categories`.`cat_desc`) AS `cat_x`,
-        `reports`.`sub_id` AS `sub_id`,
-        `subcat`.`sub_cat` AS `sub_cat`,
+        `reports`.`sub_id` AS `sub_id`,         
+        `subcat`.`sub_cat` AS `sub_cat`,             
         `reports`.`date_closed` AS `date_closed`,
         `reports`.`remarks` AS `remarks`,
         `reports_msgcnt`.`msg_cnt` AS `msg_cnt`,
         `reports_newmsg`.`nmsg_stat` AS `nmsg_stat`,
-        `tbl_dept`.`dept_desc` AS `dept`,
-		     `reports`.`status` AS `status`,
         `users`.`fname` AS `fname`,
         `users`.`lstname` AS `lstname`,
         CONCAT_WS(' ', `users`.`fname`, `users`.`lstname`) AS `full_name`,
         GROUP_CONCAT(`images`.`files_name` SEPARATOR '|') AS `attachment_files` 
     FROM `reports`
-    JOIN `tbl_branch` ON `tbl_branch`.`str_num` = `reports`.`store`
+    LEFT JOIN `tbl_branch` ON `tbl_branch`.`str_num` = `reports`.`store`
     LEFT JOIN `it_tech` ON `it_tech`.`itsup` = `reports`.`itsup`
-     LEFT JOIN `tbl_dept` ON `tbl_dept`.`dept_id` = `reports`.`deptsel`
+    LEFT JOIN `tbl_dept` ON `tbl_dept`.`dept_id` = `reports`.`deptsel`
     LEFT JOIN `categories` ON `categories`.`cat_id` = `reports`.`cat_id`
     LEFT JOIN `subcat` ON `subcat`.`sub_id` = `reports`.`sub_id`
     LEFT JOIN `reports_msgcnt` ON `reports_msgcnt`.`ticket_no` = `reports`.`ticket_no`
@@ -954,22 +1009,35 @@ public function deptthist() {
     foreach ($result as $row) {
         $fetchdata[] = array(
             'ticket_no'        => $row["ticket_no"],
+            'store'            => $row["store"],         
             'str_name'         => $row["str_name"],
             'full_name'        => $row['full_name'],
-            'date_created'   => $row['date_created'],
-			  'dept'   => $row['dept'],
+            'date_created'     => $row['date_created'],
+            'dept_id'          => $row['dept_id'],       
+            'deptsel'          => $row['deptsel'],       
             'concern'          => $row['concern'],
             'service_desc'     => $row['service_desc'],
+            'cat_desc'         => $row['cat_desc'],    
+            'sub_cat'          => $row['sub_cat'],     
+            'it_desc'          => $row['it_desc'],
             'subject'          => $row['subject'],
-           
             'status'           => $row['status'],
             'cat_x'            => $row['cat_x'],
+            'via'              => $row['via'],           
+            'itsup'            => $row['itsup'],         
+            'cat_id'           => $row['cat_id'],       
+            'sub_id'           => $row['sub_id'],       
+            'date_closed'      => $row['date_closed'],   
+            'remarks'          => $row['remarks'],       
+            'msg_cnt'          => $row['msg_cnt'],       
+            'nmsg_stat'        => $row['nmsg_stat'],     
             'attachment_files' => $row['attachment_files']
         );
     }   
     
-    return array_filter($fetchdata);
+    return $fetchdata;
 }
+
 	/**
 	 * Admin get reports bycat.
 	 */

@@ -28,7 +28,7 @@ $query = "SELECT CONCAT(u.fname, ' ', u.lstname) AS userId, rc.comment_details, 
           FROM reports_comments rc
           LEFT JOIN users u ON rc.userId = u.id
           WHERE rc.ticket_no = ? 
-          ORDER BY rc.comment_date DESC";
+          ORDER BY rc.comment_date ASC";
 
 $stmt = $conn->prepare($query);
 

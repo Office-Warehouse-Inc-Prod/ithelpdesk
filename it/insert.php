@@ -813,39 +813,23 @@ if ($_POST["operation"] == "Save and Reply") {
 
             $existingTransfer = $checkTransfer->fetch(PDO::FETCH_ASSOC);
 
-            if ($existingTransfer) {
-                $updateTransfer = $connection->prepare("
-                   INSERT INTO tbl_reports_transfer_logs
-                    (ticket_no, store, itsup, cat_id, sub_id, status, remarks, created_by, created_at)
-                    VALUES
-                    (:ticket_no, :store, :itsup, :cat_id, :sub_id, :status, :remarks, :created_by, :created_at)
+           if ($existingTransfer) {
+                $insertReassigned = $connection->prepare("
+                    INSERT INTO tbl_reassigned 
+                    (ticket_no, date_created, itsup, nw_sup, r_remarks, date_rasigned, deptsel) 
+                    VALUES 
+                    (:ticket_no, :date_created, :itsup, :nw_sup, :r_remarks, :date_rasigned, :deptsel)
                 ");
 
-                $updateTransfer->execute(array(
-                      ':ticket_no'  => $_POST["ticket_no"],
-                    ':store'      => $_POST["store"],
-                    ':itsup'      => $_POST["itsup"],
-                    ':cat_id'     => $_POST["cat"],
-                    ':sub_id'     => $_POST["sub_num"],
-                    ':status'     => $_POST["status"],
-                    ':remarks'    => $_POST["remarks"],
-                    ':created_by' => $_POST["u_id"],
-                    ':created_at' => date('Y-m-d H:i:s')
-                ));
-
-                $updateTransfer2 = $connection->prepare("
-                   INSERT INTO tbl_reassigned
-                    (date_created)
-                    VALUES
-                    (:date_created)
-                ");
-
-                $updateTransfer2->execute(array(
-                      ':date_created' => date('Y-m-d H:i:s')
-                ));
-
-
-
+            $insertReassigned->execute(array(
+                ':ticket_no'     => $_POST["ticket_no"],
+                ':date_created'  => date('Y-m-d H:i:s'),
+                ':itsup'         => $_POST["itsup"],
+                ':nw_sup'        => $_POST["nw_sup"],       
+                ':r_remarks'     => $_POST["remarks"],      
+                ':date_rasigned' => date('Y-m-d H:i:s'),  
+                ':deptsel'       => $_POST["deptsel"]      
+            ));
             } else {
                 $insertTransfer = $connection->prepare("
                     INSERT INTO tbl_reports_transfer_logs

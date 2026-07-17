@@ -679,7 +679,7 @@ table.dataTable tbody tr:hover {
                   </div>
                   <div class="form-group col-md-5">
                     <label>Serial Number</label>
-                    <input type="text" class="form-control" name="serial_number" id="serial_number" required>
+                    <input type="text" class="form-control" name="serial_number" id="serial_number" >
                   </div>
 
                    <div class="form-group col-md-5">
@@ -706,7 +706,7 @@ table.dataTable tbody tr:hover {
                   <input type="hidden" class="form-control" name="received_by" value="<?php echo $_SESSION['tech_id'] ?? ''; ?>" readonly>
                   <div class="form-group col-md-5">
                     <label>Date Received</label>
-                    <input type="text" class="form-control" name="date_received" id="date_received" required>
+                    <input type="text" class="form-control" name="date_received" id="date_received" >
                   </div>
                   <div class="form-group col-md-5">
                     <label>Noted By</label>
@@ -768,8 +768,6 @@ table.dataTable tbody tr:hover {
 
 <script type="text/javascript">
   $(document).ready(function() {
-    
-    // Trigger on any filter change
     $('.filter-trigger').change(function() {
         refreshData();
     });
@@ -783,55 +781,66 @@ table.dataTable tbody tr:hover {
             mode: 'fa_reports_tbl',
             month: month,
             year: year,
-            status: status // Send status to PHP
+            status: status 
         }, function(response) {
-            // Update table
             if ($.fn.DataTable.isDataTable('#fa_reports_table')) {
                 reptable.clear().rows.add(response.table_data).draw();
             } else {
                 admin_datatable(response);
             }
-            // Update metrics
             if(response.metrics) {
                 updateMetricsUI(response.metrics);
             }
         }, 'json');
     }
 
-    // Initial load
     refreshData();
-});
-$(document).ready(function(){
+});$(document).ready(function() {
+    var reptable;
+    var user_id = <?= isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 'null'; ?>; 
+    
+    function getUrlParam(param) {
+        var urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(param);
+    }
+    var targetTicket = getUrlParam('ticket_no');
 
-  var reptable;
-  var user_id = <?= isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 'null'; ?>; 
+    function refreshData() {
+        let month = $('#filter_month').val();
+        let year = $('#filter_year').val();
+        let status = $('#filter_status').val();
 
-  function getUrlParam(param) {
-    var urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get(param);
-  }
-  var targetTicket = getUrlParam('ticket_no');
+        $.post('fetchdata/fetch_data.php', {
+            mode: 'fa_reports_tbl',
+            month: month,
+            year: year,
+            status: status 
+        }, function(response) {
+            if ($.fn.DataTable.isDataTable('#fa_reports_table')) {
+                reptable.clear().rows.add(response.table_data || []).draw(false);
+            } else {
+                admin_datatable(response);
+            }
+            
+            if(response.metrics) {
+                updateMetricsUI(response.metrics);
+            }
+        }, 'json');
+    }
 
-  // Initial trigger
-  getFAData($('#filter_month').val(), $('#filter_year').val());
+    refreshData();
 
-  // Auto filter data when inputs change
-  $('.filter-trigger').change(function() {
-      let month = $('#filter_month').val();
-      let year = $('#filter_year').val();
-      
-      if($(this).attr('id') === 'filter_status') {
-          applyStatusFilter();
-      } else {
-          getFAData(month, year);
-      }
-  });
+    $('.filter-trigger').change(function() {
+        if($(this).attr('id') === 'filter_status') {
+            applyStatusFilter();
+        } else {
+            refreshData();
+        }
+    });
 
-  setInterval(function () {
-    let month = $('#filter_month').val();
-    let year = $('#filter_year').val();
-    getFAData(month, year);
-  }, 60000);
+    setInterval(function () {
+        refreshData();
+    }, 60000);
 
   function getFAData(month = '', year = '') {
       $.post('fetchdata/fetch_data.php', {

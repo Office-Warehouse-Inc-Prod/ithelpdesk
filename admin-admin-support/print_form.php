@@ -67,9 +67,6 @@ if (ob_get_length()) ob_clean(); // Prevent 'Headers already sent' errors
 $pdf = new FPDF('P', 'mm', 'A4');
 $pdf->SetAutoPageBreak(false);
 
-// ==========================================
-// PAGE 1: Asset Requisition Transfer Form
-// ==========================================
 $pdf->AddPage();
 $pdf->Image('../Fixed_Asset_Requisition_Transfer Form.jpg', 0, 0, 210, 297);
 $pdf->SetFont('Arial', '', 8);
@@ -105,6 +102,7 @@ $display_text = !empty($ticket['revised_request']) ? $ticket['revised_request'] 
 $pdf->SetXY(53, 46.5); 
 $pdf->Cell(120, 5, $display_text, 0, 0);
 
+
 // Received By
 $pdf->SetXY(53, 55); 
 $pdf->Cell(120, 5, $ticket['received_by_name'] ?? 'N/A', 0, 0);
@@ -122,23 +120,15 @@ $pdf->Image('../admin_tech.png', 143, 25.5, 19, 5);
 $pdf->SetXY(163, 25.5); 
 $pdf->Cell(120, 5, $ticket['date_noted'] ?? 'N/A', 0, 0);
 
-// Approval Signatures
+
+
 if (isset($ticket['approve_method_head']) && $ticket['approve_method_head'] == 2) {
-    $pdf->Image('../admin_head.png', 99, 148.5, 19, 5); 
-    $pdf->SetXY(121, 148.5); // 99 + 22
-    $pdf->Cell(110, 5, date('Y-m-d'), 0, 0);
-}
-
-if (isset($ticket['approve_method_agm']) && $ticket['approve_method_agm'] == 2) {
     $pdf->Image('../admin_head.png', 19, 148.5, 19, 5); 
-    $pdf->SetXY(41, 148.5); // 19 + 22
+    $pdf->SetXY(41, 148.5);
     $pdf->Cell(110, 5, date('Y-m-d'), 0, 0);
 }
 
 
-// ==========================================
-// PAGE 2: Comment Thread & Tech Work Output
-// ==========================================
 $pdf->AddPage();
 
 $pdf->SetFont('Arial', 'B', 16);
@@ -154,7 +144,7 @@ $pdf->SetXY(10, 19);
 $pdf->Cell(105, 5, 'DEPT/BRANCH:  ' . ($ticket['str_name'] ?? 'N/A'), 0, 0);
 $pdf->Ln(5);
 
-$pdf->SetDrawColor(128, 128, 128); // Standard gray line
+$pdf->SetDrawColor(128, 128, 128);
 $pdf->Line(10, $pdf->GetY(), 200, $pdf->GetY());
 $pdf->Ln(5);
 
@@ -194,15 +184,13 @@ while ($comment = $comments_result->fetch_assoc()) {
     $pdf->MultiCell(0, 8, $comment['comment_details'] ?? '', 1, 'L', true);
     $pdf->Ln(5); 
 
-    // Handle pagination manually for the comment loop
     if ($pdf->GetY() > 250) {
         $pdf->AddPage();
     }
 }
 
-// Add final Tech Work Output section
 if ($pdf->GetY() > 220) {
-    $pdf->AddPage(); // Ensure enough space for the output block
+    $pdf->AddPage(); 
 }
 
 $pdf->Ln(5);
@@ -212,7 +200,6 @@ $pdf->Cell(0, 10, 'TECHNICAL WORK OUTPUT', 0, 1, 'L');
 
 $pdf->SetFont('Arial', 'B', 10);
 $pdf->SetTextColor(33, 52, 86);
-// FIXED: Pulled from $ticket directly to avoid using out-of-scope $comment loop variables
 $pdf->Cell(100, 5, $ticket['received_by_name'] ?? 'Unknown Technician', 0, 0);
 
 $pdf->SetFont('Arial', '', 8);

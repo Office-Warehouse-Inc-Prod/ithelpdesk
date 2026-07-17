@@ -44,37 +44,6 @@ body {
   background-repeat: no-repeat;
   min-height: 100vh;
 } 
- .modal-overlay {
-            display: none; 
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-       .modal-overlay .modal-content {
-             background: linear-gradient(to bottom, #ffffff, #99aac8);
-            padding: 25px;
-            border-radius: 8px;
-            width: 70%;
-            max-width: 90%;
-            margin-top:30px;
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(16, 16, 16, 0.2);
-        }
-       .modal-overlay .modal-content h3 {
-            margin-top: 0;
-            color: #333;
-        }
-       .modal-overlay .close-btn {
-            background-color: linear-gradient(135deg, #213456, #334c7a);
-            margin-top: 15px;
-        }
- 
 
         
   .table-responsive {
@@ -389,6 +358,32 @@ textarea.form-control:focus {
 }
 
 .chat-right .msg-meta {
+    color: #ffffff; 
+}
+
+.chat-left .msg-meta-name {
+    color: #213456;
+    font-weight: bold;
+}
+
+.chat-right .msg-meta-name {
+    color: #ffffff;
+    font-weight: bold;
+}
+
+
+.chat-right .msg-time {
+    color: #ffffff !important; 
+}
+
+.chat-left .msg-time {
+    color: #64748b !important;
+}
+.chat-left .msg-meta {
+    color: #64748b;
+}
+
+.chat-right .msg-meta {
     color: rgba(255, 255, 255, 0.85);
 }
 
@@ -401,6 +396,7 @@ textarea.form-control:focus {
     color: #ffffff;
     font-weight: bold;
 }
+
 
 .btn-success {
     background-color: #1C0770 !important;
@@ -499,7 +495,6 @@ textarea.form-control:focus {
         }
        .modal-overlay .modal-content h3 {
             margin-top: 0;
-            color: #333;
         }
        .modal-overlay .close-btn {
             background-color: #28a745;
@@ -611,12 +606,12 @@ textarea.form-control:focus {
                       </tr>
                       
                       <tr style="background-color: linear-gradient(135deg, #213456, #334c7a); color: #ffffff;">
-                         <th style="background-color: linear-gradient(135deg, #213456, #334c7a); font-size: 12px; vertical-align: middle;">MONTH</th>
-                        <th class="text-center" style="background-color: linear-gradient(135deg, #213456, #334c7a); font-size: 12px; vertical-align: middle;">ACTIVE TICKETS</th>
-                        <th class="text-center" style="background-color: linear-gradient(135deg, #213456, #334c7a); font-size: 12px; vertical-align: middle;">COMPLIANCE RATE</th>
-                        <th class="text-center" style="background-color: linear-gradient(135deg, #213456, #334c7a); font-size: 12px; vertical-align: middle;">MET SLA</th>
-                        <th class="text-center" style="background-color: linear-gradient(135deg, #213456, #334c7a); font-size: 12px; vertical-align: middle;">NON-SLA</th>
-                        <th class="text-center" style="background-color: linear-gradient(135deg, #213456, #334c7a); font-size: 12px; vertical-align: middle;">SLA COMPLIANCE</th>
+                         <th style="background: #213456; font-size: 12px; vertical-align: middle;">MONTH</th>
+                        <th class="text-center" style="background: #213456;  font-size: 12px; vertical-align: middle;">ACTIVE TICKETS</th>
+                        <th class="text-center" style="background: #213456;  font-size: 12px; vertical-align: middle;">COMPLIANCE RATE</th>
+                        <th class="text-center" style="background: #213456;  font-size: 12px; vertical-align: middle;">MET SLA</th>
+                        <th class="text-center" style="background: #213456;  font-size: 12px; vertical-align: middle;">NON-SLA</th>
+                        <th class="text-center" style="background: #213456;  font-size: 12px; vertical-align: middle;">SLA COMPLIANCE</th>
                       </tr>
                     </thead>
                     

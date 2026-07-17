@@ -1698,8 +1698,7 @@ background: linear-gradient(135deg, #837031, #E1AD01);
             <input type="hidden" name="u_id" value="<?php echo $_SESSION['user_id'] ?? ''; ?>">
              <div class="form-group col-md-3">
       <select class="form-control form-control-sm custom-select-placeholder placeholder-active" name="approve_method_head" id="approve_method_head" required>
-      <option value=""> SELECT APPROVAL METHOD </option>
-      <option value="1">APPROVE ONLY</option>
+
       <option value="2">APPROVE WITH E-SIGNATURE</option>
       </select>
       </div>

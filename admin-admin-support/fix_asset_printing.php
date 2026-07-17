@@ -703,7 +703,7 @@ textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
 
                   <div class="form-group col-md-5">
                      <label>Ticket No</label>
-                      <input type="text" class="form-control"name="ticket_no" id="ticket_no"></input>
+                      <input type="text" class="form-control" name="ticket_no" id="ticket_no">
                   </div>
 
                   <div class="form-group col-md-5">
@@ -733,12 +733,12 @@ textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
 
                   <div class="form-group col-md-5">
                     <label>Serial Number</label>
-                    <input type="text" class="form-control" name="serial_number" id="serial_number" required>
+                    <input type="text" class="form-control" name="serial_number" id="serial_number" >
                   </div>
 
                    <div class="form-group col-md-5">
                     <label>Asset Tag Number</label>
-                    <input type="text" class="form-control" name="asset_tag_number" id="asset_tag_number" required>
+                    <input type="text" class="form-control" name="asset_tag_number" id="asset_tag_number" >
                   </div>
 
                     <div class="form-group col-md-12">
@@ -766,12 +766,12 @@ textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
 
                   <div class="form-group col-md-4">
                     <label>Date Received</label>
-                    <input type="text" class="form-control" name="date_received" id="date_received" required>
+                    <input type="text" class="form-control" name="date_received" id="date_received" >
                   </div>
 
                        <div class="form-group col-md-4">
                     <label>Noted by</label>
-                    <input type="text" class="form-control" name="noted_by_desc" id="noted_by_desc" required>
+                    <input type="text" class="form-control" name="noted_by_desc" id="noted_by_desc" >
                   </div>
                 </div>
               </div>
@@ -786,9 +786,9 @@ textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
           </div>
 
           <div class="modal-footer">
-            <input type="hidden" name="operation" id="operation" value="update_request">
+            <input type="hidden" name="operation" id="operation" value="update_printing_request">
             <input type="hidden" name="u_id" value="<?php echo $_SESSION['user_id'] ?? ''; ?>">
-            <button type="submit" class="btn"><strong>UPDATE FIXED ASSET REQUEST</strong></button>
+            <button type="submit" class="btn"><strong>MARK AS PRINTED</strong></button>
           </div>
         </div>
       </form>
@@ -921,7 +921,7 @@ $(document).ready(function(){
      $('#status').val(data['status']);
 
       $('#action').val("Update");
-      $('#operation').val("update_request"); 
+      $('#operation').val("update_printing_request"); 
 
       var tid = $(this).parent().siblings(':first').html() || data['ticket_no'];
       $('#tick_title').text("Ticket Number: " + tid);

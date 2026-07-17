@@ -44,10 +44,25 @@
           });
       }
     }
+ function timeAgo(dateParam) {
+        if (!dateParam) return "";
+        let date = new Date(dateParam.replace(/-/g, "/"));
+        let now = new Date();
+        let seconds = Math.floor((now - date) / 1000);
+        
+        let interval = Math.floor(seconds / 86400);
+        if (interval >= 1) return interval + " day" + (interval === 1 ? "" : "s") + " ago";
+        
+        interval = Math.floor(seconds / 3600);
+        if (interval >= 1) return interval + " hour" + (interval === 1 ? "" : "s") + " ago";
+        
+        interval = Math.floor(seconds / 60);
+        if (interval >= 1) return interval + " minute" + (interval === 1 ? "" : "s") + " ago";
+        
+        return "just now";
+    }
 
-    /**
-     * Load Comment Thread for Chat UI
-     */
+  
     function loadCommentThread(ticket_no) {
         const $remarksView = $('#remarks_view');
         const ticketValue = (ticket_no || '').toString().trim();
@@ -69,9 +84,9 @@
                 if (Array.isArray(response) && response.length > 0) {
                     var currentUserIdStr = "<?= $_SESSION['user_id'] ?? '' ?>";
                     var currentUserNameStr = "<?= $_SESSION['fname'] ?? '' ?>";
+                    let reversedResponse = response.slice().reverse();
 
-                    // FIXED: Added 'index' to the function parameters here
-                    response.forEach(function(comment, index) {
+                    reversedResponse.forEach(function(comment, index) {
                         let sender = comment.userId || 'Unknown';
                         
                         let isMe = false;
@@ -80,14 +95,20 @@
                         
                         let bubbleClass = isMe ? 'chat-right' : 'chat-left';
                         let delay = index * 0.05; 
+                        let relativeTime = timeAgo(comment.comment_date);
+                        let replyTimeColor = isMe ? "color: #e2e8f0;" : "color: #64748b;";
                         
                         html += `
                             <div class="chat-bubble ${bubbleClass}" style="animation-delay: ${delay}s;">
                                 <div class="msg-meta">
                                     <span class="msg-meta-name">${sender}</span>
-                                    <span>${comment.comment_date}</span>
+                                    <span class="msg-time">${comment.comment_date}</span> 
                                 </div>
                                 <div style="white-space: pre-wrap;">${comment.comment_details}</div>
+                                
+                                <div class="reply-time" style="font-size: 0.65rem; text-align: right; margin-top: 6px; opacity: 0.85; font-style: italic; ${replyTimeColor}">
+                                    Replied ${relativeTime}
+                                </div>
                             </div>
                         `;
                     });
@@ -99,11 +120,10 @@
                     $remarksView.html(html).fadeIn(300);
                     $('.dv_msg, .container_remarks').slideDown(300); 
 
-                    // jQuery animated smooth scroll to bottom
                     setTimeout(() => {
                         const $container = $('.container_remarks');
                         if ($container.length) {
-                            $container.animate({ scrollTop: $container.prop("scrollHeight") }, 600, 'swing');
+                            $container.animate({ scrollTop: 0 }, 600, 'swing');
                         }
                     }, 200);
                 });

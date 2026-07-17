@@ -269,19 +269,18 @@ if(isset($_POST["operation"]) && $_POST["operation"] == "update_request") {
         $statement = $connection->prepare("
             UPDATE asset_requests
             SET
-               
                item_code = :item_code,
-                technical_workoutput = :technical_workoutput,
-                  description = :description,
-                    serial_number = :serial_number,
-               
-                date_received = :date_received
-      
+               technical_workoutput = :technical_workoutput,
+               description = :description,
+               serial_number = :serial_number,
+               date_received = :date_received
             WHERE ticket_no = :ticket_no
         ");
 
         $result = $statement->execute([
+            ':item_code'      => $_POST['item_code'],
             ':technical_workoutput'      => $_POST['technical_workoutput'],
+            ':description'      => $_POST['description'],
             ':serial_number'      => $_POST['serial_number'],
             ':date_received'      => $_POST['date_received'],
             ':ticket_no'          => $_POST['ticket_no']
@@ -451,8 +450,7 @@ if (isset($_POST["operation"]) && $_POST["operation"] == "Save and Reply") {
                 ':assigned_by' => $userid
             ]);
         }
-
-        echo json_encode(["status" => "success", "message" => "Data has been updated"]);
+echo json_encode(["status" => "success", "message" => "Data has been updated", "ticket_no" => $_POST["ticket_no"]]);
     } catch (PDOException $e) {
         echo json_encode(["status" => "error", "message" => "Database error: " . $e->getMessage()]);
     }

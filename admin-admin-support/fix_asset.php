@@ -771,7 +771,7 @@ textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
 
                    <div class="form-group col-md-12">
                     <label>Purpose of Request (Rephrase for Printing)</label>
-                    <textarea class="form-control" name="revised_request"  style="height: 150px;"></textarea>
+                    <textarea class="form-control" name="revised_request"  style="height: 150px;" maxlength="70"></textarea>
                   </div>
 
                   <div class="form-group col-md-4">

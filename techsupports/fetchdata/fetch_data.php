@@ -3,7 +3,6 @@
 include 'admin_function.php';
 
 $fn = new dbconfig();
-// $fn->fetch_cards_result();
 
 $records = [];
 $mode = isset($_POST['mode']) ? $_POST['mode'] : '';
@@ -39,6 +38,9 @@ switch ($mode) {
     case 'newrpt_tbl':
          $records['newrptdata']= $fn->newreporthist();
         break;  
+         case 'dept_tbl':
+        $records['deptdata'] = $fn->deptthist();
+        break;
     case 'notif_support':
          $records['ntfsupdata']= $fn->notif_techsupp();
         break;

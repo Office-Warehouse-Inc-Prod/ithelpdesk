@@ -462,12 +462,17 @@ body {
     
     <!-- For Validation -->
     <a class="dropdown-item d-flex justify-content-between align-items-center" href="fix_asset.php">
-      <span><i class="fa fa-calendar-day"></i> For Validation</span>
+      <span><i class="fas fa-file-circle-check"></i> For Validation</span>
       <span class="badge badge-danger" id="notif_validation" style="position: static;"></span>
     </a>
     
     <!-- For Printing -->
-    <a class="dropdown-item d-flex justify-content-between align-items-center" href="fix_asset_printing.php">
+    <a class="dropdown-item d-flex justify-content-between align-items-center" href="fix_asset_recording.php">
+      <span><i class="fas fa-file-contract"></i> For Recording</span>
+      <span class="badge badge-danger" id="notif_recording" style="position: static;"></span>
+    </a>
+
+     <a class="dropdown-item d-flex justify-content-between align-items-center" href="fix_asset_printing.php">
       <span><i class="fa-solid fa-print"></i> For Printing</span>
       <span class="badge badge-danger" id="notif_printing" style="position: static;"></span>
     </a>
@@ -728,6 +733,7 @@ body {
       setInterval(getFixAssetCount, 5000);
       setInterval(getValidation, 5000);
       setInterval(getPrinting, 5000);
+      setInterval(getRecording, 5000);
     });
 
     async function getNewReportCount() {
@@ -735,6 +741,23 @@ body {
         const response = await fetch("fetchdata/notif_newrep.php?_=" + Date.now());
         const count = (await response.text()).trim();
         const badge = document.getElementById("notif_newrep");
+        if (!badge) return;
+
+        if (count === "0" || count === "") {
+          badge.style.display = "none";
+        } else {
+          badge.style.display = "inline-block";
+          badge.innerHTML = count;
+        }
+      } catch (error) {
+        console.error("Notification count dev error:", error);
+      }
+    }
+     async function getRecording() {
+      try {
+        const response = await fetch("fetchdata/notif_recording.php?_=" + Date.now());
+        const count = (await response.text()).trim();
+        const badge = document.getElementById("notif_recording");
         if (!badge) return;
 
         if (count === "0" || count === "") {

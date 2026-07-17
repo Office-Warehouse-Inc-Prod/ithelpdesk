@@ -15,7 +15,7 @@ include '../condb.php';
 
 $con1 = new dbconfig();
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mode']) && $_POST['mode'] === 'fa_tbl') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mode']) && $_POST['mode'] === 'recording_tbl') {
     try {
         $sql = "SELECT 
                     r.ticket_no, 
@@ -37,10 +37,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mode']) && $_POST['mo
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        echo json_encode(['fadata' => $results]);
+        echo json_encode(['recordingdata' => $results]);
         
     } catch (Exception $e) {
-        echo json_encode(['fadata' => [], 'error' => $e->getMessage()]);
+        echo json_encode(['recordingdata' => [], 'error' => $e->getMessage()]);
     }
     
     exit; 
@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mode']) && $_POST['mo
     <script src="../js/fnReloadAjax.js"></script>
 </head>
 <style>
-  #fix_asset_table {
+  #fix_asset_recording {
     background-color: #ffffff;
     border-collapse: separate;
     border-spacing: 0;
@@ -69,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mode']) && $_POST['mo
     border: 1px solid #e9ecef;
   }
 
-  #fix_asset_table thead th {
+  #fix_asset_recording thead th {
     background-color: #54699e;
     color: white;
     font-weight: 600;
@@ -79,14 +79,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mode']) && $_POST['mo
     padding: 15px;
   }
 
-  #fix_asset_table tbody td {
+  #fix_asset_recording tbody td {
     padding: 12px 15px;
     vertical-align: middle;
     color: #333;
   }
 
   /* Hover Effect with requested color #213456 */
-  #fix_asset_table tbody tr:hover {
+  #fix_asset_recording tbody tr:hover {
     background-color: #bec5d1 !important;
     color: #ffffff !important;
     cursor: pointer;
@@ -98,13 +98,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mode']) && $_POST['mo
     border-radius: 8px;
     margin-top: 20px;
   }
-  #fa_Modal .modal-content {
+  #recording_Modal .modal-content {
     border: none;
     border-radius: 15px;
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
   }
 
-  #fa_Modal .modal-header {
+  #recording_Modal .modal-header {
     background-color: #213456;
     color: #fff;
     border-top-left-radius: 15px;
@@ -112,31 +112,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mode']) && $_POST['mo
     border-bottom: 4px solid #E1AD01; 
   }
 
-  #fa_Modal .modal-title {
+  #recording_Modal .modal-title {
     font-weight: 700;
     letter-spacing: 0.5px;
     display: flex;
     align-items: center;
   }
 
-  #fa_Modal .input-group-text {
+  #recording_Modal .input-group-text {
     background-color: #f8f9fa;
     border-right: none;
     color: #213456;
   }
 
-  #fa_Modal .form-control {
+  #recording_Modal .form-control {
     border-left: none;
     height: 45px;
     border-radius: 0 8px 8px 0;
   }
 
-  #fa_Modal .form-control:focus {
+  #recording_Modal .form-control:focus {
     border-color: #ced4da;
     box-shadow: none;
   }
 
-  #fa_Modal .input-group:focus-within {
+  #recording_Modal .input-group:focus-within {
     box-shadow: 0 0 0 0.2rem rgba(225, 173, 1, 0.25);
     border-radius: 8px;
   }
@@ -234,7 +234,9 @@ body {
 
   /* container spacing */
   .container.mt-3 { padding-top: 10px; padding-bottom: 24px; }
-#fix_asset_table { width:100% !important; }
+
+ 
+#fix_asset_recording { width:100% !important; }
 
 .table-wrap {
   background: var(--card);
@@ -542,7 +544,6 @@ textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
     font-style: italic; 
   }
   
-  
   #dataModal .modal-content {
     border: none;
     border-radius: 15px;
@@ -584,9 +585,7 @@ textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
     box-shadow: 0 0 0 0.2rem rgba(225, 173, 1, 0.25);
     border-radius: 8px;
   }
-#remarks_Modal{
-  background: #a8a9aa6a;
-}
+
   #btn_chngepass {
     background-color: #E1AD01;
     border: none;
@@ -674,31 +673,18 @@ textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
     color: #6c757d;
     font-style: italic;
   }
-  .btn-remarks-red {
-  background-color: #dc3545 !important;
-  border: 2px solid #b21f2d !important;
-  font-weight: 700;
-  color: white !important;
-  border-radius: 4px;
-}
-
-.btn-remarks-red:hover {
-  background-color: #bd2130 !important;
-  border-color: #b21f2d !important;
-  color: white !important;
-}
 </style>
  
 <div class="container" style="max-width:1800px;">
   <div class="table-responsive-xl">
-    <table class="table table-hover" id="fix_asset_table"></table>
+    <table class="table table-hover" id="fix_asset_recording"></table>
   </div>
 </div>
 
 <script src="../js/coms.js"></script> 
-<div class="modal fade" id="fa_Modal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="recording_Modal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog" style="max-width: 80%; width: 80%;">
-      <form id="fa_form" action="insert.php" method="POST">
+      <form id="recording_form" action="insert.php" method="POST">
         <div class="modal-content">
           <div class="modal-header">
               <h5 class="modal-title">Fixed Asset Information</h5>
@@ -709,143 +695,103 @@ textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
 
           <div class="modal-body">
             <div class="row">
-              <div class="col-md-5 border-right pt-2 pb-2">
-              <h6 class="text-uppercase mb-3" style="color:#213456; font-weight: 800;">Request Details</h6>
-         
-              <div class="row">
-                  <div class="form-group col-md-6">
-                      <label>Ticket No</label>
-                      <input type="text" class="form-control" name="ticket_no" id="ticket_no" readonly>
-                  </div>
-                  
-                  <div class="form-group col-md-6">
-                      <label>Requesting Dept/Branch</label>
-                      <input type="text" class="form-control" name="requested_db" id="str_name" readonly>
-                  </div>
-                  
-                  <div class="form-group col-md-6">
-                      <label>Requesting Employee</label>
-                      <input type="text" class="form-control" name="requested_by" id="full_name" readonly>
+              <div class="col-md-7 border-right pt-2 pb-2">
+            
+                <h6 class="text-uppercase mb-3" style="color:#213456; font-weight: 800;">Request Details</h6> 
+                
+                <div class="row">
+
+                  <div class="form-group col-md-5">
+                     <label>Ticket No</label>
+                      <input type="text" class="form-control" name="ticket_no" id="ticket_no">
                   </div>
 
-                  <div class="form-group col-md-6">
-                      <label>Ticket Created</label>
-                      <input type="text" class="form-control" name="ticket_created" id="ticket_created" readonly>
+                  <div class="form-group col-md-5">
+                    <label>Requesting Dept/Branch</label>
+                    <input type="text" class="form-control" name="requested_db" id="str_name" readonly>
                   </div>
 
-                  <div class="form-group col-md-6">
-                   <label>Item Code </label>
-
-                      <input type="text" class="form-control" name="item_code" id="item_code" >
+                  <div class="form-group col-md-5">
+                    <label>Requesting Employee</label>
+                    <input type="text" class="form-control" name="requested_by" id="full_name" readonly>
                   </div>
 
-                  <div class="form-group col-md-6">
-                      <label>Description </label>
-                      <input type="text" class="form-control" name="description" id="description" >
+                  <div class="form-group col-md-5">
+                    <label>Ticket Created</label>
+                    <input type="text" class="form-control" name="ticket_created" id="ticket_created" readonly>
                   </div>
+
+                  <div class="form-group col-md-5">
+                    <label>Item Code</label>
+                    <input type="text" class="form-control" name="item_code" id="item_code" readonly>
+                  </div>
+
+                  <div class="form-group col-md-5">
+                    <label>Description</label>
+                    <input type="text" class="form-control" name="description" id="description" readonly>
+                  </div>
+
+                  <div class="form-group col-md-5">
+                    <label>Serial Number</label>
+                    <input type="text" class="form-control" name="serial_number" id="serial_number" >
+                  </div>
+
+                   <div class="form-group col-md-5">
+                    <label>Asset Tag Number</label>
+                    <input type="text" class="form-control" name="asset_tag_number" id="asset_tag_number" >
+                  </div>
+
+                    <div class="form-group col-md-12">
+                    <label>Workoutput (Under Technical Evaluation)</label>
+                    <textarea class="form-control" name="technical_workoutput" id="technical_workoutput" style="height: 150px;" readonly></textarea>
+                  </div>
+
 
                   <div class="form-group col-md-12">
-                      <label>Serial Number </label>
-                      <input type="text" class="form-control" name="serial_number" id="serial_number" required>
-                  </div>
-
-                  <div class="form-group col-md-12">
-                      <label>Purpose of Request</label>
-                      <textarea class="form-control" name="purpose" id="purpose_of_request" style="height: 100px;" readonly></textarea>
+                    <label>Purpose of Request (From Store/Dept User)</label>
+                    <textarea class="form-control" name="purpose_of_request" id="purpose_of_request" style="height: 150px;" readonly></textarea>
                   </div>
 
                    <div class="form-group col-md-12">
-                      <label>Technical Workoutput</label>
-                      <textarea class="form-control" name="technical_workoutput" id="technical_workoutput" style="height: 100px;" readonly></textarea>
+                    <label>Purpose of Request (Rephrase for Printing)</label>
+                    <textarea class="form-control" name="revised_request" id="revised_request"  style="height: 150px;"></textarea>
                   </div>
 
-                  <div class="form-group col-md-6">
-                      <label>Item Received By</label>
-                      <input type="text" class="form-control" name="item_received_by" id="it_desc" readonly>
+                  <div class="form-group col-md-4">
+                    <label>Item Received By</label>
+                    <input type="text" class="form-control" name="item_received_by" id="it_desc" readonly>
                   </div>
-                  
-                  <input type="hidden" class="form-control" name="received_by" value="<?php echo $_SESSION['tech_id']; ?>" readonly>
+                    
+                  <input type="hidden" class="form-control" name="received_by" value="<?php echo $_SESSION['tech_id'] ?? ''; ?>" readonly>
 
-                  <div class="form-group col-md-6">
-                      <label>Date Received</label>
-                      <input type="text" class="form-control" name="date_received" id="date_received" required>
+                  <div class="form-group col-md-4">
+                    <label>Date Received</label>
+                    <input type="text" class="form-control" name="date_received" id="date_received" >
                   </div>
-              </div>
-          </div>
 
-             
-          <div class="col-md-4 border-right pt-2 pb-2" style="background: linear-gradient(to bottom, #ffffff, #f0f3f7);">
-              <h6 class="text-uppercase mb-3" style="color:#E1AD01; font-weight: 800;">Asset Request Progress</h6>
-              <div class="tracking-container" style="max-height: 850px; overflow-y: auto; padding-right: 10px;">
-                  <ul class="tracking-timeline" id="trackingMap">
-            
-                  </ul>
+                       <div class="form-group col-md-4">
+                    <label>Noted by</label>
+                    <input type="text" class="form-control" name="noted_by_desc" id="noted_by_desc" >
+                  </div>
+                </div>
               </div>
-          </div>
 
-          <div class="col-md-3 pt-2 pb-2" style="background: #f8f9fa; border-radius: 0 8px 8px 0;">
-              <h6 class="text-uppercase mb-3" style="color:#213456; font-weight: 800;">Remarks Thread</h6>
-              
-              <div id="remarks_thread_container" class="chat-container">
-               
-              </div>
-              
-             <!-- <div class="chat-input-area mt-3">
-                  <textarea class="form-control" id="new_remark_input" rows="2" placeholder="Type a new remark..."></textarea>
-                  <button type="button" class="btn btn-sm w-100 mt-2" id="btn_send_remark" style="background-color: #E1AD01; color: #213456; font-weight: 700;">
-                      <i class="fas fa-paper-plane"></i> Send Remark
-                  </button>
-              </div>-->
-          </div>
+              <div class="col-md-5 pt-2 pb-2" style=" background: linear-gradient(to bottom, #ffffff, #99aac8); border-radius: 8px;">
+                            <h6 class="text-uppercase mb-3" style="color:#E1AD01; font-weight: 800;">Asset Request Progress</h6>
+                            <div class="tracking-container" style="max-height: 950px; overflow-y: auto; padding-right: 10px;">
+                                <ul class="tracking-timeline" id="trackingMap"></ul>
+                            </div>
+                        </div>
             </div>
           </div>
 
-         <div class="modal-footer">
-  <input type="hidden" name="operation" id="operation" value="update_request">
-  <input type="hidden" name="u_id" value="<?php echo $_SESSION['user_id'] ?? ''; ?>">
-   <div class="form-group col-md-3">
-      <select class="form-control form-control-sm custom-select-placeholder placeholder-active" name="approve_method_tech" id="approve_method_tech" required>
-      <option value="2">APPROVE WITH E-SIGNATURE</option>
-      </select>
-      </div>
-  <button type="button" class="btn btn-remarks-red" id="btn_open_remarks"><strong>REMARKS</strong></button>
-     
-  
-  <button type="submit" class="btn"><strong>APPROVE REQUEST</strong></button>
-</div>
+          <div class="modal-footer">
+            <input type="hidden" name="operation" id="operation" value="update_recording_request">
+            <input type="hidden" name="u_id" value="<?php echo $_SESSION['user_id'] ?? ''; ?>">
+            <button type="submit" class="btn"><strong>MARK AS RECORDED</strong></button>
+          </div>
         </div>
       </form>
-    </div>
-</div>
-
-
-<div class="modal fade" id="remarks_Modal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog" style="max-width: 60%; width: 60%;">
-      <form id="remarks_submit_form" action="insert.php" method="POST">
-            <div class="modal-content">
-                <div class="modal-header" style="background-color: #dc3545; border-bottom: 4px solid #E1AD01;">
-                    <h5 class="modal-title text-white">Add Ticket Remarks</h5>
-                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label>Target Ticket No</label>
-                        <input type="text" class="form-control" name="ticket_no" id="remarks_ticket_no" readonly />
-                    </div>
-                    <div class="form-group">
-                        <label>Remarks Description</label>
-                        <textarea class="form-control" name="remarks_adtech" id="modal_textarea_remarks" style="height: 120px;" placeholder="Type your notes here..." required></textarea>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <input type="hidden" name="operation" value="add_remarks_only">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-success">Save Notes</button>
-                </div>
-            </div>
-        </form>
     </div>
 </div>
 
@@ -893,15 +839,15 @@ $(document).ready(function(){
   $("div.selected select").val("OPEN");
 
   function getdata(){
-    $.post('fetchdata/fetch_data.php', {mode: 'fa_tbl'}, function(data){
+    $.post('fetchdata/fetch_data.php', {mode: 'recording_tbl'}, function(data){
       admin_datatable(data);
     }, 'json');
   }
   getdata();
 
   function admin_datatable(t){
-    const dataset = t.fadata;
-    reptable = $("#fix_asset_table").DataTable({
+    const dataset = t.recordingdata;
+    reptable = $("#fix_asset_recording").DataTable({
       "dom": '<"pull-left"lf><"pull-right">tip',
       stateSave: true,
       "bDestroy": true,
@@ -909,7 +855,7 @@ $(document).ready(function(){
       "lengthChange": false, 
       "autoWidth": false,
       language: {
-        emptyTable: "No for approval fixed asset reports",
+        emptyTable: "No for printing fix assets",
         search: "_INPUT_",
         searchPlaceholder: "Search..."
       },
@@ -924,10 +870,21 @@ $(document).ready(function(){
         {title:"Item Code", data:"item_code","defaultContent": ""},
         {title:"Description", data:"description","defaultContent": ""},
         {title:"Serial", data:"serial_number","defaultContent": ""},
+        
         {title:"Received by", data:"it_desc","defaultContent": ""},
         {title:"Date Received", data:"date_received","defaultContent": ""},
         {title:"Status", data:"status","defaultContent": ""},
-        {title:"Update", data:null,"defaultContent": "<Button class='btn btn-danger' name='update'><i class='fas fa-edit'></i></Button>"}
+        {title:"Action", data:null,
+          render: function(data, type, row) {
+         return `
+             <div style="display: flex; gap: 5px;">
+                <button class='btn btn-danger btn-sm' name='update'><i class='fas fa-eye'> </i></button>
+              
+                 </div>
+             
+            `;
+        }
+    }
       ],
       rowCallback: function(row, data, index){
         if(data['msg_cnt'] == '1'){
@@ -940,11 +897,13 @@ $(document).ready(function(){
       getdata();
     }, 60000);
 
-    $('#fix_asset_table tbody').off('click', 'button[name="update"]').on('click', 'button[name="update"]', function (e) {
+    // Main Update Handler with merged Tracking Map Logic
+    $('#fix_asset_recording tbody').off('click', 'button[name="update"]').on('click', 'button[name="update"]', function (e) {
       e.stopPropagation();
       var data = reptable.row($(this).parents('tr')).data();
       if(!data) return;
 
+      // Populate basic form details
       $('#ticket_no').val(data['ticket_no']);
       $('#str_name').val(data['str_name']);
       $('#full_name').val(data['full_name']);
@@ -953,14 +912,16 @@ $(document).ready(function(){
       $('#description').val(data['description']);
       $('#serial_number').val(data['serial_number']);
       
+      $('#technical_workoutput').val(data['technical_workoutput']);
       $('#purpose_of_request').val(data['purpose_of_request']);
-            $('#technical_workoutput').val(data['technical_workoutput']);
+       $('#revised_request').val(data['revised_request']);
       $('#it_desc').val(data['it_desc']);
+         $('#noted_by_desc').val(data['noted_by_desc']);
       $('#date_received').val(data['date_received']);
      $('#status').val(data['status']);
 
       $('#action').val("Update");
-      $('#operation').val("update_request"); 
+      $('#operation').val("update_recording_request"); 
 
       var tid = $(this).parent().siblings(':first').html() || data['ticket_no'];
       $('#tick_title').text("Ticket Number: " + tid);
@@ -968,13 +929,14 @@ $(document).ready(function(){
       if (typeof displayAttachmentsFromData === "function") displayAttachmentsFromData(data);
       if (typeof getinfo === "function") getinfo(tid, 'remarks', user_id);
 
+      // Fetch Timeline Progress for Tracking Map
       $.ajax({
         url: 'get_first_comment.php', 
         type: 'POST',
         dataType: 'json', 
         data: { ticket_no: data['ticket_no'] },
         success: function(response) {
-           const statusLevels = {
+          const statusLevels = {
                 'submitted': 1, 'noted': 2, 'validated': 3, 
                 'verified': 4,  'recorded': 5, 'printed': 6, 'approved': 7, 'completed': 8
             };
@@ -1022,73 +984,14 @@ $(document).ready(function(){
             $('#trackingMap').html('<p class="text-danger">Failed to load progress timeline.</p>');
         },
         complete: function() {
-            $('#fa_Modal').modal('show');
+            $('#recording_Modal').modal('show');
         }
       });
     });
   }
-  // Handle Opening the Sub-Modal for Remarks
-  $(document).on('click', '#btn_open_remarks', function() {
-      var ticketNo = $('#ticket_no').val();
-      
-      if(!ticketNo) {
-          Swal.fire({
-              icon: 'warning',
-              title: 'Validation Error',
-              text: 'No active ticket number was found to append remarks to.'
-          });
-          return;
-      }
-      
-      // Inject variables into target modal nodes
-      $('#remarks_ticket_no').val(ticketNo);
-      $('#modal_textarea_remarks').val($('#remarks_adtech').val());
-      
-      // Toggle views
-      $('#remarks_Modal').modal('show');
-  });
-
-  // Handle Dedicated Form Submission for the Remarks Modal
-  $(document).on('submit', '#remarks_submit_form', function(event) {
-      event.preventDefault();
-      var formData = new FormData(this);
-      
-      // Synchronize back to the main hidden form field just in case
-      $('#remarks_adtech').val($('#modal_textarea_remarks').val());
-
-      $.ajax({
-          url: "insert.php",
-          method: 'POST',
-          data: formData,
-          contentType: false,
-          processData: false,
-          dataType: 'json',
-          success: function(response) {
-              if (response.status === 'success' || response.status === true) {
-                  Swal.fire({
-                      icon: 'success',
-                      title: 'Remarks added successfully',
-                      showConfirmButton: false,
-                      timer: 1500
-                  }).then(function() {
-                      $('#remarks_Modal').modal('hide');
-                      $('#fa_Modal').modal('hide');
-                      getdata();
-                      location.reload();
-                  });
-              } else {
-                  Swal.fire({
-                      icon: 'error',
-                      title: 'Execution Failed',
-                      text: response.message || 'Please check backend logs.'
-                  });
-              }
-          }
-      });
-  });
 
   // Form Submission
-  $(document).on('submit', '#fa_form', function(event) {
+  $(document).on('submit', '#recording_form', function(event) {
     event.preventDefault();
     event.stopImmediatePropagation();
     var formData = new FormData(this);
@@ -1114,8 +1017,8 @@ $(document).ready(function(){
             showConfirmButton: false,
             timer: 1500
           }).then(function() {
-            $('#fa_form')[0].reset();
-            $('#fa_Modal').modal('hide');
+            $('#recording_form')[0].reset();
+            $('#recording_Modal').modal('hide');
             getdata();
             location.reload();
           });
@@ -1175,3 +1078,178 @@ function handleDropdownChange(selectElement) {
   }
 }
 </script>
+
+
+<script>
+$(document).on('click', '.print-btn', function() {
+    let ticket_no = $(this).data('id');
+    
+    $('#pdfForm')[0].reset();
+    
+    $('#modal_ticket_no').val(ticket_no);
+    
+    $('#dataModal').modal('show');
+});
+</script>
+<div class="modal fade" id="dataModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <form id="pdfForm" action="print_form.php" method="POST" style="width: 100%;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-file-pdf mr-2"></i> PDF Generation Confirmation
+                    </h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+           
+
+                <div class="modal-body text-center py-4">
+                    <div class="confirmation-text mb-4">
+                        <p class="lead mb-1">Do you want to generate a report for this Fixed Asset form?</p>
+                        <span class="text-muted">Review the Ticket Number below before proceeding.</span>
+                    </div>
+
+                    <div class="row justify-content-center">
+                        <div class="form-group col-md-8 text-left">
+                            <label for="modal_ticket_no" class="font-weight-bold text-secondary">Ticket No</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-ticket-alt"></i></span>
+                                </div>
+                                <input type="text" class="form-control" name="ticket_no" id="modal_ticket_no" readonly>
+                            </div>
+                        </div>
+                             <div class="progress-container">
+                    <div id="loadingBar" class="progress-bar-fill"></div>
+                </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-secondary px-4 py-2 rounded-pill" data-dismiss="modal">Cancel</button>
+                    <button type="submit" id="btnSubmit" class="btn btn-primary-custom">
+                        <span class="btn-text">Generate PDF</span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+ <style>
+/* Modal Base Styling */
+#dataModal .modal-content {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    overflow: hidden; /* Clips the loading bar to the border radius */
+}
+
+#dataModal .modal-header {
+    background-color: #213456;
+    color: #fff;
+    border-bottom: 4px solid #E1AD01;
+}
+
+#dataModal .modal-title {
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+/* Custom Loading Bar Styles */
+.progress-container {
+    width: 100%;
+    height: 5px;
+    background-color: #f1f1f1;
+    position: relative;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    width: 0%;
+    background-color: #E1AD01;
+    transition: width 2s linear; /* Smooth 2-second acceleration transition */
+}
+
+/* Form Styling */
+#dataModal .confirmation-text p {
+    color: #213456;
+    font-weight: 600;
+}
+
+#dataModal .input-group-text {
+    background-color: #f8f9fa;
+    border-right: none;
+    color: #213456;
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+
+#dataModal .form-control {
+    border-left: none;
+    height: 45px;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    background-color: #fcfcfc;
+}
+
+#dataModal .form-control:focus {
+    border-color: #ced4da;
+    box-shadow: none;
+}
+
+.btn-primary-custom {
+    background-color: #E1AD01;
+    border: none;
+    color: #213456;
+    font-weight: 700;
+    padding: 10px 40px;
+    border-radius: 30px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary-custom:hover:not(:disabled) {
+    background-color: #213456;
+    color: #E1AD01;
+    transform: translateY(-2px);
+}
+
+.btn-primary-custom:disabled {
+    background-color: #cccccc;
+    color: #666666;
+    cursor: not-allowed;
+}
+</style>
+ <script>
+document.getElementById('pdfForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const form = this;
+    const loadingBar = document.getElementById('loadingBar');
+    const submitBtn = document.getElementById('btnSubmit');
+    
+    // Disable submit button during action
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span> Generating...';
+
+    setTimeout(() => {
+        loadingBar.style.width = '100%';
+    }, 50);
+
+    setTimeout(() => {
+        form.submit();
+    }, 1050); 
+});
+
+$('#dataModal').on('hidden.bs.modal', function () {
+    document.getElementById('loadingBar').style.width = '0%';
+    const submitBtn = document.getElementById('btnSubmit');
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = 'Generate PDF';
+});
+</script>
+

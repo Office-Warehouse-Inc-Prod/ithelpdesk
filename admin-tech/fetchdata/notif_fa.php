@@ -7,7 +7,7 @@ if ($conn->connect_error) {
 
 $sql = "SELECT COUNT(*) as total
         FROM asset_requests
-        WHERE status = 'SUBMITTED'z
+        WHERE status = 'SUBMITTED'
         ";
 
 $result = $conn->query($sql);

@@ -1,4 +1,4 @@
-<!-- modal addnew button -->
+
 <script type='text/javascript'>
   $(document).ready(function () {
 
@@ -45,9 +45,25 @@
       }
     }
 
-    /**
-     * Load Comment Thread for Chat UI
-     */
+    function timeAgo(dateParam) {
+        if (!dateParam) return "";
+        let date = new Date(dateParam.replace(/-/g, "/"));
+        let now = new Date();
+        let seconds = Math.floor((now - date) / 1000);
+        
+        let interval = Math.floor(seconds / 86400);
+        if (interval >= 1) return interval + " day" + (interval === 1 ? "" : "s") + " ago";
+        
+        interval = Math.floor(seconds / 3600);
+        if (interval >= 1) return interval + " hour" + (interval === 1 ? "" : "s") + " ago";
+        
+        interval = Math.floor(seconds / 60);
+        if (interval >= 1) return interval + " minute" + (interval === 1 ? "" : "s") + " ago";
+        
+        return "just now";
+    }
+
+  
     function loadCommentThread(ticket_no) {
         const $remarksView = $('#remarks_view');
         const ticketValue = (ticket_no || '').toString().trim();
@@ -69,9 +85,9 @@
                 if (Array.isArray(response) && response.length > 0) {
                     var currentUserIdStr = "<?= $_SESSION['user_id'] ?? '' ?>";
                     var currentUserNameStr = "<?= $_SESSION['fname'] ?? '' ?>";
+                    let reversedResponse = response.slice().reverse();
 
-                    // FIXED: Added 'index' to the function parameters here
-                    response.forEach(function(comment, index) {
+                    reversedResponse.forEach(function(comment, index) {
                         let sender = comment.userId || 'Unknown';
                         
                         let isMe = false;
@@ -80,14 +96,20 @@
                         
                         let bubbleClass = isMe ? 'chat-right' : 'chat-left';
                         let delay = index * 0.05; 
+                        let relativeTime = timeAgo(comment.comment_date);
+                        let replyTimeColor = isMe ? "color: #e2e8f0;" : "color: #64748b;";
                         
                         html += `
                             <div class="chat-bubble ${bubbleClass}" style="animation-delay: ${delay}s;">
                                 <div class="msg-meta">
                                     <span class="msg-meta-name">${sender}</span>
-                                    <span>${comment.comment_date}</span>
+                                    <span class="msg-time">${comment.comment_date}</span> 
                                 </div>
                                 <div style="white-space: pre-wrap;">${comment.comment_details}</div>
+                                
+                                <div class="reply-time" style="font-size: 0.65rem; text-align: right; margin-top: 6px; opacity: 0.85; font-style: italic; ${replyTimeColor}">
+                                    Replied ${relativeTime}
+                                </div>
                             </div>
                         `;
                     });
@@ -99,11 +121,10 @@
                     $remarksView.html(html).fadeIn(300);
                     $('.dv_msg, .container_remarks').slideDown(300); 
 
-                    // jQuery animated smooth scroll to bottom
                     setTimeout(() => {
                         const $container = $('.container_remarks');
                         if ($container.length) {
-                            $container.animate({ scrollTop: $container.prop("scrollHeight") }, 600, 'swing');
+                            $container.animate({ scrollTop: 0 }, 600, 'swing');
                         }
                     }, 200);
                 });
@@ -191,9 +212,12 @@
               $('#isp').prop("disabled", false);
               $('#remarks').attr('readonly', false);
               $('#img').empty();
+              $('#addmsg').removeAttr('required');
+              
+              $('#is_transfer').prop('checked', false); 
+
               if(typeof admin_hideshowforms === "function") admin_hideshowforms();
               if(typeof unilayout_netshowmodalform === "function") unilayout_netshowmodalform();
-              $('#addmsg').removeAttr('required');
             }
           },
           {
@@ -347,6 +371,14 @@
         $('#status').val(data['status']);
         $('#it_num').val(data['itsup']);
         
+        if (data['is_transfer'] == 1 || data['is_transfer'] == '1') {
+            $('#is_transfer').prop('checked', true); 
+         
+        } else {
+            $('#is_transfer').prop('checked', false);
+          
+        }
+
         if (data['itsup'] && $('#itsup option[value="' + data['itsup'] + '"]').length === 0) {
           $('<option>', {
             value: data['itsup'],
@@ -422,6 +454,7 @@
           $('#sub').prop("disabled", true);
           $('#isp').prop("disabled", true);
           $('#remarks').attr('readonly', true);
+          $('#is_transfer').prop("disabled", true);
         } else {
           $(':input[type="submit"]').prop('disabled', false);
           $('#date_createdx').attr('readonly', false);
@@ -436,6 +469,7 @@
           $('#sub').prop("disabled", false);
           $('#isp').prop("disabled", false);
           $('#remarks').attr('readonly', false);
+          $('#is_transfer').prop("disabled", false);
         }
 
         if (typeof getinfo === "function") getinfo(tid, 'remarks', user_id);
@@ -572,8 +606,8 @@
       $('#isp').prop("disabled", false);
       $(':input[type="submit"]').prop('disabled', false);
       $('#remarks').attr('readonly', false);
-      
-      // Clean up UI for Add
+      $('#is_transfer').prop('checked', false); 
+      $('#is_transfer').prop('disabled', false); 
       $('#msgbtn').hide();
       $('#remarks_view').empty();
       $('.dv_msg').hide();
@@ -630,7 +664,7 @@
         cat_id != "" &&
         sub_id != ""
       ) {
-        var disabledFields = $('#store, #via, #status, #itsup, #cat, #sub');
+        var disabledFields = $('#store, #via, #status, #itsup, #cat, #sub, #is_transfer');
         disabledFields.prop('disabled', false);
         var formData = new FormData(this);
         setTimeout(function() {
@@ -641,7 +675,7 @@
             $('#date_createdx').attr('readonly', true);
             $('#date_refNo').attr('readonly', true);
             $('#date_closed').attr('readonly', true);
-            $('#store, #via, #status, #itsup, #cat, #sub, #isp').prop('disabled', true);
+            $('#store, #via, #status, #itsup, #cat, #sub, #isp, #is_transfer').prop('disabled', true);
             $('#remarks').attr('readonly', true);
           }
         }, 50);
@@ -676,11 +710,11 @@
       }
     });
 
-    $(document).on('click', '#msgbtn', function () {
+  $(document).on('click', '#msgbtn', function () {
       $('.dv_msg').show();
       $('#remarks_view').show();
 
-      if ($('#msgbtn').val() == 'show') {
+     if ($('#msgbtn').val() == 'show') {
         $('#action').val("Save and Reply");
         $('#operation').val("Save and Reply");
         $('#msgbtn').val("hide");
@@ -688,14 +722,14 @@
         $('.dv_msg, .container_remarks').slideDown(400);
         setTimeout(() => {
             const $container = $('.container_remarks');
-            $container.animate({ scrollTop: $container.prop("scrollHeight") }, 400);
+            $container.animate({ scrollTop: 0 }, 400); 
+            
         }, 450);
       }
       else if ($('#msgbtn').val() == 'hide') {
         $('#action').val("Save");
         $('#operation').val("Edit");
         $('#msgbtn').val("show");
-        // FIXED: Only single hide logic
         $('#msg_thread').slideUp(400);
       }
     });

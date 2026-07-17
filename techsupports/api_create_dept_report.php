@@ -1,6 +1,6 @@
 <?php
 session_start();
-include('db.php'); // loads $connection (PDO)
+include('db.php');
 
 header('Content-Type: application/json');
 
@@ -23,17 +23,13 @@ try {
         echo json_encode(['Response' => false, 'm' => '<div class="alert alert-danger">Error: All fields are required.</div>']);
         exit;
     }
-
-    // Resolve subject description from cat_id
     $stmtCat = $connection->prepare("SELECT cat_desc FROM categories WHERE cat_id = :cat_id LIMIT 1");
     $stmtCat->execute([':cat_id' => $cat_id]);
     $catRow = $stmtCat->fetch(PDO::FETCH_ASSOC);
     $subject_desc = $catRow ? strtoupper($catRow['cat_desc']) : '';
 
-    // Begin transaction to ensure data integrity
     $connection->beginTransaction();
 
-    // 1. Insert into reports
     $stmt = $connection->prepare("INSERT INTO reports (ticket_no, date_created, deptsel, store, concern, service_desc, status, subject, userId, cat_id, sub_id) 
         VALUES (:ticket_no, :date_created, :deptsel, :store, :concern, :service_desc, :status, :subject, :userId, :cat_id, :sub_id)");
 
@@ -54,22 +50,13 @@ try {
     if (!$result) {
         throw new Exception("Failed to insert report header.");
     }
-
-    // 2. Update counter
-    // Determine the counter table (mirroring users/function.php)
     $counter = 'counter';
     $stmtCounter = $connection->prepare("UPDATE `$counter` SET ticket_no = :ticket_no");
     $stmtCounter->execute([':ticket_no' => $ticket_no]);
-
-    // 3. Insert reports_msgcnt
     $stmtMsgCnt = $connection->prepare("INSERT INTO reports_msgcnt (ticket_no, msg_cnt) VALUES (:ticket_no, :msgcnt)");
     $stmtMsgCnt->execute([':ticket_no' => $ticket_no, ':msgcnt' => '1']);
-
-    // 4. Insert reports_newmsg
     $stmtNewMsg = $connection->prepare("INSERT INTO reports_newmsg (ticket_no, nmsg_stat) VALUES (:ticket_no, :nmsg_stat)");
     $stmtNewMsg->execute([':ticket_no' => $ticket_no, ':nmsg_stat' => '1']);
-
-    // 5. Insert reports_comments (first comment is the concern itself)
     $stmtComment = $connection->prepare("INSERT INTO reports_comments (ticket_no, comment_details, comment_date, userId) 
         VALUES (:ticket_no, :comment_details, :comment_date, :userId)");
     $stmtComment->execute([
@@ -79,7 +66,6 @@ try {
         ':userId' => $userId
     ]);
 
-    // 6. Insert ticket_trail (tbl_tickethist)
     $stmtTrail = $connection->prepare("INSERT INTO tbl_tickethist (ticket_no, status, date_updated, userID) 
         VALUES (:ticket_no, :status, :date_updated, :userID)");
     $stmtTrail->execute([

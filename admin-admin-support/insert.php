@@ -417,6 +417,100 @@ if (isset($_POST["operation"]) && $_POST["operation"] === "update_request") {
     
     exit(); 
 }
+
+
+
+if (isset($_POST["operation"]) && $_POST["operation"] === "update_recording_request") {
+    
+    if (empty($_POST['ticket_no'])) {
+        echo json_encode(["status" => "error", "message" => "Missing Ticket Number."]);
+        exit();
+    }
+
+    try {
+        
+
+        $statement = $connection->prepare("
+            UPDATE asset_requests
+            SET
+                serial_number = :serial_number,
+                asset_tag_number = :asset_tag_number,
+                revised_request = :revised_request,
+                date_received = :date_received,
+                date_recorded    = :date_recorded,
+                status        = :status
+            WHERE ticket_no   = :ticket_no
+        ");
+
+       $result = $statement->execute([
+            ':serial_number' => $_POST['serial_number'] ?? '',
+             ':asset_tag_number' => $_POST['asset_tag_number'] ?? '',
+              ':revised_request' => $_POST['revised_request'] ?? '',
+            ':date_received' => $_POST['date_received'] ?? '',
+            ':date_recorded'    => date('Y-m-d H:i:s'),
+            ':status'        => 'RECORDED',
+            ':ticket_no'     => $_POST['ticket_no']
+        ]);
+
+        if ($result) {
+            echo json_encode(["status" => "success", "message" => "Request Recorded successfully."]);
+        } else {
+            echo json_encode(["status" => "error", "message" => "Failed to update the database."]);
+        }
+
+    } catch (PDOException $e) {
+        echo json_encode(["status" => "error", "message" => "SQL Error: " . $e->getMessage()]);
+    }
+    
+    exit(); 
+}
+
+
+
+if (isset($_POST["operation"]) && $_POST["operation"] === "update_printing_request") {
+    
+    if (empty($_POST['ticket_no'])) {
+        echo json_encode(["status" => "error", "message" => "Missing Ticket Number."]);
+        exit();
+    }
+
+    try {
+        
+
+        $statement = $connection->prepare("
+            UPDATE asset_requests
+            SET
+                serial_number = :serial_number,
+                asset_tag_number = :asset_tag_number,
+                revised_request = :revised_request,
+                date_received = :date_received,
+                date_printed    = :date_printed,
+                status        = :status
+            WHERE ticket_no   = :ticket_no
+        ");
+
+       $result = $statement->execute([
+            ':serial_number' => $_POST['serial_number'] ?? '',
+             ':asset_tag_number' => $_POST['asset_tag_number'] ?? '',
+              ':revised_request' => $_POST['revised_request'] ?? '',
+            ':date_received' => $_POST['date_received'] ?? '',
+            ':date_printed'    => date('Y-m-d H:i:s'),
+            ':status'        => 'PRINTED',
+            ':ticket_no'     => $_POST['ticket_no']
+        ]);
+
+        if ($result) {
+            echo json_encode(["status" => "success", "message" => "Fixed Asset Request Printed successfully."]);
+        } else {
+            echo json_encode(["status" => "error", "message" => "Failed to update the database."]);
+        }
+
+    } catch (PDOException $e) {
+        echo json_encode(["status" => "error", "message" => "SQL Error: " . $e->getMessage()]);
+    }
+    
+    exit(); 
+}
 if (isset($_POST["operation"]) && $_POST["operation"] === "save_request") {
     
     if (empty($_POST['ticket_no'])) {
