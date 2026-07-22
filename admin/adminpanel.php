@@ -40,7 +40,7 @@ body {
  
 } 
 .navbar, header, .topbar, .navbar-default{
-    background-color: #213456 !important;
+    background: linear-gradient(135deg, #213456, #334c7a);
     margin-bottom: 40px;
 }
 .navbar a, .navbar-brand, .navbar-nav > li > a,
@@ -66,7 +66,7 @@ body {
 .form-check-label{ color: var(--muted) !important; font-weight: 700; }
 
 .input-group-text{
-  background: var(--navy) !important;
+  background: linear-gradient(135deg, #213456, #334c7a);
   color: #fff !important;
   border: 1px solid rgba(0,0,0,.08) !important;
   font-weight: 800 !important;
@@ -148,7 +148,7 @@ select.form-control:focus, .form-control:focus{
   text-align: center;
   font-size: 32px !important;
   font-weight: 900 !important;
-  color: var(--navy) !important;
+  color: linear-gradient(135deg, #213456, #334c7a);
   padding-bottom: -40px;
   
 }
@@ -190,7 +190,7 @@ select.form-control:focus, .form-control:focus{
 
 /* Navy header bar + yellow underline like screenshot */
 .card2 .card-header{
-  background: var(--navy) !important;
+  background: linear-gradient(135deg, #213456, #334c7a);
   color: var(--yellow) !important;
   font-weight: 900 !important;
   text-transform: none;
@@ -290,7 +290,7 @@ select.form-control:focus, .form-control:focus{
 }
 
 #userModal .modal-header {
-    background-color: #213456;
+    background: linear-gradient(135deg, #213456, #334c7a);
     color: #fff;
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
@@ -376,7 +376,7 @@ select.form-control:focus, .form-control:focus{
 /* User/Sent messages */
 .chat-right {
     align-self: flex-end;
-    background: #1C0770;
+    background: linear-gradient(135deg, #213456, #334c7a);
     color: #ffffff;
     border-bottom-right-radius: 2px;
 }
@@ -390,7 +390,7 @@ select.form-control:focus, .form-control:focus{
 
 /* --- Action Buttons --- */
 .btn-success {
-    background-color: #1C0770 !important;
+    background: linear-gradient(135deg, #213456, #334c7a);
     border: none;
     padding: 0.6rem 2rem;
     font-weight: 600;
@@ -419,9 +419,10 @@ select.form-control:focus, .form-control:focus{
 
 /* --- Global Theme Vars --- */
 :root {
-    --navy-primary: #213456;
+    --navy-primary:linear-gradient(135deg, #213456, #334c7a);
     --gold-accent: #E1AD01;
     --chat-bg: #f4f7f9;
+
 }
 
 /* --- Left Side: Refined Input Panel --- */
@@ -445,20 +446,8 @@ select.form-control:focus, .form-control:focus{
 
 /* --- Right Side: Premium Messenger Thread --- */
 #msg_thread {
-    background-color: #213456;
+    background: linear-gradient(135deg, #213456, #334c7a);
 
-}
-
-.container_remarks {
-    background: var(--chat-bg);
-    height: 500px;
-    overflow-y: auto;
-    box-shadow: 0 20px 60px rgba(123, 128, 44, 0.605);
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    border: none;
 }
 
 
@@ -522,7 +511,7 @@ select.form-control:focus, .form-control:focus{
 
 /* --- Header using your Navy/Gold Theme --- */
 .card2 .card-header {
-    background-color: #213456 !important; /* Your Navy */
+    background: linear-gradient(135deg, #213456, #334c7a); /* Your Navy */
     color: #E1AD01 !important; /* Your Gold */
     font-weight: 700;
     letter-spacing: 1px;
@@ -603,6 +592,216 @@ background: linear-gradient(135deg, #837031, #E1AD01);
     width: 100%;
     height: 400px;
 }
+
+.container_remarks {
+    display: flex !important;
+    flex-direction: column;
+    max-height: 480px;
+    overflow-y: auto;
+    background-color: #f0f2f5 !important;
+    border: 1px solid #dee2e6;
+    border-radius: 12px;
+    padding: 15px;
+    margin-top: 10px;
+}
+
+.dv_msg {
+    display: block !important;
+}
+
+#remarks_view {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+#userModal .modal-dialog{
+  max-width: 1100px; 
+  margin: 1.25rem auto;
+}
+
+#userModal .modal-content{
+  border-radius: 16px;
+  border: none;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+#userModal .modal-header{
+    background-color: linear-gradient(135deg, #213456, #334c7a);
+    color: #fff;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    border-bottom: 4px solid #E1AD01; 
+}
+
+#userModal_header{
+  font-weight: 700;
+  font-size: 18px;
+  margin: 0;
+}
+
+#userModal .modal-body{
+  padding: 16px 18px;
+}
+
+#userModal .modal-title {
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+}
+
+#userModal .input-group-text {
+    background-color: white;
+    border-right: none;
+    color: linear-gradient(135deg, #213456, #334c7a);
+}
+
+#userModal .form-control {
+    border-left: none;
+    height: 45px;
+    border-radius: 0 8px 8px 0;
+}
+
+#userModal .form-control:focus {
+    border-color: linear-gradient(135deg, #213456, #334c7a);
+    box-shadow: none;
+}
+
+#userModal .input-group:focus-within {
+    box-shadow: 0 0 0 0.2rem rgba(225, 173, 1, 0.25);
+    border-radius: 8px;
+}
+
+.m_col {
+    background: #ffffff;
+    padding: 2rem !important;
+    border-right: 1px solid #edf2f7;
+}
+
+.m_col label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #718096;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.m_col .form-control {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 0.6rem 0.75rem;
+    transition: all 0.2s ease;
+    background-color: #f8fafc;
+}
+
+.m_col .form-control:focus {
+    background-color: #fff;
+    border-color: #1C0770;
+    box-shadow: 0 0 0 3px rgba(28, 7, 112, 0.1);
+    outline: none;
+}
+
+.m_col textarea {
+    min-height: 80px;
+}
+
+#msg_thread {
+    padding: 1rem 1.5rem;
+    background: linear-gradient(to bottom, #ffffff, #99aac8);
+    height: 100%;
+}
+
+#addmsg {
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 1rem;
+    background: #ffffff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.chat-bubble {
+    max-width: 85%;
+    padding: 10px 14px;
+    border-radius: 18px;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    position: relative;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    word-wrap: break-word;
+}
+
+.chat-left {
+    align-self: flex-start;
+    background: #ffffff;
+    color: #1e293b;
+    border-bottom-left-radius: 4px;
+    border: 1px solid #e5e7eb;
+}
+
+.chat-right {
+    align-self: flex-end;
+    background: linear-gradient(135deg, #213456, #334c7a);
+    color: #ffffff;
+    border-bottom-right-radius: 4px;
+}
+
+.msg-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    font-size: 0.7rem;
+    margin-bottom: 4px;
+}
+
+.chat-left .msg-meta {
+    color: #64748b;
+}
+
+.chat-right .msg-meta {
+    color: #ffffff; 
+}
+
+.chat-left .msg-meta-name {
+    color: #213456;
+    font-weight: bold;
+}
+
+.chat-right .msg-meta-name {
+    color: #ffffff;
+    font-weight: bold;
+}
+
+
+.chat-right .msg-time {
+    color: #ffffff !important; 
+}
+
+.chat-left .msg-time {
+    color: #64748b !important;
+}
+.chat-left .msg-meta {
+    color: #64748b;
+}
+
+.chat-right .msg-meta {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.chat-left .msg-meta-name {
+    color: linear-gradient(135deg, #213456, #334c7a);
+    font-weight: bold;
+}
+
+.chat-right .msg-meta-name {
+    color: #ffffff;
+    font-weight: bold;
+}
+
 
 
 </style>
@@ -757,7 +956,7 @@ background: linear-gradient(135deg, #837031, #E1AD01);
 </div>
 <div class="col-12 col-lg-6 mb-3">
     <div class="card card2 h-100">
-        <div class="card-header" style="background-color:#1f375c; color:#ffc400; font-weight:700;">
+        <div class="card-header" style="background: linear-gradient(135deg, #213456, #334c7a); color:#ffc400; font-weight:700;">
             Category Breakdown
             <span id="selected_status_title" style="color:white; font-size:14px;"></span>
         </div>
@@ -770,7 +969,7 @@ background: linear-gradient(135deg, #837031, #E1AD01);
 
                       <div class="col-12 col-lg-12 col-md-12 mb-3">
             <div class="card card2 h-100">
-              <h5 class="card-header" style="background-color: #95a2b9b4; color:black;">Tickets Per Area</h5>
+              <h5 class="card-header" style="background: linear-gradient(135deg, #213456, #334c7a); color:black;">Tickets Per Area</h5>
               <div class="card-body">
                 <div id="chart_area"></div>
               </div>
@@ -976,32 +1175,29 @@ style="text-transform:uppercase">
 </p>
 
 
+ <div class="col-12 col-lg-6">
 
+                <div id="msg_thread">
 
-<div class="col-6 col-md-6 col-lg-6">
+                  <div class="col-12 mb-3 px-0">
+                    <label style="font-weight: bold; color:linear-gradient(135deg, #213456, #334c7a);">Add Comment:</label>
+                    <textarea name="admsg" id="addmsg" class="form-control form-control-sm"
+                      placeholder="Reply to their message or give updates regarding this ticket..."
+                      required></textarea>
+                  </div>
 
-  
-<div class="" id="msg_thread">
+                  <div class="col-12 mt-4 mb-2 dv_msg px-0">
+                    <label for="remarks_view" style="font-weight: bold; color:linear-gradient(135deg, #213456, #334c7a);">Comment Thread:</label>
+                    <hr>
+                    <div class="container_remarks">
+                      <div id="remarks_view"></div>
+                    </div>
+                  </div>
 
-<div  class="col-12 col-lg-12 mb-3">
+                </div><!-- /#msg_thread -->
 
-       <label style="font-weight: bold; color:white;">Add Comment:</label>
-<textarea name="admsg" id="addmsg" class="form-control form-control-sm" placeholder="Reply to their message or give an updates regarding on this ticket..." required></textarea> 
-</div>
-<div class="col-12 col-lg-12 mt-4 mb-2 dv_msg">
-<label for="remarks_view" style="font-weight: bold; color: white;">Comment Thread:</label>
-   <hr>
-<div class="container_remarks" >
-<div id="remarks_view"></div>
-</div>
-</div>
+              </div><!-- /.right -->
 
-
-
-
-</div>
-
-</div>
 
 
 </div>

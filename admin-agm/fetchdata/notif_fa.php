@@ -7,7 +7,7 @@ if ($conn->connect_error) {
 
 $sql = "SELECT COUNT(*) as total
         FROM asset_requests
-        WHERE status = 'VERIFIED'
+        WHERE status = 'PRINTED'
         ";
 
 $result = $conn->query($sql);

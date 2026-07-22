@@ -616,7 +616,7 @@ include 'sub_graph_modal.php';
 
             <div class="form-group col-12 mb-4">
               <label><i class="fas fa-paperclip mr-1"></i> Attach Files (Optional)</label>
-              <input id="create_file-input" type="file" name="file" multiple class="form-control-file d-block mb-1">
+              <input id="create_file-input" type="file" name="file[]" multiple class="form-control-file d-block mb-1">
               <small class="text-muted d-block">Max file size: 2MB. Allowed types: Images, PDF, Docs, Excel.</small>
             </div>
           </div>

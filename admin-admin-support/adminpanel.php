@@ -69,7 +69,7 @@ body {
             color: #333;
         }
        .modal-overlay .close-btn {
-            background-color: #213456;
+             background: linear-gradient(135deg, #213456, #334c7a);
             margin-top: 15px;
         }
  
@@ -88,7 +88,7 @@ body {
   }
 
   .admin-table th {
-    background-color: #213456 !important;
+     background: linear-gradient(135deg, #213456, #334c7a);
     color: #fff !important;
     padding: 6px 4px !important;
     font-size: 11px !important;
@@ -151,10 +151,10 @@ body {
   padding:10px;
   width: 30%;
   color: white;
-  background-color: #213456;
+   background: linear-gradient(135deg, #213456, #334c7a);
 }
  .modal-overlay .month-row[data-month="6"] {
-  background: #213456;
+   background: linear-gradient(135deg, #213456, #334c7a);
   outline: 2px solid red;
   outline-offset: -2px; 
 }
@@ -252,7 +252,7 @@ textarea.form-control:focus {
 }
 
 #userModal .modal-header{
-    background-color: #213456;
+     background: linear-gradient(135deg, #213456, #334c7a);
     color: #fff;
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
@@ -458,7 +458,7 @@ textarea.form-control:focus {
     min-width: 300px; 
 }
 #showCalendarBtn {
-    background-color: #213456;
+     background: linear-gradient(135deg, #213456, #334c7a);
     color: white;
     border-radius: 8px;
     padding: 8px 20px;
@@ -519,7 +519,7 @@ textarea.form-control:focus {
   }
 
   .admin-table th {
-    background-color: #213456 !important;
+     background: linear-gradient(135deg, #213456, #334c7a);
     color: #fff !important;
     padding: 6px 4px !important;
     font-size: 11px !important;
@@ -582,10 +582,10 @@ textarea.form-control:focus {
   padding:10px;
   width: 30%;
   color: white;
-  background-color: #213456;
+   background: linear-gradient(135deg, #213456, #334c7a);
 }
  .modal-overlay .month-row[data-month="6"] {
-  background: #213456;
+   background: linear-gradient(135deg, #213456, #334c7a);
   outline: 2px solid red;
   outline-offset: -2px; 
 }
@@ -651,13 +651,13 @@ textarea.form-control:focus {
                         </th>
                       </tr>
                       
-                      <tr style="background-color: #213456; color: #ffffff;">
-                         <th style="background-color: #213456; font-size: 12px; vertical-align: middle;">MONTH</th>
-                        <th class="text-center" style="background-color: #213456; font-size: 12px; vertical-align: middle;">ACTIVE TICKETS</th>
-                        <th class="text-center" style="background-color: #213456; font-size: 12px; vertical-align: middle;">COMPLIANCE RATE</th>
-                        <th class="text-center" style="background-color: #213456; font-size: 12px; vertical-align: middle;">MET SLA</th>
-                        <th class="text-center" style="background-color: #213456; font-size: 12px; vertical-align: middle;">NON-SLA</th>
-                        <th class="text-center" style="background-color: #213456; font-size: 12px; vertical-align: middle;">SLA COMPLIANCE</th>
+                      <tr style=" background: linear-gradient(135deg, #213456, #334c7a); color: #ffffff;">
+                         <th style=" background: linear-gradient(135deg, #213456, #334c7a); font-size: 12px; vertical-align: middle;">MONTH</th>
+                        <th class="text-center" style=" background: linear-gradient(135deg, #213456, #334c7a); font-size: 12px; vertical-align: middle;">ACTIVE TICKETS</th>
+                        <th class="text-center" style=" background: linear-gradient(135deg, #213456, #334c7a); font-size: 12px; vertical-align: middle;">COMPLIANCE RATE</th>
+                        <th class="text-center" style=" background: linear-gradient(135deg, #213456, #334c7a); font-size: 12px; vertical-align: middle;">MET SLA</th>
+                        <th class="text-center" style=" background: linear-gradient(135deg, #213456, #334c7a); font-size: 12px; vertical-align: middle;">NON-SLA</th>
+                        <th class="text-center" style=" background: linear-gradient(135deg, #213456, #334c7a); font-size: 12px; vertical-align: middle;">SLA COMPLIANCE</th>
                       </tr>
                     </thead>
                     
@@ -702,7 +702,7 @@ textarea.form-control:focus {
                         <td class="text-center non-sla">-</td>
                         <td class="sla-compliance">-</td>
                       </tr>
-                      <tr class ="month-row" data-month="6" style="background: #213456; border-outline: 2px solid red;">
+                      <tr class ="month-row" data-month="6" style=" background: linear-gradient(135deg, #213456, #334c7a); border-outline: 2px solid red;">
                         <td class="fw-bold" >JUNE</td>
                         <td class="text-center active-total">-</td>
                         <td class="compliance-rate">-</td>
@@ -710,7 +710,7 @@ textarea.form-control:focus {
                         <td class="text-center non-sla">-</td>
                         <td class="sla-compliance">-</td>
                       </tr>
-                          <tr class ="month-row" data-month="7" style="background: #213456; border-outline: 2px solid red;">
+                          <tr class ="month-row" data-month="7" style=" background: linear-gradient(135deg, #213456, #334c7a); border-outline: 2px solid red;">
                         <td class="fw-bold" >JULY</td>
                         <td class="text-center active-total">-</td>
                         <td class="compliance-rate">-</td>
@@ -718,7 +718,7 @@ textarea.form-control:focus {
                         <td class="text-center non-sla">-</td>
                         <td class="sla-compliance">-</td>
                       </tr>
-                          <tr class ="month-row" data-month="8" style="background: #213456; border-outline: 2px solid red;">
+                          <tr class ="month-row" data-month="8" style=" background: linear-gradient(135deg, #213456, #334c7a); border-outline: 2px solid red;">
                         <td class="fw-bold" >AUGUST</td>
                         <td class="text-center active-total">-</td>
                         <td class="compliance-rate">-</td>
@@ -726,7 +726,7 @@ textarea.form-control:focus {
                         <td class="text-center non-sla">-</td>
                         <td class="sla-compliance">-</td>
                       </tr>
-                          <tr class ="month-row" data-month="9" style="background: #213456; border-outline: 2px solid red;">
+                          <tr class ="month-row" data-month="9" style=" background: linear-gradient(135deg, #213456, #334c7a); border-outline: 2px solid red;">
                         <td class="fw-bold" >SEPTEMBER</td>
                         <td class="text-center active-total">-</td>
                         <td class="compliance-rate">-</td>
@@ -734,7 +734,7 @@ textarea.form-control:focus {
                         <td class="text-center non-sla">-</td>
                         <td class="sla-compliance">-</td>
                       </tr>
-                          <tr class ="month-row" data-month="10" style="background: #213456; border-outline: 2px solid red;">
+                          <tr class ="month-row" data-month="10" style=" background: linear-gradient(135deg, #213456, #334c7a); border-outline: 2px solid red;">
                         <td class="fw-bold" >OCTOBER</td>
                         <td class="text-center active-total">-</td>
                         <td class="compliance-rate">-</td>
@@ -742,7 +742,7 @@ textarea.form-control:focus {
                         <td class="text-center non-sla">-</td>
                         <td class="sla-compliance">-</td>
                       </tr>
-                          <tr class ="month-row" data-month="11" style="background: #213456; border-outline: 2px solid red;">
+                          <tr class ="month-row" data-month="11" style=" background: linear-gradient(135deg, #213456, #334c7a); border-outline: 2px solid red;">
                         <td class="fw-bold" >NOVEMBER</td>
                         <td class="text-center active-total">-</td>
                         <td class="compliance-rate">-</td>

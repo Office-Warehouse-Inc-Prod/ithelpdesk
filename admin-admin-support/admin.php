@@ -92,7 +92,7 @@ body {
 }
 
 .owi-navbar {
-  background-color: #213456 !important;
+ background: linear-gradient(135deg, #213456, #334c7a);
   box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.15);
   padding: 0.5rem 1.5rem !important;
   transition: all 0.3s ease;
@@ -466,11 +466,6 @@ body {
       <span class="badge badge-danger" id="notif_validation" style="position: static;"></span>
     </a>
     
-    <!-- For Printing -->
-    <a class="dropdown-item d-flex justify-content-between align-items-center" href="fix_asset_recording.php">
-      <span><i class="fas fa-file-contract"></i> For Recording</span>
-      <span class="badge badge-danger" id="notif_recording" style="position: static;"></span>
-    </a>
 
      <a class="dropdown-item d-flex justify-content-between align-items-center" href="fix_asset_printing.php">
       <span><i class="fa-solid fa-print"></i> For Printing</span>

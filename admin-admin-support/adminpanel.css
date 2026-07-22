@@ -103,7 +103,7 @@ body.dark-mode .form-control::placeholder {
     display:flex;
     align-items:center;
     margin-bottom:40px;
-    background-color:#213456;
+     background: linear-gradient(135deg, #213456, #334c7a);
     border-bottom:1px solid rgba(0,0,0,.125);
 }
 .card-header:first-child{
@@ -199,7 +199,7 @@ body.dark-mode .form-control::placeholder {
 }
 
 .btn-success:hover {
-    background-color: #213456;
+     background: linear-gradient(135deg, #213456, #334c7a);
     color: white;
 }
 
@@ -236,7 +236,7 @@ body.dark-mode .form-control::placeholder {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0 6px;
-  background: #213456; 
+   background: linear-gradient(135deg, #213456, #334c7a); 
   color: #ccc;
   font-family: 'Poppins', Tahoma, Geneva, Verdana, sans-serif;
   border-radius: 8px;
@@ -288,7 +288,7 @@ body.dark-mode .form-control::placeholder {
 }
 
 #report_data::-webkit-scrollbar-thumb {
-  background: #213456; 
+   background: linear-gradient(135deg, #213456, #334c7a); 
   border-radius: 3px;
 }
 
@@ -331,7 +331,7 @@ body.dark-mode .form-control::placeholder {
     min-width: 300px; 
 }
 #showCalendarBtn {
-    background-color: #213456;
+     background: linear-gradient(135deg, #213456, #334c7a);
     color: white;
     border-radius: 8px;
     padding: 8px 20px;
@@ -722,7 +722,7 @@ body.dark-mode .toggle-label-text {
 }
 
 #userModal .modal-header {
-    background-color: #213456;
+     background: linear-gradient(135deg, #213456, #334c7a);
     color: #fff;
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
@@ -913,7 +913,7 @@ body.dark-mode .toggle-label-text {
 
 /* --- Right Side: Premium Messenger Thread --- */
 #msg_thread {
-    background-color: #213456;
+     background: linear-gradient(135deg, #213456, #334c7a);
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -1056,7 +1056,7 @@ body.dark-mode .toggle-label-text {
 }
 
 #report_data tbody tr, #network_tb tbody tr {
-    background-color: #213456;
+     background: linear-gradient(135deg, #213456, #334c7a);
     transition: all 0.2s ease;
     box-shadow: 0 2px 4px rgba(0,0,0,0.02);
 }

@@ -609,6 +609,17 @@ table.dataTable tbody tr:hover {
         <select id="filter_month" class="form-control filter-trigger">
             <option value="">All Months</option>
             <option value="01">January</option>
+            <option value="02">February</option>
+            <option value="03">March</option>
+            <option value="04">April</option>
+            <option value="05">May</option>
+            <option value="06">June</option>
+            <option value="07">July</option>
+            <option value="08">August</option>
+            <option value="09">September</option>
+            <option value="10">October</option>
+            <option value="11">November</option>
+            <option value="12">December</option>
             </select>
     </div>
     <div class="col-md-3">
@@ -650,7 +661,7 @@ table.dataTable tbody tr:hover {
 
           <div class="modal-body">
             <div class="row">
-              <div class="col-md-7 border-right pt-2 pb-2">
+               <div class="col-md-5 border-right pt-2 pb-2">
                  <h6 class="text-uppercase mb-3" style="color:#E1AD01; font-weight: 800;">Request Details</h6>
                 <div class="row">
                   <div class="form-group col-md-5">
@@ -686,19 +697,7 @@ table.dataTable tbody tr:hover {
                     <label>Asset Tag Number</label>
                     <input type="text" class="form-control" name="asset_tag_number" id="asset_tag_number" >
                   </div>
-                   <div class="form-group col-md-12">
-                    <label>Workoutput (Under Technical Evaluation)</label>
-                    <textarea class="form-control" name="technical_workoutput" id="technical_workoutput" style="height: 150px;" readonly></textarea>
-                  </div>
-                  <div class="form-group col-md-12">
-                    <label>Purpose of Request (Created by Store/Dept User)</label>
-                    <textarea class="form-control" name="purpose_of_request" id="purpose_of_request" style="height: 150px;" readonly></textarea>
-                  </div>
-
-                   <div class="form-group col-md-12">
-                    <label>Purpose of Request (Rephrased version for printing)</label>
-                    <textarea class="form-control" name="revised_request" id="revised_request" style="height: 150px;" readonly></textarea>
-                  </div>
+                   
                   <div class="form-group col-md-5">
                     <label>Item Received By</label>
                     <input type="text" class="form-control" name="item_received_by" id="it_desc" readonly>
@@ -718,7 +717,6 @@ table.dataTable tbody tr:hover {
                         <option value="">UPDATE STATUS</option>
                         <option value="PRINTED">PRINTED</option>
                         <option value="VERIFIED">VERIFIED</option>
-                        <option value="RECORDED">RECORDED</option>
                         <option value="APPROVED">APPROVED</option>
                         <option value="COMPLETED">COMPLETED</option>
                     </select>
@@ -728,10 +726,7 @@ table.dataTable tbody tr:hover {
                         <label>Date Printed</label>
                         <input type="datetime-local" class="form-control status-date-input" name="date_printed" id="date_printed" disabled>
                     </div>
-                    <div class="fform-group col-md-4" id="dateRecordedGroup" style="display: none;">
-                        <label>Date Recorded</label>
-                        <input type="datetime-local" class="form-control status-date-input" name="date_recorded" id="date_recorded" disabled>
-                    </div>
+                 
                     <div class="fform-group col-md-4" id="dateVerifiedGroup" style="display: none;">
                         <label>Date Verified</label>
                         <input type="datetime-local" class="form-control status-date-input" name="date_verified" id="date_verified" disabled>
@@ -747,9 +742,27 @@ table.dataTable tbody tr:hover {
                 </div>
               </div>
 
-              <div class="col-md-5 pt-2 pb-2" style="background: linear-gradient(to bottom, #ffffff, #bbc2cf);  border-radius: 8px;">
+              <div class="col-md-4 border-right pt-2 pb-2" style="background: linear-gradient(to bottom, #ffffff, #f0f3f7);">
+            <div class="form-group col-md-12">
+                    <label>Workoutput (Under Technical Evaluation)</label>
+                    <textarea class="form-control" name="technical_workoutput" id="technical_workoutput" style="height: 150px;" readonly></textarea>
+                  </div>
+
+
+                  <div class="form-group col-md-12">
+                    <label>Purpose of Request (From Store/Dept User)</label>
+                    <textarea class="form-control" name="purpose_of_request" id="purpose_of_request" style="height: 150px;" readonly></textarea>
+                  </div>
+
+                   <div class="form-group col-md-12">
+                    <label>Purpose of Request (Rephrase for Printing)</label>
+                    <textarea class="form-control" name="revised_request" id="revised_request"  style="height: 150px;" maxlength="70"></textarea>
+                  </div>
+          </div>
+
+                <div class="col-md-3 pt-2 pb-2" style=" background: linear-gradient(to bottom, #ffffff, #d7dce4);border-radius: 0 8px 8px 0;">
                   <h6 class="text-uppercase mb-3" style="color:#E1AD01; font-weight: 800;">Asset Request Progress</h6>
-                  <div class="tracking-container" style="max-height: 750px; overflow-y: auto; padding-right: 10px;">
+                  <div class="tracking-container" style="max-height: 500px; overflow-y: auto; padding-right: 10px;">
                       <ul class="tracking-timeline" id="trackingMap"></ul>
                   </div>
               </div>
@@ -902,8 +915,8 @@ table.dataTable tbody tr:hover {
       "order": [[ 0, "Desc" ]],
       columns: [
         {title:"Ticket No", data:"ticket_no","defaultContent": ""},
-        {title:"Requesting Dept/Branch", data:"str_name","defaultContent": ""},
-        {title:"Requesting Employee", data:"full_name","defaultContent": ""},
+        {title:"Dept/Branch", data:"str_name","defaultContent": ""},
+        {title:"Employee", data:"full_name","defaultContent": ""},
         {title:"Ticket Date", data:"ticket_created","defaultContent": ""},
         {title:"Item Code", data:"item_code","defaultContent": ""},
         {title:"Description", data:"description","defaultContent": ""},
@@ -1088,6 +1101,7 @@ function openViewModal(btn) {
     $('#description').val(data.description);
     $('#serial_number').val(data.serial_number);
     $('#purpose_of_request').val(data.purpose_of_request);
+    $('#technical_workoutput').val(data.technical_workoutput);
      $('#revised_request').val(data.revised_request);
     $('#it_desc').val(data.it_desc);
     $('#noted_by_desc').val(data.noted_by_desc);
@@ -1108,9 +1122,9 @@ function loadTimeline(ticket_no, rowData) {
         dataType: 'json',
         data: { ticket_no: ticket_no },
         success: function(response) {
-           const statusLevels = {
+            const statusLevels = {
                 'submitted': 1, 'noted': 2, 'validated': 3, 
-                'verified': 4,  'recorded': 5, 'printed': 6, 'approved': 7, 'completed': 8
+                'verified': 4, 'printed': 5, 'approved': 6, 'completed': 7
             };
 
             let dbStatus = (response.status || "").toLowerCase().trim();
@@ -1125,14 +1139,12 @@ function loadTimeline(ticket_no, rowData) {
                 { desc: "Validated by admin support", date: response.date_validated, reqLevel: 3 },
                 { desc: "For administrative verification", date: null, reqLevel: 3 }, 
                 { desc: "Verified by the administrator", date: response.date_verified, reqLevel: 4 },
-                { desc: "For recording", date: null, reqLevel: 4 }, 
-                { desc: "Recorded", date: response.date_recorded, reqLevel: 5 },
-                { desc: "For printing request form", date: null, reqLevel: 5 }, 
-                { desc: "Printed", date: response.date_printed, reqLevel: 6 },
-                { desc: "For General Manager Approval", date: null, reqLevel: 6 }, 
-                { desc: "Approved by General Manager", date: response.date_approved, reqLevel: 7 },
-                { desc: "Ready for asset replacement", date: null, reqLevel: 7 }, 
-                { desc: "Asset replaced / Completed", date: response.date_completed, reqLevel: 8 }
+                { desc: "For printing request form", date: null, reqLevel: 4 }, 
+                { desc: "Printed", date: response.date_printed, reqLevel: 5 },
+                { desc: "For General Manager Approval", date: null, reqLevel: 5 }, 
+                { desc: "Approved by General Manager", date: response.date_approved, reqLevel: 6 },
+                { desc: "Ready for asset replacement", date: null, reqLevel: 6 }, 
+                { desc: "Asset replaced / Completed", date: response.date_completed, reqLevel: 7 }
             ];
 
             let timelineHtml = '';

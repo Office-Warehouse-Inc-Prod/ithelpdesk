@@ -2108,7 +2108,7 @@ $(document).on('click', '.print-btn', function(e) {
 
             const statusLevels = {
                 'submitted': 1, 'noted': 2, 'validated': 3, 
-                'verified': 4,  'recorded': 5, 'printed': 6, 'approved': 7, 'completed': 8
+                'verified': 4, 'printed': 5, 'approved': 6, 'completed': 7
             };
 
             let dbStatus = (response.status || "").toLowerCase().trim();
@@ -2123,14 +2123,12 @@ $(document).on('click', '.print-btn', function(e) {
                 { desc: "Validated by admin support", date: response.date_validated, reqLevel: 3 },
                 { desc: "For administrative verification", date: null, reqLevel: 3 }, 
                 { desc: "Verified by the administrator", date: response.date_verified, reqLevel: 4 },
-                { desc: "For recording", date: null, reqLevel: 4 }, 
-                { desc: "Recorded", date: response.date_recorded, reqLevel: 5 },
-                { desc: "For printing request form", date: null, reqLevel: 5 }, 
-                { desc: "Printed", date: response.date_printed, reqLevel: 6 },
-                { desc: "For General Manager Approval", date: null, reqLevel: 6 }, 
-                { desc: "Approved by General Manager", date: response.date_approved, reqLevel: 7 },
-                { desc: "Ready for asset replacement", date: null, reqLevel: 7 }, 
-                { desc: "Asset replaced / Completed", date: response.date_completed, reqLevel: 8 }
+                { desc: "For printing request form", date: null, reqLevel: 4 }, 
+                { desc: "Printed", date: response.date_printed, reqLevel: 5 },
+                { desc: "For General Manager Approval", date: null, reqLevel: 5 }, 
+                { desc: "Approved by General Manager", date: response.date_approved, reqLevel: 6 },
+                { desc: "Ready for asset replacement", date: null, reqLevel: 6 }, 
+                { desc: "Asset replaced / Completed", date: response.date_completed, reqLevel: 7 }
             ];
 
             let timelineHtml = '';

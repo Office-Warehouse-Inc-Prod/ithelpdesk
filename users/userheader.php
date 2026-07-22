@@ -83,7 +83,7 @@ body {
 }
 
 .owi-navbar {
-  background-color: #213456 !important;
+  background: linear-gradient(135deg, #213456, #334c7a);
   box-shadow: 0 2px 10px 2px #66738e;
   margin-bottom: 10px;
 }

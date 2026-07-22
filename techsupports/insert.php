@@ -450,7 +450,8 @@ if (isset($_POST["operation"]) && $_POST["operation"] == "Save and Reply") {
                 ':assigned_by' => $userid
             ]);
         }
-echo json_encode(["status" => "success", "message" => "Data has been updated", "ticket_no" => $_POST["ticket_no"]]);
+
+        echo json_encode(["status" => "success", "message" => "Data has been updated"]);
     } catch (PDOException $e) {
         echo json_encode(["status" => "error", "message" => "Database error: " . $e->getMessage()]);
     }

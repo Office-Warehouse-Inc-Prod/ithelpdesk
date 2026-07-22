@@ -30,8 +30,8 @@ $ph_datetime = date('l, F d, Y - h:i A');
 }
 
 :root {
-  --navy: #213456;
-  --navy2: #1a2a4a;
+  --navy: linear-gradient(135deg, #213456, #334c7a);
+  --navy2: linear-gradient(135deg, #213456, #334c7a);
   --yellow: #EAAA00;
   --bg: #EEF2F7;
   --card: #ffffff;
@@ -41,7 +41,7 @@ $ph_datetime = date('l, F d, Y - h:i A');
   --shadow: 0 14px 32px rgba(17,24,39,.12);
   --radius: 12px;
   --bg-body: #F4F5FA;
-  --theme-color: #213456;
+  --theme-color: linear-gradient(135deg, #213456, #334c7a);
 }
 
 body {
@@ -51,7 +51,7 @@ body {
   height: 100vh; 
 } 
 .navbar, header, .topbar, .navbar-default{
-    background-color: var(--theme-color) !important;
+    background-color:linear-gradient(135deg, #213456, #334c7a) !important;
     margin-bottom: 40px;
 }
 .navbar a, .navbar-brand, .navbar-nav > li > a,
@@ -72,7 +72,7 @@ body {
   margin-bottom: 12px !important;
 }
 .input-group-text {
-  background: var(--theme-color) !important;
+  background:linear-gradient(135deg, #213456, #334c7a) !important;
   color: #fff !important;
   border: 1px solid rgba(0,0,0,.08) !important;
   font-weight: 700 !important;
@@ -108,7 +108,7 @@ select.form-control, .form-control, .form-select {
    border: none;
 }
 .admin-table th { 
-  background-color: var(--theme-color); 
+  background-color:linear-gradient(135deg, #213456, #334c7a); 
   color: #ffffff !important; 
   font-weight: 700; 
   text-transform: uppercase; 
@@ -123,12 +123,12 @@ select.form-control, .form-control, .form-select {
   color: #2D3748; 
   font-size: 13px !important; 
   border: none;
-  border-bottom: 1px solid var(--theme-color); 
+  border-bottom: 1px solidlinear-gradient(135deg, #213456, #334c7a); 
 }
 .admin-table tfoot {
   border: none !important;
-  border-top: 2px solid var(--theme-color) !important;
-  border-bottom: 2px solid var(--theme-color) !important;
+  border-top: 2px solidlinear-gradient(135deg, #213456, #334c7a) !important;
+  border-bottom: 2px solidlinear-gradient(135deg, #213456, #334c7a) !important;
 }
 .admin-table tbody tr:hover { 
   background-color: rgba(33, 52, 86, 0.1) !important; 
@@ -141,7 +141,7 @@ select.form-control, .form-control, .form-select {
   border: none;
 }
 .department-table th { 
-  background-color: var(--theme-color); 
+  background-color:linear-gradient(135deg, #213456, #334c7a); 
   color: #ffffff !important; 
   font-weight: 600; 
   font-size: 13px; 
@@ -152,7 +152,7 @@ select.form-control, .form-control, .form-select {
   padding: 10px; 
   font-size: 13px; 
   border: none;
-  border-bottom: 1px solid var(--theme-color); 
+  border-bottom: 1px solidlinear-gradient(135deg, #213456, #334c7a); 
 }
 .department-table tbody tr:hover { 
   background-color: rgba(33, 52, 86, 0.1) !important; 
@@ -177,18 +177,18 @@ select.form-control, .form-control, .form-select {
   #print-filter-badge-header { 
     display: block !important; 
     margin-bottom: 5px !important; 
-    border-bottom: 2px dashed var(--theme-color); 
+    border-bottom: 2px dashedlinear-gradient(135deg, #213456, #334c7a); 
     padding-bottom: 8px; 
     box-shadow: none !important; 
   }
   .action-bar-container, .card-header .d-flex, .btn, #layoutSidenav_nav, nav, header, .owi-navbar, .noExl, .no-print-header { 
     display: none !important;
-    background: #95a2b9b4;
+    background: linear-gradient(135deg, #213456, #334c7a);
   }
   .card-header { 
     padding: 0 !important; 
     border-bottom: none !important; 
-     background: #95a2b9b4;
+     background: linear-gradient(135deg, #213456, #334c7a);
   }
   .container-fluid, #wrapper, #layoutSidenav_content { 
     padding: 0 !important; 
@@ -217,8 +217,9 @@ select.form-control, .form-control, .form-select {
     page-break-inside: avoid; 
     border: none !important;
   }
+  
   .admin-table th { 
-    background-color: var(--theme-color) !important; 
+    background-color:linear-gradient(135deg, #213456, #334c7a) !important; 
     color: #fff !important; 
     padding: 6px 4px !important; 
     font-size: 11px !important; 
@@ -228,7 +229,7 @@ select.form-control, .form-control, .form-select {
     padding: 6px 4px !important; 
     font-size: 11px !important; 
     border: none !important;
-    border-bottom: 1px solid var(--theme-color) !important; 
+    border-bottom: 1px solidlinear-gradient(135deg, #213456, #334c7a) !important; 
   }
   .progress { 
     border: 1px solid #999 !important; 
@@ -238,8 +239,8 @@ select.form-control, .form-control, .form-select {
   }
   #dept-table-footer, #dept-table-footer-non-escalated { 
     border: none !important;
-    border-top: 2px solid var(--theme-color) !important;
-    border-bottom: 2px solid var(--theme-color) !important;
+    border-top: 2px solidlinear-gradient(135deg, #213456, #334c7a) !important;
+    border-bottom: 2px solidlinear-gradient(135deg, #213456, #334c7a) !important;
     background-color: #f4e9d7 !important; 
   }
   * { 
@@ -268,7 +269,7 @@ select.form-control, .form-control, .form-select {
           <div class="datetime-container" style=" margin-top:1px; display: flex; align-items: center; justify-content: center; text-align: center; margin-bottom: 8px;">
             <p>As of: <strong><?php echo $ph_datetime; ?></strong></p>
           </div>
-          <table style="width: 100%; margin-top:10px; font-family: sans-serif; padding:15px; color: #213456; border-collapse: collapse; border: none; border-top: 1px solid #213456; border-bottom: 1px solid #213456;">
+          <table style="width: 100%; margin-top:10px; font-family: sans-serif; padding:15px; color: linear-gradient(135deg, #213456, #334c7a); border-collapse: collapse; border: none; border-top: 1px solid linear-gradient(135deg, #213456, #334c7a); border-bottom: 1px solid linear-gradient(135deg, #213456, #334c7a);">
             <tr>
               <td style="text-align: right; font-size: 13px; border: none; padding: 5px 0;">
                 <strong>LOGS IN YEAR OF:</strong> <span id="print-year-val">--</span> &nbsp;|&nbsp; 
@@ -315,7 +316,7 @@ select.form-control, .form-control, .form-select {
         <div class="row mb-4">
           <div class="col-12">
             <div class="card card2 border-0 shadow-sm" style="border-radius: 12px;   background: linear-gradient(to bottom, #ffffff, #99aac8);">
-              <div class="card-header d-flex flex-wrap justify-content-between align-items-center text-dark py-2 gap-2" style="border-bottom: 1px solid rgba(0,0,0,0.05); background: ">
+              <div class="card-header d-flex flex-wrap justify-content-between align-items-center text-dark py-2 gap-2" style="border-bottom: 1px solid rgba(0,0,0,0.05); background: linear-gradient(135deg, #213456, #334c7a); ">
                 <h5 class="m-0 font-weight-bold no-print-header" style="letter-spacing: 0.3px; font-size: 1.15rem;">
                   <i class="fa-solid fa-circle text-success me-2"></i> HELPDESK DEPARTMENT TICKET SUMMARY
                 </h5>
@@ -333,10 +334,10 @@ select.form-control, .form-control, .form-select {
                   <table id="admin_report" class="table admin-table m-0">
                     <thead>  
                       <tr>
-                        <th colspan="5" class="text-center" style="background-color: var(--theme-color); color: #fff; font-weight: 700; text-transform: uppercase; font-size: 13px; padding: 6px;">ACTIVE/RUNNING TICKET REPORTS</th>
+                        <th colspan="5" class="text-center" style="background: linear-gradient(135deg, #213456, #334c7a); color: #fff; font-weight: 700; text-transform: uppercase; font-size: 13px; padding: 6px;">ACTIVE/RUNNING TICKET REPORTS</th>
                         <th colspan="4" class="text-center" style="background-color: #a29341; color: #fff; font-weight: 700; text-transform: uppercase; font-size: 13px; padding: 6px;">COMPLIANCE TICKET REPORTS</th>
                       </tr>
-                      <tr style="background-color: var(--theme-color); color: #ffffff;">
+                      <tr style="background: linear-gradient(135deg, #213456, #334c7a); color: #ffffff;">
                         <th style="font-size: 12px; vertical-align: middle;">DEPARTMENT</th>
                         <th class="text-center fw-bold" style="font-size: 12px; vertical-align: middle;">ASSIGNED</th>
                         <th class="text-center fw-bold" style="font-size: 12px; vertical-align: middle;">ON PROCESS</th>
@@ -366,7 +367,7 @@ select.form-control, .form-control, .form-select {
         <div class="row mb-4">
           <div class="col-12">
             <div class="card card2 border-0 shadow-sm" style="border-radius: 12px;   background: linear-gradient(to bottom, #ffffff, #99aac8);">
-              <div class="card-header d-flex flex-wrap justify-content-between align-items-center text-dark py-2 gap-2" style=" background-color: #95a2b9b4; border-bottom: 1px solid rgba(0,0,0,0.05);">
+              <div class="card-header d-flex flex-wrap justify-content-between align-items-center text-dark py-2 gap-2" style=" background: linear-gradient(135deg, #213456, #334c7a); border-bottom: 1px solid rgba(0,0,0,0.05);">
                 <h5 class="m-0 font-weight-bold no-print-header" style="letter-spacing: 0.3px; font-size: 1.15rem;">
                   <i class="fa-solid fa-circle text-success me-2"></i> ESCALATED REPORTS FOR NON-ACTION
                 </h5>
@@ -375,7 +376,7 @@ select.form-control, .form-control, .form-select {
                 <div class="table-responsive">
                   <table id="admin_report_escalated" class="table admin-table m-0">
                     <thead>  
-                      <tr style="background-color: var(--theme-color); color: #ffffff;">
+                      <tr style="background-color:linear-gradient(135deg, #213456, #334c7a); color: #ffffff;">
                         <th style="font-size: 12px; vertical-align: middle;">DEPARTMENT</th>
                         <th class="text-center fw-bold" style="font-size: 12px; vertical-align: middle;">TOTAL NUMBER OF ESCALATED REPORTS FOR NON-ACTION</th>
                         <th class="text-center fw-bold" style="font-size: 12px; vertical-align: middle;">PERCENTAGE SHARE</th>
@@ -414,7 +415,7 @@ select.form-control, .form-control, .form-select {
                 <div class="table-responsive">
                   <table id="transfer_logs_table" class="table admin-table m-0">
                     <thead>  
-                      <tr style="background-color: var(--theme-color); color: #ffffff;">
+                      <tr style="background-color:linear-gradient(135deg, #213456, #334c7a); color: #ffffff;">
                         <th style="font-size: 12px; vertical-align: middle;">TICKET NO</th>
                         <th class="text-center fw-bold" style="font-size: 12px; vertical-align: middle;">STORE</th>
                         <th class="text-center fw-bold" style="font-size: 12px; vertical-align: middle;">TO DEPT</th>
@@ -467,7 +468,7 @@ select.form-control, .form-control, .form-select {
                 <div class="table-responsive">
                   <table id="user_activity" class="table admin-table m-0">
                     <thead>  
-                      <tr style="background-color: var(--theme-color); color: #ffffff;">
+                      <tr style="background-color:linear-gradient(135deg, #213456, #334c7a); color: #ffffff;">
                         <th style="font-size: 12px; vertical-align: middle;">HELPDESK USER</th>
                         <th class="text-center fw-bold" style="font-size: 12px; vertical-align: middle;">DEPARTMENT</th>
                         <th class="text-center fw-bold" style="font-size: 12px; vertical-align: middle;">LOG IN DATE</th>
@@ -504,7 +505,7 @@ select.form-control, .form-control, .form-select {
 <div class="modal fade" id="deptDetailsModal" tabindex="-1" aria-labelledby="deptModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-xl" style="max-width: 95%;">
     <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; background: rgba(255, 255, 255, 0.95);">
-      <div class="modal-header border-0 pb-0" style="background-color: var(--theme-color); color: #fff;">
+      <div class="modal-header border-0 pb-0" style="background-color:linear-gradient(135deg, #213456, #334c7a); color: #fff;">
         <h5 class="modal-title font-weight-bold" id="deptModalLabel" style="font-size:1.5rem;">TICKET DETAILS OVERVIEW</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
@@ -545,7 +546,7 @@ select.form-control, .form-control, .form-select {
 <div class="modal fade" id="nonescaTicketDetails" tabindex="-1" aria-labelledby="nonEscaModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-xl" style="max-width: 95%;">
     <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; background: rgba(255, 255, 255, 0.95);">
-      <div class="modal-header border-0 pb-0" style="background-color: var(--theme-color); color: #fff;">
+      <div class="modal-header border-0 pb-0" style="background-color:linear-gradient(135deg, #213456, #334c7a); color: #fff;">
         <h5 class="modal-title font-weight-bold" id="nonEscaModalLabel" style="font-size:1.5rem;">DEPARTMENT OVERVIEW (NON-ESCALATED)</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>

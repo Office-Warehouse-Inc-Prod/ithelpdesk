@@ -461,7 +461,7 @@ columns: [
 }
     },
 {title:"Date Created",data: "Dt_Created"},
-{ title:"Ticket Number",data: "TicketNum" },
+{ title:"Ticket #",data: "TicketNum" },
 { title:"ASSIGNED TO:",data: "deptsel_val" },
 { title:"SUBJECT",data: "Concern" },
 { title:"Types of Service",data: "Tos" },

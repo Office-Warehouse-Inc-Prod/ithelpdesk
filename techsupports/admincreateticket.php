@@ -616,7 +616,7 @@ include 'sub_graph_modal.php';
 
             <div class="form-group col-12 mb-4">
               <label><i class="fas fa-paperclip mr-1"></i> Attach Files (Optional)</label>
-              <input id="create_file-input" type="file" name="file" multiple class="form-control-file d-block mb-1">
+              <input id="create_file-input" type="file" name="file[]" multiple class="form-control-file d-block mb-1">
               <small class="text-muted d-block">Max file size: 2MB. Allowed types: Images, PDF, Docs, Excel.</small>
             </div>
           </div>
@@ -714,16 +714,11 @@ Start of Add/Edit Modal
                   </div>
 
               
-
-                  
-
                   <div class="form-group col-12 col-md-6">
                     <label>STATUS</label>
                     <input type="text" id="status" name="status" class="form-control form-control-sm" readonly>
                   </div>
                   
-                
-
                   <div class="form-group col-12 col-md-4 hide_cl">
                     <label id="dateclabel" class="hidden">DATE CLOSED</label>
                     <div class="input-group date" id="datetimepicker2" data-target-input="nearest">
@@ -752,7 +747,7 @@ Start of Add/Edit Modal
 
                   <div class="col-12">
                     <label style="font-weight: bold;">Attached File:</label>
-                    <p><input id="file-input" type="file" name="file" Multiple></p>
+                    <p><input id="file-input" type="file" name="file[]" Multiple></p>
                   </div>
 
                   <div class="col-12">

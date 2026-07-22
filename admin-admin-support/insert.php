@@ -396,8 +396,8 @@ if (isset($_POST["operation"]) && $_POST["operation"] === "update_request") {
         ");
 
        $result = $statement->execute([
-            ':serial_number' => $_POST['serial_number'] ?? '',
-             ':asset_tag_number' => $_POST['asset_tag_number'] ?? '',
+           ':serial_number'    => !empty($_POST['serial_number']) ? $_POST['serial_number'] : 'N/A',
+            ':asset_tag_number' => !empty($_POST['asset_tag_number']) ? $_POST['asset_tag_number'] : 'N/A',
               ':revised_request' => $_POST['revised_request'] ?? '',
             ':date_received' => $_POST['date_received'] ?? '',
             ':date_validated'    => date('Y-m-d H:i:s'),
@@ -443,8 +443,8 @@ if (isset($_POST["operation"]) && $_POST["operation"] === "update_recording_requ
         ");
 
        $result = $statement->execute([
-            ':serial_number' => $_POST['serial_number'] ?? '',
-             ':asset_tag_number' => $_POST['asset_tag_number'] ?? '',
+          ':serial_number'    => !empty($_POST['serial_number']) ? $_POST['serial_number'] : 'N/A',
+            ':asset_tag_number' => !empty($_POST['asset_tag_number']) ? $_POST['asset_tag_number'] : 'N/A',
               ':revised_request' => $_POST['revised_request'] ?? '',
             ':date_received' => $_POST['date_received'] ?? '',
             ':date_recorded'    => date('Y-m-d H:i:s'),
@@ -490,8 +490,8 @@ if (isset($_POST["operation"]) && $_POST["operation"] === "update_printing_reque
         ");
 
        $result = $statement->execute([
-            ':serial_number' => $_POST['serial_number'] ?? '',
-             ':asset_tag_number' => $_POST['asset_tag_number'] ?? '',
+           ':serial_number'    => !empty($_POST['serial_number']) ? $_POST['serial_number'] : 'N/A',
+            ':asset_tag_number' => !empty($_POST['asset_tag_number']) ? $_POST['asset_tag_number'] : 'N/A',
               ':revised_request' => $_POST['revised_request'] ?? '',
             ':date_received' => $_POST['date_received'] ?? '',
             ':date_printed'    => date('Y-m-d H:i:s'),

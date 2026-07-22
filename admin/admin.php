@@ -70,7 +70,7 @@ body {
 }
 
 .owi-navbar {
-  background-color: #213456 !important;
+  background: linear-gradient(135deg, #213456, #334c7a);
   box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.15);
   padding: 0.5rem 1.5rem !important;
   transition: all 0.3s ease;

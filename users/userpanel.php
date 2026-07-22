@@ -282,7 +282,7 @@ body {
   header,
   .topbar,
   .navbar-default {
-    background: #213456 !important;
+    background: linear-gradient(135deg, #213456, #334c7a);
     border-color: rgba(255, 255, 255, .12) !important;
   }
 
@@ -305,7 +305,7 @@ body {
 
   /* Dropdown + caret (if any) */
   .navbar .dropdown-menu {
-    background: #121C31 !important;
+   background: linear-gradient(135deg, #213456, #334c7a);
     border: 1px solid rgba(255, 255, 255, .12) !important;
   }
 
@@ -332,7 +332,7 @@ body {
     width: 100%;
 
     margin-bottom: 40px;
-    background-color: #213456;
+    background: linear-gradient(135deg, #213456, #334c7a);
     border-bottom: 1px solid rgba(0, 0, 0, .125);
   }
 
@@ -402,7 +402,7 @@ body {
 }
 
 #items_table thead th {
-    background-color: #213456;
+   background: linear-gradient(135deg, #213456, #334c7a);
     color: #E1AD01;
     text-transform: uppercase;
     font-size: 0.85rem;
