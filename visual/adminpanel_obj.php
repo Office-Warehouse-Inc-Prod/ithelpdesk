@@ -267,9 +267,9 @@ table = $("#report_data").DataTable({
       render: function (data, type, row) {
         if (type !== 'display') return data;
 
-        if (!data) return "";
-        if (data === "01/01/1970 01:00" || data === "01/01/1970 08:00") return "";
-        return data;
+        var value = String(data || "").trim();
+        if (value === "" || value.indexOf("01/01/1970") === 0 || /1970/.test(value)) return "";
+        return value;
       }
     },
 

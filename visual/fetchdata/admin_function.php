@@ -443,7 +443,12 @@ public function deptthist() {
 					'category' => $row['category'],
 					'sub_id' => $row['sub_id'],
 					'sub_category' => $row['sub_category'],
-					'date_closed' => ($row['status'] == 'OPEN') ? " ": date('m/d/Y H:i',strtotime($row["date_closed"])),
+					$closed_ts = strtotime($row['date_closed']),
+					'date_closed' => (
+						$row['status'] == 'OPEN' ||
+						$closed_ts === false ||
+						$closed_ts <= 0
+					) ? "" : date('m/d/Y H:i', $closed_ts),
 					'tdc' => ($row['status'] == 'OPEN') ? $row["dtdf"]." "."Days Unresolved": $row['tdc'],
 					'crdt' => $row['crdt'],
 					'dtdf' => $row['dtdf'],
