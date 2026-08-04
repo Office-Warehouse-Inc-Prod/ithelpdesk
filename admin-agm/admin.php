@@ -460,7 +460,7 @@ NEW SUPPLIES REQUEST
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="genReportDrop" role="button" data-toggle="dropdown">
-              <i class="fas fa-building"> <span class="badge badge-danger" id="notif_fa"></i> FIXED ASSET
+              <i class="fas fa-boxes-stacked"> <span class="badge badge-danger" id="notif_fa"></i> FIXED ASSET
             </a>
             <div class="dropdown-menu" aria-labelledby="genReportDrop">
               <a class="dropdown-item" href="fix_asset.php">

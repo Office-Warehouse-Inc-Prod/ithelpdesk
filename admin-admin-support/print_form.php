@@ -1,29 +1,24 @@
 <?php
 session_start();
-// Use strict error reporting for development, but consider logging instead of displaying in production
 error_reporting(E_ALL);
-ini_set('display_errors', 0); // Set to 1 only when debugging
+ini_set('display_errors', 1); 
 
-// --- Database Configuration ---
 $servername = "localhost";
 $username   = "root";
 $password   = "";
 $dbname     = "helpdesk1";
 
-// Initialize Connection
 $conn = new mysqli($servername, $username, $password, $dbname);
 
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// --- Validate Request ---
 $ticket_no = $_POST['ticket_no'] ?? '';
 if (empty($ticket_no)) { 
     die("Error: No ticket number provided."); 
 }
 
-// --- Fetch Ticket Data ---
 $sql = "SELECT 
             b.str_name, 
             CONCAT(u.fname, ' ', u.lstname) AS full_name, 
@@ -41,6 +36,8 @@ $sql = "SELECT
             ar.approve_method_agm,
             ar.revised_request,
             ar.date_noted,
+            ar.date_validated, 
+            ar.is_technical,
             received_by.it_desc AS received_by_name, 
             ar.date_received, 
             noted_by.it_desc AS noted_by_name
@@ -60,9 +57,8 @@ if (!$ticket) {
     die("Ticket not found."); 
 }
 
-// --- Initialize FPDF ---
 include('../fpdf/fpdf.php');
-if (ob_get_length()) ob_clean(); // Prevent 'Headers already sent' errors
+if (ob_get_length()) ob_clean(); 
 
 $pdf = new FPDF('P', 'mm', 'A4');
 $pdf->SetAutoPageBreak(false);
@@ -71,7 +67,6 @@ $pdf->AddPage();
 $pdf->Image('../Fixed_Asset_Requisition_Transfer Form.jpg', 0, 0, 210, 297);
 $pdf->SetFont('Arial', '', 8);
 
-// Ticket Details
 $pdf->SetXY(53, 17.2); 
 $pdf->Cell(105, 5, $ticket['str_name'] ?? 'N/A', 0, 0);
 
@@ -81,10 +76,9 @@ $pdf->Cell(30, 5, $ticket['ticket_created'] ?? 'N/A', 0, 0);
 $pdf->SetXY(53, 21);   
 $pdf->Cell(80, 5, $ticket['full_name'] ?? 'N/A', 0, 0);
 
-$pdf->SetXY(128.1, 21);   
-$pdf->Cell(120, 5, 'TICKET NO:               ' . $ticket['ticket_no'], 0, 0);
+$pdf->SetXY(128.5, 21);   
+$pdf->Cell(120, 5, 'TICKET NO:              ' . $ticket['ticket_no'], 0, 0);
 
-// Asset Details
 $pdf->SetXY(53, 30);    
 $pdf->Cell(120, 5, $ticket['item_code'] ?? 'N/A', 0, 0);
 
@@ -97,34 +91,38 @@ $pdf->Cell(120, 5, $ticket['serial_number'] ?? 'N/A', 0, 0);
 $pdf->SetXY(53, 42); 
 $pdf->Cell(120, 5, $ticket['asset_tag_number'] ?? 'N/A', 0, 0);
 
-// Request Text
 $display_text = !empty($ticket['revised_request']) ? $ticket['revised_request'] : ($ticket['purpose_of_request'] ?? 'N/A');
 $pdf->SetXY(53, 46.5); 
 $pdf->Cell(120, 5, $display_text, 0, 0);
 
-
-// Received By
 $pdf->SetXY(53, 55); 
 $pdf->Cell(120, 5, $ticket['received_by_name'] ?? 'N/A', 0, 0);
 
 $pdf->SetXY(53, 59.5); 
 $pdf->Cell(120, 5, $ticket['date_received'] ?? 'N/A', 0, 0);
 
-// Noted By (Tech Admin)
 $pdf->SetXY(143, 29.5); 
 $pdf->Cell(120, 5, $ticket['noted_by_name'] ?? 'N/A', 0, 0);
 
-// FIXED: Hardcoded XY to match layout since $x and $y were previously undefined here
-$pdf->Image('../admin_tech.png', 143, 25.5, 19, 5); 
-
-$pdf->SetXY(163, 25.5); 
-$pdf->Cell(120, 5, $ticket['date_noted'] ?? 'N/A', 0, 0);
-
-
+if (isset($ticket['is_technical']) && $ticket['is_technical'] == 1) {
+    $pdf->Image('../admin_tech.png', 143, 25.5, 19, 5); 
+    $pdf->SetXY(163, 25.5); 
+    $pdf->Cell(120, 5, $ticket['date_noted'] ?? 'N/A', 0, 0);
+} else {
+    $pdf->Image('../admin_sup.png', 143, 25.5, 19, 5); 
+    $pdf->SetXY(163, 25.5); 
+    $pdf->Cell(120, 5, $ticket['date_validated'] ?? 'N/A', 0, 0);
+}
 
 if (isset($ticket['approve_method_head']) && $ticket['approve_method_head'] == 2) {
     $pdf->Image('../admin_head.png', 19, 148.5, 19, 5); 
     $pdf->SetXY(41, 148.5);
+    $pdf->Cell(110, 5, date('Y-m-d'), 0, 0);
+}
+
+if (isset($ticket['approve_method_agm']) && $ticket['approve_method_agm'] == 2) {
+    $pdf->Image('../admin_head.png', 98, 148.5, 19, 5); 
+    $pdf->SetXY(115, 148.5);
     $pdf->Cell(110, 5, date('Y-m-d'), 0, 0);
 }
 
@@ -138,7 +136,7 @@ $pdf->Cell(0, 10, 'COMMENT THREAD', 0, 1, 'L');
 $pdf->SetDrawColor(255, 255, 0); 
 $pdf->SetFont('Arial', 'B', 9);
 
-$pdf->SetXY(170.5, 19);   
+$pdf->SetXY(170.5, 19);     
 $pdf->Cell(120, 5, 'TICKET NO:  ' . $ticket['ticket_no'], 0, 0);
 $pdf->SetXY(10, 19); 
 $pdf->Cell(105, 5, 'DEPT/BRANCH:  ' . ($ticket['str_name'] ?? 'N/A'), 0, 0);
@@ -148,7 +146,6 @@ $pdf->SetDrawColor(128, 128, 128);
 $pdf->Line(10, $pdf->GetY(), 200, $pdf->GetY());
 $pdf->Ln(5);
 
-// Fetch Comments
 $sql2 = "SELECT rc.comment_details, rc.comment_date, u.fname, u.lstname, it.cmp_role
          FROM reports_comments rc
          LEFT JOIN users u ON rc.userId = u.id
@@ -196,7 +193,7 @@ if ($pdf->GetY() > 220) {
 $pdf->Ln(5);
 $pdf->SetFont('Arial', 'B', 16);
 $pdf->SetTextColor(33, 52, 86);
-$pdf->Cell(0, 10, 'TECHNICAL WORK OUTPUT', 0, 1, 'L');
+$pdf->Cell(0, 10, 'ASSIGNED SUPPORT WORK OUTPUT', 0, 1, 'L');
 
 $pdf->SetFont('Arial', 'B', 10);
 $pdf->SetTextColor(33, 52, 86);

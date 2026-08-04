@@ -450,21 +450,23 @@ data: dataset,
   "order": [[ 7, "Desc" ]],
 columns: [
 { 
-        title: "ACTION", 
-        data: null, 
-        render: function(data, type, row) {
-    return `
-        <button type="button" class="btn btn-primary follow-up-btn flex-row-center" data-ticket="${row.TicketNum}">
-            <i class="fa fa-paper-plane-o" aria-hidden="true"></i>
-        </button>
-    `;
-}
-    },
+    title: "ACTION", 
+    data: null, 
+    render: function(data, type, row) {
+        return `
+            <div style="display: flex; justify-content: center; align-items: center; width: 100%; height: 100%;">
+                <button type="button" class="btn btn-primary follow-up-btn" data-ticket="${row.TicketNum}">
+                    <i class="fa fa-paper-plane-o" aria-hidden="true"></i>
+                </button>
+            </div>
+        `;
+    }
+},
 {title:"Date Created",data: "Dt_Created"},
 { title:"Ticket #",data: "TicketNum" },
 { title:"ASSIGNED TO:",data: "deptsel_val" },
 { title:"SUBJECT",data: "Concern" },
-{ title:"Types of Service",data: "Tos" },
+{ title:"TOS",data: "Tos" },
 { title:"STATUS",data: "Status" },
 { title:"ASSIGNED SUPPORT",data: "AsgnSup" },
 {title:"ID", data:"series_id","defaultContent": "","visible": false},
@@ -672,7 +674,7 @@ $('#reports_table').on('click', '.follow-up-btn', function(e) {
     
     var row = $(this).closest('tr');
     var rowData = table.row(row).data();
-    var ticketNo = $(this).data('ticket');
+    var ticketNo = $(this).attr('data-ticket');
 
     $('#slctdtick').val(ticketNo);
     $('#ModalTicket_no').val(ticketNo);
@@ -687,15 +689,162 @@ $('#reports_table').on('click', '.follow-up-btn', function(e) {
     $('#statOps').val(rowData['Status']);
     getinfo(ticketNo, 'remarks', uid); 
 
+    if (typeof checkAssetRequestProgress === 'function') {
+        checkAssetRequestProgress(ticketNo);
+    }
+
     $('#ticket_modal').modal('show');
 
-    if (ticketNo.includes("PD")) {
+    if (String(ticketNo).includes("PD")) {
         $('#rars').show();
     } else {
         $('#rars').hide();
     }
     
     (rowData['Status'] == 'CLOSED') ? $("#addmsg").attr('disabled', true) : $("#addmsg").attr('disabled', false);
+});
+$('#reports_table').on('click', 'tbody tr', function () {
+    $("#reports_table tbody tr").removeClass('row_selected');        
+    $(this).addClass('row_selected');
+    var tdata = table.row(this).data();
+    var ticketNo = tdata['TicketNum'];
+
+    $('#slctdtick').val(ticketNo);      
+    $('#ModalTicket_no').val(ticketNo);  
+    $('#ModalDate_create').val(tdata['Dt_Created']);
+    $('#ModalStore').val(tdata['Scode']);
+    $('#ModalSubject').val(tdata['Concern']);
+    $('#ModalTOS').val(tdata['Tos']);
+    $('#ModalStatus').val(tdata['Status']);
+
+    let ntickres = $('#nticknum').val(ticketNo);
+    let statres1 = tdata['Status'];
+    let statOpsres = $('#statOps').val(statres1);
+
+    if (typeof checkAssetRequestProgress === 'function') {
+        checkAssetRequestProgress(ticketNo);
+    }
+
+    let statSubmitting = false;
+
+    function submitStatUpdate() {
+        if (statSubmitting) return;   
+        statSubmitting = true;
+
+        $("#addmsg, #action, #clsmodaltick").prop("disabled", true);
+
+        $.ajax({
+            url: "insert.php",
+            method: "POST",
+            data: new FormData(document.getElementById('stat_form')),
+            contentType: false,
+            processData: false,
+
+            success: function (data) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Your work has been saved',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                getdata();
+            },
+            error: function () {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Network error. Please try again.'
+                });
+            },
+            complete: function () {
+                statSubmitting = false;
+                $("#addmsg, #action, #clsmodaltick").prop("disabled", false);
+            }
+        });
+    }
+
+    if (statres1 == "SUBJECT FOR CLOSING") {
+        Swal.fire({
+            title: 'Close Ticket?',
+            text: 'Would you like to close ticket: ' + ticketNo + '?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#1C0770', 
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, close it!',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $('#statOps').val('CLOSED'); // Force status to CLOSED
+                submitStatUpdate();
+            }
+        });
+    } 
+    else if (statres1 == "READY FOR PULL OUT") {
+        Swal.fire({
+            title: 'Confirm Pull Out?',
+            text: 'Would you like to confirm pull out for ticket: ' + ticketNo + '?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#1C0770',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, confirm!',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                submitStatUpdate();
+            }
+        });
+    } 
+    else if (statres1 == "SUPPLIER PULL OUT") {
+        Swal.fire({
+            title: 'Confirm Supplier Pull Out?',
+            text: 'Would you like to confirm pull out for ticket: ' + ticketNo + '?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#1C0770',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, confirm!',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                submitStatUpdate();
+            }
+        });
+    } 
+    else if (statres1 == "RETURN TO STORE") {
+        Swal.fire({
+            title: 'Confirm Return?',
+            text: 'Would you like to confirm this return item on ticket: ' + ticketNo + '?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#1C0770',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, confirm!',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                submitStatUpdate();
+            }
+        });
+    } 
+    else if (statres1 == "RETURN BY SUPPLIER") {
+        Swal.fire({
+            title: 'Confirm Return?',
+            text: 'Would you like to confirm this return item on ticket: ' + ticketNo + '?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#1C0770',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, confirm!',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                submitStatUpdate();
+            }
+        });
+    }
+
+    (tdata['Status'] == 'CLOSED') ? $("#addmsg").attr('disabled', true) : $("#addmsg").attr('disabled', false);
 });
 
 /**
@@ -852,7 +1001,7 @@ else if (statres1 == "RETURN BY SUPPLIER") {
 
 }
 
-
+//
 
 // // console.log(statres1);
 // if (statres1 == "SUBJECT FOR CLOSING") {

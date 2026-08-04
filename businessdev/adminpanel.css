@@ -10,7 +10,7 @@ body.dark-mode {
 
 body.dark-mode .card,
 body.dark-mode .card2 {
-    background: linear-gradient(145deg, #1a1a1a, #2a2a2a);
+    background: linear-gradient(135deg, #213456, #334c7a);
     color: #ffffff;
     border: 1px solid #2a2a2a;
     box-shadow: 0 0 10px rgba(0, 255, 255, 0.1);
@@ -43,7 +43,6 @@ body.dark-mode .form-control {
 body.dark-mode .table {
     color: #ffffff;
     background-color: #1b1b1b;
-    border-collapse: collapse;
 }
 
 body.dark-mode .table th,
@@ -95,7 +94,7 @@ body.dark-mode .form-control::placeholder {
     
 }
 .card .card-header{
-    border-bottom-color: #213456;
+    border-bottom-color: linear-gradient(135deg, #213456, #334c7a);
     line-height:30px;
     -ms-grid-row-align:center;
     align-self:center;
@@ -103,7 +102,7 @@ body.dark-mode .form-control::placeholder {
     display:flex;
     align-items:center;
     margin-bottom:40px;
-    background-color:#213456;
+    background:linear-gradient(135deg, #213456, #334c7a);
     border-bottom:1px solid rgba(0,0,0,.125);
 }
 .card-header:first-child{
@@ -133,7 +132,7 @@ body.dark-mode .form-control::placeholder {
 .table:not(.table-sm) thead th{
     border-bottom: none;
     background-color: #e9e9eb;
-    color:#666;
+    color:#213456;
     padding-top:15px;
     padding-bottom:15px;
 }        
@@ -156,20 +155,6 @@ body.dark-mode .form-control::placeholder {
 .progress{
     -webkit-box-shadow: 0 0.4rem 0.6rem rgba(0,0,0,0,0.15);
     box-shadow: 0 0.4rem 0.6rem rgba(0,0,0,0.15);
-}
-.table thead th{
-    font-size:12px;
-    text-transform: uppercase;
-    letter-spacing:1px;
-    font-weight:700;
-    color:#555;
-    padding:20px;
-    border-bottom: 2px solid #f0f0f0;
-}
-
-.table tbody td{
-    padding:15px 10px;
-    font-size:14px;
 }
   /* body.dark-mode #chartdiv1,
   body.dark-mode #chartdiv2,
@@ -199,7 +184,7 @@ body.dark-mode .form-control::placeholder {
 }
 
 .btn-success:hover {
-    background-color: #213456;
+    background-color: linear-gradient(135deg, #213456, #334c7a);
     color: white;
 }
 
@@ -236,8 +221,7 @@ body.dark-mode .form-control::placeholder {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0 6px;
-  background: #213456; 
-  color: #ccc;
+  color: #213456;
   font-family: 'Poppins', Tahoma, Geneva, Verdana, sans-serif;
   border-radius: 8px;
   overflow: hidden;
@@ -245,7 +229,7 @@ body.dark-mode .form-control::placeholder {
 }
 
 #report_data thead tr {
-  background:#213456;
+  background:linear-gradient(135deg, #213456, #334c7a);
   color: #666; 
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -271,6 +255,7 @@ body.dark-mode .form-control::placeholder {
   padding: 10px 12px;
   border: none;
   border-bottom: 1px solid #333; 
+  color: #213456;
 }
 
 #report_data th:last-child,
@@ -288,16 +273,16 @@ body.dark-mode .form-control::placeholder {
 }
 
 #report_data::-webkit-scrollbar-thumb {
-  background: #213456; 
+  background: linear-gradient(135deg, #213456, #334c7a); 
   border-radius: 3px;
 }
 
 .status-open td {
-  color: red !important;
-  border: 1px solid red;
+  color: rgb(167, 149, 13) !important;
+  border: 1px solid rgb(197, 197, 55);
 }
 
-.status-fixed td {
+.status-pending td {
   color: red !important;
   border: 1px solid red;
 }
@@ -318,7 +303,6 @@ body.dark-mode .form-control::placeholder {
     flex-wrap: wrap; 
     justify-content: space-between;
     align-items: center;
-    background: #ffffff;
     padding: 15px 20px;
     border-radius: 12px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.05);
@@ -342,7 +326,7 @@ body.dark-mode .form-control::placeholder {
 
 #showCalendarBtn:hover {
     background-color: var(--owi-gold, #E1AD01);
-    color: #213456;
+    color: linear-gradient(135deg, #213456, #334c7a);
 }
 
 /* Custom Switch Styling */
@@ -452,60 +436,9 @@ body.dark-mode .form-control::placeholder {
   font-size: 12px;
   letter-spacing: .4px;
   text-transform: uppercase;
-  color: #213456;
+  color: linear-gradient(135deg, #213456, #334c7a);
 }
 
-/* Comment thread container: scrollable, not endless */
-.container_remarks{
-  max-height: 480px;
-  overflow: auto;
-  padding-right: 6px;
-}
-
-/* Thread message card look (works with your existing markup) */
-#remarks_view .msg-item{
-  border: 1px solid rgba(0,0,0,0.08);
-  background: rgba(255,255,255,0.90);
-  border-radius: 14px;
-  padding: 12px 12px;
-  margin-bottom: 10px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.04);
-}
-
-#remarks_view .msg-head{
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 6px;
-}
-
-#remarks_view .msg-name{
-  font-weight: 800;
-  font-size: 14px;
-}
-
-#remarks_view .msg-meta{
-  font-size: 12px;
-  color: rgba(0,0,0,0.55);
-}
-
-#remarks_view .msg-body{
-  font-size: 13px;
-  color: rgba(0,0,0,0.80);
-  line-height: 1.35;
-  white-space: pre-wrap;
-}
-
-/* Sticky footer actions (great on mobile) */
-#userModal .modal-footer{
-  border-top: 1px solid rgba(0,0,0,0.08);
-  background: rgba(255,255,255,0.92);
-  position: sticky;
-  bottom: 0;
-  z-index: 5;
-  padding: 12px 14px;
-}
 
 /* Better button sizing on mobile */
 @media (max-width: 991px){
@@ -530,11 +463,11 @@ body.dark-mode .form-control::placeholder {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: #ffffff;
+    background: white;
     padding: 15px 20px;
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-    border-left: 6px solid #213456; /* Brand Blue */
+    border-left: 6px solid linear-gradient(135deg, #213456, #334c7a); /* Brand Blue */
     margin-bottom: 20px;
     gap: 15px;
     flex-wrap: nowrap;
@@ -550,6 +483,7 @@ body.dark-mode .action-bar-container {
 .year-picker-group {
     flex: 1;
     max-width: 450px;
+        background-color: #213456 !important;
 }
 
 .year-picker-group .input-group-text {
@@ -563,7 +497,7 @@ body.dark-mode .action-bar-container {
 /* Calendar Button */
 #showCalendarBtn {
     background-color: #E1AD01 !important;
-    color: #213456 !important;
+    color: linear-gradient(135deg, #213456, #334c7a) !important;
     border: none !important;
     font-weight: 700;
     padding: 8px 20px;
@@ -595,7 +529,7 @@ body.dark-mode .mode-toggle-inline {
     font-weight: 700;
     font-size: 0.75rem;
     margin-left: 10px;
-    color: #213456;
+    color: linear-gradient(135deg, #213456, #334c7a);
     text-transform: uppercase;
 }
 
@@ -672,7 +606,6 @@ body.dark-mode .toggle-label-text {
 }
 
 .table {
-    border-collapse: separate;
     border-spacing: 0;
     border-radius: 8px;
     overflow: hidden;
@@ -683,7 +616,7 @@ body.dark-mode .toggle-label-text {
 
 
 .card .table thead th {
-    background-color: #54699e;
+    background-color: linear-gradient(135deg, #213456, #334c7a);
     color: white;
     font-weight: 600;
     text-transform: uppercase;
@@ -700,9 +633,9 @@ body.dark-mode .toggle-label-text {
     border-bottom: 1px solid #f1f1f1;
 }
 
-/* Hover Effect with requested color #213456 */
+/* Hover Effect with requested color linear-gradient(135deg, #213456, #334c7a) */
 .card.table tbody tr:hover {
-    background-color: #4c81dc !important;
+    background-color: linear-gradient(135deg, #213456, #334c7a) !important;
     color: #ffffff !important;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -722,7 +655,7 @@ body.dark-mode .toggle-label-text {
 }
 
 #userModal .modal-header {
-    background-color: #213456;
+    background-color: linear-gradient(135deg, #213456, #334c7a);
     color: #fff;
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
@@ -739,7 +672,7 @@ body.dark-mode .toggle-label-text {
 #userModal .input-group-text {
     background-color: white;
     border-right: none;
-    color: #213456;
+    color: linear-gradient(135deg, #213456, #334c7a);
 }
 
 #userModal .form-control {
@@ -749,7 +682,7 @@ body.dark-mode .toggle-label-text {
 }
 
 #userModal .form-control:focus {
-    border-color: #213456;
+    border-color: linear-gradient(135deg, #213456, #334c7a);
     box-shadow: none;
 }
 
@@ -785,7 +718,7 @@ body.dark-mode .toggle-label-text {
 
 .m_col .form-control:focus {
     background-color: #fff;
-    border-color: #1C0770;
+    border-color: linear-gradient(135deg, #213456, #334c7a);
     box-shadow: 0 0 0 3px rgba(28, 7, 112, 0.1);
     outline: none;
 }
@@ -794,71 +727,9 @@ body.dark-mode .toggle-label-text {
     min-height: 80px;
 }
 
-/* --- Right Side: Message Thread Panel --- */
-#msg_thread {
-    padding: 1rem 1.5rem;
-    background-color: #f8fafc;
-    height: 100%;
-}
-
-/* Comment Input Area */
-#addmsg {
-    border: 1.5px solid #e2e8f0;
-    border-radius: 10px;
-    padding: 1rem;
-    background: #ffffff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-}
-
-/* Container for Remarks (The Thread) */
-.container_remarks {
-    background: #ffffff;
-    border-radius: 12px;
-    border: 1px solid #e2e8f0;
-    height: 450px;
-    overflow-y: auto;
-    padding: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-/* Individual Message Bubbles (to be used in your JS output) */
-.chat-bubble {
-    max-width: 85%;
-    padding: 0.8rem 1rem;
-    border-radius: 15px;
-    font-size: 0.9rem;
-    line-height: 1.5;
-    position: relative;
-}
-
-/* System/Received messages */
-.chat-left {
-    align-self: flex-start;
-    background: #f1f5f9;
-    color: #334155;
-    border-bottom-left-radius: 2px;
-}
-
-/* User/Sent messages */
-.chat-right {
-    align-self: flex-end;
-    background: #1C0770;
-    color: #ffffff;
-    border-bottom-right-radius: 2px;
-}
-
-.msg-meta {
-    font-size: 0.7rem;
-    color: #94a3b8;
-    margin-bottom: 4px;
-    display: block;
-}
-
 /* --- Action Buttons --- */
 .btn-success {
-    background-color: #1C0770 !important;
+    background-color: linear-gradient(135deg, #213456, #334c7a) !important;
     border: none;
     padding: 0.6rem 2rem;
     font-weight: 600;
@@ -887,7 +758,7 @@ body.dark-mode .toggle-label-text {
 
 /* --- Global Theme Vars --- */
 :root {
-    --navy-primary: #213456;
+    --navy-primary: linear-gradient(135deg, #213456, #334c7a);
     --gold-accent: #E1AD01;
     --chat-bg: #f4f7f9;
 }
@@ -911,90 +782,6 @@ body.dark-mode .toggle-label-text {
     box-shadow: 0 0 0 3px rgba(225, 173, 1, 0.15);
 }
 
-/* --- Right Side: Premium Messenger Thread --- */
-#msg_thread {
-    background-color: #213456;
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-}
-
-.container_remarks {
-    background: var(--chat-bg);
-    height: 500px;
-    overflow-y: auto;
-    box-shadow: 0 20px 60px rgba(123, 128, 44, 0.605);
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    border: none;
-}
-
-/* --- Message Bubbles --- */
-.msg-bubble {
-    max-width: 80%;
-    padding: 12px 16px;
-    font-size: 0.9rem;
-    position: relative;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-}
-
-/* Received (Support/Other Users) - Navy Style */
-.msg-received {
-    align-self: flex-start;
-    background-color: var(--navy-primary);
-    color: #ffffff;
-    border-radius: 20px 20px 20px 5px;
-}
-
-/* Sent (You) - Gold Style */
-.msg-sent {
-    align-self: flex-end;
-    background-color: var(--gold-accent);
-    color: #ffffff;
-    border-radius: 20px 20px 5px 20px;
-}
-
-/* Bubble Meta Info */
-.msg-info {
-    font-size: 0.7rem;
-    margin-bottom: 4px;
-    font-weight: 600;
-    display: block;
-}
-
-.msg-received .msg-info { color: rgba(255,255,255,0.7); }
-.msg-sent .msg-info { color: #ffffff; text-align: right; }
-
-/* --- Chat Input Footer --- */
-.chat-input-box {
-    background: #ffffff;
-    padding: 20px;
-    border-top: 1px solid #e2e8f0;
-    border-radius: 0 0 12px 0;
-}
-
-#addmsg {
-    border-radius: 25px;
-    padding: 12px 20px;
-    background-color: #f8fafc;
-    border: 1px solid #e2e8f0;
-    transition: all 0.3s ease;
-}
-
-#addmsg:focus {
-    background-color: #ffffff;
-    border-color: var(--gold-accent);
-    box-shadow: 0 4px 12px rgba(225, 173, 1, 0.1);
-    outline: none;
-}
 
 /* --- Buttons --- */
 .btn-success {  
@@ -1028,7 +815,7 @@ body.dark-mode .toggle-label-text {
 
 /* --- Header using your Navy/Gold Theme --- */
 .card2 .card-header {
-    background-color: #213456 !important; /* Your Navy */
+    background-color: linear-gradient(135deg, #213456, #334c7a) !important; /* Your Navy */
     color: #E1AD01 !important; /* Your Gold */
     font-weight: 700;
     letter-spacing: 1px;
@@ -1037,63 +824,6 @@ body.dark-mode .toggle-label-text {
     display: flex;
     align-items: center;
 }
-
-/* --- Table Refinement --- */
-#report_data, #network_tb {
-    border-collapse: separate;
-    border-spacing: 0 8px; /* Creates a "card-row" look */
-    margin-top: -8px;
-}
-
-#report_data thead th, #network_tb thead th {
-    background-color: #f8fafc;
-    color: #213456;
-    text-transform: uppercase;
-    font-size: 0.75rem;
-    font-weight: 800;
-    border: none;
-    padding: 15px;
-}
-
-#report_data tbody tr, #network_tb tbody tr {
-    background-color: #213456;
-    transition: all 0.2s ease;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-}
-
-/* Hover Effect: Glows slightly and shows your Gold theme */
-#report_data tbody tr:hover, #network_tb tbody tr:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(33, 52, 86, 0.1);
-    background-color: #E1AD01; /* Very faint gold tint */
-}
-
-#report_data td, #network_tb td {
-    padding: 15px;
-    vertical-align: middle;
-    border-top: 1px solid #edf2f7;
-    border-bottom: 1px solid #edf2f7;
-    color: #4a5568;
-}
-
-/* --- Status Badge Styles (Apply these in your HTML/PHP logic) --- */
-.badge-modern {
-    padding: 6px 12px;
-    border-radius: 30px;
-    font-weight: 600;
-    font-size: 0.7rem;
-}
-
-/* Custom Scrollbar for the table container */
-#proTeamScroll::-webkit-scrollbar {
-    width: 6px;
-}
-#proTeamScroll::-webkit-scrollbar-thumb {
-    background: #cbd5e0;
-    border-radius: 10px;
-}
-
-
 
 
     

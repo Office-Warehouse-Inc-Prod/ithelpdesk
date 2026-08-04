@@ -985,7 +985,7 @@ function loadDepartmentTable() {
         
             const monthNames = {
                 1: "JANUARY", 2: "FEBRUARY", 3: "MARCH", 
-                4: "APRIL", 5: "MAY", 6: "JUNE"
+                4: "APRIL", 5: "MAY", 6: "JUNE" , 7: "JULY" , 8: "AUGUST"
             };
 
             if (response && response.department_stats) {
@@ -996,7 +996,7 @@ function loadDepartmentTable() {
                     statsByMonth[parseInt(row.MONTH_NUM)] = row;
                 });
 
-                for (let m = 1; m <= 6; m++) {
+                for (let m = 1; m <= 8; m++) {
                     let row = statsByMonth[m];
                     let monthName = monthNames[m];
 

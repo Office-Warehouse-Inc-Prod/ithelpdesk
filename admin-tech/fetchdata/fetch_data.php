@@ -3,6 +3,7 @@ include 'admin_function.php';
 
 $fn = new dbconfig();
 $mode = $_POST['mode'];
+$records = array();
 
 switch ($mode) {
     case 'yearch':
@@ -43,6 +44,9 @@ switch ($mode) {
         break;
     case 'dtb':
         $records['rptdata'] = $fn->admin_data_table_res();
+        break;
+     case 'dtb_transfer':
+        $records['transferdata'] = $fn->admin_data_table_transfer();
         break;
     case 'dtbnet':
         $records['rptdatanet'] = $fn->admin_data_table_resnet();

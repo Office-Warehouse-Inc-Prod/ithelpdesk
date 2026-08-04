@@ -42,37 +42,6 @@ body {
   background-repeat: no-repeat;
   min-height: 100vh;
 } 
- .modal-overlay {
-            display: none; 
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-       .modal-overlay .modal-content {
-             background: linear-gradient(to bottom, #ffffff, #99aac8);
-            padding: 25px;
-            border-radius: 8px;
-            width: 70%;
-            max-width: 90%;
-            margin-top:30px;
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-       .modal-overlay .modal-content h3 {
-            margin-top: 0;
-            color: #333;
-        }
-       .modal-overlay .close-btn {
-            background-color: #213456;
-            margin-top: 15px;
-        }
- 
 
         
   .table-responsive {
@@ -84,26 +53,26 @@ body {
     width: 100% !important;
     table-layout: auto !important;
     page-break-inside: avoid;
-    
+     
   }
 
   .admin-table th {
-    background-color: #213456 !important;
-    color: #fff !important;
+    background-color: linear-gradient(135deg, #213456, #334c7a) !important;
+    color: #ffffff!important;
     padding: 6px 4px !important;
     font-size: 11px !important;
   }
 
   #admin_report.admin-table th.active.text-center {
     background-color: #2b9827 !important;
-    color: #fff !important;
+    color: #ffffff !important;
     padding: 6px 4px !important;
     font-size: 11px !important;
   }
 
   #admin_report.admin-table th.compliance.text-center {
     background-color: #a29341 !important;
-    color: #fff !important;
+    color: #ffffff !important;
     padding: 6px 4px !important;
     font-size: 11px !important;
   }
@@ -151,10 +120,10 @@ body {
   padding:10px;
   width: 30%;
   color: white;
-  background-color: #213456;
+  background-color: linear-gradient(135deg, #213456, #334c7a);
 }
  .modal-overlay .month-row[data-month="6"] {
-  background: #213456;
+  background: linear-gradient(135deg, #213456, #334c7a);
   outline: 2px solid red;
   outline-offset: -2px; 
 }
@@ -279,7 +248,7 @@ textarea.form-control:focus {
 #userModal .input-group-text {
     background-color: white;
     border-right: none;
-    color: #213456;
+    color: linear-gradient(135deg, #213456, #334c7a);
 }
 
 #userModal .form-control {
@@ -289,7 +258,7 @@ textarea.form-control:focus {
 }
 
 #userModal .form-control:focus {
-    border-color: #213456;
+    border-color: linear-gradient(135deg, #213456, #334c7a);
     box-shadow: none;
 }
 
@@ -387,7 +356,7 @@ textarea.form-control:focus {
 }
 
 .chat-right .msg-meta {
-    color: rgba(255, 255, 255, 0.85);
+    color: #ffffff; 
 }
 
 .chat-left .msg-meta-name {
@@ -400,79 +369,31 @@ textarea.form-control:focus {
     font-weight: bold;
 }
 
-.btn-success {
-    background-color: #1C0770 !important;
-    border: none;
-    padding: 0.6rem 2rem;
-    font-weight: 600;
-    border-radius: 8px;
-    transition: transform 0.2s ease;
+
+.chat-right .msg-time {
+    color: #ffffff !important; 
 }
 
-.btn-success:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(28, 7, 112, 0.2);
+.chat-left .msg-time {
+    color: #64748b !important;
+}
+.chat-left .msg-meta {
+    color: #64748b;
 }
 
-.btn-danger {
-    background-color: #fff;
-    border: 1px solid #e2e8f0;
-    color: #e53e3e;
-    padding: 0.6rem 1.5rem;
-    font-weight: 600;
-    border-radius: 8px;
+.chat-right .msg-meta {
+    color: rgba(255, 255, 255, 0.85);
 }
 
-.btn-danger:hover {
-    background-color: #fff5f5;
-    color: #c53030;
+.chat-left .msg-meta-name {
+    color: linear-gradient(135deg, #213456, #334c7a);
+    font-weight: bold;
 }
 
-#userModal .modal-footer{
-  border-top: 1px solid rgba(0,0,0,0.08);
-  background: rgba(255,255,255,0.92);
-  position: sticky;
-  bottom: 0;
-  z-index: 5;
-  padding: 12px 14px;
+.chat-right .msg-meta-name {
+    color: #ffffff;
+    font-weight: bold;
 }
-
-@media (max-width: 991px){
-  #userModal .modal-dialog{
-    max-width: 96%;
-    margin: .75rem auto;
-  }
-
-  .container_remarks{
-    max-height: 350px;
-  }
-
-  #action, #btnClose{
-    width: 100%;
-  }
-}
-
-
-.year-picker-group {
-    flex: 1;
-    min-width: 300px; 
-}
-#showCalendarBtn {
-    background-color: #213456;
-    color: white;
-    border-radius: 8px;
-    padding: 8px 20px;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    white-space: nowrap;
-}
-
-#showCalendarBtn:hover {
-    background-color: var(--owi-gold, #E1AD01);
-    color: #213456;
-}
-
-
  .modal-overlay {
             display: none; 
             position: fixed;
@@ -486,7 +407,7 @@ textarea.form-control:focus {
             z-index: 1000;
         }
        .modal-overlay .modal-content {
-             background: linear-gradient(to bottom, #ffffff, #99aac8);
+             background: linear-gradient(to bottom, #ffffff, #b0b9c8);
             padding: 25px;
             border-radius: 8px;
             width: 70%;
@@ -500,7 +421,7 @@ textarea.form-control:focus {
             color: #333;
         }
        .modal-overlay .close-btn {
-            background-color: #28a745;
+            background-color: #213456;
             margin-top: 15px;
         }
  
@@ -590,49 +511,152 @@ textarea.form-control:focus {
   outline-offset: -2px; 
 }
 
-.chat-left .msg-meta {
-    color: #64748b;
+.btn-success {
+    background-color: #1C0770 !important;
+    border: none;
+    padding: 0.6rem 2rem;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: transform 0.2s ease;
 }
 
-.chat-right .msg-meta {
-    color: #ffffff; 
+.btn-success:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(28, 7, 112, 0.2);
 }
 
-.chat-left .msg-meta-name {
-    color: #213456;
-    font-weight: bold;
+.btn-danger {
+    background-color: #fff;
+    border: 1px solid #e2e8f0;
+    color: #e53e3e;
+    padding: 0.6rem 1.5rem;
+    font-weight: 600;
+    border-radius: 8px;
 }
 
-.chat-right .msg-meta-name {
-    color: #ffffff;
-    font-weight: bold;
+.btn-danger:hover {
+    background-color: #fff5f5;
+    color: #c53030;
+}
+
+#userModal .modal-footer{
+  border-top: 1px solid rgba(0,0,0,0.08);
+  background: rgba(255,255,255,0.92);
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  padding: 12px 14px;
+}
+
+@media (max-width: 991px){
+  #userModal .modal-dialog{
+    max-width: 96%;
+    margin: .75rem auto;
+  }
+
+  .container_remarks{
+    max-height: 350px;
+  }
+
+  #action, #btnClose{
+    width: 100%;
+  }
 }
 
 
-.chat-right .msg-time {
-    color: #ffffff !important; 
+.year-picker-group {
+    flex: 1;
+    min-width: 300px; 
+}
+#showCalendarBtn {
+    background-color: #213456;
+    color: white;
+    border-radius: 8px;
+    padding: 8px 20px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    white-space: nowrap;
 }
 
-.chat-left .msg-time {
-    color: #64748b !important;
-}
-.chat-left .msg-meta {
-    color: #64748b;
-}
-
-.chat-right .msg-meta {
-    color: rgba(255, 255, 255, 0.85);
-}
-
-.chat-left .msg-meta-name {
+#showCalendarBtn:hover {
+    background-color: var(--owi-gold, #E1AD01);
     color: linear-gradient(135deg, #213456, #334c7a);
-    font-weight: bold;
 }
 
-.chat-right .msg-meta-name {
-    color: #ffffff;
-    font-weight: bold;
+        
+  .table-responsive {
+    overflow: visible !important;
+    width: 100% !important;
+  }
+
+  .admin-table {
+    width: 100% !important;
+    table-layout: auto !important;
+    page-break-inside: avoid;
+    
+  }
+
+ 
+
+  #admin_report.admin-table th.active.text-center {
+    background-color: #2b9827 !important;
+    color: #213456 !important;
+    padding: 6px 4px !important;
+    font-size: 11px !important;
+  }
+
+  #admin_report.admin-table th.compliance.text-center {
+    background-color: #a29341 !important;
+    color: #213456 !important;
+    padding: 6px 4px !important;
+    font-size: 11px !important;
+  }
+
+  .admin-table td {
+    padding: 6px 4px !important;
+    font-size: 11px !important;
+    border-bottom: 1px solid #0e0e0ea1 !important;
+  }
+  .table-responsive{
+    margin-top: -600px;
+  }
+
+  .progress {
+    border: 1px solid #999 !important;
+    background-color: #ddd !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  #dept-table-footer {
+    border: 2px solid #2d3c59;
+    background-color: #f4e9d7 !important; 
 }
+
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+    box-shadow: none !important;
+  }
+
+#transferred_data, 
+#transferred_data th, 
+#transferred_data td {
+  border-left: none !important;
+  border-right: none !important;
+  color: #213456;
+}
+
+#transferred_data th {
+  border-top: none !important;
+  border-bottom: 2px solid #213456 !important;
+   color: #213456;
+}
+
+#transferred_data td {
+  border-bottom: 1px solid #0e0e0ea1 !important; 
+}
+
 </style>
   
 <div id="welcomeModal" class="modal-overlay" style="display: none;">
@@ -969,47 +993,58 @@ textarea.form-control:focus {
         </div><!-- /#ovrall -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" />
 
-        <!-- TABLES -->
+         <!-- TABLES -->
         <div class="row">
-
           <div class="col-12 mb-3">
             <div class="card card2">
-              <h5 class="card-header text-black"  style="background-color: #95a2b9b4; color:black;">TICKETS</h5>
-              <div class="card-body">
+              
+        <div class="card-header" style="background: linear-gradient(135deg, #213456, #334c7a); border-bottom: none; padding-bottom: 0;">
+          <ul class="nav nav-tabs card-header-tabs" id="ticketTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="tickets-tab" data-toggle="tab" data-target="#tickets" type="button" role="tab" aria-controls="tickets" aria-selected="true" style="font-weight: bold; border: 1px solid #ffffff;">
+                TICKETS
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="transferred-tab" data-toggle="tab" data-target="#transferred" type="button" role="tab" aria-controls="transferred" aria-selected="false" style="color: white; font-weight: bold; border: 1px solid #ffffff;">
+                TRANSFERRED TICKETS
+              </button>
+            </li>
+          </ul>
+        </div>
 
-                <div class="row">
-                  <!-- old code with overflow -->
-                  <!-- <div class="col-12 mb-3">  
-                     <div class="table-responsive" id="proTeamScroll" style="max-height:450px; width:100%;overflow-y:auto;">
-                    <table id="report_data" class="table table-hover">
-
-                    </div>
-                  </div> -->
-
-                                    <div class="col-12 mb-3">
-                     <div class="table-responsive" id="proTeamScroll" style="">
-                    <table id="report_data" class="table table-hover">
-
-                    </div>
-                  </div>
-
-                  <div class="col-12">
-                     <div class="table-responsive" id="proTeamScroll" style="max-height:450px; width:100%;overflow-y:auto;">
-                      <table id="network_tb" class="table table-hover">
-
-                    </div>
-                  </div>
-                </div>
-
-              </div>
+      <div class="card-body">
+        <div class="tab-content" id="ticketTabsContent">
+          <div class="tab-pane fade show active" id="tickets" role="tabpanel" aria-labelledby="tickets-tab">
+            <div class="table-responsive" style="max-height:450px; width:100%; overflow-y:auto;">
+              <table id="report_data" class="table table-hover">
+                
+                <tbody>
+                </tbody>
+              </table>
             </div>
           </div>
 
-        </div><!-- /.row -->
+          <div class="tab-pane fade" id="transferred" role="tabpanel" aria-labelledby="transferred-tab">
+            <div class="table-responsive" style="max-height:450px; width:100%; overflow-y:auto;">
+              <table id="transferred_data" class="table table-hover">
+               
+                <tbody>
+                </tbody>
+              </table>
+            </div>
+          </div>
 
-        <div class="col-lg-12 Down" id="Down">
-          <input type="hidden" id="myInput">
         </div>
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+<div class="col-lg-12 Down" id="Down">
+  <input type="hidden" id="myInput">
+</div>
 
       </div><!-- /.container-fluid -->
     </div><!-- /#layoutSidenav_content -->
@@ -1749,4 +1784,24 @@ function loadDepartmentTable() {
         }
     });
 }
+
+
+$(document).ready(function() {
+    $('button[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+        var targetTab = $(e.target).attr("id"); 
+
+        if (targetTab === 'transferred-tab') {
+            if ($.fn.DataTable.isDataTable('#transferred_data')) {
+                $('#transferred_data').DataTable().columns.adjust().draw();
+            }
+        } else if (targetTab === 'tickets-tab') {
+            if ($.fn.DataTable.isDataTable('#report_data')) {
+                $('#report_data').DataTable().columns.adjust().draw();
+            }
+        }
+        $('#ticketTabs .nav-link').css('color', 'white');
+        $('#ticketTabs .nav-link.active').css('color', '#495057'); 
+    });
+    
+});
 </script>

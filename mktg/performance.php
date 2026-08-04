@@ -245,7 +245,7 @@ select.form-control, .form-control, .form-select {
   background-color: #fff;
 }
 .admin-table th { 
-  background-color: #3d4e6d; 
+  background-color: linear-gradient(135deg, #213456, #334c7a);
   color: #ffffff !important; 
   font-weight: 700; 
   text-transform: uppercase; 
@@ -598,7 +598,7 @@ select.form-control, .form-control, .form-select {
               
               <div class="card-header d-flex flex-wrap justify-content-between align-items-center text-dark py-2 gap-2" style="border-bottom: 1px solid rgba(0,0,0,0.05);">
                 <h5 class="m-0 font-weight-bold no-print-header" style="letter-spacing: 0.3px; font-size: 1.15rem;">
-                  <i class="fa-solid fa-circle text-success me-2"></i>I.T HELPDESK DEPARTMENT TICKET SUMMARY
+                  <i class="fa-solid fa-circle text-success me-2"></i>MARKETING HELPDESK DEPARTMENT TICKET SUMMARY
                 </h5>
                 <div class="d-flex gap-2">
                   <button type="button" class="btn text-white d-flex align-items-center gap-2" style="border-radius: 6px; font-size: 13px; background-color: #12922a; padding: 4px 12px;" onclick="window.print()">

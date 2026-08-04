@@ -17,7 +17,7 @@ $yr = isset($_POST['yr']) ? intval($_POST['yr']) : date('Y');
 
 $dept_ids = isset($_POST['dept_id'])
     ? $_POST['dept_id']
-    : '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17';
+    : '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19';
 
 		$output = array();
 
@@ -106,7 +106,7 @@ public function overallpie_res()
 
     $dept_ids = isset($_POST['dept_id']) 
         ? $_POST['dept_id'] 
-        : '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17';
+        : '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19';
 
     // Clean dept ids para safe sa SQL
     $dept_ids_array = array_filter(array_map('intval', explode(',', $dept_ids)));
@@ -312,7 +312,7 @@ $yr = isset($_POST['yr']) ? intval($_POST['yr']) : date('Y');
 
 $dept_ids = isset($_POST['dept_id']) 
     ? $_POST['dept_id'] 
-    : '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17';
+    : '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19';
 
 $dept_ids_array = array_filter(array_map('intval', explode(',', $dept_ids)));
 
@@ -473,7 +473,7 @@ public function str_grphnew()
 
     $dept_ids = isset($_POST['dept_id']) 
         ? $_POST['dept_id'] 
-        : '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17';
+        : '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19';
 
     // Clean department IDs
     $dept_ids_array = array_filter(array_map('intval', explode(',', $dept_ids)));
@@ -642,7 +642,7 @@ $yr = isset($_POST['yr']) ? intval($_POST['yr']) : date('Y');
 
 $dept_ids = isset($_POST['dept_id']) 
     ? $_POST['dept_id'] 
-    : '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17';
+    : '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19';
 
 // Clean department IDs
 $dept_ids_array = array_filter(array_map('intval', explode(',', $dept_ids)));
@@ -1749,7 +1749,7 @@ public function category_status_grph()
 
     $dept_ids = isset($_POST['dept_id'])
         ? $_POST['dept_id']
-        : '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17';
+        : '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19';
 
     $dept_ids_array = array_filter(array_map('intval', explode(',', $dept_ids)));
 
@@ -1875,7 +1875,7 @@ public function category_ticket_dt()
 
     $dept_ids = isset($_POST['dept_id'])
         ? $_POST['dept_id']
-        : '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17';
+        : '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19';
 
     $dept_ids_array = array_filter(array_map('intval', explode(',', $dept_ids)));
 
@@ -1953,7 +1953,7 @@ public function store_ticket_dt()
 
     $dept_ids = isset($_POST['dept_id'])
         ? $_POST['dept_id']
-        : '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17';
+        : '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19';
 
     $dept_ids_array = array_filter(array_map('intval', explode(',', $dept_ids)));
 

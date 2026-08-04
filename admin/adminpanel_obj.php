@@ -40,95 +40,6 @@ $("#dept_id").on("change", function () {
 
 
 
-    function timeAgo(dateParam) {
-        if (!dateParam) return "";
-        let date = new Date(dateParam.replace(/-/g, "/"));
-        let now = new Date();
-        let seconds = Math.floor((now - date) / 1000);
-        
-        let interval = Math.floor(seconds / 86400);
-        if (interval >= 1) return interval + " day" + (interval === 1 ? "" : "s") + " ago";
-        
-        interval = Math.floor(seconds / 3600);
-        if (interval >= 1) return interval + " hour" + (interval === 1 ? "" : "s") + " ago";
-        
-        interval = Math.floor(seconds / 60);
-        if (interval >= 1) return interval + " minute" + (interval === 1 ? "" : "s") + " ago";
-        
-        return "just now";
-    }
-
-  
-    function loadCommentThread(ticket_no) {
-        const $remarksView = $('#remarks_view');
-        const ticketValue = (ticket_no || '').toString().trim();
-
-        if (!ticketValue) return;
-        
-        $remarksView.fadeOut(150, function() {
-            $remarksView.html('<div class="text-center text-muted mt-4 mb-4"><div class="spinner-border spinner-border-sm me-2 text-primary"></div>Loading conversation...</div>').fadeIn(150);
-        });
-
-        $.ajax({
-            url: 'get_comments.php', 
-            type: 'POST',
-            dataType: 'json',
-            data: { ticket_no: ticketValue },
-            success: function(response) {
-                let html = '';
-                
-                if (Array.isArray(response) && response.length > 0) {
-                    var currentUserIdStr = "<?= $_SESSION['user_id'] ?? '' ?>";
-                    var currentUserNameStr = "<?= $_SESSION['fname'] ?? '' ?>";
-                    let reversedResponse = response.slice().reverse();
-
-                    reversedResponse.forEach(function(comment, index) {
-                        let sender = comment.userId || 'Unknown';
-                        
-                        let isMe = false;
-                        if(currentUserIdStr !== "" && sender === currentUserIdStr) isMe = true;
-                        if(currentUserNameStr !== "" && sender.includes(currentUserNameStr)) isMe = true;
-                        
-                        let bubbleClass = isMe ? 'chat-right' : 'chat-left';
-                        let delay = index * 0.05; 
-                        let relativeTime = timeAgo(comment.comment_date);
-                        let replyTimeColor = isMe ? "color: #e2e8f0;" : "color: #64748b;";
-                        
-                        html += `
-                            <div class="chat-bubble ${bubbleClass}" style="animation-delay: ${delay}s;">
-                                <div class="msg-meta">
-                                    <span class="msg-meta-name">${sender}</span>
-                                    <span class="msg-time">${comment.comment_date}</span> 
-                                </div>
-                                <div style="white-space: pre-wrap;">${comment.comment_details}</div>
-                                
-                                <div class="reply-time" style="font-size: 0.65rem; text-align: right; margin-top: 6px; opacity: 0.85; font-style: italic; ${replyTimeColor}">
-                                    Replied ${relativeTime}
-                                </div>
-                            </div>
-                        `;
-                    });
-                } else {
-                    html = '<div class="text-center text-muted mt-3" style="font-size:13px;"><i class="fas fa-comments mb-2" style="font-size:24px; opacity:0.5;"></i><br>No comments yet. Start the conversation!</div>';
-                }
-                
-               $remarksView.fadeOut(150, function() {
-                    $remarksView.html(html).fadeIn(300);
-                    $('.dv_msg, .container_remarks').slideDown(300); 
-
-                    setTimeout(() => {
-                        const $container = $('.container_remarks');
-                        if ($container.length) {
-                            $container.animate({ scrollTop: 0 }, 600, 'swing');
-                        }
-                    }, 200);
-                });
-            },
-            error: function(xhr) {
-                $remarksView.html('<div class="text-danger text-center mt-3">Error loading comments.</div>');
-            }
-        });
-    }
 //for debug purposes enable here
 // console.log($('#date_created').val());
 
@@ -897,19 +808,14 @@ if($('#msgbtn').val() == 'show'){
 $('#action').val("Save and Reply");
 $('#operation').val("Save and Reply");
 $('#msgbtn').val("hide");
-$('#msg_thread').slideDown(400);
- $('.dv_msg, .container_remarks').slideDown(400);
-        setTimeout(() => {
-            const $container = $('.container_remarks');
-            $container.animate({ scrollTop: 0 }, 400); 
-            
-        }, 450);
+$('#msg_thread').show('slow');
+
 }
 else if($('#msgbtn').val() == 'hide'){
 $('#action').val("Save");
 $('#operation').val("Edit");
 $('#msgbtn').val("show");
- $('#msg_thread').slideUp(400);
+$('#msg_thread').hide('slow');
 }
 
 
@@ -927,18 +833,7 @@ $('#addmsg').val('');
 
 });
 
- $('#userModal').on('shown.bs.modal', function () {
-        const ticketNo = $('#ticket_no').val();
-        if (ticketNo) {
-            $('.dv_msg').show();
-            $('.container_remarks').show();
-            loadCommentThread(ticketNo);
-        }
-    });
 
-    $(document).on('hidden.bs.modal', '#userModal', function () {
-      $('.temp-option').remove();
-    });
 
 
 let activeCall = null; // {call_id, start_ms}

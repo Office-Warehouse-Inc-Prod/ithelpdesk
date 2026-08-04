@@ -17,190 +17,7 @@ include 'sub_graph_modal.php';
   <link rel="stylesheet" href="adminpanel.css">
 </head>
 <style>
-  :root {
-    --primary-color: #E1AD01;
-    --primary-light: #F4F0FF;
-    --bg-body: #F4F5FA;
-    --sidebar-width: 260px;
-    --topbar-height: 70px;
-    --card-shadow: 0 4px 12px 0 rgba(58, 53, 65, 0.1);
-  }
 
- 
-body {
-  background: linear-gradient(to bottom, #ffffff, #99aac8);
-  background-attachment: fixed; 
-  margin: 0; 
-   overflow-x: hidden;
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  background-repeat: no-repeat;
-  min-height: 100vh;
-} 
-
-  .owi-navbar {
-    background-color: #213456 !important;
-    box-shadow: 0 2px 10px 2px #66738e;
-    margin-bottom: 10px;
-  }
-
-  .owi-navbar .nav-link,
-  .owi-navbar .navbar-brand {
-    color: #fff !important;
-    font-weight: 600;
-    letter-spacing: .3px;
-  }
-
-  .owi-navbar .nav-link i {
-    margin-right: 6px;
-  }
-
-  .owi-navbar .nav-link:hover,
-  .owi-navbar .navbar-brand:hover {
-    opacity: .92;
-  }
-
-  .owi-navbar .dropdown-menu {
-    background-color: #ffffff;
-    border: none;
-    min-width: 220px;
-    padding: .35rem;
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
-    border-radius: 12px;
-  }
-
-  .owi-navbar .dropdown-item {
-    color: black;
-    border-radius: 10px;
-    padding: .55rem .75rem;
-    white-space: normal;
-  }
-
-  .owi-navbar .dropdown-item i {
-    margin-right: 8px;
-  }
-
-  .owi-navbar .dropdown-item:hover {
-    background-color: #54699e;
-    color: #fff;
-  }
-
-  .owi-navbar .dropdown-divider {
-    border-top: 1px solid rgba(255, 255, 255, 0.2);
-  }
-
-  .notif-dropdown {
-    width: 360px;
-    max-width: 92vw;
-  }
-
-  @media (max-width: 576px) {
-    .notif-dropdown {
-      width: 92vw;
-    }
-  }
-
-  .owi-navbar .badge-danger {
-    background-color: #ff4d4d;
-  }
-
-  .owi-navbar .badge-info {
-    background-color: #28c7ff;
-    color: #002a4a;
-    font-weight: 700;
-  }
-
-  .owi-navbar .navbar-toggler {
-    border-color: rgba(255, 255, 255, 0.35);
-  }
-
-  .owi-navbar .navbar-toggler-icon {
-    filter: brightness(0) invert(1);
-  }
-
-  .owi-navbar .nav-item {
-    position: relative;
-    margin: 0 5px;
-    display: flex;
-    align-items: center;
-  }
-
-  .owi-navbar .nav-link {
-    position: relative;
-    padding: 0.8rem 1rem !important;
-    color: rgba(255, 255, 255, 0.8) !important;
-    transition: all 0.3s ease;
-  }
-
-  .owi-navbar .nav-link::after {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 3px;
-    bottom: 5px;
-    left: 50%;
-    background-color: var(--primary-color);
-    transition: width 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), left 0.3s ease;
-    transform: translateX(-50%);
-    border-radius: 10px;
-  }
-
-  .owi-navbar .nav-item:hover .nav-link {
-    color: #fff !important;
-  }
-
-  .owi-navbar .nav-item:hover .nav-link::after {
-    width: 70%;
-  }
-
-  .owi-navbar .nav-item.active .nav-link {
-    color: var(--primary-color) !important;
-    font-weight: 700;
-  }
-
-  .owi-navbar .nav-item.active .nav-link::after {
-    width: 70%;
-    background-color: var(--primary-color);
-  }
-
-  .owi-navbar .dropdown-menu {
-    border-top: 3px solid var(--primary-color) !important;
-    border-radius: 0 0 8px 8px !important;
-    margin-top: 0;
-  }
-
-  .navbar-brand {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-family: 'Orbitron', sans-serif;
-    font-size: 1.4rem;
-    letter-spacing: 1px;
-  }
-
-  .navbar-brand img {
-    transition: transform 0.3s ease;
-  }
-
-  .navbar-brand:hover img {
-    transform: rotate(-10deg) scale(1.1);
-  }
-
-  .owi-navbar .dropdown-menu {
-    border-top: 3px solid var(--primary-color);
-    margin-top: 10px;
-  }
-
-  /* Smooth flash styling for highlighting rows */
-  .highlight-row {
-    animation: flashYellow 2.5s ease-in-out;
-  }
-
-  @keyframes flashYellow {
-    0% { background-color: #ffff99; }
-    100% { background-color: transparent; }
-  }
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -216,6 +33,369 @@ background: linear-gradient(135deg, #837031, #E1AD01);
   background: linear-gradient(135deg, #837031, #E1AD01);
 }
 
+body {
+  background: linear-gradient(to bottom, #ffffff, #99aac8);
+  background-attachment: fixed; 
+  margin: 0; 
+   overflow-x: hidden;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+} 
+
+        
+  .table-responsive {
+    overflow: visible !important;
+    width: 100% !important;
+  }
+
+  .admin-table {
+    width: 100% !important;
+    table-layout: auto !important;
+    page-break-inside: avoid;
+     
+  }
+
+  .admin-table th {
+    background-color: linear-gradient(135deg, #213456, #334c7a) !important;
+    color: #ffffff!important;
+    padding: 6px 4px !important;
+    font-size: 11px !important;
+  }
+
+  #admin_report.admin-table th.active.text-center {
+    background-color: #2b9827 !important;
+    color: #ffffff !important;
+    padding: 6px 4px !important;
+    font-size: 11px !important;
+  }
+
+  #admin_report.admin-table th.compliance.text-center {
+    background-color: #a29341 !important;
+    color: #ffffff !important;
+    padding: 6px 4px !important;
+    font-size: 11px !important;
+  }
+
+  .admin-table td {
+    padding: 6px 4px !important;
+    font-size: 11px !important;
+    border-bottom: 1px solid #0e0e0ea1 !important;
+  }
+  .table-responsive{
+    margin-top: -600px;
+  }
+
+  .progress {
+    border: 1px solid #999 !important;
+    background-color: #ddd !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  #dept-table-footer {
+    border: 2px solid #2d3c59;
+    background-color: #f4e9d7 !important; 
+}
+
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+    box-shadow: none !important;
+  }
+.modal-overlay .close-btn:hover{
+   display: block;
+  margin-left: auto;
+  border-radius: 12px;
+  width: 30%;
+
+  background-color: #E1AD01;
+  color: white;
+}
+
+.modal-overlay .close-btn {
+  display: block;
+  margin-left: auto;
+  border-radius: 12px;
+  padding:10px;
+  width: 30%;
+  color: white;
+  background-color: linear-gradient(135deg, #213456, #334c7a);
+}
+ .modal-overlay .month-row[data-month="6"] {
+  background: linear-gradient(135deg, #213456, #334c7a);
+  outline: 2px solid red;
+  outline-offset: -2px; 
+}
+
+
+label {
+  font-size: 11px;
+  font-weight: 900;
+  color: #e1ad01; 
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+input.form-control,
+textarea.form-control {
+  color: #6c757d !important;
+  background-color: transparent !important; 
+  border: black !important; 
+  border-bottom: 1px solid #E1AD01 !important; 
+  resize: none !important; 
+}
+
+select.custom-select-placeholder.placeholder-active,
+textarea.form-control.custom-select-placeholder:placeholder-shown {
+  color: red !important;
+  border: 1px solid #ced4da !important;
+  background-color: #fff !important;
+}
+
+textarea.form-control.custom-select-placeholder::placeholder {
+  color: red !important;
+  opacity: 0.7;
+}
+
+select.custom-select-placeholder.has-value,
+textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
+  color: #0a0a0a !important; 
+  border-bottom: 1px solid #E1AD01 !important; 
+  background-color: transparent !important;
+}
+
+.form-control,
+.form-control-sm,
+input.form-control,
+select.form-control,
+textarea.form-control {
+  background: #fff !important;
+  color: black !important;
+  border-bottom: 1px solid #E1AD01 !important; 
+}
+
+.form-control:focus,
+.form-control-sm:focus,
+input.form-control:focus,
+select.form-control:focus,
+textarea.form-control:focus {
+  box-shadow: 0 10px 18px rgba(17,24,39,.06);
+  border-color: 2px solid rgba(114, 89, 21, 0.94) !important;
+}
+
+
+.container_remarks {
+    display: flex !important;
+    flex-direction: column;
+    max-height: 480px;
+    overflow-y: auto;
+    background-color: #f0f2f5 !important;
+    border: 1px solid #dee2e6;
+    border-radius: 12px;
+    padding: 15px;
+    margin-top: 10px;
+}
+
+.dv_msg {
+    display: block !important;
+}
+
+#remarks_view {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+#userModal .modal-dialog{
+  max-width: 1100px; 
+  margin: 1.25rem auto;
+}
+
+#userModal .modal-content{
+  border-radius: 16px;
+  border: none;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+#userModal .modal-header{
+    background-color: #213456;
+    color: #fff;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    border-bottom: 4px solid #E1AD01; 
+}
+
+#userModal_header{
+  font-weight: 700;
+  font-size: 18px;
+  margin: 0;
+}
+
+#userModal .modal-body{
+  padding: 16px 18px;
+}
+
+#userModal .modal-title {
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+}
+
+#userModal .input-group-text {
+    background-color: white;
+    border-right: none;
+    color: linear-gradient(135deg, #213456, #334c7a);
+}
+
+#userModal .form-control {
+    border-left: none;
+    height: 45px;
+    border-radius: 0 8px 8px 0;
+}
+
+#userModal .form-control:focus {
+    border-color: linear-gradient(135deg, #213456, #334c7a);
+    box-shadow: none;
+}
+
+#userModal .input-group:focus-within {
+    box-shadow: 0 0 0 0.2rem rgba(225, 173, 1, 0.25);
+    border-radius: 8px;
+}
+
+.m_col {
+    background: #ffffff;
+    padding: 2rem !important;
+    border-right: 1px solid #edf2f7;
+}
+
+.m_col label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #718096;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.m_col .form-control {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 0.6rem 0.75rem;
+    transition: all 0.2s ease;
+    background-color: #f8fafc;
+}
+
+.m_col .form-control:focus {
+    background-color: #fff;
+    border-color: #1C0770;
+    box-shadow: 0 0 0 3px rgba(28, 7, 112, 0.1);
+    outline: none;
+}
+
+.m_col textarea {
+    min-height: 80px;
+}
+
+#msg_thread {
+    padding: 1rem 1.5rem;
+    background: linear-gradient(to bottom, #ffffff, #99aac8);
+    height: 100%;
+}
+
+#addmsg {
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 1rem;
+    background: #ffffff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.chat-bubble {
+    max-width: 85%;
+    padding: 10px 14px;
+    border-radius: 18px;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    position: relative;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    word-wrap: break-word;
+}
+
+.chat-left {
+    align-self: flex-start;
+    background: #ffffff;
+    color: #1e293b;
+    border-bottom-left-radius: 4px;
+    border: 1px solid #e5e7eb;
+}
+
+.chat-right {
+    align-self: flex-end;
+    background: #1C0770;
+    color: #ffffff;
+    border-bottom-right-radius: 4px;
+}
+
+.msg-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    font-size: 0.7rem;
+    margin-bottom: 4px;
+}
+
+.chat-left .msg-meta {
+    color: #64748b;
+}
+
+.chat-right .msg-meta {
+    color: #ffffff; 
+}
+
+.chat-left .msg-meta-name {
+    color: #213456;
+    font-weight: bold;
+}
+
+.chat-right .msg-meta-name {
+    color: #ffffff;
+    font-weight: bold;
+}
+
+
+.chat-right .msg-time {
+    color: #ffffff !important; 
+}
+
+.chat-left .msg-time {
+    color: #64748b !important;
+}
+.chat-left .msg-meta {
+    color: #64748b;
+}
+
+.chat-right .msg-meta {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.chat-left .msg-meta-name {
+    color: linear-gradient(135deg, #213456, #334c7a);
+    font-weight: bold;
+}
+
+.chat-right .msg-meta-name {
+    color: #ffffff;
+    font-weight: bold;
+}
  .modal-overlay {
             display: none; 
             position: fixed;
@@ -333,71 +513,158 @@ background: linear-gradient(135deg, #837031, #E1AD01);
   outline-offset: -2px; 
 }
 
-
-label {
-  font-size: 11px;
-  font-weight: 900;
-  color: #e1ad01; 
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  margin-bottom: 6px;
+.btn-success {
+    background-color: #1C0770 !important;
+    border: none;
+    padding: 0.6rem 2rem;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: transform 0.2s ease;
 }
 
-input.form-control,
-textarea.form-control {
-  color: #6c757d !important;
-  background-color: transparent !important; 
-  border: black !important; 
-  border-bottom: 1px solid #E1AD01 !important; 
-  resize: none !important; 
+.btn-success:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(28, 7, 112, 0.2);
 }
 
-select.custom-select-placeholder.placeholder-active,
-textarea.form-control.custom-select-placeholder:placeholder-shown {
-  color: red !important;
-  border: 1px solid #ced4da !important;
-  background-color: #fff !important;
+.btn-danger {
+    background-color: #fff;
+    border: 1px solid #e2e8f0;
+    color: #e53e3e;
+    padding: 0.6rem 1.5rem;
+    font-weight: 600;
+    border-radius: 8px;
 }
 
-textarea.form-control.custom-select-placeholder::placeholder {
-  color: red !important;
-  opacity: 0.7;
+.btn-danger:hover {
+    background-color: #fff5f5;
+    color: #c53030;
 }
 
-select.custom-select-placeholder.has-value,
-textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
-  color: #0a0a0a !important; 
-  border-bottom: 1px solid #E1AD01 !important; 
-  background-color: transparent !important;
+#userModal .modal-footer{
+  border-top: 1px solid rgba(0,0,0,0.08);
+  background: rgba(255,255,255,0.92);
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  padding: 12px 14px;
 }
 
-.form-control,
-.form-control-sm,
-input.form-control,
-select.form-control,
-textarea.form-control {
-  background: #fff !important;
-  color: black !important;
-  border-bottom: 1px solid #E1AD01 !important; 
+@media (max-width: 991px){
+  #userModal .modal-dialog{
+    max-width: 96%;
+    margin: .75rem auto;
+  }
+
+  .container_remarks{
+    max-height: 350px;
+  }
+
+  #action, #btnClose{
+    width: 100%;
+  }
 }
 
-.form-control:focus,
-.form-control-sm:focus,
-input.form-control:focus,
-select.form-control:focus,
-textarea.form-control:focus {
-  box-shadow: 0 10px 18px rgba(17,24,39,.06);
-  border-color: 2px solid rgba(114, 89, 21, 0.94) !important;
+
+.year-picker-group {
+    flex: 1;
+    min-width: 300px; 
 }
+#showCalendarBtn {
+    background-color: #213456;
+    color: white;
+    border-radius: 8px;
+    padding: 8px 20px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+#showCalendarBtn:hover {
+    background-color: var(--owi-gold, #E1AD01);
+    color: linear-gradient(135deg, #213456, #334c7a);
+}
+
+        
+  .table-responsive {
+    overflow: visible !important;
+    width: 100% !important;
+  }
+
+  .admin-table {
+    width: 100% !important;
+    table-layout: auto !important;
+    page-break-inside: avoid;
+    
+  }
+
+ 
+
+  #admin_report.admin-table th.active.text-center {
+    background-color: #2b9827 !important;
+    color: #213456 !important;
+    padding: 6px 4px !important;
+    font-size: 11px !important;
+  }
+
+  #admin_report.admin-table th.compliance.text-center {
+    background-color: #a29341 !important;
+    color: #213456 !important;
+    padding: 6px 4px !important;
+    font-size: 11px !important;
+  }
+
+  .admin-table td {
+    padding: 6px 4px !important;
+    font-size: 11px !important;
+    border-bottom: 1px solid #0e0e0ea1 !important;
+  }
+  .table-responsive{
+    margin-top: -600px;
+  }
+
+  .progress {
+    border: 1px solid #999 !important;
+    background-color: #ddd !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  #dept-table-footer {
+    border: 2px solid #2d3c59;
+    background-color: #f4e9d7 !important; 
+}
+
+ * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+    box-shadow: none !important;
+  }
+
+#transferred_data, 
+#transferred_data th, 
+#transferred_data td {
+  border-left: none !important;
+  border-right: none !important;
+  color: #213456;
+}
+
+#transferred_data th {
+  border-top: none !important;
+  border-bottom: 2px solid #213456 !important;
+   color: #213456;
+}
+
+#transferred_data td {
+  border-bottom: 1px solid #0e0e0ea1 !important; 
+}
+
 </style>
         
 <div id="welcomeModal" class="modal-overlay" style="display: none; ">
     <div class="modal-content">
         <h3>IT HelpDesk Efficiency & Performance Report</h3>
         <p>As of the Year -  2026</p>
-
-  
-
          <table id="admin_report" class="table admin-table m-0">
                     <thead>  
                       <tr>
@@ -527,7 +794,7 @@ textarea.form-control:focus {
             <input type="hidden" name="chcksbjcls" id="chcksbjcls" value="check">
           </div>
         </form>
-        <div class="action-bar-container" style="box-shadow: 0 5px 10px 2px #2d3c597f; margin-bottom: -20px;">
+        <div class="action-bar-container" style="box-shadow: 0 5px 10px 2px #2d3c597f; color: #213456; margin-bottom: -20px;">
           <div class="year-picker-group">
             <div class="input-group">
               <div class="input-group-append">
@@ -667,7 +934,7 @@ textarea.form-control:focus {
 
               <div class="col-12 col-lg-6 mb-3">
                 <div class="card card2 h-100">
-                  <h5 class="card-header" style="background-color: #95a2b9b4; color:black;">Overall Status</h5>
+                  <h5 class="card-header" style="background: linear-gradient(135deg, #213456, #334c7a); color:black;">Overall Status</h5>
                   <div class="card-body">
                     <div id="chartdiv5"></div>
                   </div>
@@ -676,7 +943,7 @@ textarea.form-control:focus {
 
               <div class="col-12 col-lg-6 mb-3">
                 <div class="card card2 h-100">
-                  <h5 class="card-header text-black" style="background-color: #95a2b9b4; color:black;">I.T Support Logs
+                  <h5 class="card-header text-black" style="background: linear-gradient(135deg, #213456, #334c7a); color:black;">I.T Support Logs
                   </h5>
                   <div class="card-body">
                     <div id="chartdiv8"></div>
@@ -686,7 +953,7 @@ textarea.form-control:focus {
 
               <div class="col-12 col-lg-6 mb-3">
                 <div class="card card2 h-100">
-                  <h5 class="card-header text-black" style="background-color: #95a2b9b4; color:black;">Recently enrolled
+                  <h5 class="card-header text-black" style="background: linear-gradient(135deg, #213456, #334c7a); color:black;">Recently enrolled
                     reports.</h5>
                   <div class="card-body">
                     <div id="chartdiv1"></div>
@@ -696,7 +963,7 @@ textarea.form-control:focus {
 
               <div class="col-12 col-lg-6 mb-3">
                 <div class="card card2 h-100">
-                  <h5 class="card-header text-black" style="background-color: #95a2b9b4; color:black;">CATEGORIES</h5>
+                  <h5 class="card-header text-black" style="background: linear-gradient(135deg, #213456, #334c7a); color:black;">CATEGORIES</h5>
                   <div class="card-body">
                     <div id="chartdiv2" name="chartdiv2"></div>
                   </div>
@@ -705,7 +972,7 @@ textarea.form-control:focus {
 
               <div class="col-12 mb-3">
                 <div class="card card2">
-                  <h5 class="card-header text-black" style="background-color: #95a2b9b4; color:black;">Number of
+                  <h5 class="card-header text-black" style="background: linear-gradient(135deg, #213456, #334c7a); color:black;">Number of
                     Escalated Reports Per Area</h5>
                   <div class="card-body">
                     <div id="chart_area"></div>
@@ -715,7 +982,7 @@ textarea.form-control:focus {
 
               <div class="col-12 mb-3">
                 <div class="card card2">
-                  <h5 class="card-header text-black" style="background-color: #95a2b9b4; color:black;">Non Compliant
+                  <h5 class="card-header text-black" style="background: linear-gradient(135deg, #213456, #334c7a); color:black;">Non Compliant
                     Stores on End of Day Process (7:AM CUT OFF)</h5>
                   <div class="card-body">
 
@@ -739,48 +1006,60 @@ textarea.form-control:focus {
             </div><!-- /#ovrall -->
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" />
 
-            <!-- TABLES -->
-            <div class="row">
+         <!-- TABLES -->
+        <div class="row">
+          <div class="col-12 mb-3">
+            <div class="card card2">
+              
+        <div class="card-header" style="background: linear-gradient(135deg, #213456, #334c7a); border-bottom: none; padding-bottom: 0;">
+          <ul class="nav nav-tabs card-header-tabs" id="ticketTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="tickets-tab" data-toggle="tab" data-target="#tickets" type="button" role="tab" aria-controls="tickets" aria-selected="true" style="font-weight: bold; border: 1px solid #ffffff;">
+                TICKETS
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="transferred-tab" data-toggle="tab" data-target="#transferred" type="button" role="tab" aria-controls="transferred" aria-selected="false" style="color: white; font-weight: bold; border: 1px solid #ffffff;">
+                TRANSFERRED TICKETS
+              </button>
+            </li>
+          </ul>
+        </div>
 
-              <div class="col-12 mb-3">
-                <div class="card card2">
-                  <h5 class="card-header text-black" style="background-color: #95a2b9b4; color:black;">TICKETS</h5>
-                  <div class="card-body">
-
-                    <div class="row">
-                      <!-- old code with overflow -->
-                      <!-- <div class="col-12 mb-3">  
-                     <div class="table-responsive" id="proTeamScroll" style="max-height:450px; width:100%;overflow-y:auto;">
-                    <table id="report_data" class="table table-hover">
-
-                    </div>
-                  </div> -->
-
-                      <div class="col-12 mb-3">
-                        <div class="table-responsive" id="proTeamScroll" style="">
-                          <table id="report_data" class="table table-hover">
-
-                        </div>
-                      </div>
-
-                      <div class="col-12">
-                        <div class="table-responsive" id="proTeamScroll"
-                          style="max-height:450px; width:100%;overflow-y:auto;">
-                          <table id="network_tb" class="table table-hover">
-
-                        </div>
-                      </div>
-                    </div>
-
-                  </div>
-                </div>
-              </div>
-
-            </div><!-- /.row -->
-
-            <div class="col-lg-12 Down" id="Down">
-              <input type="hidden" id="myInput">
+      <div class="card-body">
+        <div class="tab-content" id="ticketTabsContent">
+          <div class="tab-pane fade show active" id="tickets" role="tabpanel" aria-labelledby="tickets-tab">
+            <div class="table-responsive" style="max-height:450px; width:100%; overflow-y:auto;">
+              <table id="report_data" class="table table-hover">
+                
+                <tbody>
+                </tbody>
+              </table>
             </div>
+          </div>
+
+          <div class="tab-pane fade" id="transferred" role="tabpanel" aria-labelledby="transferred-tab">
+            <div class="table-responsive" style="max-height:450px; width:100%; overflow-y:auto;">
+              <table id="transferred_data" class="table table-hover">
+               
+                <tbody>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+<div class="col-lg-12 Down" id="Down">
+  <input type="hidden" id="myInput">
+</div>
+
+           
 
           </div><!-- /.container-fluid -->
       </div><!-- /#layoutSidenav_content -->
@@ -1011,19 +1290,20 @@ Start of Add/Edit Modal
               </div><!-- /.left -->
 
               <!-- RIGHT SIDE -->
-              <div class="col-12 col-lg-6">
+              <!-- RIGHT SIDE -->
+            <div class="col-12 col-lg-6">
 
                 <div id="msg_thread">
 
                   <div class="col-12 mb-3 px-0">
-                    <label style="font-weight: bold; color:white;">Add Comment:</label>
+                    <label style="font-weight: bold; color:linear-gradient(135deg, #213456, #334c7a);">Add Comment:</label>
                     <textarea name="admsg" id="addmsg" class="form-control form-control-sm"
-                      placeholder="Reply to their message or give an updates regarding on this ticket..."
+                      placeholder="Reply to their message or give updates regarding this ticket..."
                       required></textarea>
                   </div>
 
                   <div class="col-12 mt-4 mb-2 dv_msg px-0">
-                    <label for="remarks_view" style="font-weight: bold; color:white;">Comment Thread:</label>
+                    <label for="remarks_view" style="font-weight: bold; color:linear-gradient(135deg, #213456, #334c7a);">Comment Thread:</label>
                     <hr>
                     <div class="container_remarks">
                       <div id="remarks_view"></div>
@@ -1033,6 +1313,7 @@ Start of Add/Edit Modal
                 </div><!-- /#msg_thread -->
 
               </div><!-- /.right -->
+
 
             </div><!-- /.row -->
           </div><!-- /.modal-body -->
@@ -1420,7 +1701,7 @@ function loadDepartmentTable() {
         
             const monthNames = {
                 1: "JANUARY", 2: "FEBRUARY", 3: "MARCH", 
-                        4: "APRIL", 5: "MAY", 6: "JUNE" , 7: "JULY", 8: "AUGUST", 9: "SEPTEMBER", 10: "OCTOBER", 11: "NOVEMBER" , 12: "DECEMBER"
+                4: "APRIL", 5: "MAY", 6: "JUNE" , 7: "JULY" , 8: "AUGUST" , 9: "SEPTEMBER" , 10: "OCTOBER" , 11: "NOVEMBER" , 12: "DECEMBER"
             };
 
             if (response && response.department_stats) {
@@ -1489,7 +1770,7 @@ function loadDepartmentTable() {
                     let globalMetSLABarTheme = globalMetSLAPercent >= 80 ? "bg-success" : (globalMetSLAPercent >= 50 ? "bg-warning" : "bg-danger");
 
                     footerHtml = `
-                        <tr style="background-color: #ecebe584; font-weight: bold; border-top: 2px solid #213456;">
+                        <tr style="background-color: #ecebe584; font-weight: bold; border-top: 2px solid linear-gradient(135deg, #213456, #334c7a);">
                             <td class="text-dark fw-bold text-uppercase" style="font-size:13px;">TOTAL SUMMARY</td>
                             <td class="text-center text-primary fw-bold" style="font-size:14px;">${totalActiveSum}</td>
                             <td>
@@ -1531,4 +1812,22 @@ function loadDepartmentTable() {
         }
     });
 }
+$(document).ready(function() {
+    $('button[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+        var targetTab = $(e.target).attr("id"); 
+
+        if (targetTab === 'transferred-tab') {
+            if ($.fn.DataTable.isDataTable('#transferred_data')) {
+                $('#transferred_data').DataTable().columns.adjust().draw();
+            }
+        } else if (targetTab === 'tickets-tab') {
+            if ($.fn.DataTable.isDataTable('#report_data')) {
+                $('#report_data').DataTable().columns.adjust().draw();
+            }
+        }
+        $('#ticketTabs .nav-link').css('color', 'white');
+        $('#ticketTabs .nav-link.active').css('color', '#495057'); 
+    });
+    
+});
 </script>

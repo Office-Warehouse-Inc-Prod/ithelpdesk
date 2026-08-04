@@ -14,42 +14,41 @@ ini_set('display_errors', 0);
 require 'database.php';
 $dflpass= 'owi123456';
 if(!empty($_POST['email']) && !empty($_POST['password'])):
-  
   $records = $conn->prepare("SELECT
-	users.id, 
-	users.fname, 
-	users.lstname, 
-	users.email, 
-	users.`password`, 
-	users.tech_id, 
-	users.role, 
-	users.dept_id, 
-	users.str_num, 
-	users.img_name, 
-	users.area_num, 
-	users.usr_stat,
+  users.id, 
+  users.fname, 
+  users.lstname, 
+  users.email, 
+  users.`password`, 
+  users.tech_id, 
+  users.role, 
+  users.dept_id, 
+  users.str_num, 
+  users.img_name, 
+  users.area_num, 
+  users.usr_stat,
   users.deptsel, 
-	tbl_branch.str_code AS str_code,
-	tbl_branch.str_adrs AS str_adrs,
-	tbl_branch.str_contact AS str_contact,
+  tbl_branch.str_code AS str_code,
+  tbl_branch.str_adrs AS str_adrs,
+  tbl_branch.str_contact AS str_contact,
+  tbl_branch.str_name AS str_name, 
   tbl_branch.SBS_NO AS SBS_NO,
   tbl_branch.PRICE_LVL AS PRICE_LVL
 FROM
-	users
-	LEFT JOIN
-	tbl_branch
-	ON 
-		users.str_num = tbl_branch.str_num
+  users
+  LEFT JOIN
+  tbl_branch
+  ON 
+    users.str_num = tbl_branch.str_num
 WHERE
-	users.usr_stat = 'A' AND 
-	email = :email");
+  users.usr_stat = 'A' AND 
+  email = :email");
+  
   $records->bindParam(':email', $_POST['email']);
   $records->execute();
   $results = $records->fetch(PDO::FETCH_ASSOC);
 
-
 $user = NULL;
-
 
   if( count($results) > 0){
     $user = $results;
@@ -68,6 +67,7 @@ $user = NULL;
     $_SESSION['str_code'] = $results['str_code'];
     $_SESSION['str_adrs'] = $results['str_adrs'];
     $_SESSION['str_contact'] = $results['str_contact'];
+    $_SESSION['str_name'] = $results['str_name']; 
     $_SESSION['deptsel'] = $results['deptsel'];
     $_SESSION['SBS_NO'] = $results['SBS_NO'];
     $_SESSION['PRICE_LVL'] = $results['PRICE_LVL'];
@@ -164,6 +164,14 @@ $user = NULL;
     $_SESSION['user_id'] = $results['id'];
     $_SESSION['deptsel'] = $results['deptsel'];
     header("Location: mktg/adminpanel.php");
+    exit();
+   } 
+
+   elseif (count($results) > 0 && base64_encode($_POST['password']) == $results['password'] && $results['role'] == 'pd-test' ) {
+    $_SESSION['login'] = 'true';
+    $_SESSION['user_id'] = $results['id'];
+    $_SESSION['deptsel'] = $results['deptsel'];
+    header("Location: pd/adminpanel.php");
     exit();
    } 
 

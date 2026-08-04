@@ -1,68 +1,61 @@
 <?php
-
 include 'admin_function.php';
 
 $fn = new dbconfig();
-
 $records = [];
 $mode = isset($_POST['mode']) ? $_POST['mode'] : '';
+
 switch ($mode) {
     case 'yearch':
-      $records= $fn->fetch_cards_result();
+        $records = $fn->fetch_cards_result();
         break;
     case 'overallgrph':
-      $records= $fn->overallpie_res();
+        $records = $fn->overallpie_res();
         break;
     case 'techbargrph':
-      $records= $fn->bargrph_tech_res();   
+        $records = $fn->bargrph_tech_res();   
         break;
     case 'dblinegrph':
-      $records= $fn->linegraph();   
-
+        $records = $fn->linegraph();   
         break;
     case 'dashpie':
-        $records= $fn->pie();
-        // $records= $fn->sub();
+        $records = $fn->pie();
         break;
     case 'area_grph':
-       $records= $fn->area_grph();
+        $records = $fn->area_grph();
         break;
     case 'str_grph':
-        $records= $fn->str_grph();
+        $records = $fn->str_grph();
         break;
-
-     case 'dtb':
-         $records['rptdata']= $fn->admin_data_table_res();
-
-          break; 
+    case 'dtb':
+        $records['rptdata'] = $fn->admin_data_table_res();
+        break; 
+    case 'dtb_transfer':
+        $records['transferdata'] = $fn->admin_data_table_transfer();
+        break;
     case 'newrpt_tbl':
-         $records['newrptdata']= $fn->newreporthist();
+        $records['newrptdata'] = $fn->newreporthist();
         break;  
-         case 'dept_tbl':
+    case 'dept_tbl':
         $records['deptdata'] = $fn->deptthist();
         break;
     case 'notif_support':
-         $records['ntfsupdata']= $fn->notif_techsupp();
+        $records['ntfsupdata'] = $fn->notif_techsupp();
         break;
     case 'netpie':
-        $records= $fn->netpie();
+        $records = $fn->netpie();
         break;
     case 'overallnet':
-        $records= $fn->overallnet_res();
-            break;
-    case 'areanet_grph':
-        $records= $fn->areanet_grph();
-            break;
-    case 'strnet_grph':
-        $records= $fn->strnet_grph();
+        $records = $fn->overallnet_res();
         break;
-    case 'area_grph':
-        $records= $fn->area_grph();
-        break; 
+    case 'areanet_grph':
+        $records = $fn->areanet_grph();
+        break;
+    case 'strnet_grph':
+        $records = $fn->strnet_grph();
+        break;
     default:
         break;
 }
 echo json_encode($records);
-
-
 ?>

@@ -1,4 +1,4 @@
-<!-- modal addnew button -->
+
 <script type='text/javascript'>
   $(document).ready(function () {
 
@@ -45,7 +45,7 @@
       }
     }
 
-   function timeAgo(dateParam) {
+    function timeAgo(dateParam) {
         if (!dateParam) return "";
         let date = new Date(dateParam.replace(/-/g, "/"));
         let now = new Date();
@@ -164,366 +164,465 @@
     /**
      * Getdata.
      */
-    function getdata(yr) {
-      $.post('fetchdata/fetch_data.php', { yr: yr, mode: 'dtb' }, function (data) {
-        admin_datatable(data);
-      }, 'json');
-    }
-    getdata();
 
-    var table
-    /**
-     * Admin datatable.
-     */
-    function admin_datatable(t) {
-      const dataset = t.rptdata;
-      table = $("#report_data").DataTable({
-        "dom": 'B<"pull-left"lf><"pull-right">tip',
-        "buttons": [
-          {
-            text: '<i class="fas fa-plus"></i>',
-            attr: {
-              title: 'Add Report',
-              id: 'add_button',
-              class: 'second btn btn-danger',
-            },
-            action: function (e, dt, node, config) {
-              $('#report_form').trigger('reset');
-              
-              $('#remarks_view').empty();
-              $('.dv_msg').hide();
-              $('.container_remarks').hide();
-              $('#msg_thread').hide();
-              
-              $('#userModal').modal({ "show": true, "backdrop": 'static' });
-              $('.modal-title').text("ADD REPORT");
-              $('#action').val("Add");
-              $('#operation').val("Add");
-              $(':input[type="submit"]').prop('disabled', false);
-              $('#date_created').attr('readonly', false);
-              $('#date_refNo').attr('readonly', false);
-              $('#date_closed').attr('readonly', false);
-              $('#store').prop("disabled", false);
-              $('#via').prop("disabled", false);
-              $('#status').prop("disabled", false);
-              $('#itsup').prop("disabled", false);
-              $('#cat').prop("disabled", false);
-              $('#sub').prop("disabled", false);
-              $('#isp').prop("disabled", false);
-              $('#remarks').attr('readonly', false);
-              $('#img').empty();
-              if(typeof admin_hideshowforms === "function") admin_hideshowforms();
-              if(typeof unilayout_netshowmodalform === "function") unilayout_netshowmodalform();
-              $('#addmsg').removeAttr('required');
-            }
-          },
-          {
-            extend: 'excelHtml5',
-            text: '<i class="fas fa-file-excel"></i>',
-            attr: {
-              title: 'Export to Excel',
-              class: 'btn btn-success'
-            }
-          }
-        ],
-        "pagingType": "full_numbers",
-        "bDestroy": true,
-        "responsive": true, "lengthChange": false, "autoWidth": false,
-        "language": {
-          "search": "_INPUT_",
-          "searchPlaceholder": "Search..."
+function getdata(yr) {
+  $.post('fetchdata/fetch_data.php', { yr: yr, mode: 'dtb' }, function (data) {
+    admin_datatable(data);
+  }, 'json');
+}
+
+var table_tickets;
+
+function admin_datatable(t) {
+  const dataset = t.rptdata;
+  table_tickets = $("#report_data").DataTable({
+    "dom": 'B<"pull-left"lf><"pull-right">tip',
+    "buttons": [
+      {
+        text: '<i class="fas fa-plus"></i>',
+        attr: {
+          title: 'Add Report',
+          id: 'add_button',
+          class: 'second btn btn-danger',
         },
-       "initComplete": function (settings, json) {
-        var $searchWrapper = $('#report_data_filter');
-        var $nativeSearchInput = $searchWrapper.find('input');
+        action: function (e, dt, node, config) {
+          $('#report_form').trigger('reset');
+          $('#remarks_view').empty();
+          $('.dv_msg').hide();
+          $('.container_remarks').hide();
+          $('#msg_thread').hide();
+          
+          $('#userModal').modal({ "show": true, "backdrop": 'static' });
+          $('.modal-title').text("ADD REPORT");
+          $('#action').val("Add");
+          $('#operation').val("Add");
+          $(':input[type="submit"]').prop('disabled', false);
+          $('#date_created, #date_refNo, #date_closed, #remarks').attr('readonly', false);
+          $('#store, #via, #status, #itsup, #cat, #sub, #isp').prop("disabled", false);
+          $('#img').empty();
+          $('#addmsg').removeAttr('required');
+          $('#is_transfer').prop('checked', false); 
 
-        $nativeSearchInput
+          if(typeof admin_hideshowforms === "function") admin_hideshowforms();
+          if(typeof unilayout_netshowmodalform === "function") unilayout_netshowmodalform();
+        }
+      },
+      {
+        extend: 'excelHtml5',
+        text: '<i class="fas fa-file-excel"></i>',
+        attr: {
+          title: 'Export to Excel',
+          class: 'btn btn-success'
+        }
+      }
+    ],
+    "pagingType": "full_numbers",
+    "bDestroy": true,
+    "responsive": true, 
+    "lengthChange": false, 
+    "autoWidth": false,
+    "language": {
+      "search": "_INPUT_",
+      "searchPlaceholder": "Search..."
+    },
+    "initComplete": function (settings, json) {
+      var $searchWrapper = $('#report_data_filter');
+      var $nativeSearchInput = $searchWrapper.find('input');
+
+      $nativeSearchInput
         .attr('id', 'report_data_filter_disabled')
         .attr('placeholder', 'Auto Fill Status')
         .prop('disabled', true)
         .css('margin-right', '10px');
 
-        var $activeSearch = $('<input type="search" class="form-control form-control-sm">')
-          .attr('id', 'report_data_free_search')
-          .attr('placeholder', 'Type to Search')
-          .css({
-            'display': 'inline-block',
-            'width': 'auto',
-            'margin-left': '10px'
-          });
-
-          $searchWrapper.append($activeSearch);
-
-          $.fn.dataTable.ext.search.push(
-            function(settings, searchData, index, rowData, counter){
-              var freeSearchVal = $('#report_data_free_search').val();
-              if(!freeSearchVal) return true;
-              var searchRegex = new RegExp(freeSearchVal, 'i');
-              for(var i=0; i<searchData.length; i++){
-                if(searchRegex.test(searchData[i])){
-                  return true;
-                }
-              }
-              return false;
-            }
-          );
- 
-          $activeSearch.on('input', function () {
-            table.draw();
-          });
-        },
-        "pageLength": 10,
-        "data": dataset,
-        "order": [[2, "Desc"]],
-        "columns": [
-          { title: "Update", data: null, "defaultContent": "<Button class='btn btn-danger' name='update' id='dtbsecond'><i class='fas fa-edit'></i></Button>" },
-          { title: ".", data: "msg_cnt", "defaultContent": "" },
-          { title: "TicketNo", data: "ticket_no", "defaultContent": "" },
-          { title: "  Store", data: "str_code", "defaultContent": "" },
-          { title: "Date Created", data: "date_created", "defaultContent": "" },
-          { title: "Subject", data: "subject", "defaultContent": "" },
-          { title: "STATUS", data: "status", "defaultContent": "" },
-          { title: "Assigned Support", data: "it_desc", "defaultContent": "" },
-          { title: "CATEGORY", data: "category", "defaultContent": "" },
-          { title: "SUBCATEGORY", data: "sub_category", "defaultContent": "" },
-          { title: "DATE CLOSED", data: "date_closed", "defaultContent": "" },
-          { title: "DAYS COMPLETION", data: "tdc", "defaultContent": "" },
-          { title: "WORKOUTPUT", data: "remarks", "defaultContent": "", }
-        ],
-        "columnDefs": [
-          {
-            targets: [7, 11, 12],
-            "width": "2%",
-            render: function (data, type, row) {
-              if (type === 'display') {
-                if (data == '1 Days Unresolved') {
-                  data = '1 Day Unresolved'
-                }
-                else if (data == '01/01/1970 01:00') {
-                  data = ''
-                }
-                else if (data == '01/01/1970 08:00') {
-                  data = ''
-                }
-                else if (data < 0) {
-                  data = ''
-                }
-                else if (data == 0) {
-                  data = ''
-                }
-                else if (data == '0 Days Unresolved') {
-                  data = ''
-                }
-              }
-              return data;
-            }
-          },
-          {
-            targets: [1],
-            "width": "2%",
-            render: function (data, type, row) {
-              if (type === 'display') {
-                if (data == '1') {
-                  data = '<i class="fas fa-envelope fa-lg bg-warning"></i>'
-                }
-                else if (data == '0') {
-                  data = ''
-                }
-              }
-              return data;
-            }
-          }
-        ],
-        rowCallback: function (row, data, index) {
-          $(row).removeClass('status-open status-open-msg status-closed status-subject-closing status-pending');
-
-          if (data['status'] === "ON PROCESS") {
-            if (data['msg_cnt'] === '1' || data['msg_cnt'] === '0') {
-              $(row).addClass('status-open');
-            }
-          } else if (data['status'] === 'PENDING') {
-            $(row).addClass('status-pending');
-            $(row).find('td:eq(11)').html(' '); // Clear cell 11 if needed
-          } else if (data['status'] === 'CLOSED') {
-            $(row).addClass('status-closed');
-          } else if (data['status'] === 'SUBJECT FOR CLOSING') {
-            $(row).addClass('status-subject-closing');
-          }
-        }
-      });
-
-      $('#report_data tbody').on('dblclick', 'tr', function () {
-        var data = table.row($(this)).data();
-        if (!data) return;
-        
-        $('#subjct').attr('readonly', true);
-        var tid = $(this).find('td:eq(2)').html();
-        $('#ticket_no').val(data['ticket_no']);
-        $('#str_num').val(data['store']);
-        $('#store').val(data['store']);
-        $('#date_createdx').val(data['date_created']);
-        $('#subjct').val(data['subject']);
-        $('#concern').val(data['concern']);
-        $('#via').val(data['via']);
-        $('#status').val(data['status']);
-        $('#it_num').val(data['itsup']);
-        
-        if (data['itsup'] && $('#itsup option[value="' + data['itsup'] + '"]').length === 0) {
-          $('<option>', {
-            value: data['itsup'],
-            text: data['it_desc'] ? data['it_desc'] : 'Support ID ' + data['itsup'],
-            class: 'temp-option'
-          }).appendTo('#itsup');
-        }
-        $('#itsup').val(data['itsup']);
-
-        $('#cat_num').val(data['cat_id']);
-        $('#close_by').val(data['close_by']);
-        $('#cl_desc').val(data['clusers']);
-
-        if (data['cat_id'] && $('#cat option[value="' + data['cat_id'] + '"]').length === 0) {
-          $('<option>', {
-            value: data['cat_id'],
-            text: data['category'] ? data['category'] : 'Category ID ' + data['cat_id'],
-            class: 'temp-option'
-          }).appendTo('#cat');
-        }
-        $('#cat').val(data['cat_id']);
-
-        $('#sub_num').val(data['sub_id']);
-        if (data['sub_id'] && $('#sub option[value="' + data['sub_id'] + '"]').length === 0) {
-          $('<option>', {
-            value: data['sub_id'],
-            text: data['sub_category'] ? data['sub_category'] : 'Sub Category ID ' + data['sub_id'],
-            class: 'temp-option'
-          }).appendTo('#sub');
-        }
-        $('#sub').val(data['sub_id']);
-        $('#isp_num').val(data['isp_id']);
-        $('#isp').val(data['isp_id']);
-        $('#refNo').val(data['refNo']);
-        $('#date_refNo').val(data['date_refNo']);
-        $('#file-input').val("");
-        
-        if(typeof admin_hideshowforms === "function") admin_hideshowforms();
-        
-        $('#date_closed').val(data['date_closed']);
-        $('#remarks').val(data['remarks']);
-        
-        $('#remarks_view').show();
-        $('.dv_msg').show();
-        $('.container_remarks').show();
-        $('#msg_thread').slideDown(300);
-        $('#userModal').modal({ "show": true, "backdrop": 'static' });
-        loadCommentThread(data['ticket_no']);
-        
-        if(typeof unilayout_netshowmodalform === "function") unilayout_netshowmodalform();
-
-        $('#itsup').off('change').on('change', function () {
-          var itfrstsup = $('#it_num').val();
-          var itchange = this.value;
-          if (itfrstsup != itchange) {
-            $('#remarks').attr("placeholder", "Reason for re-assign/ Workoutput");
-            $('#remarks').val("");
-          } else {
-            $('#remarks').val(data['remarks']);
-          }
+      var $activeSearch = $('<input type="search" class="form-control form-control-sm">')
+        .attr('id', 'report_data_free_search')
+        .attr('placeholder', 'Type to Search')
+        .css({
+          'display': 'inline-block',
+          'width': 'auto',
+          'margin-left': '10px'
         });
 
-        if ($('#status').val() == 'CLOSED') {
-          $(':input[type="submit"]').prop('disabled', true);
-          $('#date_createdx').attr('readonly', true);
-          $('#date_refNo').attr('readonly', true);
-          $('#date_closed').attr('readonly', true);
-          $('#store').prop("disabled", true);
-          $('#via').prop("disabled", true);
-          $('#status').prop("disabled", true);
-          $('#itsup').prop("disabled", true);
-          $('#cat').prop("disabled", true);
-          $('#sub').prop("disabled", true);
-          $('#isp').prop("disabled", true);
-          $('#remarks').attr('readonly', true);
-        } else {
-          $(':input[type="submit"]').prop('disabled', false);
-          $('#date_createdx').attr('readonly', false);
-          $('#date_refNo').attr('readonly', false);
-          $('#date_closed').attr('readonly', false);
-          $('#subjct').attr('readonly', false);
-          $('#store').prop("disabled", false);
-          $('#via').prop("disabled", false);
-          $('#status').prop("disabled", false);
-          $('#itsup').prop("disabled", false);
-          $('#cat').prop("disabled", false);
-          $('#sub').prop("disabled", false);
-          $('#isp').prop("disabled", false);
-          $('#remarks').attr('readonly', false);
-        }
+      $searchWrapper.append($activeSearch);
 
-        if (typeof getinfo === "function") getinfo(tid, 'remarks', user_id);
-        if (typeof gtsub_id === "function") gtsub_id();
-
-        $('.modal-title').text("Ticket Number: " + tid);
-        $('#action').val("Save and Reply");
-        $('#operation').val("Save and Reply");
-        $('#userModal').modal({ "show": true, "backdrop": 'static' });
-
-        var valtick = $('#ticket_no').val();
-
-        $.ajax({
-          type: 'POST',
-          url: 'sesticket.php',
-          data: { tktval: valtick },
-          success: function (response) {
-            $('#img').html(response);
+      $.fn.dataTable.ext.search.push(
+        function(settings, searchData, index, rowData, counter){
+          if (settings.nTable.id !== 'report_data') return true;
+          var freeSearchVal = $('#report_data_free_search').val();
+          if(!freeSearchVal) return true;
+          var searchRegex = new RegExp(freeSearchVal, 'i');
+          for(var i=0; i<searchData.length; i++){
+            if(searchRegex.test(searchData[i])){
+              return true;
+            }
           }
+          return false;
+        }
+      );
+
+      $activeSearch.on('input', function () {
+        table_tickets.draw();
+      });
+    },
+    "pageLength": 10,
+    "data": dataset,
+    "order": [[2, "Desc"]],
+    "columns": [
+      { title: "Update", data: null, "defaultContent": "<Button class='btn btn-danger' name='update' id='dtbsecond'><i class='fas fa-edit'></i></Button>" },
+      { title: ".", data: "msg_cnt", "defaultContent": "" },
+      { title: "TicketNo", data: "ticket_no", "defaultContent": "" },
+      { title: "  Store", data: "str_code", "defaultContent": "" },
+      { title: "Date Created", data: "date_created", "defaultContent": "" },
+      { title: "Subject", data: "subject", "defaultContent": "" },
+      { title: "STATUS", data: "status", "defaultContent": "" },
+      { title: "Assigned Support", data: "it_desc", "defaultContent": "" },
+      { title: "CATEGORY", data: "category", "defaultContent": "" },
+      { title: "SUBCATEGORY", data: "sub_category", "defaultContent": "" },
+      { title: "DATE CLOSED", data: "date_closed", "defaultContent": "" },
+      { title: "DAYS COMPLETION", data: "tdc", "defaultContent": "" },
+      { title: "WORKOUTPUT", data: "remarks", "defaultContent": "" }
+    ],
+    "columnDefs": [
+      {
+        targets: [7, 11, 12],
+        "width": "2%",
+        render: function (data, type, row) {
+          if (type === 'display') {
+            if (data == '1 Days Unresolved') data = '1 Day Unresolved';
+            else if (data == '01/01/1970 01:00' || data == '01/01/1970 08:00' || data < 0 || data == 0 || data == '0 Days Unresolved') data = '';
+          }
+          return data;
+        }
+      },
+      {
+        targets: [1],
+        "width": "2%",
+        render: function (data, type, row) {
+          if (type === 'display') {
+            if (data == '1') data = '<i class="fas fa-envelope fa-lg bg-warning"></i>';
+            else if (data == '0') data = '';
+          }
+          return data;
+        }
+      }
+    ],
+    rowCallback: function (row, data, index) {
+      $(row).removeClass('status-open status-open-msg status-closed status-subject-closing status-pending');
+
+      if (data['status'] === "ON PROCESS") {
+        if (data['msg_cnt'] === '1' || data['msg_cnt'] === '0') {
+          $(row).addClass('status-open');
+        }
+      } else if (data['status'] === 'PENDING') {
+        $(row).addClass('status-pending');
+        $(row).find('td:eq(11)').html(' ');
+      } else if (data['status'] === 'CLOSED') {
+        $(row).addClass('status-closed');
+      } else if (data['status'] === 'SUBJECT FOR CLOSING') {
+        $(row).addClass('status-subject-closing');
+      }
+    }
+  });
+
+  $('#report_data tbody').on('dblclick', 'tr', function () {
+    var data = table_tickets.row($(this)).data();
+    if (!data) return;
+    open_ticket_modal(data);
+  });
+
+  // KPI Card Filters
+  $('#card_totalval, #card_openval, #card_openwfaval, #card_closedval').on('click', function () {
+    var val = $(this).attr("value");
+    table_tickets.columns(7).search(val).draw();
+  });
+
+  $('.clcktxt').click(function () {
+    var val = $(this).attr("value");
+    table_tickets.columns(7).search(val).draw();
+    $('#network_tb').slideToggle();
+    $('html, body').animate({ scrollTop: 1600 }, 1000);
+  });
+}
+
+function getdata_transfer(yr) {
+  $.post('fetchdata/fetch_data.php', { yr: yr, mode: 'dtb_transfer' }, function (data) {
+    admin_datatable_transfer(data);
+  }, 'json');
+}
+
+var table_transfer;
+
+function admin_datatable_transfer(t) {
+  const dataset = t.transferdata;
+  table_transfer = $("#transferred_data").DataTable({
+    "dom": 'B<"pull-left"lf><"pull-right">tip',
+    "buttons": [
+      {
+        extend: 'excelHtml5',
+        text: '<i class="fas fa-file-excel"></i>',
+        attr: {
+          title: 'Export Transferred Tickets',
+          class: 'btn btn-success'
+        }
+      }
+    ],
+    "pagingType": "full_numbers",
+    "bDestroy": true,
+    "responsive": true, 
+    "lengthChange": false, 
+    "autoWidth": false,
+    "language": {
+      "search": "_INPUT_",
+      "searchPlaceholder": "Search..."
+    },
+    "initComplete": function (settings, json) {
+      var $searchWrapper = $('#transferred_data_filter');
+      var $nativeSearchInput = $searchWrapper.find('input');
+
+      $nativeSearchInput
+        .attr('id', 'transferred_data_filter_disabled')
+        .attr('placeholder', 'Auto Fill Status')
+        .prop('disabled', true)
+        .css('margin-right', '10px');
+
+      var $activeSearch = $('<input type="search" class="form-control form-control-sm">')
+        .attr('id', 'transferred_data_free_search')
+        .attr('placeholder', 'Type to Search')
+        .css({
+          'display': 'inline-block',
+          'width': 'auto',
+          'margin-left': '10px'
         });
 
-        $('#msgbtn').show();
-        $('#msg_thread').show();
-        $('#addmsg').val("");
+      $searchWrapper.append($activeSearch);
+
+      $.fn.dataTable.ext.search.push(
+        function(settings, searchData, index, rowData, counter){
+          if (settings.nTable.id !== 'transferred_data') return true; // Only apply to this table
+          var freeSearchVal = $('#transferred_data_free_search').val();
+          if(!freeSearchVal) return true;
+          var searchRegex = new RegExp(freeSearchVal, 'i');
+          for(var i=0; i<searchData.length; i++){
+            if(searchRegex.test(searchData[i])){
+              return true;
+            }
+          }
+          return false;
+        }
+      );
+
+      $activeSearch.on('input', function () {
+        table_transfer.draw();
       });
+    },
+    "pageLength": 10,
+    "data": dataset,
+    "order": [[2, "Desc"]],
+    "columns": [
+      { title: "Update", data: null, "defaultContent": "<Button class='btn btn-danger' name='update' id='dtbsecond_transfer'><i class='fas fa-edit'></i></Button>" },
+      { title: ".", data: "msg_cnt", "defaultContent": "" },
+      { title: "TicketNo", data: "ticket_no", "defaultContent": "" },
+      { title: "  Store", data: "str_code", "defaultContent": "" },
+      { title: "Date Created", data: "date_created", "defaultContent": "" },
+      { title: "Subject", data: "subject", "defaultContent": "" },
+      { title: "STATUS", data: "status", "defaultContent": "" },
+      { title: "Assigned Support", data: "it_desc", "defaultContent": "" },
+      { title: "CATEGORY", data: "category", "defaultContent": "" },
+      { title: "SUBCATEGORY", data: "sub_category", "defaultContent": "" },
+      { title: "DATE CLOSED", data: "date_closed", "defaultContent": "" },
+      { title: "DAYS COMPLETION", data: "tdc", "defaultContent": "" },
+      { title: "WORKOUTPUT", data: "remarks", "defaultContent": "" }
+    ],
+    "columnDefs": [
+      {
+        targets: [7, 11, 12],
+        "width": "2%",
+        render: function (data, type, row) {
+          if (type === 'display') {
+            if (data == '1 Days Unresolved') data = '1 Day Unresolved';
+            else if (data == '01/01/1970 01:00' || data == '01/01/1970 08:00' || data < 0 || data == 0 || data == '0 Days Unresolved') data = '';
+          }
+          return data;
+        }
+      },
+      {
+        targets: [1],
+        "width": "2%",
+        render: function (data, type, row) {
+          if (type === 'display') {
+            if (data == '1') data = '<i class="fas fa-envelope fa-lg bg-warning"></i>';
+            else if (data == '0') data = '';
+          }
+          return data;
+        }
+      }
+    ],
+    rowCallback: function (row, data, index) {
+      $(row).removeClass('status-open status-open-msg status-closed status-subject-closing status-pending');
+      if (data['status'] === "ON PROCESS") {
+        if (data['msg_cnt'] === '1' || data['msg_cnt'] === '0') $(row).addClass('status-open');
+      } else if (data['status'] === 'PENDING') {
+        $(row).addClass('status-pending');
+        $(row).find('td:eq(11)').html(' ');
+      } else if (data['status'] === 'CLOSED') {
+        $(row).addClass('status-closed');
+      } else if (data['status'] === 'SUBJECT FOR CLOSING') {
+        $(row).addClass('status-subject-closing');
+      }
+    }
+  });
 
-      $('#card_totalval').on('click', function () {
-        var val = $(this).attr("value");
-        table.columns(7).search(val).draw();
-      });
+  $('#transferred_data tbody').on('dblclick', 'tr', function () {
+    var data = table_transfer.row($(this)).data();
+    if (!data) return;
+    open_ticket_modal(data);
+  });
+}
 
-      $('#card_openval').on('click', function () {
-        var val = $(this).attr("value");
-        table.columns(7).search(val).draw();
-      });
 
-      $('#card_openwfaval').on('click', function () {
-        var val = $(this).attr("value");
-        table.columns(7).search(val).draw();
-      });
+function open_ticket_modal(data) {
+  var tid = data['ticket_no'];
+    $('#status').html(window.originalStatusOptions);
 
-      $('#card_closedval').on('click', function () {
-        var val = $(this).attr("value");
-        table.columns(7).search(val).draw();
-      });
+  if (data['status'] === 'ON PROCESS') {
+      $('#status').html(
+          '<option value="ON PROCESS" style="color: #333;">ON PROCESS</option>' +
+          '<option value="PENDING" style="color: #333;">PENDING</option>' +
+          '<option value="SUBJECT FOR CLOSING" style="color: #333;">SUBJECT FOR CLOSING</option>'
+      );
+  } else if (data['status'] === 'PENDING') {
+      $('#status').html(
+          '<option value="PENDING" style="color: #333;">PENDING</option>' +
+          '<option value="SUBJECT FOR CLOSING" style="color: #333;">SUBJECT FOR CLOSING</option>'
+      );
+  }
 
-      $('.clcktxt').click(function () {
-        var val = $(this).attr("value");
-        table.columns(7).search(val).draw();
-        $('#network_tb').slideToggle();
-        $('html, body').animate({
-          scrollTop: 1600
-        }, 1000);
-      });
+  $('#subjct').attr('readonly', true);
+  $('#ticket_no').val(data['ticket_no']);
+  $('#str_num').val(data['store']);
+  $('#store').val(data['store']);
+  $('#date_createdx').val(data['date_created']);
+  $('#subjct').val(data['subject']);
+  $('#concern').val(data['concern']);
+  $('#via').val(data['via']);
+  $('#status').val(data['status']);
+  $('#it_num').val(data['itsup']);
+  
+  console.log("Ticket: " + data['ticket_no'] + " | is_transfer raw value: ", data['is_transfer']);
+  
+  var isTransferValue = parseInt($.trim(data['is_transfer'])) === 1;
 
-    } 
+  $('#userModal #is_transfer').prop('checked', isTransferValue).trigger('change');
+  if (data['itsup'] && $('#itsup option[value="' + data['itsup'] + '"]').length === 0) {
+    $('<option>', {
+      value: data['itsup'],
+      text: data['it_desc'] ? data['it_desc'] : 'Support ID ' + data['itsup'],
+      class: 'temp-option'
+    }).appendTo('#itsup');
+  }
+  $('#itsup').val(data['itsup']);
 
-    $('#store_graph_modal').modal('hide');
+  $('#cat_num').val(data['cat_id']);
+  $('#close_by').val(data['close_by']);
+  $('#cl_desc').val(data['clusers']);
 
-    if(typeof slct_isp === "function") slct_isp();
-    if(typeof slct_sub === "function") slct_sub();
-    if(typeof gtsub_id === "function") gtsub_id();
-    if(typeof admin_hideshowforms === "function") admin_hideshowforms();
+  if (data['cat_id'] && $('#cat option[value="' + data['cat_id'] + '"]').length === 0) {
+    $('<option>', {
+      value: data['cat_id'],
+      text: data['category'] ? data['category'] : 'Category ID ' + data['cat_id'],
+      class: 'temp-option'
+    }).appendTo('#cat');
+  }
+  $('#cat').val(data['cat_id']);
 
-    const yr = $("#yearpicker").val();
-    getdata(yr)
-    get_card_data(yr)
+  $('#sub_num').val(data['sub_id']);
+  if (data['sub_id'] && $('#sub option[value="' + data['sub_id'] + '"]').length === 0) {
+    $('<option>', {
+      value: data['sub_id'],
+      text: data['sub_category'] ? data['sub_category'] : 'Sub Category ID ' + data['sub_id'],
+      class: 'temp-option'
+    }).appendTo('#sub');
+  }
+  $('#sub').val(data['sub_id']);
+  $('#isp_num').val(data['isp_id']);
+  $('#isp').val(data['isp_id']);
+  $('#refNo').val(data['refNo']);
+  $('#date_refNo').val(data['date_refNo']);
+  $('#file-input').val("");
+  
+  if(typeof admin_hideshowforms === "function") admin_hideshowforms();
+  
+  $('#date_closed').val(data['date_closed']);
+  $('#remarks').val(data['remarks']);
+  
+  $('#remarks_view').show();
+  $('.dv_msg').show();
+  $('.container_remarks').show();
+  $('#msg_thread').slideDown(300);
+  $('#userModal').modal({ "show": true, "backdrop": 'static' });
+  loadCommentThread(data['ticket_no']);
+  
+  if(typeof unilayout_netshowmodalform === "function") unilayout_netshowmodalform();
+
+  $('#itsup').off('change').on('change', function () {
+    var itfrstsup = $('#it_num').val();
+    var itchange = this.value;
+    if (itfrstsup != itchange) {
+      $('#remarks').attr("placeholder", "Reason for re-assign/ Workoutput");
+      $('#remarks').val("");
+    } else {
+      $('#remarks').val(data['remarks']);
+    }
+  });
+
+  if ($('#status').val() == 'CLOSED') {
+    $(':input[type="submit"]').prop('disabled', true);
+    $('#date_createdx, #date_refNo, #date_closed, #remarks').attr('readonly', true);
+    $('#store, #via, #status, #itsup, #cat, #sub, #isp, #is_transfer').prop("disabled", true);
+  } else {
+    $(':input[type="submit"]').prop('disabled', false);
+    $('#date_createdx, #date_refNo, #date_closed, #subjct, #remarks').attr('readonly', false);
+    $('#store, #via, #status, #itsup, #cat, #sub, #isp, #is_transfer').prop("disabled", false);
+  }
+
+  if (typeof getinfo === "function") getinfo(tid, 'remarks', user_id);
+  if (typeof gtsub_id === "function") gtsub_id();
+
+  $('.modal-title').text("Ticket Number: " + tid);
+  $('#action').val("Save and Reply");
+  $('#operation').val("Save and Reply");
+  $('#userModal').modal({ "show": true, "backdrop": 'static' });
+
+  $.ajax({
+    type: 'POST',
+    url: 'sesticket.php',
+    data: { tktval: data['ticket_no'] },
+    success: function (response) {
+      $('#img').html(response);
+    }
+  });
+
+  $('#msgbtn').show();
+  $('#msg_thread').show();
+  $('#addmsg').val("");
+}
+
+
+$(document).ready(function() {
+  $('#store_graph_modal').modal('hide');
+
+  if(typeof slct_isp === "function") slct_isp();
+  if(typeof slct_sub === "function") slct_sub();
+  if(typeof gtsub_id === "function") gtsub_id();
+  if(typeof admin_hideshowforms === "function") admin_hideshowforms();
+
+  const yr = $("#yearpicker").val();
+  
+  getdata(yr);
+  getdata_transfer(yr);
+  if (typeof get_card_data === "function") get_card_data(yr);
+});
     
     /**
      * Get card data.
@@ -593,8 +692,8 @@
       $('#isp').prop("disabled", false);
       $(':input[type="submit"]').prop('disabled', false);
       $('#remarks').attr('readonly', false);
-      
-      // Clean up UI for Add
+      $('#is_transfer').prop('checked', false); 
+      $('#is_transfer').prop('disabled', false); 
       $('#msgbtn').hide();
       $('#remarks_view').empty();
       $('.dv_msg').hide();
@@ -651,7 +750,7 @@
         cat_id != "" &&
         sub_id != ""
       ) {
-        var disabledFields = $('#store, #via, #status, #itsup, #cat, #sub');
+        var disabledFields = $('#store, #via, #status, #itsup, #cat, #sub, #is_transfer');
         disabledFields.prop('disabled', false);
         var formData = new FormData(this);
         setTimeout(function() {
@@ -662,7 +761,7 @@
             $('#date_createdx').attr('readonly', true);
             $('#date_refNo').attr('readonly', true);
             $('#date_closed').attr('readonly', true);
-            $('#store, #via, #status, #itsup, #cat, #sub, #isp').prop('disabled', true);
+            $('#store, #via, #status, #itsup, #cat, #sub, #isp, #is_transfer').prop('disabled', true);
             $('#remarks').attr('readonly', true);
           }
         }, 50);
@@ -697,11 +796,11 @@
       }
     });
 
-    $(document).on('click', '#msgbtn', function () {
+  $(document).on('click', '#msgbtn', function () {
       $('.dv_msg').show();
       $('#remarks_view').show();
 
-      if ($('#msgbtn').val() == 'show') {
+     if ($('#msgbtn').val() == 'show') {
         $('#action').val("Save and Reply");
         $('#operation').val("Save and Reply");
         $('#msgbtn').val("hide");
@@ -709,14 +808,14 @@
         $('.dv_msg, .container_remarks').slideDown(400);
         setTimeout(() => {
             const $container = $('.container_remarks');
-            $container.animate({ scrollTop: $container.prop("scrollHeight") }, 400);
+            $container.animate({ scrollTop: 0 }, 400); 
+            
         }, 450);
       }
       else if ($('#msgbtn').val() == 'hide') {
         $('#action').val("Save");
         $('#operation').val("Edit");
         $('#msgbtn').val("show");
-        // FIXED: Only single hide logic
         $('#msg_thread').slideUp(400);
       }
     });

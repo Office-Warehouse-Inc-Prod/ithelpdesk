@@ -1,6 +1,8 @@
 <?php
 
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 ?>
 
@@ -9,7 +11,6 @@ session_start();
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <!-- This file has been downloaded from Bootsnipp.com. Enjoy! -->
     <title>OWI HELPDESK</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- <link href="http://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet"> -->
@@ -56,7 +57,6 @@ session_start();
     <script src="../dist/select2/dist/js/select2.min.js"></script>
 
 
-    <!-- Custom styles for this template -->
     <link href="../css/footer.css" rel="stylesheet">
 <style>
 
@@ -308,176 +308,3 @@ body {
     </div>
   </div>
 </nav>
-
-<script type="text/javascript">
-$(document).ready(function(){
-countnewrep();
-countNwMsg();
-
-/**
- * Getdata.
- */
-function getdata(){
-    $.post('fetchdata/fetch_data.php', { mode: 'notif_support' }, function(data){
-        // console.log(data);
-        notifdatas(data);
-    }, 'json');
-}
-
-// Run getdata() every 1 second
-setInterval(getdata, 1000);
-
-
-var table
-/**
- * Notifdatas.
- */
-function notifdatas(t){
-const dataset=t.ntfsupdata;
-table =  $("#notif_dataxx").DataTable({
-
-"dom":
-'<"pull-left"lf><"pull-right">tip',
-// stateSave: true,
-"pagingType": "full_numbers",
-"bDestroy": true,
-"responsive": true, "lengthChange": false, "autoWidth": false,
-"bInfo": false,
-"bFilter": false,
-"paging": false,
-"select": true,
-"pageLength":10,
-"language": {
-"emptyTable": "No new Notification"
-},
-"data": dataset,
-// "order": [[ 0, "Asc" ]],
-
-"columns": [
-
-{title:"NOTIFICATION", data:'notif_data',"defaultContent": ""}
-],
-"columnDefs": [
-{
-targets: 0,
-className: 'bolded'
-}
-]
-
-});
-
-$('#notif_dataxx tbody').on('click', 'tr', function () {
-    var data = table.row(this).data();
-    var ticketVal = data.ticket_no;
-
-    $('#myInput').val(ticketVal).trigger('input');
-
-    $.post('change_notif.php', { ticketVal: ticketVal }, function(data, textStatus, xhr) {
-        getdata();
-    });
-
-    // Scroll to bottom smoothly after click
-  $('html, body').animate(
-        { scrollTop: $(document).height() },
-        800,
-        'swing',
-        function () {
-            // Add highlight effect
-            let tableDiv = $('#report_data');
-            tableDiv.css('transition', 'background-color 0.8s');
-            tableDiv.css('background-color', '#ffff99'); // highlight yellow
-
-            setTimeout(() => {
-                tableDiv.css('background-color', '#ffffff'); // back to white
-            }, 800); // delay before returning to white
-        }
-    );
-});
-
-
-} // end of data table
-
-
-});
-
-
-
-/**
- * Countnewrep.
- */
-function countnewrep() {
-
-
-setInterval(function(){
-
-var xhttp = new XMLHttpRequest();
-xhttp.onreadystatechange = function() {
-if (this.readyState == 4 && this.status == 200) {
-document.getElementById("notif_newrep").innerHTML = this.responseText;
-}
-};
-xhttp.open("GET", "fetchdata/notif_newrep.php", true);
-xhttp.send();
-
-},1000);
-
-
-}
-
-
-
-
-/**
- * Count nw msg.
- */
-function countNwMsg() {
-
-
-setInterval(function(){
-
-var xhttp = new XMLHttpRequest();
-xhttp.onreadystatechange = function() {
-if (this.readyState == 4 && this.status == 200) {
-document.getElementById("notif_newmsg").innerHTML = this.responseText;
-}
-};
-xhttp.open("GET", "fetchdata/fetch_newmsg.php", true);
-xhttp.send();
-
-},1000);
-
-
-}
-
-// Auto-detect current page and set 'active' class
-var currentUrl = window.location.pathname.split("/").pop();
-
-// If index or empty, default to home
-if (currentUrl === "" || currentUrl === "index.php") {
-    currentUrl = "adminpanel.php"; 
-}
-
-$('.navbar-nav .nav-item').each(function() {
-    var $this = $(this);
-    var linkHref = $this.find('a').attr('href');
-
-    // Remove default 'active' class first to prevent duplicates
-    $this.removeClass('active');
-
-    // Check if the link href matches the current URL
-    if (linkHref === currentUrl) {
-        $this.addClass('active');
-    }
-    
-    // Special case for dropdown items
-    if ($this.hasClass('dropdown')) {
-        $this.find('.dropdown-item').each(function() {
-            if ($(this).attr('href') === currentUrl) {
-                $this.addClass('active'); // Highlight parent if child is active
-            }
-        });
-    }
-});
-
-</script>
-

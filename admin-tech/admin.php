@@ -456,11 +456,11 @@ body {
 
            <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="maintDrop" role="button" data-toggle="dropdown">
-              <i class="fa fa-sliders-h"> <span class="badge badge-danger" id="notif_fa"></span></i> FIXED ASSET
+              <i class="fas fa-boxes-stacked"> <span class="badge badge-danger" id="notif_fa"></span></i> FIXED ASSET
             </a>
             <div class="dropdown-menu" aria-labelledby="maintDrop">
-              <a class="dropdown-item" href="fix_asset.php"><i class="fas fa-user-cog"> <span class="badge badge-info" id="notif_approval"></span></i> For Approval</a>
-              <a class="dropdown-item" href="fix_asset_reports.php"><i class="fas fa-store"></i> Fix Asset Reports</a>
+              <a class="dropdown-item" href="fix_asset.php"><i class="fas fa-circle-check"> <span class="badge badge-info" id="notif_approval"></span></i> For Approval</a>
+              <a class="dropdown-item" href="fix_asset_reports.php"><i class="fas fa-chart-bar"></i> Fix Asset Reports</a>
             </div>
           </li>
         </ul>

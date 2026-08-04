@@ -136,55 +136,69 @@ class dbconfig extends dbconn
 		return $data;
 
 	}
-	
-public function fathist() {
-        $query="   SELECT 
-                ar.ticket_no, 
-                b.str_name, 
-                CONCAT(u.fname, ' ', u.lstname) AS full_name, 
-                ar.ticket_created, 
-                ar.item_code,
-                ar.description, 
-                ar.serial_number, 
-                ar.asset_tag_number, 
-                ar.purpose_of_request, 
-				  ar.technical_workoutput, 
-                it.it_desc,
-                it.itsup,          
-                ar.date_received, 
-                ar.created_at,
-                itt.it_desc AS noted_by_desc,       
-                ar.status          
-            FROM asset_requests ar
-            LEFT JOIN it_tech it ON ar.item_received_by = it.itsup
-            LEFT JOIN reports r ON ar.ticket_no = r.ticket_no
-            LEFT JOIN users u ON r.userId = u.id
-			LEFT JOIN it_tech itt ON ar.noted_by = itt.itsup
-            LEFT JOIN tbl_branch b ON r.store = b.str_num  WHERE ar.status = 'NOTED'   ORDER BY ar.created_at ASC";
-        $statement = $this->connection->prepare($query);
-        $statement->execute();
-        $result = $statement->fetchAll();
-        $fetchdata = array();
-        foreach ($result as $row) {
-            $fetchdata[] = array(
-                'ticket_no' => $row["ticket_no"],
-                'str_name' => $row["str_name"],
-                'full_name' => $row['full_name'],
-                'ticket_created' => $row['ticket_created'],
-                'item_code' => $row['item_code'],
-                'description'=>$row["description"],
-                'serial_number'=> $row["serial_number"],
-                'asset_tag_number' => $row["asset_tag_number"],
-                'purpose_of_request' => $row["purpose_of_request"],
-				   'technical_workoutput' => $row["technical_workoutput"],
-                'it_desc' => $row["it_desc"],
-				'noted_by_desc' => $row["noted_by_desc"],
-                'date_received' => $row["date_received"],    
-                'status' => $row["status"]
-            );
-        }   
-        return array_filter($fetchdata);
-    }
+	public function fathist() {
+  $query = "SELECT 
+                    ar.ticket_no, 
+                    b.str_name, 
+                    CONCAT(u.fname, ' ', u.lstname) AS full_name, 
+                    ar.ticket_created, 
+                    ar.item_code,
+                    ar.description, 
+                    ar.serial_number, 
+                    ar.asset_tag_number, 
+					ar.is_technical,
+                    r.concern AS purpose_of_request,
+                    ar.technical_workoutput, 
+                    it.it_desc,
+                    it.itsup,          
+                    CASE 
+        WHEN ar.is_technical = 0 THEN r.date_created 
+        ELSE ar.date_received 
+    END AS date_received,
+                    ar.created_at,
+                    itt.it_desc AS noted_by_desc,       
+                    ar.status          
+                FROM asset_requests ar
+                LEFT JOIN it_tech it ON ar.item_received_by = it.itsup
+                LEFT JOIN reports r ON ar.ticket_no = r.ticket_no
+                LEFT JOIN users u ON r.userId = u.id
+                LEFT JOIN it_tech itt ON ar.noted_by = itt.itsup
+                LEFT JOIN tbl_branch b ON r.store = b.str_num  
+                WHERE ar.status = 'NOTED' 
+                  AND (
+                      (ar.is_technical = 0 AND r.status = 'ON PROCESS') 
+                      OR 
+                      (ar.is_technical = 1)
+                  )
+                ORDER BY ar.created_at ASC";
+            
+    $statement = $this->connection->prepare($query);
+    $statement->execute();
+    $result = $statement->fetchAll();
+    $fetchdata = array();
+    
+    foreach ($result as $row) {
+        $fetchdata[] = array(
+            'ticket_no' => $row["ticket_no"],
+            'str_name' => $row["str_name"],
+            'full_name' => $row['full_name'],
+            'ticket_created' => $row['ticket_created'],
+            'item_code' => $row['item_code'],
+            'description' => $row["description"],
+            'serial_number' => $row["serial_number"],
+			   'is_technical' => $row["is_technical"],
+            'asset_tag_number' => $row["asset_tag_number"],
+            'purpose_of_request' => $row["purpose_of_request"],
+            'technical_workoutput' => $row["technical_workoutput"],
+            'it_desc' => $row["it_desc"],
+            'noted_by_desc' => $row["noted_by_desc"],
+            'date_received' => $row["date_received"],    
+            'status' => $row["status"]
+        );
+    }   
+    
+    return array_filter($fetchdata);
+}
 
 	
 public function faprintingthist() {
@@ -199,6 +213,7 @@ public function faprintingthist() {
                 ar.asset_tag_number, 
                 ar.purpose_of_request, 
 				ar.revised_request,
+				ar.is_technical,
 					ar.technical_workoutput,
                 it.it_desc,
                 it.itsup,          
@@ -211,7 +226,7 @@ public function faprintingthist() {
             LEFT JOIN reports r ON ar.ticket_no = r.ticket_no
             LEFT JOIN users u ON r.userId = u.id
 			  LEFT JOIN it_tech itt ON ar.noted_by = itt.itsup
-            LEFT JOIN tbl_branch b ON r.store = b.str_num  WHERE ar.status IN ('VERIFIED')  ORDER BY ar.created_at ASC";
+            LEFT JOIN tbl_branch b ON r.store = b.str_num  WHERE ar.status IN ('APPROVED')  ORDER BY ar.created_at ASC";
         $statement = $this->connection->prepare($query);
         $statement->execute();
         $result = $statement->fetchAll();
@@ -227,6 +242,7 @@ public function faprintingthist() {
                 'serial_number'=> $row["serial_number"],
                 'asset_tag_number' => $row["asset_tag_number"],
                 'purpose_of_request' => $row["purpose_of_request"],
+				  'is_technical' => $row["is_technical"],
 				 'revised_request' => $row["revised_request"],
 				  'technical_workoutput' => $row["technical_workoutput"],
                 'it_desc' => $row["it_desc"],
@@ -334,6 +350,7 @@ public function fareportsthist() {
                 ar.asset_tag_number, 
                 ar.purpose_of_request, 
 				ar.revised_request,
+				ar.is_technical,
 				ar.technical_workoutput,
                 it.it_desc,
                 it.itsup,           
@@ -368,6 +385,7 @@ public function fareportsthist() {
             'purpose_of_request' => $row["purpose_of_request"],
 			 'revised_request' => $row["revised_request"],
 			  'technical_workoutput' => $row["technical_workoutput"],
+              'is_technical'       => $row["is_technical"],
             'it_desc'            => $row["it_desc"],
             'date_received'      => $row["date_received"],    
             'noted_by_desc'      => $row["noted_by_desc"],  
@@ -433,7 +451,6 @@ public function fareportsthist() {
 	 */
 	public function pie()
 	{
-		// exclude from changing deptsel to f_deptsel
 		$query = "
 		SELECT cat_desc,clr,cat_id, count(*) as ctn, date_created
 		FROM vwp 
@@ -575,7 +592,7 @@ public function fareportsthist() {
 			(users.deptsel = '2' AND vw6.status IN ('NEW REPORT'))
 		)
 		AND vw6.sub_id NOT IN ('15','198','28', '34', '35')
-		AND YEAR(vw6.date_created) IN (" . $_POST['yr'] . ")";
+		AND YEAR(vw6.date_created) IN (" . $_POST['yr'] . ") ORDER BY date_created DESC";
 
 		$statement = $this->connection->prepare($query);
 		$statement->execute();
@@ -625,7 +642,60 @@ public function fareportsthist() {
 
 
 
+	public function admin_data_table_transfer()
+{
+    $query = "SELECT DISTINCT vw_transfer.*
+    FROM vw_transfer
+    LEFT JOIN users ON vw_transfer.ursID = users.id
+    WHERE vw_transfer.deptsel = '2' 
+    AND vw_transfer.f_deptsel NOT IN ('2') 
+    AND vw_transfer.status NOT IN ('ATTENDED WITH FIX ASSET','NEW REPORT', 'Assigned', 'ASSIGNED') 
+    AND vw_transfer.sub_id NOT IN ('15', '28', '34', '35')
+    AND YEAR(vw_transfer.date_created) IN (" . $_POST['yr'] . ") ORDER BY vw_transfer.date_created DESC";
 
+    $statement = $this->connection->prepare($query);
+    $statement->execute();
+    $result = $statement->fetchAll();
+    $data = array();
+    $fetchdata = array();
+
+    foreach ($result as $row) {
+        $fetchdata[] = array(
+            'ticket_no' => $row['ticket_no'],
+            'store' => $row['store'],
+            'str_code' => $row['str_code'],
+            'date_created' => date('m/d/Y H:i', strtotime($row["date_created"])),
+            'subject' => $row['subject'],
+            'concern' => $row['concern'],
+            'via' => $row['via'],
+            'status' => $row['status'],
+            'itsup' => $row['itsup'],
+            'it_desc' => $row['it_desc'],
+            'it_sel' => $row['it_sel'],
+            'cat_id' => $row['cat_id'],
+            'category' => $row['category'],
+            'sub_id' => $row['sub_id'],
+            'sub_category' => $row['sub_category'],
+            'date_closed' => ($row['status'] == 'OPEN') ? " " : date('m/d/Y H:i', strtotime($row["date_closed"])),
+            'tdc' => ($row['status'] == 'OPEN') ? $row["dtdf"] . " Days Unresolved" : $row['tdc'],
+            'crdt' => $row['crdt'],
+            'dtdf' => $row['dtdf'],
+            'years' => $row['years'],
+            'close_by' => $row['close_by'],
+            'clusers' => $row['clusers'],
+            'remarks' => $row['remarks'],
+            'isp_id' => $row['isp_id'],
+            'isp_shortDesc' => $row['isp_shortDesc'],
+            'refNo' => $row['refNo'],
+            'date_refNo' => date('m/d/Y H:i', strtotime($row["date_refNo"])),
+            'msg_cnt' => $row['msg_cnt'],
+            'is_transfer' => $row['is_transfer'] ?? 0
+        );
+    }
+    
+    $data = array_filter($fetchdata);
+    return $data;
+}
 
 	/**
 	 * Newreporthist.
@@ -1691,7 +1761,7 @@ WHERE
 
 		$query = "
 		Select * from vw6 WHERE vw6.deptsel = '2' AND cat_id = '3' AND
-		vw6.sub_id NOT IN ('15','28','34','35') AND status <> 'NEW REPORT' AND YEAR(vw6.date_created) IN ('2025')";
+		vw6.sub_id NOT IN ('15','28','34','35') AND status <> 'NEW REPORT' AND YEAR(vw6.date_created) IN ('2025') ORDER BY date_created DESC";
 
 		$statement = $this->connection->prepare($query);
 		$statement->execute();

@@ -69,7 +69,8 @@
 "dom": '<"pull-left"f><"pull-right">tip',
       stateSave: false,
       "bDestroy": true,
-      "responsive": true,
+      "responsive": false,
+      "scrollX": true,
       "lengthChange": false,
       "autoWidth": false,
       language: {

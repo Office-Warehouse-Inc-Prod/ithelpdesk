@@ -44,6 +44,9 @@ switch ($mode) {
     case 'dtb':
         $records['rptdata'] = $fn->admin_data_table_res();
         break;
+     case 'dtb_transfer':
+        $records['transferdata'] = $fn->admin_data_table_transfer();
+     break;
     case 'dtbnet':
         $records['rptdatanet'] = $fn->admin_data_table_resnet();
         break;
@@ -58,7 +61,7 @@ switch ($mode) {
         break;
 
        
-          case 'printing_tbl':
+        case 'printing_tbl':
         $records['printingdata'] = $fn->faprintingthist();
         break;
 

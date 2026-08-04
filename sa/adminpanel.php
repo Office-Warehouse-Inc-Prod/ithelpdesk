@@ -635,6 +635,31 @@ textarea.form-control:focus {
     color: #ffffff;
     font-weight: bold;
 }
+
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+    box-shadow: none !important;
+  }
+
+#transferred_data, 
+#transferred_data th, 
+#transferred_data td {
+  border-left: none !important;
+  border-right: none !important;
+  color: #213456;
+}
+
+#transferred_data th {
+  border-top: none !important;
+  border-bottom: 2px solid #213456 !important;
+   color: #213456;
+}
+
+#transferred_data td {
+  border-bottom: 1px solid #0e0e0ea1 !important; 
+}
 </style>
         
 <div id="welcomeModal" class="modal-overlay" style="display: none;">
@@ -985,48 +1010,59 @@ textarea.form-control:focus {
             </div><!-- /#ovrall -->
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" />
 
-            <!-- TABLES -->
-            <div class="row">
+           
+         <!-- TABLES -->
+        <div class="row">
+          <div class="col-12 mb-3">
+            <div class="card card2">
+              
+        <div class="card-header" style="background: linear-gradient(135deg, #213456, #334c7a); border-bottom: none; padding-bottom: 0;">
+          <ul class="nav nav-tabs card-header-tabs" id="ticketTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="tickets-tab" data-toggle="tab" data-target="#tickets" type="button" role="tab" aria-controls="tickets" aria-selected="true" style="font-weight: bold; border: 1px solid #ffffff;">
+                TICKETS
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="transferred-tab" data-toggle="tab" data-target="#transferred" type="button" role="tab" aria-controls="transferred" aria-selected="false" style="color: white; font-weight: bold; border: 1px solid #ffffff;">
+                TRANSFERRED TICKETS
+              </button>
+            </li>
+          </ul>
+        </div>
 
-              <div class="col-12 mb-3">
-                <div class="card card2">
-                  <h5 class="card-header text-black" style="background-color: #95a2b9b4; color:black;">TICKETS</h5>
-                  <div class="card-body">
-
-                    <div class="row">
-                      <!-- old code with overflow -->
-                      <!-- <div class="col-12 mb-3">  
-                     <div class="table-responsive" id="proTeamScroll" style="max-height:450px; width:100%;overflow-y:auto;">
-                    <table id="report_data" class="table table-hover">
-
-                    </div>
-                  </div> -->
-
-                      <div class="col-12 mb-3">
-                        <div class="table-responsive" id="proTeamScroll" style="">
-                          <table id="report_data" class="table table-hover">
-
-                        </div>
-                      </div>
-
-                      <div class="col-12">
-                        <div class="table-responsive" id="proTeamScroll"
-                          style="max-height:450px; width:100%;overflow-y:auto;">
-                          <table id="network_tb" class="table table-hover">
-
-                        </div>
-                      </div>
-                    </div>
-
-                  </div>
-                </div>
-              </div>
-
-            </div><!-- /.row -->
-
-            <div class="col-lg-12 Down" id="Down">
-              <input type="hidden" id="myInput">
+      <div class="card-body">
+        <div class="tab-content" id="ticketTabsContent">
+          <div class="tab-pane fade show active" id="tickets" role="tabpanel" aria-labelledby="tickets-tab">
+            <div class="table-responsive" style="max-height:450px; width:100%; overflow-y:auto;">
+              <table id="report_data" class="table table-hover">
+                
+                <tbody>
+                </tbody>
+              </table>
             </div>
+          </div>
+
+          <div class="tab-pane fade" id="transferred" role="tabpanel" aria-labelledby="transferred-tab">
+            <div class="table-responsive" style="max-height:450px; width:100%; overflow-y:auto;">
+              <table id="transferred_data" class="table table-hover">
+               
+                <tbody>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+<div class="col-lg-12 Down" id="Down">
+  <input type="hidden" id="myInput">
+</div>
 
           </div><!-- /.container-fluid -->
       </div><!-- /#layoutSidenav_content -->
@@ -1778,4 +1814,24 @@ function loadDepartmentTable() {
         }
     });
 }
+
+
+$(document).ready(function() {
+    $('button[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+        var targetTab = $(e.target).attr("id"); 
+
+        if (targetTab === 'transferred-tab') {
+            if ($.fn.DataTable.isDataTable('#transferred_data')) {
+                $('#transferred_data').DataTable().columns.adjust().draw();
+            }
+        } else if (targetTab === 'tickets-tab') {
+            if ($.fn.DataTable.isDataTable('#report_data')) {
+                $('#report_data').DataTable().columns.adjust().draw();
+            }
+        }
+        $('#ticketTabs .nav-link').css('color', 'white');
+        $('#ticketTabs .nav-link.active').css('color', '#495057'); 
+    });
+    
+});
 </script>

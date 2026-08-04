@@ -1,5 +1,6 @@
 <?php
 
+
 // ======== db  =========
 include 'admin.php';
 include '../condb.php';
@@ -11,6 +12,7 @@ include 'sub_graph_modal.php';
 // $conn=new dbconfig();
 
 ?>
+
 <head>
   <link rel="stylesheet" href="adminpanel.css">
 </head>
@@ -42,37 +44,6 @@ body {
   background-repeat: no-repeat;
   min-height: 100vh;
 } 
- .modal-overlay {
-            display: none; 
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-       .modal-overlay .modal-content {
-             background: linear-gradient(to bottom, #ffffff, #99aac8);
-            padding: 25px;
-            border-radius: 8px;
-            width: 70%;
-            max-width: 90%;
-            margin-top:30px;
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-       .modal-overlay .modal-content h3 {
-            margin-top: 0;
-            color: #333;
-        }
-       .modal-overlay .close-btn {
-             background: linear-gradient(135deg, #213456, #334c7a);
-            margin-top: 15px;
-        }
- 
 
         
   .table-responsive {
@@ -84,26 +55,26 @@ body {
     width: 100% !important;
     table-layout: auto !important;
     page-break-inside: avoid;
-    
+     
   }
 
   .admin-table th {
-     background: linear-gradient(135deg, #213456, #334c7a);
-    color: #fff !important;
+    background-color: linear-gradient(135deg, #213456, #334c7a) !important;
+    color: #ffffff!important;
     padding: 6px 4px !important;
     font-size: 11px !important;
   }
 
   #admin_report.admin-table th.active.text-center {
     background-color: #2b9827 !important;
-    color: #fff !important;
+    color: #ffffff !important;
     padding: 6px 4px !important;
     font-size: 11px !important;
   }
 
   #admin_report.admin-table th.compliance.text-center {
     background-color: #a29341 !important;
-    color: #fff !important;
+    color: #ffffff !important;
     padding: 6px 4px !important;
     font-size: 11px !important;
   }
@@ -151,10 +122,10 @@ body {
   padding:10px;
   width: 30%;
   color: white;
-   background: linear-gradient(135deg, #213456, #334c7a);
+  background-color: linear-gradient(135deg, #213456, #334c7a);
 }
  .modal-overlay .month-row[data-month="6"] {
-   background: linear-gradient(135deg, #213456, #334c7a);
+  background: linear-gradient(135deg, #213456, #334c7a);
   outline: 2px solid red;
   outline-offset: -2px; 
 }
@@ -252,7 +223,7 @@ textarea.form-control:focus {
 }
 
 #userModal .modal-header{
-     background: linear-gradient(135deg, #213456, #334c7a);
+    background-color: #213456;
     color: #fff;
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
@@ -279,7 +250,7 @@ textarea.form-control:focus {
 #userModal .input-group-text {
     background-color: white;
     border-right: none;
-    color: #213456;
+    color: linear-gradient(135deg, #213456, #334c7a);
 }
 
 #userModal .form-control {
@@ -289,7 +260,7 @@ textarea.form-control:focus {
 }
 
 #userModal .form-control:focus {
-    border-color: #213456;
+    border-color: linear-gradient(135deg, #213456, #334c7a);
     box-shadow: none;
 }
 
@@ -387,7 +358,7 @@ textarea.form-control:focus {
 }
 
 .chat-right .msg-meta {
-    color: rgba(255, 255, 255, 0.85);
+    color: #ffffff; 
 }
 
 .chat-left .msg-meta-name {
@@ -400,79 +371,31 @@ textarea.form-control:focus {
     font-weight: bold;
 }
 
-.btn-success {
-    background-color: #1C0770 !important;
-    border: none;
-    padding: 0.6rem 2rem;
-    font-weight: 600;
-    border-radius: 8px;
-    transition: transform 0.2s ease;
+
+.chat-right .msg-time {
+    color: #ffffff !important; 
 }
 
-.btn-success:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(28, 7, 112, 0.2);
+.chat-left .msg-time {
+    color: #64748b !important;
+}
+.chat-left .msg-meta {
+    color: #64748b;
 }
 
-.btn-danger {
-    background-color: #fff;
-    border: 1px solid #e2e8f0;
-    color: #e53e3e;
-    padding: 0.6rem 1.5rem;
-    font-weight: 600;
-    border-radius: 8px;
+.chat-right .msg-meta {
+    color: rgba(255, 255, 255, 0.85);
 }
 
-.btn-danger:hover {
-    background-color: #fff5f5;
-    color: #c53030;
+.chat-left .msg-meta-name {
+    color: linear-gradient(135deg, #213456, #334c7a);
+    font-weight: bold;
 }
 
-#userModal .modal-footer{
-  border-top: 1px solid rgba(0,0,0,0.08);
-  background: rgba(255,255,255,0.92);
-  position: sticky;
-  bottom: 0;
-  z-index: 5;
-  padding: 12px 14px;
+.chat-right .msg-meta-name {
+    color: #ffffff;
+    font-weight: bold;
 }
-
-@media (max-width: 991px){
-  #userModal .modal-dialog{
-    max-width: 96%;
-    margin: .75rem auto;
-  }
-
-  .container_remarks{
-    max-height: 350px;
-  }
-
-  #action, #btnClose{
-    width: 100%;
-  }
-}
-
-
-.year-picker-group {
-    flex: 1;
-    min-width: 300px; 
-}
-#showCalendarBtn {
-     background: linear-gradient(135deg, #213456, #334c7a);
-    color: white;
-    border-radius: 8px;
-    padding: 8px 20px;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    white-space: nowrap;
-}
-
-#showCalendarBtn:hover {
-    background-color: var(--owi-gold, #E1AD01);
-    color: #213456;
-}
-
-
  .modal-overlay {
             display: none; 
             position: fixed;
@@ -486,7 +409,7 @@ textarea.form-control:focus {
             z-index: 1000;
         }
        .modal-overlay .modal-content {
-             background: linear-gradient(to bottom, #ffffff, #99aac8);
+             background: linear-gradient(to bottom, #ffffff, #b0b9c8);
             padding: 25px;
             border-radius: 8px;
             width: 70%;
@@ -500,7 +423,7 @@ textarea.form-control:focus {
             color: #333;
         }
        .modal-overlay .close-btn {
-            background-color: #28a745;
+            background-color: #213456;
             margin-top: 15px;
         }
  
@@ -519,7 +442,7 @@ textarea.form-control:focus {
   }
 
   .admin-table th {
-     background: linear-gradient(135deg, #213456, #334c7a);
+    background-color: #213456 !important;
     color: #fff !important;
     padding: 6px 4px !important;
     font-size: 11px !important;
@@ -582,66 +505,165 @@ textarea.form-control:focus {
   padding:10px;
   width: 30%;
   color: white;
-   background: linear-gradient(135deg, #213456, #334c7a);
+  background-color: #213456;
 }
  .modal-overlay .month-row[data-month="6"] {
-   background: linear-gradient(135deg, #213456, #334c7a);
+  background: #213456;
   outline: 2px solid red;
   outline-offset: -2px; 
 }
 
-.chat-left .msg-meta {
-    color: #64748b;
+.btn-success {
+    background-color: #1C0770 !important;
+    border: none;
+    padding: 0.6rem 2rem;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: transform 0.2s ease;
 }
 
-.chat-right .msg-meta {
-    color: #ffffff; 
+.btn-success:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(28, 7, 112, 0.2);
 }
 
-.chat-left .msg-meta-name {
-    color: #213456;
-    font-weight: bold;
+.btn-danger {
+    background-color: #fff;
+    border: 1px solid #e2e8f0;
+    color: #e53e3e;
+    padding: 0.6rem 1.5rem;
+    font-weight: 600;
+    border-radius: 8px;
 }
 
-.chat-right .msg-meta-name {
-    color: #ffffff;
-    font-weight: bold;
+.btn-danger:hover {
+    background-color: #fff5f5;
+    color: #c53030;
+}
+
+#userModal .modal-footer{
+  border-top: 1px solid rgba(0,0,0,0.08);
+  background: rgba(255,255,255,0.92);
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  padding: 12px 14px;
+}
+
+@media (max-width: 991px){
+  #userModal .modal-dialog{
+    max-width: 96%;
+    margin: .75rem auto;
+  }
+
+  .container_remarks{
+    max-height: 350px;
+  }
+
+  #action, #btnClose{
+    width: 100%;
+  }
 }
 
 
-.chat-right .msg-time {
-    color: #ffffff !important; 
+.year-picker-group {
+    flex: 1;
+    min-width: 300px; 
+}
+#showCalendarBtn {
+    background-color: #213456;
+    color: white;
+    border-radius: 8px;
+    padding: 8px 20px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    white-space: nowrap;
 }
 
-.chat-left .msg-time {
-    color: #64748b !important;
-}
-.chat-left .msg-meta {
-    color: #64748b;
-}
-
-.chat-right .msg-meta {
-    color: rgba(255, 255, 255, 0.85);
-}
-
-.chat-left .msg-meta-name {
+#showCalendarBtn:hover {
+    background-color: var(--owi-gold, #E1AD01);
     color: linear-gradient(135deg, #213456, #334c7a);
-    font-weight: bold;
 }
 
-.chat-right .msg-meta-name {
-    color: #ffffff;
-    font-weight: bold;
+        
+  .table-responsive {
+    overflow: visible !important;
+    width: 100% !important;
+  }
+
+  .admin-table {
+    width: 100% !important;
+    table-layout: auto !important;
+    page-break-inside: avoid;
+    
+  }
+
+ 
+
+  #admin_report.admin-table th.active.text-center {
+    background-color: #2b9827 !important;
+    color: #213456 !important;
+    padding: 6px 4px !important;
+    font-size: 11px !important;
+  }
+
+  #admin_report.admin-table th.compliance.text-center {
+    background-color: #a29341 !important;
+    color: #213456 !important;
+    padding: 6px 4px !important;
+    font-size: 11px !important;
+  }
+
+  .admin-table td {
+    padding: 6px 4px !important;
+    font-size: 11px !important;
+    border-bottom: 1px solid #0e0e0ea1 !important;
+  }
+  .table-responsive{
+    margin-top: -600px;
+  }
+
+  .progress {
+    border: 1px solid #999 !important;
+    background-color: #ddd !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  #dept-table-footer {
+    border: 2px solid #2d3c59;
+    background-color: #f4e9d7 !important; 
 }
 
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+    box-shadow: none !important;
+  }
+
+#transferred_data, 
+#transferred_data th, 
+#transferred_data td {
+  border-left: none !important;
+  border-right: none !important;
+  color: #213456;
+}
+
+#transferred_data th {
+  border-top: none !important;
+  border-bottom: 2px solid #213456 !important;
+   color: #213456;
+}
+
+#transferred_data td {
+  border-bottom: 1px solid #0e0e0ea1 !important; 
+}
 </style>
-<div id="welcomeModal" class="modal-overlay" style="display: none;">
+        
+<div id="welcomeModal" class="modal-overlay" style="display: none; ">
     <div class="modal-content">
-        <h3>Admin HelpDesk Efficiency & Performance Report</h3>
+        <h3>IT HelpDesk Efficiency & Performance Report</h3>
         <p>As of the Year -  2026</p>
-
-  
-
          <table id="admin_report" class="table admin-table m-0">
                     <thead>  
                       <tr>
@@ -651,13 +673,13 @@ textarea.form-control:focus {
                         </th>
                       </tr>
                       
-                      <tr style=" background: linear-gradient(135deg, #213456, #334c7a); color: #ffffff;">
-                         <th style=" background: linear-gradient(135deg, #213456, #334c7a); font-size: 12px; vertical-align: middle;">MONTH</th>
-                        <th class="text-center" style=" background: linear-gradient(135deg, #213456, #334c7a); font-size: 12px; vertical-align: middle;">ACTIVE TICKETS</th>
-                        <th class="text-center" style=" background: linear-gradient(135deg, #213456, #334c7a); font-size: 12px; vertical-align: middle;">COMPLIANCE RATE</th>
-                        <th class="text-center" style=" background: linear-gradient(135deg, #213456, #334c7a); font-size: 12px; vertical-align: middle;">MET SLA</th>
-                        <th class="text-center" style=" background: linear-gradient(135deg, #213456, #334c7a); font-size: 12px; vertical-align: middle;">NON-SLA</th>
-                        <th class="text-center" style=" background: linear-gradient(135deg, #213456, #334c7a); font-size: 12px; vertical-align: middle;">SLA COMPLIANCE</th>
+                      <tr style="background-color: #213456; color: #ffffff;">
+                         <th style="background-color: #213456; font-size: 12px; vertical-align: middle;">MONTH</th>
+                        <th class="text-center" style="background-color: #213456; font-size: 12px; vertical-align: middle;">ACTIVE TICKETS</th>
+                        <th class="text-center" style="background-color: #213456; font-size: 12px; vertical-align: middle;">COMPLIANCE RATE</th>
+                        <th class="text-center" style="background-color: #213456; font-size: 12px; vertical-align: middle;">MET SLA</th>
+                        <th class="text-center" style="background-color: #213456; font-size: 12px; vertical-align: middle;">NON-SLA</th>
+                        <th class="text-center" style="background-color: #213456; font-size: 12px; vertical-align: middle;">SLA COMPLIANCE</th>
                       </tr>
                     </thead>
                     
@@ -702,7 +724,7 @@ textarea.form-control:focus {
                         <td class="text-center non-sla">-</td>
                         <td class="sla-compliance">-</td>
                       </tr>
-                      <tr class ="month-row" data-month="6" style=" background: linear-gradient(135deg, #213456, #334c7a); border-outline: 2px solid red;">
+                      <tr class ="month-row" data-month="6" style="background: #213456; border-outline: 2px solid red;">
                         <td class="fw-bold" >JUNE</td>
                         <td class="text-center active-total">-</td>
                         <td class="compliance-rate">-</td>
@@ -710,7 +732,7 @@ textarea.form-control:focus {
                         <td class="text-center non-sla">-</td>
                         <td class="sla-compliance">-</td>
                       </tr>
-                          <tr class ="month-row" data-month="7" style=" background: linear-gradient(135deg, #213456, #334c7a); border-outline: 2px solid red;">
+                          <tr class ="month-row" data-month="7" style="background: #213456; border-outline: 2px solid red;">
                         <td class="fw-bold" >JULY</td>
                         <td class="text-center active-total">-</td>
                         <td class="compliance-rate">-</td>
@@ -718,7 +740,7 @@ textarea.form-control:focus {
                         <td class="text-center non-sla">-</td>
                         <td class="sla-compliance">-</td>
                       </tr>
-                          <tr class ="month-row" data-month="8" style=" background: linear-gradient(135deg, #213456, #334c7a); border-outline: 2px solid red;">
+                          <tr class ="month-row" data-month="8" style="background: #213456; border-outline: 2px solid red;">
                         <td class="fw-bold" >AUGUST</td>
                         <td class="text-center active-total">-</td>
                         <td class="compliance-rate">-</td>
@@ -726,7 +748,7 @@ textarea.form-control:focus {
                         <td class="text-center non-sla">-</td>
                         <td class="sla-compliance">-</td>
                       </tr>
-                          <tr class ="month-row" data-month="9" style=" background: linear-gradient(135deg, #213456, #334c7a); border-outline: 2px solid red;">
+                          <tr class ="month-row" data-month="9" style="background: #213456; border-outline: 2px solid red;">
                         <td class="fw-bold" >SEPTEMBER</td>
                         <td class="text-center active-total">-</td>
                         <td class="compliance-rate">-</td>
@@ -734,7 +756,7 @@ textarea.form-control:focus {
                         <td class="text-center non-sla">-</td>
                         <td class="sla-compliance">-</td>
                       </tr>
-                          <tr class ="month-row" data-month="10" style=" background: linear-gradient(135deg, #213456, #334c7a); border-outline: 2px solid red;">
+                          <tr class ="month-row" data-month="10" style="background: #213456; border-outline: 2px solid red;">
                         <td class="fw-bold" >OCTOBER</td>
                         <td class="text-center active-total">-</td>
                         <td class="compliance-rate">-</td>
@@ -742,7 +764,7 @@ textarea.form-control:focus {
                         <td class="text-center non-sla">-</td>
                         <td class="sla-compliance">-</td>
                       </tr>
-                          <tr class ="month-row" data-month="11" style=" background: linear-gradient(135deg, #213456, #334c7a); border-outline: 2px solid red;">
+                          <tr class ="month-row" data-month="11" style="background: #213456; border-outline: 2px solid red;">
                         <td class="fw-bold" >NOVEMBER</td>
                         <td class="text-center active-total">-</td>
                         <td class="compliance-rate">-</td>
@@ -771,7 +793,7 @@ textarea.form-control:focus {
             <input type="hidden" name="chcksbjcls" id="chcksbjcls" value="check">
           </div>
         </form>
-        <div class="action-bar-container" style="box-shadow: 0 5px 10px 2px #2d3c597f; margin-bottom: -20px;">
+        <div class="action-bar-container" style="box-shadow: 0 5px 10px 2px #2d3c597f; color: #213456; margin-bottom: -20px;">
           <div class="year-picker-group">
             <div class="input-group">
               <div class="input-group-append">
@@ -779,7 +801,7 @@ textarea.form-control:focus {
                   <i class="fas fa-history me-2"></i>LOGS IN YEAR OF:
                 </span>
               </div>
-              <select class="form-control" name="yearpicker" id="yearpicker"required>
+              <select class="form-control" name="yearpicker" id="yearpicker" required>
                 <option value="2019,2020,2021,2022,2023,2024,2025,2026">OVERALL</option>
                 <option value="2026" selected>2026</OPTION>
                 <option value="2025">2025</option>
@@ -790,443 +812,497 @@ textarea.form-control:focus {
             </div>
           </div>
           <div class="d-flex align-items-center gap-3">
-            <!--<form action="testcalendar.php" method="POST" class="m-0">
-              <input type="hidden" name="u_id" value="<?php echo $_SESSION['user_id'];?>">
+            <form action="testcalendar.php" method="POST" class="m-0">
+              <input type="hidden" name="u_id" value="<?php echo $_SESSION['user_id']; ?>">
               <button type="submit" id="showCalendarBtn" class="btn">
                 <i class="fas fa-calendar-alt me-2"></i>CALENDAR
               </button>
-            </form>-->
+            </form>
             <div class="form-check form-switch float-right m-3">
               <input class="form-check-input" style="margin-left:-50px;" type="checkbox" id="darkModeToggle">
               <label class="form-check-label text-dark" for="darkModeToggle">Dark Mode</label>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- KPI CARDS (replaces card-deck properly) -->
-    <div class="main-container">  
-      <main class="p-4">
-        <div class="row g-4">
-          <div class="row g-4 mb-4">
-            <div class="col-xl-3 col-lg-6 col-md-6">
-              <div class="card h-100 dashcard-clickable" data-filter="" style="border-radius: 15px; cursor:pointer;">
-                <div class="card-body p-4">
-                  <div class="d-flex align-items-center justify-content-between mb-3">
-                    <div class=" bg-opacity-10 p-3 rounded-circle " style="color: #576A8F;">
-                      <i class="fas fa-file-alt fa-2x"></i>
-                    </div>
-                    <h2 class="fw-black mb-1" id="count_total" style="font-size:2.2rem; letter-spacing: -1px; ">0</h2>
-                  </div>
-                  <div>
-                    <p class=" fw-bold text-uppercase mb-0" style="font-size: 0.75rem; color: #576A8F;letter-spacing: 1px;">Total Reports</p>
-                    <hr class="mt-2 mb-3" style="border-top: 2px solid #576A8F; opacity: 1; width: 100%;"/>
-                    <div class="d-flex justify-content-between align-items-center">
-                      <a href="#report_data" class="text-decoration-none small text-muted stretched-link">Click here for more info</a>
-                      <i class="fas fa-chevron-right small text-muted"></i>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-xl-3 col-lg-6 col-md-6">
-              <div class="card  h-100 dashcard-clickable" data-filter="ON PROCESS" style="border-radius: 15px; cursor: pointer;">
-                <div class="card-body p-4">
-                  <div class="d-flex align-items-center justify-content-between mb-3">
-                    <div class=" bg-opacity-10 p-3 rounded-circle" style="color: #E5BA41;">
-                      <i class="fas fa-spinner fa-2x"></i>
-                  </div>
-                  <h2 class ="fw-black mb-1" id="count_open" style="font-size: 2.2rem; letter-spacing: -1px;">0</h2>
-                </div>
-                <div>
-                  <p class="text-warning fw-bold text-uppercase mb-0" style="font-size: 0.75rem;color: #E5BA41; letter-spacing: 1px;">On Process</p>
-                  <hr class="mt-2 mb-3" style="border-top: 2px solid #E5BA41;; opacity:1; width:100%;"/>
-                  <div class="d-flex justify-content-between align-items-center">
-                    <a href="#report_data" class="text-decoration-none small text-muted stretched-link">Click here for more info</a>
-                    <i class="fas fa-chevron-right small text-muted"></i>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-xl-3 col-lg-6 col-md-6">
-            <div class="card h-100 dashcard-clickable" data-filter="PENDING" style="border-radius: 15px; cursor:pointer;">
-              <div class="card-body p-4">
-                <div class="d-flex align-items-center justify-content-between mb-3">
-                  <div class="bg-danger bg-opacity-10 p-3 rounded-circle text-danger" style="color: #D25353;">
-                    <i class="fas fa-exclamation-triangle fa-2x"></i>
-                  </div>
-                  <h2 class="fw-black mb-1" id="count_owfa" style="font-size:2.2rem; letter-spacing: -1px;">0</h2>
-                </div>
-                <div>
-                  <p class="text-danger fw-bold text-uppercase mb-0" style="font-size:0.75rem; color: #D25353;letter-spacing:1px;">Over Sla / Pending</p>
-                  <hr class="mt-2 mb-3" style="border-top: 2px solid #D25353; opacity:1; width:100%;"/>
-                  <div class="d-flex justify-content-between align-items-center">
-                    <a href="#report_data" class="text-decoration-none small text-muted stretched-link">Click here for more info</a>
-                    <i class="fas fa-chevron-right small text-muted"></i>
-                  </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-xl-3 col-lg-6 col-md-6">
-          <div class="card h-100 dashcard-clickable" data-filter="CLOSED" style="border-radius: 15px; cursor:pointer;">
-            <div class="card-body p-4">
-              <div class="d-flex align-items-center justify-content-between mb-2">
-                <div class="bg-success bg-opacity-10 p-3 rounded-circle text-success" style="color: #94A378;">
-                  <i class="fas fa-check-double fa-2x"></i>
-                </div>
-                <h2 class="fw-black mb-1" id="count_closed" style="font-size:2.2rem; letter-spacing: -1px;">0</h2>
-              </div>
-              <div class="mb-2">
-
-              </div>
-              <div>
-                <p class="text-success fw-bold text-uppercase mb-0" style="font-size:0.75rem; color: #94A378; letter-spacing: 1px;">Closed Reports</p>
-                <hr class="mt-2 mb-3" style="border-top: 2px solid #94A378; opacity:1; width:100%;"/>
-                <div class="d-flex justify-content-between align-items-center">
-                  <a href="#report_data" class="text-decoration-none small text-muted stretched-link">View History</a>
-                  <i class="fas fa-chevron-right small text-muted"></i>
-                </div>
-              </div>
             </div>
           </div>
         </div>
       </div>
-        <!-- CHARTS -->
-        <div class="row" id="ovrall">
 
-          <div class="col-12 col-lg-6 mb-3">
-            <div class="card card2 h-100">
-              <h5 class="card-header" style="background-color: #95a2b9b4; color:black;">Overall Status</h5>
-              <div class="card-body">
-                <div id="chartdiv5"></div>
+      <div class="main-container">
+        <main class="p-4">
+          <div class="row g-4">
+            <div class="row g-4 mb-4">
+              <div class="col-xl-3 col-lg-6 col-md-6">
+                <div class="card h-100 dashcard-clickable" data-filter="" style="border-radius: 15px; cursor:pointer;">
+                  <div class="card-body p-4">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                      <div class=" bg-opacity-10 p-3 rounded-circle " style="color: #576A8F;">
+                        <i class="fas fa-file-alt fa-2x"></i>
+                      </div>
+                      <h2 class="fw-black mb-1" id="count_total" style="font-size:2.2rem; letter-spacing: -1px; ">0</h2>
+                    </div>
+                    <div>
+                      <p class=" fw-bold text-uppercase mb-0"
+                        style="font-size: 0.75rem; color: #576A8F;letter-spacing: 1px;">Total Reports</p>
+                      <hr class="mt-2 mb-3" style="border-top: 2px solid #576A8F; opacity: 1; width: 100%;" />
+                      <div class="d-flex justify-content-between align-items-center">
+                        <a href="#report_data" class="text-decoration-none small text-muted stretched-link">Click here
+                          for more info</a>
+                        <i class="fas fa-chevron-right small text-muted"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-xl-3 col-lg-6 col-md-6">
+                <div class="card  h-100 dashcard-clickable" data-filter="ON PROCESS"
+                  style="border-radius: 15px; cursor: pointer;">
+                  <div class="card-body p-4">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                      <div class=" bg-opacity-10 p-3 rounded-circle" style="color: #E5BA41;">
+                        <i class="fas fa-spinner fa-2x"></i>
+                      </div>
+                      <h2 class="fw-black mb-1" id="count_open" style="font-size: 2.2rem; letter-spacing: -1px;">0</h2>
+                    </div>
+                    <div>
+                      <p class="text-warning fw-bold text-uppercase mb-0"
+                        style="font-size: 0.75rem;color: #E5BA41; letter-spacing: 1px;">On Process</p>
+                      <hr class="mt-2 mb-3" style="border-top: 2px solid #E5BA41;; opacity:1; width:100%;" />
+                      <div class="d-flex justify-content-between align-items-center">
+                        <a href="#report_data" class="text-decoration-none small text-muted stretched-link">Click here
+                          for more info</a>
+                        <i class="fas fa-chevron-right small text-muted"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-xl-3 col-lg-6 col-md-6">
+                <div class="card h-100 dashcard-clickable" data-filter="PENDING"
+                  style="border-radius: 15px; cursor:pointer;">
+                  <div class="card-body p-4">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                      <div class="bg-danger bg-opacity-10 p-3 rounded-circle text-danger" style="color: #D25353;">
+                        <i class="fas fa-exclamation-triangle fa-2x"></i>
+                      </div>
+                      <h2 class="fw-black mb-1" id="count_owfa" style="font-size:2.2rem; letter-spacing: -1px;">0</h2>
+                    </div>
+                    <div>
+                      <p class="text-danger fw-bold text-uppercase mb-0"
+                        style="font-size:0.75rem; color: #D25353;letter-spacing:1px;">Over Sla / Pending</p>
+                      <hr class="mt-2 mb-3" style="border-top: 2px solid #D25353; opacity:1; width:100%;" />
+                      <div class="d-flex justify-content-between align-items-center">
+                        <a href="#report_data" class="text-decoration-none small text-muted stretched-link">Click here
+                          for more info</a>
+                        <i class="fas fa-chevron-right small text-muted"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-xl-3 col-lg-6 col-md-6">
+                <div class="card h-100 dashcard-clickable" data-filter="CLOSED"
+                  style="border-radius: 15px; cursor:pointer;">
+                  <div class="card-body p-4">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                      <div class="bg-success bg-opacity-10 p-3 rounded-circle text-success" style="color: #94A378;">
+                        <i class="fas fa-check-double fa-2x"></i>
+                      </div>
+                      <h2 class="fw-black mb-1" id="count_closed" style="font-size:2.2rem; letter-spacing: -1px;">0</h2>
+                    </div>
+                    <div class="mb-2">
+
+                    </div>
+                    <div>
+                      <p class="text-success fw-bold text-uppercase mb-0"
+                        style="font-size:0.75rem; color: #94A378; letter-spacing: 1px;">Closed Reports</p>
+                      <hr class="mt-2 mb-3" style="border-top: 2px solid #94A378; opacity:1; width:100%;" />
+                      <div class="d-flex justify-content-between align-items-center">
+                        <a href="#report_data" class="text-decoration-none small text-muted stretched-link">View
+                          History</a>
+                        <i class="fas fa-chevron-right small text-muted"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
+            <!-- CHARTS -->
+            <div class="row" id="ovrall">
 
-          <div class="col-12 col-lg-6 mb-3">
-            <div class="card card2 h-100">
-              <h5 class="card-header text-black"  style="background-color: #95a2b9b4; color:black;">Admin Support Logs</h5>
-              <div class="card-body">
-                <div id="chartdiv8"></div>
+              <div class="col-12 col-lg-6 mb-3">
+                <div class="card card2 h-100">
+                  <h5 class="card-header" style="background: linear-gradient(135deg, #213456, #334c7a); color:black;">Overall Status</h5>
+                  <div class="card-body">
+                    <div id="chartdiv5"></div>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
 
-          <div class="col-12 col-lg-6 mb-3">
-            <div class="card card2 h-100">
-              <h5 class="card-header text-black"  style="background-color: #95a2b9b4; color:black;">Recently enrolled reports.</h5>
-              <div class="card-body">
-                <div id="chartdiv1"></div>
+              <div class="col-12 col-lg-6 mb-3">
+                <div class="card card2 h-100">
+                  <h5 class="card-header text-black" style="background: linear-gradient(135deg, #213456, #334c7a); color:black;">Admin Support Logs
+                  </h5>
+                  <div class="card-body">
+                    <div id="chartdiv8"></div>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
 
-          <div class="col-12 col-lg-6 mb-3">
-            <div class="card card2 h-100">
-              <h5 class="card-header text-black"  style="background-color: #95a2b9b4; color:black;">CATEGORIES</h5>
-              <div class="card-body">
-                <div id="chartdiv2" name="chartdiv2"></div>
+              <div class="col-12 col-lg-6 mb-3">
+                <div class="card card2 h-100">
+                  <h5 class="card-header text-black" style="background: linear-gradient(135deg, #213456, #334c7a); color:black;">Recently enrolled
+                    reports.</h5>
+                  <div class="card-body">
+                    <div id="chartdiv1"></div>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
 
-          <div class="col-12 mb-3">
-            <div class="card card2">
-              <h5 class="card-header text-black"  style="background-color: #95a2b9b4; color:black;">Number of Escalated Reports Per Area</h5>
-              <div class="card-body">
-                <div id="chart_area"></div>
+              <div class="col-12 col-lg-6 mb-3">
+                <div class="card card2 h-100">
+                  <h5 class="card-header text-black" style="background: linear-gradient(135deg, #213456, #334c7a); color:black;">CATEGORIES</h5>
+                  <div class="card-body">
+                    <div id="chartdiv2" name="chartdiv2"></div>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
 
-         
+              <div class="col-12 mb-3">
+                <div class="card card2">
+                  <h5 class="card-header text-black" style="background: linear-gradient(135deg, #213456, #334c7a); color:black;">Number of
+                    Escalated Reports Per Area</h5>
+                  <div class="card-body">
+                    <div id="chart_area"></div>
+                  </div>
+                </div>
+              </div>
 
-        </div><!-- /#ovrall -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" />
+              <div class="col-12 mb-3">
+                <div class="card card2">
+                  <h5 class="card-header text-black" style="background: linear-gradient(135deg, #213456, #334c7a); color:black;">Non Compliant
+                    Stores on End of Day Process (7:AM CUT OFF)</h5>
+                  <div class="card-body">
 
-        <!-- TABLES -->
+                    <div class="row mb-3">
+                      <div class="col-12 col-md-8 col-lg-6">
+                        <div class="input-group">
+                          <span class="input-group-text">FROM</span>
+                          <input type="date" id="frompolDate" class="form-control">
+                          <span class="input-group-text">TO</span>
+                          <input type="date" id="topolDate" class="form-control">
+                        </div>
+                      </div>
+                    </div>
+
+                    <div id="chart_polled"></div>
+
+                  </div>
+                </div>
+              </div>
+
+            </div><!-- /#ovrall -->
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" />
+
+         <!-- TABLES -->
         <div class="row">
-
           <div class="col-12 mb-3">
             <div class="card card2">
-              <h5 class="card-header text-black"  style="background-color: #95a2b9b4; color:black;">TICKETS</h5>
-              <div class="card-body">
+              
+        <div class="card-header" style="background: linear-gradient(135deg, #213456, #334c7a); border-bottom: none; padding-bottom: 0;">
+          <ul class="nav nav-tabs card-header-tabs" id="ticketTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="tickets-tab" data-toggle="tab" data-target="#tickets" type="button" role="tab" aria-controls="tickets" aria-selected="true" style="font-weight: bold; border: 1px solid #ffffff;">
+                TICKETS
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="transferred-tab" data-toggle="tab" data-target="#transferred" type="button" role="tab" aria-controls="transferred" aria-selected="false" style="color: white; font-weight: bold; border: 1px solid #ffffff;">
+                TRANSFERRED TICKETS
+              </button>
+            </li>
+          </ul>
+        </div>
+
+      <div class="card-body">
+        <div class="tab-content" id="ticketTabsContent">
+          <div class="tab-pane fade show active" id="tickets" role="tabpanel" aria-labelledby="tickets-tab">
+            <div class="table-responsive" style="max-height:450px; width:100%; overflow-y:auto;">
+              <table id="report_data" class="table table-hover">
+                
+                <tbody>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="tab-pane fade" id="transferred" role="tabpanel" aria-labelledby="transferred-tab">
+            <div class="table-responsive" style="max-height:450px; width:100%; overflow-y:auto;">
+              <table id="transferred_data" class="table table-hover">
+               
+                <tbody>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+<div class="col-lg-12 Down" id="Down">
+  <input type="hidden" id="myInput">
+</div>
+
+           
+
+          </div><!-- /.container-fluid -->
+      </div><!-- /#layoutSidenav_content -->
+    </div><!-- /#wrapper -->
+  </div><!-- /.container-fluid -->
+
+
+  <!-- =========================
+Start of Add/Edit Modal
+========================= -->
+  <div class="col-12 col-lg-12 modal fade" id="userModal" tabindex="-1" role="dialog"
+    aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="max-width: 100%;">
+      <form method="post" id="report_form" enctype="multipart/form-data">
+        <div class="modal-content">
+
+          <div class="modal-header">
+            <h4 class="modal-title" id="userModal_header" value="Add Report"></h4>
+          </div>
+
+          <div class="modal-body">
+            <div class="row">
+
+              <!-- LEFT SIDE -->
+              <div class="m_col col-12 col-lg-6">
 
                 <div class="row">
-                  <!-- old code with overflow -->
-                  <!-- <div class="col-12 mb-3">  
-                     <div class="table-responsive" id="proTeamScroll" style="max-height:450px; width:100%;overflow-y:auto;">
-                    <table id="report_data" class="table table-hover">
 
+                  <div class="form-group col-12 col-md-6">
+                    <label>STORE</label>
+                    <input type="hidden" name="str_num" id="str_num" readonly value="">
+                    <select class="form-control form-control-sm" name="store" id="store" required>
+                      <option value="">Select Store...</option>
+                      <?php
+                      $query = "select * from tbl_branch ";
+                      $run = $conn->prepare($query);
+                      $run->execute();
+                      $rs = $run->get_result();
+                      while ($res = $rs->fetch_assoc()) {
+                        $brcnhid = $res['str_num'];
+                        $brnchcd = $res['str_code'] . ' | ' . $res['str_name'];
+                        ?>
+                        <option value="<?php echo $brcnhid; ?>"><?= $brnchcd; ?></option>
+                      <?php } ?>
+                    </select>
+                  </div>
+
+                  <input type="hidden" class="form-control form-control-sm" name="ticket_no" id="ticket_no">
+
+
+
+
+                  <div class="form-group col-4">
+                    <label>SUBJECT/CONCERN</label>
+                    <input type="text" name="subjct" id="subjct" class="form-control form-control-sm" placeholder="Input Concern"
+                      style="text-transform:uppercase" onkeyup="this.value = this.value;"></input>
+                  </div>
+
+                  <div class="form-group col-12 col-md-4">
+                    <label>VIA</label>
+                    <select class="form-control form-control-sm" name="via" id="via" required>
+                      <option value=""> &larr; VIA &rarr;</option>
+                      <?php
+                      $query = "select * from via_main";
+                      $run = $conn->prepare($query);
+                      $run->execute();
+                      $rs = $run->get_result();
+                      while ($res = $rs->fetch_assoc()) {
+                        ?>
+                        <option><?= $res['via_desc'] ?></option>
+                      <?php } ?>
+                    </select>
+                  </div>
+
+                  <div class="form-group col-12 col-md-8">
+                    <label>ADMIN SUPPORT</label>
+                    <input type="hidden" name="it_num" id="it_num" readonly>
+                    <select class="form-control form-control-sm" name="itsup" id="itsup" required>
+                      <option value="">Assign support...</option>
+                      <?php
+                      $query = "select * from it_tech WHERE deptsel = '2' AND itsup NOT IN ('4','8','12','14')";
+                      $run = $conn->prepare($query);
+                      $run->execute();
+                      $rs = $run->get_result();
+                      while ($res = $rs->fetch_assoc()) {
+                        $tchid = $res['itsup'];
+                        $tchdesc = $res['it_desc'];
+                        ?>
+                        <option value="<?php echo $tchid; ?>"><?= $tchdesc; ?></option>
+                      <?php } ?>
+                    </select>
+                  </div>
+
+                  <div class="form-group col-12 col-md-4">
+                    <label>CATEGORY</label>
+                    <input type="hidden" name="cat_num" id="cat_num" readonly>
+                    <select class="form-control form-control-sm" name="cat" id="cat" required>
+                      <option value=""> &larr; CATEGORY &rarr;</option>
+                      <?php
+                      // $query="select * from category WHERE deptsel = '1'";
+                      $query = "select * from categories WHERE deptsel = '2' AND old_tag IS NULL";
+                      $run = $conn->prepare($query);
+                      $run->execute();
+                      $rs = $run->get_result();
+                      while ($res = $rs->fetch_assoc()) {
+                        $supid = $res['cat_id'];
+                        $suppdesc = $res['cat_desc'];
+                        ?>
+                        <option value="<?php echo $supid; ?>"><?= $suppdesc; ?></option>
+                      <?php } ?>
+                    </select>
+                  </div>
+
+                  <div class="form-group col-12 col-md-4">
+                    <label>SUB CATEGORY</label>
+                    <input type="hidden" name="sub_num" id="sub_num" readonly>
+                    <select class="form-control form-control-sm" name="sub" id="sub"></select>
+                  </div>
+                  <div class="form-group col-12 col-md-4">
+                    <label style="font-weight: bold;">TRANSFER REQUEST</label>
+                    <div>
+                      <input type="checkbox" name="is_transfer" id="is_transfer" value="1">
+                      <label for="is_transfer"> Mark as Transfer Request</label>
                     </div>
-                  </div> -->
+                  </div>
+                  <div class="form-group col-12 col-md-4 hide_isp">
+                    <label for="isp" id="lbl_isp">Service Provider</label>
+                    <input type="hidden" name="isp_num" id="isp_num" readonly>
+                    <select class="form-control form-control-sm" name="isp" id="isp">
+                      <option value="">Select Network Provider</option>
+                      <?php
+                      $query = "select * from tbl_isp";
+                      $run = $conn->prepare($query);
+                      $run->execute();
+                      $rs = $run->get_result();
+                      while ($res = $rs->fetch_assoc()) {
+                        $ispid = $res['isp_id'];
+                        $ispdesc = $res['isp_shortDesc'];
+                        ?>
+                        <option value="<?php echo $ispid; ?>"><?= $ispdesc; ?></option>
+                      <?php } ?>
+                    </select>
+                  </div>
 
-                                    <div class="col-12 mb-3">
-                     <div class="table-responsive" id="proTeamScroll" style="">
-                    <table id="report_data" class="table table-hover">
+                  <div class="form-group col-12 col-md-4 hide_isp">
+                    <label id="lbl_refNo" for="refNo">Reference No:</label>
+                    <input type="text" class="form-control form-control-sm" name="refNo" id="refNo">
+                  </div>
 
+                  <div class="form-group col-12 col-md-4 hide_isp">
+                    <label for="date_refNo" class="text" id="lbl_DtRefNo">Date of RefNo</label>
+                    <div class="input-group date" id="datetimepicker3" data-target-input="nearest">
+                      <input type="text" name="date_refNo" id="date_refNo"
+                        class="form-control form-control-sm datetimepicker-input" data-target="#datetimepicker3" />
+                      <div class="input-group-append" data-target="#date_created" data-toggle="datetimepicker">
+                        <input type="hidden" class="form-control form-control-sm" name="date_createdx"
+                          id="date_createdx">
+                        <div class="input-group-text" id="ico_cal3"><i class="fa fa-calendar"></i></div>
+                      </div>
                     </div>
+                  </div>
+
+                  <div class="form-group col-12 col-md-4">
+                    <label>STATUS</label>
+                    <select class="form-control form-control-sm" name="status" id="status" required>
+                      <option value=""> &larr; Status &rarr;</option>
+                      <?php
+                      $query = "select * from status  WHERE it_module_tag = 'Y'";
+                      $run = $conn->prepare($query);
+                      $run->execute();
+                      $rs = $run->get_result();
+                      while ($res = $rs->fetch_assoc()) {
+                        ?>
+                                   <option value="<?=$res['stat_desc'] ?>" style="color: #333;"><?=$res['stat_desc'] ?></option>
+                      <?php } ?>
+                    </select>
+                  </div>
+
+                  <div class="form-group col-12 col-md-4 hide_cl">
+                    <label id="dateclabel" class="hidden">DATE CLOSED</label>
+                    <div class="input-group date" id="datetimepicker2" data-target-input="nearest">
+                      <input type="text" name="date_closed" id="date_closed"
+                        class="form-control form-control-sm datetimepicker-input" data-target="#datetimepicker2"
+                        autocomplete="off" />
+                      <div class="input-group-append" data-target="#date_closed" autocomplete="off"
+                        data-toggle="datetimepicker">
+                        <div class="input-group-text" id="ico_cal" name="ico_cal"><i class="fa fa-calendar"></i></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group col-12 col-md-4 hide_cl">
+                    <label id="clby_label" class="hidden">CLOSED BY</label>
+                    <input type="hidden" name="close_by" id="close_by" value="<?php echo $_SESSION['tech_id']; ?>">
+                    <input type="text" class="form-control form-control-sm" name="cl_desc" id="cl_desc" readonly
+                      value="<?php echo $_SESSION['fname'] . '  ' . $_SESSION['lstname']; ?>">
+                  </div>
+
+                  <div class="form-group col-12">
+                    <label>Work Output:</label>
+                    <textarea name="remarks" id="remarks" class="form-control form-control-sm"
+                      placeholder="Your Workoutput"></textarea>
                   </div>
 
                   <div class="col-12">
-                     <div class="table-responsive" id="proTeamScroll" style="max-height:450px; width:100%;overflow-y:auto;">
-                      <table id="network_tb" class="table table-hover">
-
-                    </div>
+                    <label style="font-weight: bold;">Attached File:</label>
+                    <p><input id="file-input" type="file" name="file" Multiple></p>
                   </div>
-                </div>
 
-              </div>
-            </div>
-          </div>
-
-        </div><!-- /.row -->
-
-        <div class="col-lg-12 Down" id="Down">
-          <input type="hidden" id="myInput">
-        </div>
-
-      </div><!-- /.container-fluid -->
-    </div><!-- /#layoutSidenav_content -->
-  </div><!-- /#wrapper -->
-</div><!-- /.container-fluid -->
-
-
-<!-- =========================
-Start of Add/Edit Modal
-========================= -->
-<div class="col-12 col-lg-12 modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg" style="max-width: 100%;">
-    <form method="post" id="report_form" enctype="multipart/form-data">
-      <div class="modal-content">
-
-        <div class="modal-header">
-          <h4 class="modal-title" id="userModal_header" value="Add Report"></h4>
-        </div>
-
-        <div class="modal-body">
-          <div class="row">
-
-            <!-- LEFT SIDE -->
-            <div class="m_col col-12 col-lg-6">
-
-              <div class="row">
-
-                <div class="form-group col-12 col-md-6">
-                  <label>STORE</label>
-                  <input type="hidden" name="str_num" id="str_num" readonly value="">
-                  <select class="form-control form-control-sm" name="store" id="store" required>
-                    <option value="">Select Store...</option>
-                    <?php
-                      $query="select * from tbl_branch ";
-                      $run=$conn->prepare($query);
-                      $run->execute();
-                      $rs=$run->get_result();
-                      while ($res=$rs->fetch_assoc()) {
-                        $brcnhid = $res['str_num'];
-                        $brnchcd = $res['str_code'].' | '.$res['str_name'];
-                    ?>
-                      <option value="<?php echo $brcnhid; ?>"><?= $brnchcd; ?></option>
-                    <?php } ?>
-                  </select>
-                </div>
-
-                <input type="hidden" class="form-control form-control-sm" name="ticket_no" id="ticket_no">
-
-                
-
-
-                <div class="form-group col-4">
-                  <label>SUBJECT/CONCERN</label>
-                  <input type="text" name="subjct" id="subjct" class="form-control form-control-sm"
-                    placeholder="Input Concern" style="text-transform:uppercase"
-                    onkeyup="this.value = this.value;"></input>
-                </div>
-
-                <div class="form-group col-12 col-md-4">
-                  <label>VIA</label>
-                  <select class="form-control form-control-sm" name="via" id="via" required>
-                    <option value=""> &larr; VIA &rarr;</option>
-                    <?php
-                      $query="select * from via_main";
-                      $run=$conn->prepare($query);
-                      $run->execute();
-                      $rs=$run->get_result();
-                      while ($res=$rs->fetch_assoc()) {
-                    ?>
-                      <option><?= $res['via_desc'] ?></option>
-                    <?php } ?>
-                  </select>
-                </div>
-
-                <div class="form-group col-12 col-md-8">
-                  <label>I.T SUPPORT</label>
-                  <input type="hidden" name="it_num" id="it_num" readonly>
-                  <select class="form-control form-control-sm" name="itsup" id="itsup" required>
-                    <option value="">Assign support...</option>
-                    <?php
-                      $query="select * from it_tech WHERE deptsel = '2' AND itsup NOT IN ('4','7','8','12','14')";
-                      $run=$conn->prepare($query);
-                      $run->execute();
-                      $rs=$run->get_result();
-                      while ($res=$rs->fetch_assoc()) {
-                        $tchid = $res['itsup'];
-                        $tchdesc = $res['it_desc'];
-                    ?>
-                      <option value="<?php echo $tchid; ?>"><?= $tchdesc; ?></option>
-                    <?php } ?>
-                  </select>
-                </div>
-
-                <div class="form-group col-12 col-md-4">
-                  <label>CATEGORY</label>
-                  <input type="hidden" name="cat_num" id="cat_num" readonly>
-                  <select class="form-control form-control-sm" name="cat" id="cat" required>
-                    <option value=""> &larr; CATEGORY &rarr;</option>
-                    <?php
-                      // $query="select * from category WHERE deptsel = '1'";
-                          $query="select * from categories WHERE deptsel = '2' AND old_tag IS NULL";
-                      $run=$conn->prepare($query);
-                      $run->execute();
-                      $rs=$run->get_result();
-                      while ($res=$rs->fetch_assoc()) {
-                        $supid = $res['cat_id'];
-                        $suppdesc = $res['cat_desc'];
-                    ?>
-                      <option value="<?php echo $supid; ?>"><?= $suppdesc; ?></option>
-                    <?php } ?>
-                  </select>
-                </div>
-
-                <div class="form-group col-12 col-md-4">
-                  <label>SUB CATEGORY</label>
-                  <input type="hidden" name="sub_num" id="sub_num" readonly>
-                  <select class="form-control form-control-sm" name="sub" id="sub"></select>
-                </div>
-<div class="form-group col-12 col-md-4">
-  <label style="font-weight: bold;">TRANSFER REQUEST</label>
-  <div>
-    <input type="checkbox" name="is_transfer" id="is_transfer" value="1">
-    <label for="is_transfer"> Mark as Transfer Request</label>
-  </div>
-</div>
-                <div class="form-group col-12 col-md-4 hide_isp">
-                  <label for="isp" id="lbl_isp">Service Provider</label>
-                  <input type="hidden" name="isp_num" id="isp_num" readonly>
-                  <select class="form-control form-control-sm" name="isp" id="isp">
-                    <option value="">Select Network Provider</option>
-                    <?php
-                      $query="select * from tbl_isp";
-                      $run=$conn->prepare($query);
-                      $run->execute();
-                      $rs=$run->get_result();
-                      while ($res=$rs->fetch_assoc()) {
-                        $ispid = $res['isp_id'];
-                        $ispdesc = $res['isp_shortDesc'];
-                    ?>
-                      <option value="<?php echo $ispid; ?>"><?= $ispdesc; ?></option>
-                    <?php } ?>
-                  </select>
-                </div>
-
-                <div class="form-group col-12 col-md-4 hide_isp">
-                  <label id="lbl_refNo" for="refNo">Reference No:</label>
-                  <input type="text" class="form-control form-control-sm" name="refNo" id="refNo">
-                </div>
-
-                <div class="form-group col-12 col-md-4 hide_isp">
-                  <label for="date_refNo" class="text" id="lbl_DtRefNo">Date of RefNo</label>
-                  <div class="input-group date" id="datetimepicker3" data-target-input="nearest">
-                    <input type="text" name="date_refNo" id="date_refNo"
-                      class="form-control form-control-sm datetimepicker-input" data-target="#datetimepicker3"/>
-                    <div class="input-group-append" data-target="#date_created" data-toggle="datetimepicker">
-                      <input type="hidden" class="form-control form-control-sm" name="date_createdx" id="date_createdx">
-                      <div class="input-group-text" id="ico_cal3"><i class="fa fa-calendar"></i></div>
-                    </div>
+                  <div class="col-12">
+                    <hr />
                   </div>
-                </div>
 
-                <div class="form-group col-12 col-md-4">
-                  <label>STATUS</label>
-                  <select class="form-control form-control-sm" name="status" id="status" required>
-                    <option value=""> &larr; Status &rarr;</option>
-                    <?php
-                      $query="select * from status  WHERE adminsup_module_tag = 'Y'";
-                      $run=$conn->prepare($query);
-                      $run->execute();
-                      $rs=$run->get_result();
-                      while ($res=$rs->fetch_assoc()) {
-                    ?>
-                      <option><?= $res['stat_desc'] ?></option>
-                    <?php } ?>
-                    <option value="CLOSED" readonly>CLOSED</option>
-                  </select>
-                </div>
-
-                <div class="form-group col-12 col-md-4 hide_cl">
-                  <label id="dateclabel" class="hidden">DATE CLOSED</label>
-                  <div class="input-group date" id="datetimepicker2" data-target-input="nearest">
-                    <input type="text" name="date_closed" id="date_closed"
-                      class="form-control form-control-sm datetimepicker-input"
-                      data-target="#datetimepicker2" autocomplete="off"/>
-                    <div class="input-group-append" data-target="#date_closed" autocomplete="off" data-toggle="datetimepicker">
-                      <div class="input-group-text" id="ico_cal" name="ico_cal"><i class="fa fa-calendar"></i></div>
-                    </div>
+                  <div class="col-12 d-flex justify-content-between align-items-center">
+                    <input type="submit" name="action" id="action" class="btn btn-success" value="Add">
+                    <button type="button" name="btnClose" id="btnClose" class="btn btn-danger"
+                      data-dismiss="modal">Close</button>
                   </div>
-                </div>
 
-                <div class="form-group col-12 col-md-4 hide_cl">
-                  <label id="clby_label" class="hidden">CLOSED BY</label>
-                  <input type="hidden" name="close_by" id="close_by" value="<?php echo $_SESSION['tech_id']; ?>">
-                  <input type="text" class="form-control form-control-sm" name="cl_desc" id="cl_desc" readonly
-                    value="<?php echo $_SESSION['fname']. '  ' . $_SESSION['lstname']; ?>">
-                </div>
+                  <div class="col-12">
+                    <hr />
+                  </div>
 
-                <div class="form-group col-12">
-                  <label>Work Output:</label>
-                  <textarea name="remarks" id="remarks" class="form-control form-control-sm" placeholder="Your Workoutput"></textarea>
-                </div>
+                  <div class="card" id="img" name="img"></div>
 
-                <div class="col-12">
-                  <label style="font-weight: bold;">Attached File:</label>
-                  <p><input id="file-input" type="file" name="file" Multiple></p>
-                </div>
+                </div><!-- /.row -->
 
-                <div class="col-12"><hr/></div>
+              </div><!-- /.left -->
 
-                <div class="col-12 d-flex justify-content-between align-items-center">
-                  <input type="submit" name="action" id="action" class="btn btn-success" value="Add">
-                  <button type="button" name="btnClose" id="btnClose" class="btn btn-danger" data-dismiss="modal">Close</button>
-                </div>
-
-                <div class="col-12"><hr/></div>
-
-                <div class="card" id="img" name="img"></div>
-
-              </div><!-- /.row -->
-
-            </div><!-- /.left -->
-
-            <!-- RIGHT SIDE -->
-           <!-- RIGHT SIDE -->
+              <!-- RIGHT SIDE -->
+              <!-- RIGHT SIDE -->
             <div class="col-12 col-lg-6">
 
                 <div id="msg_thread">
 
                   <div class="col-12 mb-3 px-0">
-                    <label style="font-weight: bold; color:#213456;">Add Comment:</label>
+                    <label style="font-weight: bold; color:linear-gradient(135deg, #213456, #334c7a);">Add Comment:</label>
                     <textarea name="admsg" id="addmsg" class="form-control form-control-sm"
                       placeholder="Reply to their message or give updates regarding this ticket..."
                       required></textarea>
                   </div>
 
                   <div class="col-12 mt-4 mb-2 dv_msg px-0">
-                    <label for="remarks_view" style="font-weight: bold; color:#213456;">Comment Thread:</label>
+                    <label for="remarks_view" style="font-weight: bold; color:linear-gradient(135deg, #213456, #334c7a);">Comment Thread:</label>
                     <hr>
                     <div class="container_remarks">
                       <div id="remarks_view"></div>
@@ -1238,18 +1314,18 @@ Start of Add/Edit Modal
               </div><!-- /.right -->
 
 
-          </div><!-- /.row -->
-        </div><!-- /.modal-body -->
+            </div><!-- /.row -->
+          </div><!-- /.modal-body -->
 
-        <div class="modal-footer">
-          <input type="hidden" name="operation" id="operation" value="Add">
-          <input type="hidden" name="u_id" id="u_id" value="<?php echo $_SESSION['user_id']; ?>">
-        </div>
+          <div class="modal-footer">
+            <input type="hidden" name="operation" id="operation" value="Add">
+            <input type="hidden" name="u_id" id="u_id" value="<?php echo $_SESSION['user_id']; ?>">
+          </div>
 
-      </div><!-- /.modal-content -->
-    </form>
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+        </div><!-- /.modal-content -->
+      </form>
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
 
   <!-- =========================
 Start of Create Department Report Modal
@@ -1305,7 +1381,7 @@ Start of Create Department Report Modal
                     <option value="6">VISUAL</option>
                     <option value="11">H.R</option>
                     <option value="13">ACCOUNTS PAYABLE</option>
-                      <option value="15">TREASURY</option>
+                    <option value="15">TREASURY</option>
                     <option value="16">ACCOUNT RECEIVABLE</option>
                   </select>
                 </div>
@@ -1368,28 +1444,7 @@ Start of Create Department Report Modal
       </form>
     </div>
   </div>
-<div class="modal fade" id="printModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header"><h5 class="modal-title">Enter Asset Details</h5></div>
-            <div class="modal-body">
-                <input type="hidden" id="print_ticket_no">
-                <div class="form-group">
-                    <label>Serial Number</label>
-                    <input type="text" id="serial_number" class="form-control">
-                </div>
-                <div class="form-group">
-                    <label>Asset Tag Number</label>
-                    <input type="text" id="asset_tag" class="form-control">
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-success" id="confirmPrint">Print/Preview</button>
-            </div>
-        </div>
-    </div>
-</div>
- 
+
   <script>
     $(document).ready(function () {
       // KPI Card Click Functionality
@@ -1645,7 +1700,7 @@ function loadDepartmentTable() {
         
             const monthNames = {
                 1: "JANUARY", 2: "FEBRUARY", 3: "MARCH", 
-                      4: "APRIL", 5: "MAY", 6: "JUNE" , 7: "JULY", 8: "AUGUST", 9: "SEPTEMBER", 10: "OCTOBER", 11: "NOVEMBER" , 12: "DECEMBER"
+                4: "APRIL", 5: "MAY", 6: "JUNE" , 7: "JULY" , 8: "AUGUST" , 9: "SEPTEMBER" , 10: "OCTOBER" , 11: "NOVEMBER" , 12: "DECEMBER"
             };
 
             if (response && response.department_stats) {
@@ -1714,7 +1769,7 @@ function loadDepartmentTable() {
                     let globalMetSLABarTheme = globalMetSLAPercent >= 80 ? "bg-success" : (globalMetSLAPercent >= 50 ? "bg-warning" : "bg-danger");
 
                     footerHtml = `
-                        <tr style="background-color: #ecebe584; font-weight: bold; border-top: 2px solid #213456;">
+                        <tr style="background-color: #ecebe584; font-weight: bold; border-top: 2px solid linear-gradient(135deg, #213456, #334c7a);">
                             <td class="text-dark fw-bold text-uppercase" style="font-size:13px;">TOTAL SUMMARY</td>
                             <td class="text-center text-primary fw-bold" style="font-size:14px;">${totalActiveSum}</td>
                             <td>
@@ -1756,4 +1811,22 @@ function loadDepartmentTable() {
         }
     });
 }
+$(document).ready(function() {
+    $('button[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+        var targetTab = $(e.target).attr("id"); 
+
+        if (targetTab === 'transferred-tab') {
+            if ($.fn.DataTable.isDataTable('#transferred_data')) {
+                $('#transferred_data').DataTable().columns.adjust().draw();
+            }
+        } else if (targetTab === 'tickets-tab') {
+            if ($.fn.DataTable.isDataTable('#report_data')) {
+                $('#report_data').DataTable().columns.adjust().draw();
+            }
+        }
+        $('#ticketTabs .nav-link').css('color', 'white');
+        $('#ticketTabs .nav-link.active').css('color', '#495057'); 
+    });
+    
+});
 </script>

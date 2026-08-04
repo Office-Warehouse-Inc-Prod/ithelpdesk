@@ -570,7 +570,7 @@ select.form-control, .form-control, .form-select {
             169 E.Rodriguez Jr. Ave., Brgy. Bagumbayan, Quezon City
           </div>
           <div class="header" style="font-size: 25px; margin-top:6px; display: flex; align-items: center; justify-content: center; text-align: center;">
-            IT HELPDESK TICKET SUMMARY
+            VISUAL HELPDESK TICKET SUMMARY
           </div>
           <div class="datetime-container" style=" margin-top:1px; display: flex; align-items: center; justify-content: center; text-align: center;">
             <p>As of: <strong><?php echo $ph_datetime; ?></strong></p>
@@ -984,7 +984,7 @@ function loadDepartmentTable() {
         
             const monthNames = {
                 1: "JANUARY", 2: "FEBRUARY", 3: "MARCH", 
-                4: "APRIL", 5: "MAY", 6: "JUNE"
+                4: "APRIL", 5: "MAY", 6: "JUNE" , 7: "JULY" , 8: "AUGUST"
             };
 
             if (response && response.department_stats) {
@@ -995,7 +995,7 @@ function loadDepartmentTable() {
                     statsByMonth[parseInt(row.MONTH_NUM)] = row;
                 });
 
-                for (let m = 1; m <= 6; m++) {
+                for (let m = 1; m <= 8; m++) {
                     let row = statsByMonth[m];
                     let monthName = monthNames[m];
 

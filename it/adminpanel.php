@@ -55,26 +55,26 @@ body {
     width: 100% !important;
     table-layout: auto !important;
     page-break-inside: avoid;
-    
+     
   }
 
   .admin-table th {
     background-color: linear-gradient(135deg, #213456, #334c7a) !important;
-    color: #fff !important;
+    color: #ffffff!important;
     padding: 6px 4px !important;
     font-size: 11px !important;
   }
 
   #admin_report.admin-table th.active.text-center {
     background-color: #2b9827 !important;
-    color: #fff !important;
+    color: #ffffff !important;
     padding: 6px 4px !important;
     font-size: 11px !important;
   }
 
   #admin_report.admin-table th.compliance.text-center {
     background-color: #a29341 !important;
-    color: #fff !important;
+    color: #ffffff !important;
     padding: 6px 4px !important;
     font-size: 11px !important;
   }
@@ -223,7 +223,7 @@ textarea.form-control:focus {
 }
 
 #userModal .modal-header{
-    background-color: linear-gradient(135deg, #213456, #334c7a);
+    background-color: #213456;
     color: #fff;
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
@@ -396,81 +396,6 @@ textarea.form-control:focus {
     color: #ffffff;
     font-weight: bold;
 }
-
-
-.btn-success {
-    background-color: #1C0770 !important;
-    border: none;
-    padding: 0.6rem 2rem;
-    font-weight: 600;
-    border-radius: 8px;
-    transition: transform 0.2s ease;
-}
-
-.btn-success:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(28, 7, 112, 0.2);
-}
-
-.btn-danger {
-    background-color: #fff;
-    border: 1px solid #e2e8f0;
-    color: #e53e3e;
-    padding: 0.6rem 1.5rem;
-    font-weight: 600;
-    border-radius: 8px;
-}
-
-.btn-danger:hover {
-    background-color: #fff5f5;
-    color: #c53030;
-}
-
-#userModal .modal-footer{
-  border-top: 1px solid rgba(0,0,0,0.08);
-  background: rgba(255,255,255,0.92);
-  position: sticky;
-  bottom: 0;
-  z-index: 5;
-  padding: 12px 14px;
-}
-
-@media (max-width: 991px){
-  #userModal .modal-dialog{
-    max-width: 96%;
-    margin: .75rem auto;
-  }
-
-  .container_remarks{
-    max-height: 350px;
-  }
-
-  #action, #btnClose{
-    width: 100%;
-  }
-}
-
-
-.year-picker-group {
-    flex: 1;
-    min-width: 300px; 
-}
-#showCalendarBtn {
-    background-color: linear-gradient(135deg, #213456, #334c7a);
-    color: white;
-    border-radius: 8px;
-    padding: 8px 20px;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    white-space: nowrap;
-}
-
-#showCalendarBtn:hover {
-    background-color: var(--owi-gold, #E1AD01);
-    color: linear-gradient(135deg, #213456, #334c7a);
-}
-
-
  .modal-overlay {
             display: none; 
             position: fixed;
@@ -484,7 +409,7 @@ textarea.form-control:focus {
             z-index: 1000;
         }
        .modal-overlay .modal-content {
-             background: linear-gradient(to bottom, #ffffff, #99aac8);
+             background: linear-gradient(to bottom, #ffffff, #b0b9c8);
             padding: 25px;
             border-radius: 8px;
             width: 70%;
@@ -495,9 +420,10 @@ textarea.form-control:focus {
         }
        .modal-overlay .modal-content h3 {
             margin-top: 0;
+            color: #333;
         }
        .modal-overlay .close-btn {
-            background-color: #28a745;
+            background-color: #213456;
             margin-top: 15px;
         }
  
@@ -516,7 +442,7 @@ textarea.form-control:focus {
   }
 
   .admin-table th {
-    background-color: linear-gradient(135deg, #213456, #334c7a) !important;
+    background-color: #213456 !important;
     color: #fff !important;
     padding: 6px 4px !important;
     font-size: 11px !important;
@@ -579,23 +505,148 @@ textarea.form-control:focus {
   padding:10px;
   width: 30%;
   color: white;
-  background-color: linear-gradient(135deg, #213456, #334c7a);
+  background-color: #213456;
 }
  .modal-overlay .month-row[data-month="6"] {
-  background: linear-gradient(135deg, #213456, #334c7a);
+  background: #213456;
   outline: 2px solid red;
   outline-offset: -2px; 
 }
 
+.btn-success {
+    background-color: #1C0770 !important;
+    border: none;
+    padding: 0.6rem 2rem;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: transform 0.2s ease;
+}
+
+.btn-success:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(28, 7, 112, 0.2);
+}
+
+.btn-danger {
+    background-color: #fff;
+    border: 1px solid #e2e8f0;
+    color: #e53e3e;
+    padding: 0.6rem 1.5rem;
+    font-weight: 600;
+    border-radius: 8px;
+}
+
+.btn-danger:hover {
+    background-color: #fff5f5;
+    color: #c53030;
+}
+
+#userModal .modal-footer{
+  border-top: 1px solid rgba(0,0,0,0.08);
+  background: rgba(255,255,255,0.92);
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  padding: 12px 14px;
+}
+
+@media (max-width: 991px){
+  #userModal .modal-dialog{
+    max-width: 96%;
+    margin: .75rem auto;
+  }
+
+  .container_remarks{
+    max-height: 350px;
+  }
+
+  #action, #btnClose{
+    width: 100%;
+  }
+}
+
+
+.year-picker-group {
+    flex: 1;
+    min-width: 300px; 
+}
+#showCalendarBtn {
+    background-color: #213456;
+    color: white;
+    border-radius: 8px;
+    padding: 8px 20px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+#showCalendarBtn:hover {
+    background-color: var(--owi-gold, #E1AD01);
+    color: linear-gradient(135deg, #213456, #334c7a);
+}
+
+        
+  .table-responsive {
+    overflow: visible !important;
+    width: 100% !important;
+  }
+
+  .admin-table {
+    width: 100% !important;
+    table-layout: auto !important;
+    page-break-inside: avoid;
+    
+  }
+
+ 
+
+  #admin_report.admin-table th.active.text-center {
+    background-color: #2b9827 !important;
+    color: #213456 !important;
+    padding: 6px 4px !important;
+    font-size: 11px !important;
+  }
+
+  #admin_report.admin-table th.compliance.text-center {
+    background-color: #a29341 !important;
+    color: #213456 !important;
+    padding: 6px 4px !important;
+    font-size: 11px !important;
+  }
+
+  .admin-table td {
+    padding: 6px 4px !important;
+    font-size: 11px !important;
+    border-bottom: 1px solid #0e0e0ea1 !important;
+  }
+  .table-responsive{
+    margin-top: -600px;
+  }
+
+  .progress {
+    border: 1px solid #999 !important;
+    background-color: #ddd !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  #dept-table-footer {
+    border: 2px solid #2d3c59;
+    background-color: #f4e9d7 !important; 
+}
+
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+    box-shadow: none !important;
+  }
+
 </style>
         
-<div id="welcomeModal" class="modal-overlay" style="display: none;">
+<div id="welcomeModal" class="modal-overlay" style="display: none; ">
     <div class="modal-content">
         <h3>IT HelpDesk Efficiency & Performance Report</h3>
         <p>As of the Year -  2026</p>
-
-  
-
          <table id="admin_report" class="table admin-table m-0">
                     <thead>  
                       <tr>
@@ -605,13 +656,13 @@ textarea.form-control:focus {
                         </th>
                       </tr>
                       
-                      <tr style="background-color: linear-gradient(135deg, #213456, #334c7a); color: #ffffff;">
-                         <th style="background: #213456; font-size: 12px; vertical-align: middle;">MONTH</th>
-                        <th class="text-center" style="background: #213456;  font-size: 12px; vertical-align: middle;">ACTIVE TICKETS</th>
-                        <th class="text-center" style="background: #213456;  font-size: 12px; vertical-align: middle;">COMPLIANCE RATE</th>
-                        <th class="text-center" style="background: #213456;  font-size: 12px; vertical-align: middle;">MET SLA</th>
-                        <th class="text-center" style="background: #213456;  font-size: 12px; vertical-align: middle;">NON-SLA</th>
-                        <th class="text-center" style="background: #213456;  font-size: 12px; vertical-align: middle;">SLA COMPLIANCE</th>
+                      <tr style="background-color: #213456; color: #ffffff;">
+                         <th style="background-color: #213456; font-size: 12px; vertical-align: middle;">MONTH</th>
+                        <th class="text-center" style="background-color: #213456; font-size: 12px; vertical-align: middle;">ACTIVE TICKETS</th>
+                        <th class="text-center" style="background-color: #213456; font-size: 12px; vertical-align: middle;">COMPLIANCE RATE</th>
+                        <th class="text-center" style="background-color: #213456; font-size: 12px; vertical-align: middle;">MET SLA</th>
+                        <th class="text-center" style="background-color: #213456; font-size: 12px; vertical-align: middle;">NON-SLA</th>
+                        <th class="text-center" style="background-color: #213456; font-size: 12px; vertical-align: middle;">SLA COMPLIANCE</th>
                       </tr>
                     </thead>
                     
@@ -656,7 +707,7 @@ textarea.form-control:focus {
                         <td class="text-center non-sla">-</td>
                         <td class="sla-compliance">-</td>
                       </tr>
-                      <tr class ="month-row" data-month="6" style="background: linear-gradient(135deg, #213456, #334c7a); border-outline: 2px solid red;">
+                      <tr class ="month-row" data-month="6" style="background: #213456; border-outline: 2px solid red;">
                         <td class="fw-bold" >JUNE</td>
                         <td class="text-center active-total">-</td>
                         <td class="compliance-rate">-</td>
@@ -664,7 +715,7 @@ textarea.form-control:focus {
                         <td class="text-center non-sla">-</td>
                         <td class="sla-compliance">-</td>
                       </tr>
-                          <tr class ="month-row" data-month="7" style="background: linear-gradient(135deg, #213456, #334c7a); border-outline: 2px solid red;">
+                          <tr class ="month-row" data-month="7" style="background: #213456; border-outline: 2px solid red;">
                         <td class="fw-bold" >JULY</td>
                         <td class="text-center active-total">-</td>
                         <td class="compliance-rate">-</td>
@@ -672,7 +723,7 @@ textarea.form-control:focus {
                         <td class="text-center non-sla">-</td>
                         <td class="sla-compliance">-</td>
                       </tr>
-                          <tr class ="month-row" data-month="8" style="background: linear-gradient(135deg, #213456, #334c7a); border-outline: 2px solid red;">
+                          <tr class ="month-row" data-month="8" style="background: #213456; border-outline: 2px solid red;">
                         <td class="fw-bold" >AUGUST</td>
                         <td class="text-center active-total">-</td>
                         <td class="compliance-rate">-</td>
@@ -680,7 +731,7 @@ textarea.form-control:focus {
                         <td class="text-center non-sla">-</td>
                         <td class="sla-compliance">-</td>
                       </tr>
-                          <tr class ="month-row" data-month="9" style="background: linear-gradient(135deg, #213456, #334c7a); border-outline: 2px solid red;">
+                          <tr class ="month-row" data-month="9" style="background: #213456; border-outline: 2px solid red;">
                         <td class="fw-bold" >SEPTEMBER</td>
                         <td class="text-center active-total">-</td>
                         <td class="compliance-rate">-</td>
@@ -688,7 +739,7 @@ textarea.form-control:focus {
                         <td class="text-center non-sla">-</td>
                         <td class="sla-compliance">-</td>
                       </tr>
-                          <tr class ="month-row" data-month="10" style="background: linear-gradient(135deg, #213456, #334c7a); border-outline: 2px solid red;">
+                          <tr class ="month-row" data-month="10" style="background: #213456; border-outline: 2px solid red;">
                         <td class="fw-bold" >OCTOBER</td>
                         <td class="text-center active-total">-</td>
                         <td class="compliance-rate">-</td>
@@ -696,7 +747,7 @@ textarea.form-control:focus {
                         <td class="text-center non-sla">-</td>
                         <td class="sla-compliance">-</td>
                       </tr>
-                          <tr class ="month-row" data-month="11" style="background: linear-gradient(135deg, #213456, #334c7a); border-outline: 2px solid red;">
+                          <tr class ="month-row" data-month="11" style="background: #213456; border-outline: 2px solid red;">
                         <td class="fw-bold" >NOVEMBER</td>
                         <td class="text-center active-total">-</td>
                         <td class="compliance-rate">-</td>
@@ -725,7 +776,7 @@ textarea.form-control:focus {
             <input type="hidden" name="chcksbjcls" id="chcksbjcls" value="check">
           </div>
         </form>
-        <div class="action-bar-container" style="box-shadow: 0 5px 10px 2px #2d3c597f; margin-bottom: -20px;">
+        <div class="action-bar-container" style="box-shadow: 0 5px 10px 2px #2d3c597f; color: #213456; margin-bottom: -20px;">
           <div class="year-picker-group">
             <div class="input-group">
               <div class="input-group-append">
@@ -937,48 +988,60 @@ textarea.form-control:focus {
             </div><!-- /#ovrall -->
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" />
 
-            <!-- TABLES -->
-            <div class="row">
+         <!-- TABLES -->
+        <div class="row">
+          <div class="col-12 mb-3">
+            <div class="card card2">
+              
+        <div class="card-header" style="background: linear-gradient(135deg, #213456, #334c7a); border-bottom: none; padding-bottom: 0;">
+          <ul class="nav nav-tabs card-header-tabs" id="ticketTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="tickets-tab" data-toggle="tab" data-target="#tickets" type="button" role="tab" aria-controls="tickets" aria-selected="true" style="font-weight: bold; border: 1px solid #ffffff;">
+                TICKETS
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="transferred-tab" data-toggle="tab" data-target="#transferred" type="button" role="tab" aria-controls="transferred" aria-selected="false" style="color: white; font-weight: bold; border: 1px solid #ffffff;">
+                TRANSFERRED TICKETS
+              </button>
+            </li>
+          </ul>
+        </div>
 
-              <div class="col-12 mb-3">
-                <div class="card card2">
-                  <h5 class="card-header text-black" style="background: linear-gradient(135deg, #213456, #334c7a); color:black;">TICKETS</h5>
-                  <div class="card-body">
-
-                    <div class="row">
-                      <!-- old code with overflow -->
-                      <!-- <div class="col-12 mb-3">  
-                     <div class="table-responsive" id="proTeamScroll" style="max-height:450px; width:100%;overflow-y:auto;">
-                    <table id="report_data" class="table table-hover">
-
-                    </div>
-                  </div> -->
-
-                      <div class="col-12 mb-3">
-                        <div class="table-responsive" id="proTeamScroll" style="">
-                          <table id="report_data" class="table table-hover">
-
-                        </div>
-                      </div>
-
-                      <div class="col-12">
-                        <div class="table-responsive" id="proTeamScroll"
-                          style="max-height:450px; width:100%;overflow-y:auto;">
-                          <table id="network_tb" class="table table-hover">
-
-                        </div>
-                      </div>
-                    </div>
-
-                  </div>
-                </div>
-              </div>
-
-            </div><!-- /.row -->
-
-            <div class="col-lg-12 Down" id="Down">
-              <input type="hidden" id="myInput">
+      <div class="card-body">
+        <div class="tab-content" id="ticketTabsContent">
+          <div class="tab-pane fade show active" id="tickets" role="tabpanel" aria-labelledby="tickets-tab">
+            <div class="table-responsive" style="max-height:450px; width:100%; overflow-y:auto;">
+              <table id="report_data" class="table table-hover">
+                
+                <tbody>
+                </tbody>
+              </table>
             </div>
+          </div>
+
+          <div class="tab-pane fade" id="transferred" role="tabpanel" aria-labelledby="transferred-tab">
+            <div class="table-responsive" style="max-height:450px; width:100%; overflow-y:auto;">
+              <table id="transferred_data" class="table table-hover">
+               
+                <tbody>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+<div class="col-lg-12 Down" id="Down">
+  <input type="hidden" id="myInput">
+</div>
+
+           
 
           </div><!-- /.container-fluid -->
       </div><!-- /#layoutSidenav_content -->
@@ -1731,4 +1794,22 @@ function loadDepartmentTable() {
         }
     });
 }
+$(document).ready(function() {
+    $('button[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+        var targetTab = $(e.target).attr("id"); 
+
+        if (targetTab === 'transferred-tab') {
+            if ($.fn.DataTable.isDataTable('#transferred_data')) {
+                $('#transferred_data').DataTable().columns.adjust().draw();
+            }
+        } else if (targetTab === 'tickets-tab') {
+            if ($.fn.DataTable.isDataTable('#report_data')) {
+                $('#report_data').DataTable().columns.adjust().draw();
+            }
+        }
+        $('#ticketTabs .nav-link').css('color', 'white');
+        $('#ticketTabs .nav-link.active').css('color', '#495057'); 
+    });
+    
+});
 </script>

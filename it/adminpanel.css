@@ -43,7 +43,6 @@ body.dark-mode .form-control {
 body.dark-mode .table {
     color: #ffffff;
     background-color: #1b1b1b;
-    border-collapse: collapse;
 }
 
 body.dark-mode .table th,
@@ -133,7 +132,7 @@ body.dark-mode .form-control::placeholder {
 .table:not(.table-sm) thead th{
     border-bottom: none;
     background-color: #e9e9eb;
-    color:#666;
+    color:#213456;
     padding-top:15px;
     padding-bottom:15px;
 }        
@@ -156,20 +155,6 @@ body.dark-mode .form-control::placeholder {
 .progress{
     -webkit-box-shadow: 0 0.4rem 0.6rem rgba(0,0,0,0,0.15);
     box-shadow: 0 0.4rem 0.6rem rgba(0,0,0,0.15);
-}
-.table thead th{
-    font-size:12px;
-    text-transform: uppercase;
-    letter-spacing:1px;
-    font-weight:700;
-    color:#555;
-    padding:20px;
-    border-bottom: 2px solid #f0f0f0;
-}
-
-.table tbody td{
-    padding:15px 10px;
-    font-size:14px;
 }
   /* body.dark-mode #chartdiv1,
   body.dark-mode #chartdiv2,
@@ -236,8 +221,7 @@ body.dark-mode .form-control::placeholder {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0 6px;
-  background: linear-gradient(135deg, #213456, #334c7a); 
-  color: #ccc;
+  color: #213456;
   font-family: 'Poppins', Tahoma, Geneva, Verdana, sans-serif;
   border-radius: 8px;
   overflow: hidden;
@@ -266,11 +250,17 @@ body.dark-mode .form-control::placeholder {
   color: #fff;
 }
 
+#report_data tbody tr:hover,
+#report_data tbody tr:hover td {
+  background: #dbdbd84d; 
+  color: #213456;
+}
 #report_data th,
 #report_data td {
   padding: 10px 12px;
   border: none;
   border-bottom: 1px solid #333; 
+  color: #213456;
 }
 
 #report_data th:last-child,
@@ -292,12 +282,14 @@ body.dark-mode .form-control::placeholder {
   border-radius: 3px;
 }
 
+
+
 .status-open td {
-  color: red !important;
-  border: 1px solid red;
+  color: rgb(167, 149, 13) !important;
+  border: 1px solid rgb(197, 197, 55);
 }
 
-.status-fixed td {
+.status-pending td {
   color: red !important;
   border: 1px solid red;
 }
@@ -313,12 +305,65 @@ body.dark-mode .form-control::placeholder {
 }
 
 
+#transferred_data {
+  width: 100%;
+  border-collapse: collapse; 
+  color: #213456;
+  font-family: 'Poppins', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#transferred_data thead tr {
+  background: linear-gradient(135deg, #213456, #334c7a);
+  color: #213456; 
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700; 
+  font-size: 1.2rem; 
+  text-align: center;
+}
+
+#transferred_data tbody tr {
+  background: transparent; 
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+#transferred_data tbody tr:hover,
+#transferred_data tbody tr:hover td {
+  background: #dbdbd84d; 
+  color: #213456;
+}
+
+#transferred_data th,
+#transferred_data td {
+  padding: 10px 12px;
+  border: none; 
+  border-bottom: 1px solid #ccc; 
+    color: #213456; 
+}
+
+#transferred_data tbody tr:last-child td {
+  border-bottom: none;
+}
+
+#transferred_data tbody tr td {
+  font-weight: 400;
+  font-size: 0.9rem;
+  color: inherit; 
+}
+
+#transferred_data::-webkit-scrollbar {
+  height: 6px;
+}
+
+#transferred_data::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #213456, #334c7a); 
+  border-radius: 3px;
+}
 .action-bar-container {
     display: flex;
     flex-wrap: wrap; 
     justify-content: space-between;
     align-items: center;
-    background: #ffffff;
     padding: 15px 20px;
     border-radius: 12px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.05);
@@ -331,7 +376,7 @@ body.dark-mode .form-control::placeholder {
     min-width: 300px; 
 }
 #showCalendarBtn {
-    background-color: linear-gradient(135deg, #213456, #334c7a);
+    background-color: #213456;
     color: white;
     border-radius: 8px;
     padding: 8px 20px;
@@ -479,7 +524,7 @@ body.dark-mode .form-control::placeholder {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: #ffffff;
+    background: white;
     padding: 15px 20px;
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
@@ -499,10 +544,11 @@ body.dark-mode .action-bar-container {
 .year-picker-group {
     flex: 1;
     max-width: 450px;
+        background-color: #213456 !important;
 }
 
 .year-picker-group .input-group-text {
-    background-color: linear-gradient(135deg, #213456, #334c7a) !important;
+    background-color: #213456 !important;
     color: #ffffff !important;
     border: none;
     font-weight: 600;
@@ -621,7 +667,6 @@ body.dark-mode .toggle-label-text {
 }
 
 .table {
-    border-collapse: separate;
     border-spacing: 0;
     border-radius: 8px;
     overflow: hidden;
@@ -840,63 +885,6 @@ body.dark-mode .toggle-label-text {
     display: flex;
     align-items: center;
 }
-
-/* --- Table Refinement --- */
-#report_data, #network_tb {
-    border-collapse: separate;
-    border-spacing: 0 8px; /* Creates a "card-row" look */
-    margin-top: -8px;
-}
-
-#report_data thead th, #network_tb thead th {
-    background-color: #f8fafc;
-    color: linear-gradient(135deg, #213456, #334c7a);
-    text-transform: uppercase;
-    font-size: 0.75rem;
-    font-weight: 800;
-    border: none;
-    padding: 15px;
-}
-
-#report_data tbody tr, #network_tb tbody tr {
-    background-color: linear-gradient(135deg, #213456, #334c7a);
-    transition: all 0.2s ease;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-}
-
-/* Hover Effect: Glows slightly and shows your Gold theme */
-#report_data tbody tr:hover, #network_tb tbody tr:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(33, 52, 86, 0.1);
-    background-color: #E1AD01; /* Very faint gold tint */
-}
-
-#report_data td, #network_tb td {
-    padding: 15px;
-    vertical-align: middle;
-    border-top: 1px solid #edf2f7;
-    border-bottom: 1px solid #edf2f7;
-    color: #4a5568;
-}
-
-/* --- Status Badge Styles (Apply these in your HTML/PHP logic) --- */
-.badge-modern {
-    padding: 6px 12px;
-    border-radius: 30px;
-    font-weight: 600;
-    font-size: 0.7rem;
-}
-
-/* Custom Scrollbar for the table container */
-#proTeamScroll::-webkit-scrollbar {
-    width: 6px;
-}
-#proTeamScroll::-webkit-scrollbar-thumb {
-    background: #cbd5e0;
-    border-radius: 10px;
-}
-
-
 
 
     

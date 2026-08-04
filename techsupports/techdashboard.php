@@ -3,6 +3,8 @@
 
 include '../condb.php';
 include 'tech_header.php';
+include 'chrtdashboard.php';
+include 'sub_graph_modal.php';
 
 $conn=new dbconfig();
 
@@ -10,67 +12,22 @@ $datetime = new DateTime();
 $timezone = new DateTimeZone('Asia/Manila');
 $datetime->setTimezone($timezone);
 
-
-
 ?>
 
+
+
+<head>
+<link rel="stylesheet" href="../plugins/DataTables-1.10.25/media/css/dataTables.bootstrap.min.css"/>
+<link rel="stylesheet" href="//cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css"/>
+<link rel="stylesheet" href="../assets/Date-Time-Picker-Bootstrap-4/src/sass/bootstrap-datetimepicker-build.css" />
+<script src="../assets/Date-Time-Picker-Bootstrap-4/src/js/bootstrap-datetimepicker.js"></script>
+<script src="../plugins/DataTables-1.10.25/media/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+<script src="../js/ellipsis.js"></script>
+    <link rel="stylesheet" href="techdashboard.css" />
+</head>
 <style>
- #showCalendarBtn {
-    background-color: #213456;
-    color: white;
-    border-radius: 8px;
-    padding: 8px 20px;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    white-space: nowrap;
-}
-
-#showCalendarBtn:hover {
-    background-color: var(--owi-gold, #E1AD01);
-    color: #213456;
-}
-
-
-#report_data thead th{
-    background: #F3F4F6 !important;  
-    color: #374151 !important;      
-    font-weight: 700;
-}
-
-#report_data tbody tr{
-    background: #F9FAFB !important; 
-}
-
-#report_data tbody tr:nth-child(even){
-    background: #F3F4F6 !important;  
-}
-
-#report_data tbody td{
-    color: #4B5563 !important;    
-    border-color: #E5E7EB !important;
-}
-
-#report_data tbody tr:hover{
-    background: #E5E7EB !important;  
-}
-
-.dataTables_wrapper{
-    background: #F9FAFB;
-    padding: 15px;
-    border-radius: 12px;
-}
-
-body {
-  background: linear-gradient(to bottom, #ffffff, #99aac8);
-  background-attachment: fixed; 
-  margin: 0; 
-   overflow-x: hidden;
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  background-repeat: no-repeat;
-  min-height: 100vh;
-} 
 
 ::-webkit-scrollbar {
   width: 8px;
@@ -87,12 +44,171 @@ background: linear-gradient(135deg, #837031, #E1AD01);
   background: linear-gradient(135deg, #837031, #E1AD01);
 }
 
+body {
+  background: linear-gradient(to bottom, #ffffff, #99aac8);
+  background-attachment: fixed; 
+  margin: 0; 
+   overflow-x: hidden;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+} 
+
+     
+
+  .admin-table th {
+    background-color: linear-gradient(135deg, #213456, #334c7a) !important;
+    color: #ffffff!important;
+    padding: 6px 4px !important;
+    font-size: 11px !important;
+  }
+
+  #admin_report.admin-table th.active.text-center {
+    background-color: #2b9827 !important;
+    color: #ffffff !important;
+    padding: 6px 4px !important;
+    font-size: 11px !important;
+  }
+
+  #admin_report.admin-table th.compliance.text-center {
+    background-color: #a29341 !important;
+    color: #ffffff !important;
+    padding: 6px 4px !important;
+    font-size: 11px !important;
+  }
+
+  .admin-table td {
+    padding: 6px 4px !important;
+    font-size: 11px !important;
+    border-bottom: 1px solid #0e0e0ea1 !important;
+  }
+  .table-responsive{
+    margin-top: 0 !important;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .card.card2 {
+    max-width: none !important;
+    width: 100% !important;
+    margin: 0 !important;
+    border-radius: 12px;
+  }
+
+  .card-header .nav-tabs {
+    border-bottom: 0;
+  }
+
+  .nav-tabs .nav-link {
+    color: #fff !important;
+    padding: .6rem 1rem;
+    font-weight: 700;
+  }
+
+  .nav-tabs .nav-link.active {
+    background: transparent;
+    color: #fff !important;
+    border-bottom: 3px solid rgba(225,173,1,0.9);
+  }
+
+  table.table {
+    width: 100% !important;
+    table-layout: fixed !important; 
+    border-collapse: collapse;
+  }
+
+  table.table thead th,
+  table.table tbody td {
+    vertical-align: middle !important;
+    padding: .55rem .75rem !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  table.table td {
+    word-wrap: normal;
+  }
+
+  .dataTables_wrapper .dataTables_filter { text-align: right; float: right; }
+
+  .card.card2 .card-body { padding: 0.75rem; }
+
+  .card-header { padding: 0.5rem 0.75rem; }
+  .card-header .nav { margin: 0; align-items: center; }
+  .nav-tabs { border-bottom: 0; }
+  .nav-tabs .nav-link { border: none; border-radius: 6px; }
+  .nav-tabs .nav-link:focus, .nav-tabs .nav-link:active { outline: none; color:#213456; box-shadow: none; }
+  .nav-tabs.nav-fill .nav-link { text-align: center; }
+
+  table.table td .btn-sm {
+    padding: .45rem .6rem !important;
+    font-size: 0.95rem !important;
+    border-radius: 8px !important;
+  }
+
+  table.table td:nth-child(5) {
+    font-size: 0.85rem !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  @media (max-width: 767px) {
+    .card.card2 { padding: .5rem; }
+    .table-responsive { overflow-x: auto; }
+    .nav-tabs .nav-link { padding: .5rem .6rem; font-size: 0.9rem; }
+  }
+
+  .progress {
+    border: 1px solid #999 !important;
+    background-color: #ddd !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  #dept-table-footer {
+    border: 2px solid #2d3c59;
+    background-color: #f4e9d7 !important; 
+}
+
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+    box-shadow: none !important;
+  }
+.modal-overlay .close-btn:hover{
+   display: block;
+  margin-left: auto;
+  border-radius: 12px;
+  width: 30%;
+
+  background-color: #E1AD01;
+  color: white;
+}
+
+.modal-overlay .close-btn {
+  display: block;
+  margin-left: auto;
+  border-radius: 12px;
+  padding:10px;
+  width: 30%;
+  color: white;
+  background-color: linear-gradient(135deg, #213456, #334c7a);
+}
+ .modal-overlay .month-row[data-month="6"] {
+  background: linear-gradient(135deg, #213456, #334c7a);
+  outline: 2px solid red;
+  outline-offset: -2px; 
+}
 
 
 label {
   font-size: 11px;
   font-weight: 900;
-  color: #a37f0a; 
+  color: #e1ad01; 
   letter-spacing: .08em;
   text-transform: uppercase;
   margin-bottom: 6px;
@@ -133,8 +249,7 @@ select.form-control,
 textarea.form-control {
   background: #fff !important;
   color: black !important;
-  border-bottom: 1px solid #213456 !important; 
-  border-radius: 8px;
+  border-bottom: 1px solid #E1AD01 !important; 
 }
 
 .form-control:focus,
@@ -146,17 +261,6 @@ textarea.form-control:focus {
   border-color: 2px solid rgba(114, 89, 21, 0.94) !important;
 }
 
-.btn{
-  background-color: #E1AD01;
-  color: white;
-  border-radius: 8px;
-}
-
-.btn:hover{
-    background-color: #213456;
-  color: #E1AD01;
-  border-radius: 8px;
-}
 
 .container_remarks {
     display: flex !important;
@@ -220,7 +324,7 @@ textarea.form-control:focus {
 #userModal .input-group-text {
     background-color: white;
     border-right: none;
-    color: #213456;
+    color: linear-gradient(135deg, #213456, #334c7a);
 }
 
 #userModal .form-control {
@@ -230,7 +334,7 @@ textarea.form-control:focus {
 }
 
 #userModal .form-control:focus {
-    border-color: #213456;
+    border-color: linear-gradient(135deg, #213456, #334c7a);
     box-shadow: none;
 }
 
@@ -328,7 +432,7 @@ textarea.form-control:focus {
 }
 
 .chat-right .msg-meta {
-    color: rgba(255, 255, 255, 0.85);
+    color: #ffffff; 
 }
 
 .chat-left .msg-meta-name {
@@ -339,6 +443,145 @@ textarea.form-control:focus {
 .chat-right .msg-meta-name {
     color: #ffffff;
     font-weight: bold;
+}
+
+
+.chat-right .msg-time {
+    color: #ffffff !important; 
+}
+
+.chat-left .msg-time {
+    color: #64748b !important;
+}
+.chat-left .msg-meta {
+    color: #64748b;
+}
+
+.chat-right .msg-meta {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.chat-left .msg-meta-name {
+    color: linear-gradient(135deg, #213456, #334c7a);
+    font-weight: bold;
+}
+
+.chat-right .msg-meta-name {
+    color: #ffffff;
+    font-weight: bold;
+}
+ .modal-overlay {
+            display: none; 
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+       .modal-overlay .modal-content {
+             background: linear-gradient(to bottom, #ffffff, #b0b9c8);
+            padding: 25px;
+            border-radius: 8px;
+            width: 70%;
+            max-width: 90%;
+            margin-top:30px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+       .modal-overlay .modal-content h3 {
+            margin-top: 0;
+            color: #333;
+        }
+       .modal-overlay .close-btn {
+            background-color: #213456;
+            margin-top: 15px;
+        }
+ 
+
+        
+  .table-responsive {
+    overflow: visible !important;
+    width: 100% !important;
+  }
+
+  .admin-table {
+    width: 100% !important;
+    table-layout: auto !important;
+    page-break-inside: avoid;
+    
+  }
+
+  .admin-table th {
+    background-color: #213456 !important;
+    color: #fff !important;
+    padding: 6px 4px !important;
+    font-size: 11px !important;
+  }
+
+  #admin_report.admin-table th.active.text-center {
+    background-color: #2b9827 !important;
+    color: #fff !important;
+    padding: 6px 4px !important;
+    font-size: 11px !important;
+  }
+
+  #admin_report.admin-table th.compliance.text-center {
+    background-color: #a29341 !important;
+    color: #fff !important;
+    padding: 6px 4px !important;
+    font-size: 11px !important;
+  }
+
+  .admin-table td {
+    padding: 6px 4px !important;
+    font-size: 11px !important;
+    border-bottom: 1px solid #0e0e0ea1 !important;
+  }
+
+  .progress {
+    border: 1px solid #999 !important;
+    background-color: #ddd !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  #dept-table-footer {
+    border: 2px solid #2d3c59;
+    background-color: #f4e9d7 !important; 
+}
+
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+    box-shadow: none !important;
+  }
+.modal-overlay .close-btn:hover{
+   display: block;
+  margin-left: auto;
+  border-radius: 12px;
+  width: 30%;
+
+  background-color: #E1AD01;
+  color: white;
+}
+
+.modal-overlay .close-btn {
+  display: block;
+  margin-left: auto;
+  border-radius: 12px;
+  padding:10px;
+  width: 30%;
+  color: white;
+  background-color: #213456;
+}
+ .modal-overlay .month-row[data-month="6"] {
+  background: #213456;
+  outline: 2px solid red;
+  outline-offset: -2px; 
 }
 
 .btn-success {
@@ -410,47 +653,8 @@ textarea.form-control:focus {
 
 #showCalendarBtn:hover {
     background-color: var(--owi-gold, #E1AD01);
-    color: #213456;
+    color: linear-gradient(135deg, #213456, #334c7a);
 }
-
-
- .modal-overlay {
-            display: none; 
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-       .modal-overlay .modal-content {
-             background: #ffffff;
-            padding: 25px;
-            border-radius: 8px;
-            width: 70%;
-            max-width: 90%;
-            margin-top:30px;
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-       .modal-overlay .modal-content h3 {
-            margin-top: 0;
-            color: #333;
-        }
-       .modal-overlay .close-btn {
-            background-color: #28a745;
-            margin-top: 15px;
-        }
- 
-
-        
-  .table-responsive {
-    overflow: visible !important;
-    width: 100% !important;
-  }
 
   .admin-table {
     width: 100% !important;
@@ -459,23 +663,18 @@ textarea.form-control:focus {
     
   }
 
-  .admin-table th {
-    background-color: #213456 !important;
-    color: #fff !important;
-    padding: 6px 4px !important;
-    font-size: 11px !important;
-  }
+ 
 
   #admin_report.admin-table th.active.text-center {
     background-color: #2b9827 !important;
-    color: #fff !important;
+    color: #213456 !important;
     padding: 6px 4px !important;
     font-size: 11px !important;
   }
 
   #admin_report.admin-table th.compliance.text-center {
     background-color: #a29341 !important;
-    color: #fff !important;
+    color: #213456 !important;
     padding: 6px 4px !important;
     font-size: 11px !important;
   }
@@ -484,9 +683,6 @@ textarea.form-control:focus {
     padding: 6px 4px !important;
     font-size: 11px !important;
     border-bottom: 1px solid #0e0e0ea1 !important;
-  }
-  .table-responsive{
-    margin-top: -600px;
   }
 
   .progress {
@@ -506,45 +702,10 @@ textarea.form-control:focus {
     color-adjust: exact !important;
     box-shadow: none !important;
   }
-.modal-overlay .close-btn:hover{
-   display: block;
-  margin-left: auto;
-  border-radius: 12px;
-  width: 30%;
-
-  background-color: #E1AD01;
-  color: white;
-}
-
-.modal-overlay .close-btn {
-  display: block;
-  margin-left: auto;
-  border-radius: 12px;
-  padding:10px;
-  width: 30%;
-  color: white;
-  background-color: #213456;
-}
- .modal-overlay .month-row[data-month="6"] {
-  background: #213456;
-  outline: 2px solid red;
-  outline-offset: -2px; 
-}
 
 </style>
 
-<head>
-<link rel="stylesheet" href="../plugins/DataTables-1.10.25/media/css/dataTables.bootstrap.min.css"/>
-<link rel="stylesheet" href="//cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css"/>
-<link rel="stylesheet" href="../assets/Date-Time-Picker-Bootstrap-4/src/sass/bootstrap-datetimepicker-build.css" />
-<script src="../assets/Date-Time-Picker-Bootstrap-4/src/js/bootstrap-datetimepicker.js"></script>
-<script src="../plugins/DataTables-1.10.25/media/js/jquery.dataTables.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-</head>
 
-<script src="../js/ellipsis.js"></script>
-</head>
 
 <div id="welcomeModal" class="modal-overlay" style="display: none;">
     <div class="modal-content">
@@ -776,8 +937,8 @@ textarea.form-control:focus {
                   <div class="card-body p-4">
                     <div class="d-flex align-items-center justify-content-between mb-2">
                       <div class="bg-opacity-10 p-1 rounded-circle text-success" style="color: #94A378;">
-    <i class="bi bi-check-all" style="font-size: 3rem;"></i>
-</div>
+                        <i class="bi bi-check-all" style="font-size: 3rem;"></i>
+                    </div>
                       <h2 class="fw-black mb-1" id="count_closed" style="font-size:2.2rem; letter-spacing: -1px;">0</h2>
                     </div>
                     <div class="mb-2">
@@ -796,31 +957,56 @@ textarea.form-control:focus {
                 </div>
               </div>
             </div>
-  
+
+
+
+
+<!-- TABLES -->
+<div class="row justify-content-center">
+  <div class="col-12 mb-3">
+    <div class="card card2" style="background: #ffffff; border-radius:12px;">
+      <div class="card-header p-0" style="background: linear-gradient(135deg, #213456, #334c7a); border-bottom: none;">
+        <ul class="nav nav-tabs nav-fill card-header-tabs" id="ticketTabs" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active text-white" id="tickets-tab" data-toggle="tab" data-target="#tickets" type="button" role="tab" aria-controls="tickets" aria-selected="true" style="font-weight:700; border: none;">
+              TICKETS
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link text-white" id="transferred-tab" data-toggle="tab" data-target="#transferred" type="button" role="tab" aria-controls="transferred" aria-selected="false" style="font-weight:700; border: none;">
+              TRANSFERRED TICKETS
+            </button>
+          </li>
+        </ul>
+      </div>
+
+      <div class="card-body">
+        <div class="tab-content" id="ticketTabsContent">
+          <div class="tab-pane fade show active" id="tickets" role="tabpanel" aria-labelledby="tickets-tab">
+            <div class="table-responsive" style="max-height:450px; width:100%; overflow-y:auto;">
+              <table id="report_data" class="table table-hover mb-0" style="min-width: 100%;">
+                <tbody>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="tab-pane fade" id="transferred" role="tabpanel" aria-labelledby="transferred-tab">
+            <div class="table-responsive" style="max-height:450px; width:100%; overflow-y:auto;">
+              <table id="transferred_data" class="table table-hover mb-0" style="min-width: 100%;">
+                <tbody>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-12">
+    <input type="hidden" id="myInput">
+  </div>
 </div>
-
-
-
-<div class="col-12 mb-3">
-            
-                  <h5 class="card-header text-black" style="background-color: #95a2b9b4; color:black; "></h5>
-                  <div class="card-body">
-
-                    <div class="row col-md-4 mb-3">
-<button type="button" id="add_button" class="second btn btn-xs btn-danger" data-toggle="modal" data-target="#userModal">Add Report</button>
-</div>
-
-<table id="report_data" class="table table-dark table-responsive table-sm" style="width: auto;"></table>
-
-<div class="col-md-12">
-  <input type="hidden" id="myInput">
-</div>
-
-                  </div>
-            
-              </div>
-
-<!--end of container-->
 
 
 
@@ -1094,11 +1280,99 @@ textarea.form-control:focus {
 
 
 
-<!-- modal addnew button -->
+<div class="modal fade" id="dataModal" tabindex="-1" role="dialog" aria-labelledby="dataModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 80%; width: 80%;">
+        <form id="pdfForm" action="insert.php" method="POST">
+            <input type="hidden" name="operation" value="submit_request">
+            <input type="hidden" name="requesting_dept" id="requesting_dept">
+            <input type="hidden" name="requesting_employee" id="requesting_employee">
+            <input type="hidden" name="received_by" value="<?php echo $_SESSION['tech_id'] ?? ''; ?>">
 
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="dataModalLabel">Fixed Asset Information & Tracking</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-7 border-right pt-2 pb-2">
+                            <h6 class="text-uppercase mb-3" style="color:#213456; font-weight: 800;">Request Details</h6>
+                               <p style="color: red; font-size:12px;font-style: italic;">Labels that have (*) are subject to change.</p>
+
+                            <div class="row">
+
+                             <div class="form-group col-md-6">
+                                <label>Ticket No</label>
+                            <input type="text" class="form-control" name="ticket_no" id="modal_ticket_no">
+                            </div>
+                                <div class="form-group col-md-6">
+                                    <label>Requesting Dept/Branch:</label>
+                                    <textarea class="form-control" name="requested_db_name" rows="2" readonly></textarea>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label>Requesting Employee</label>
+                                    <textarea class="form-control" name="requested_by_name" rows="2" readonly></textarea>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label>Ticket Created</label>
+                                    <textarea class="form-control" name="date_created" rows="2" readonly></textarea>
+                                </div>
+                                <div class="form-group col-md-6">
+                                     <label>Item Code <span style="color: red; font-size: 10px;">*</span></label>
+                                    <textarea class="form-control" name="item_code" rows="2" ></textarea>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label>Description <span style="color: red; font-size: 10px;">*</span></label>
+                                    <textarea class="form-control" name="description" rows="2" ></textarea>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label>Serial Number <span style="color: red; font-size: 10px;">*</span></label>
+                                    <input type="text" class="form-control" name="serial_number" required placeholder="Type the serial number here...">
+                                </div>
+                                <div class="form-group col-md-12">
+                                    <label>Purpose of Request</label>
+                                    <textarea class="form-control" name="purpose_of_request" style="height: 100px;" readonly></textarea>
+                                </div>
+                                 <div class="form-group col-md-12">
+                                    <label>Technical Workoutput</label>
+                                    <textarea class="form-control" name="technical_workoutput" id="technical_workoutput" style="height: 100px;"></textarea>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label>Item Received By</label>
+                                    <input type="text" class="form-control" name="received_name" value="<?php echo ($_SESSION['fname'] ?? '') . ' ' . ($_SESSION['lstname'] ?? ''); ?>" readonly>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label>Date of Item Received / Inspected <span style="color: red; font-size: 10px;">*</span></label>
+                                    <input type="date" class="form-control" name="date_received" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-5 pt-2 pb-2" style=" background: linear-gradient(to bottom, #ffffff, #bbc2cf); border-radius: 8px;">
+                            <h6 class="text-uppercase mb-3" style="color:#E1AD01; font-weight: 800;">Asset Request Progress</h6>
+                            <div class="tracking-container" style="max-height: 950px; overflow-y: auto; padding-right: 10px;">
+                                <ul class="tracking-timeline" id="trackingMap"></ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">
+                        <strong>SUBMIT REQUEST</strong>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- modal addnew button -->
 <script type='text/javascript'>
 $( document ).ready(function() {
-
 
 var user_id = "<?= $_SESSION['user_id'] ?? '' ?>";
 var currentUserName = "<?= trim($_SESSION['fname'] ?? '') ?>";
@@ -1241,6 +1515,7 @@ function loadCommentThread(ticket_no) {
         }
     });
 }
+
 function loadTechnicalWorkOutput(ticket_no) {
     $('textarea[name="technical_workoutput"]').val('Loading technical output...');
 
@@ -1261,223 +1536,299 @@ function loadTechnicalWorkOutput(ticket_no) {
         }
     });
 }
-/**
- * Getdata.
- */
-function getdata(){
-    $.post('fetchdata/fetch_data.php',{mode:'dtb'},function(data){
+
+// Global table variables
+var table;
+var table_transfer;
+
+function getdata(yr){
+    $.post('fetchdata/fetch_data.php',{mode:'dtb', yr: yr},function(data){
         admin_datatable(data);
     },'json');
 }
-getdata();
 
-var table
-/**
- * Admin datatable.
- */
+function getdata_transfer(yr){
+    $.post('fetchdata/fetch_data.php',{mode:'dtb_transfer', yr: yr},function(data){
+        admin_datatable_transfer(data);
+    },'json');
+}
+
 function admin_datatable(t){
-const dataset=t.rptdata;
-table =  $("#report_data").DataTable({
+    const dataset = t.rptdata;
+    table = $("#report_data").DataTable({
+        "dom": '<"pull-left"lf><"pull-right">tip',
+        "pagingType": "full_numbers",
+        "bDestroy": true,
+        "responsive": true, 
+        "lengthChange": false, 
+        "autoWidth": false,
+        "language": {
+            "search": "_INPUT_",
+            "searchPlaceholder": "Search..."
+        },
+        "pageLength": 10,
+        "data": dataset,
+        "order": [[ 1, "Desc" ]],
+        "columns": [
+            { 
+                title: "ACTION", 
+                data: null, 
+                render: function(data, type, row) {
+                    return `
+                     <div style="display: flex; gap: 5px;">
+                        <button type="button" class='btn btn-danger btn-sm edit-btn' name='update'><i class='fas fa-edit'></i>EDIT</button>
+                        <button type="button" class='btn btn-primary btn-sm print-btn' data-id='${row.ticket_no}'>FIXED ASSET</button>
+                     </div>
+                    `;
+                }
+            },
+            {title:"TICKET NO", data:"ticket_no","defaultContent": ""},
+            {title:"DATE CREATED", data:"date_created","defaultContent": ""},
+            {title:"STORE", data:"str_code","defaultContent": ""},
+            {title:"SUBJECT", data:"subject","defaultContent": ""},
+            {title:"VIA", data:"via","defaultContent": ""},
+            {title:"STATUS", data:"status","defaultContent": ""},
+            {title:"CATEGORY", data:"category","defaultContent": ""},
+            {title:"SUBCATEGORY", data:"sub_category","defaultContent": ""},
+            {title:"DATE CLOSED", data:"date_closed","defaultContent": ""},
+            {title:"DAYS COMPLETION", data:"tdc","defaultContent": ""}
+        ],
+        "columnDefs": [
+            { targets: 0, width: '12%' },
+          { targets: 1, width: '8%' },
+          { targets: 2, width: '10%' },
+          { targets: 3, width: '6%' },
+            { targets: 4, width: '14%' },
+          { targets: 5, width: '6%' },
+          { targets: 6, width: '7%' },
+          { targets: 7, width: '10%' },
+          { targets: 8, width: '8%' },
+          { 
+            targets: [9,10],
+            width: '4%',
+            render: function ( data, type, row) {
+              if(type === 'display'){
+                if(data == '1 Days Unresolved'){
+                  data = '1 Day Unresolved'
+                } else if(data == '01/01/1970 08:00'){
+                  data = 'UNRESOLVED'
+                } else if(!isNaN(data) && data < 0){
+                  data = ''
+                } else if(data == 0){
+                  data = 'Solve Immediately'
+                }
+              }
+              return data;
+            }
+          }
+        ],
+        rowCallback: function (row, data) {
+            $(row).find('td:eq(6)').attr('style', '');
+            const status = (data['status'] || '').toUpperCase();
+            const $statusTd = $(row).find('td:eq(6)'); 
 
-"dom":
-'<"pull-left"lf><"pull-right">tip',
-"pagingType": "full_numbers",
-"bDestroy": true,
-"responsive": true, "lengthChange": false, "autoWidth": false,
-language: {
-search: "_INPUT_",
-searchPlaceholder: "Search..."
-},
-pageLength:10,
-data: dataset,
-"order": [[ 1, "Desc" ]],
-
-columns: [
-    { 
-        title: "ACTION", 
-        data: null, 
-        render: function(data, type, row) {
-            return `
-             <div style="display: flex; gap: 5px;">
-                <button type="button" class='btn btn-danger btn-sm edit-btn' name='update'><i class='fas fa-edit'></i>EDIT</button>
-                <button type="button" class='btn btn-primary btn-sm print-btn' data-id='${row.ticket_no}'>FIXED ASSET</button>
-             </div>
-            `;
+            if (status === 'ON PROCESS') {
+                $statusTd.attr('style', 'color:#F97316 !important; font-weight:800;');
+            } else if (status === 'SUBJECT FOR CLOSING') {
+                $statusTd.attr('style', 'color:#7C3AED !important; font-weight:800;');
+            } else if (status === 'PENDING') {
+                $statusTd.attr('style', 'color:#CC313F !important; font-weight:800;');
+            } else if (status === 'CLOSED') {
+                $statusTd.attr('style', 'color:#16A34A !important; font-weight:800;');
+            } else {
+                $statusTd.attr('style', 'color:#374151 !important; font-weight:700;');
+            }
         }
-    },
-{title:"TICKET NO", data:"ticket_no","defaultContent": ""},
-{title:"DATE CREATED", data:"date_created","defaultContent": ""},
-{title:"STORE", data:"str_code","defaultContent": ""},
-{title:"SUBJECT", data:"subject","defaultContent": ""},
-// {title:"Concern", data:"concern","defaultContent": ""},
-{title:"VIA", data:"via","defaultContent": ""},
-{title:"STATUS", data:"status","defaultContent": ""},
-// {title:"Assigned Support", data:"it_desc","defaultContent": ""},
-{title:"CATEGORY", data:"category","defaultContent": ""},
-{title:"SUBCATEGORY", data:"sub_category","defaultContent": ""},
-{title:"DATE CLOSED", data:"date_closed","defaultContent": ""},
-{title:"DAYS COMPLETION", data:"tdc","defaultContent": ""}
-
-
-
-
-],
-"columnDefs": [
-{ 
-
-  targets: [9,10],
-  "width": "2%",
-  render: function ( data, type, row) {
-      if(type === 'display'){
-          if(data == '1 Days Unresolved'){
-            data = '1 Day Unresolved'
-          }
-         else if(data == '01/01/1970 08:00'){
-            data = 'UNRESOLVED'
-          }
-          else if(data<0){
-            data =   ''
-          }
-          else if(data == 0){
-            data = 'Solve Immediately'
-          }
-  }
-  return data;
+    });
 }
+function admin_datatable_transfer(t){
+    const dataset = (t && t.transferdata) ? t.transferdata : [];
+    table_transfer = $("#transferred_data").DataTable({
+        "dom": '<"pull-left"lf><"pull-right">tip',
+        "pagingType": "full_numbers",
+        "bDestroy": true,
+        "responsive": true, 
+        "lengthChange": false, 
+        "autoWidth": false,
+        "language": {
+            "search": "_INPUT_",
+            "searchPlaceholder": "Search..."
+        },
+        "pageLength": 10,
+        "data": dataset,
+        "order": [[ 1, "Desc" ]],
+        "columns": [
+            { 
+                title: "ACTION", 
+                data: null, 
+                render: function(data, type, row) {
+                    return `
+                     <div style="display: flex; gap: 5px;">
+                        <button type="button" class='btn btn-danger btn-sm edit-btn' name='update'><i class='fas fa-edit'></i>EDIT</button>
+                        <button type="button" class='btn btn-primary btn-sm print-btn' data-id='${row.ticket_no}'>FIXED ASSET</button>
+                     </div>
+                    `;
+                }
+            },
+            {title:"TICKET NO", data:"ticket_no","defaultContent": ""},
+            {title:"DATE CREATED", data:"date_created","defaultContent": ""},
+            {title:"STORE", data:"str_code","defaultContent": ""},
+            {title:"SUBJECT", data:"subject","defaultContent": ""},
+            {title:"VIA", data:"via","defaultContent": ""},
+            {title:"STATUS", data:"status","defaultContent": ""},
+            {title:"CATEGORY", data:"category","defaultContent": ""},
+            {title:"SUBCATEGORY", data:"sub_category","defaultContent": ""},
+            {title:"DATE CLOSED", data:"date_closed","defaultContent": ""},
+            {title:"DAYS COMPLETION", data:"tdc","defaultContent": ""}
+        ],
+        "columnDefs": [
+            { targets: 0, width: '12%' },
+          { targets: 1, width: '8%' },
+          { targets: 2, width: '10%' },
+          { targets: 3, width: '6%' },
+            { targets: 4, width: '14%' },
+          { targets: 5, width: '6%' },
+          { targets: 6, width: '7%' },
+          { targets: 7, width: '10%' },
+          { targets: 8, width: '8%' },
+          { 
+            targets: [9,10],
+            width: '4%',
+            render: function ( data, type, row) {
+              if(type === 'display'){
+                if(data == '1 Days Unresolved'){
+                  data = '1 Day Unresolved'
+                } else if(data == '01/01/1970 08:00'){
+                  data = 'UNRESOLVED'
+                } else if(!isNaN(data) && data < 0){
+                  data = ''
+                } else if(data == 0){
+                  data = 'Solve Immediately'
+                }
+              }
+              return data;
+            }
+          }
+        ],
+        rowCallback: function (row, data) {
+            $(row).find('td:eq(6)').attr('style', '');
+            const status = (data['status'] || '').toUpperCase();
+            const $statusTd = $(row).find('td:eq(6)'); 
+
+            if (status === 'ON PROCESS') {
+                $statusTd.attr('style', 'color:#F97316 !important; font-weight:800;');
+            } else if (status === 'SUBJECT FOR CLOSING') {
+                $statusTd.attr('style', 'color:#7C3AED !important; font-weight:800;');
+            } else if (status === 'PENDING') {
+                $statusTd.attr('style', 'color:#CC313F !important; font-weight:800;');
+            } else if (status === 'CLOSED') {
+                $statusTd.attr('style', 'color:#16A34A !important; font-weight:800;');
+            } else {
+                $statusTd.attr('style', 'color:#374151 !important; font-weight:700;');
+            }
+        }
+    });
 }
-],
 
+function open_ticket_modal(data) {
+    $('#dataModal').modal('hide');
+    var ticketNo = data['ticket_no'];
 
-rowCallback: function (row, data) {
-
-  $(row).find('td:eq(6)').attr('style', '');
-
-  const status = (data['status'] || '').toUpperCase();
-  const $statusTd = $(row).find('td:eq(6)'); 
-
-  if (status === 'ON PROCESS') {
-    $statusTd.attr('style', 'color:#F97316 !important; font-weight:800;');
-  } else if (status === 'SUBJECT FOR CLOSING') {
-    $statusTd.attr('style', 'color:#7C3AED !important; font-weight:800;');
+    $('#ticket_no').val(data['ticket_no']);
+    $('#str_num').val(data['store']);
+    $('#store').val(data['store']);
+    $('#date_created').val(data['date_created']);
+    $('#subjct').val(data['subject']).prop('readonly', true);
+    $('#via').val(data['via']);
+    $('#status').val(data['status']);
+    $('#it_num').val(data['itsup']);
+    $('#itsup').val(data['itsup']);
+    $('#cat_num').val(data['cat_id']);
     
-  }
-  else if (status === 'PENDING') {
-    $statusTd.attr('style', 'color:#CC313F !important; font-weight:800;');
-  } else if (status === 'CLOSED') {
-    $statusTd.attr('style', 'color:#16A34A !important; font-weight:800;');
-  } else {
-    // default
-    $statusTd.attr('style', 'color:#374151 !important; font-weight:700;');
-  }
-}
-
-});
-$('#report_data tbody').on('click', '.edit-btn', function(e) {
-        e.stopPropagation();
-        $('#dataModal').modal('hide');
-
-        var data = table.row($(this).parents('tr')).data();
-        var ticketNo = data['ticket_no'];
-
-        $('#ticket_no').val(data['ticket_no']);
-        $('#str_num').val(data['store']);
-        $('#store').val(data['store']);
-        $('#date_created').val(data['date_created']);
-        $('#subjct').val(data['subject']).prop('readonly', true);
-        $('#via').val(data['via']);
-        $('#status').val(data['status']);
-        $('#it_num').val(data['itsup']);
-        $('#itsup').val(data['itsup']);
-        $('#cat_num').val(data['cat_id']);
-        if (data['cat_id'] && $('#cat option[value="' + data['cat_id'] + '"]').length === 0) {
-          $('<option>', {
+    if (data['cat_id'] && $('#cat option[value="' + data['cat_id'] + '"]').length === 0) {
+        $('<option>', {
             value: data['cat_id'],
             text: data['category'] ? data['category'] : 'Category ID ' + data['cat_id'],
             class: 'temp-option'
-          }).appendTo('#cat');
-        }
-        $('#cat').val(data['cat_id']);
-        loadSubCategories(data['cat_id'], data['sub_id']);
-        $('#isp_num').val(data['isp_id']);
-        if (data['isp_id'] && $('#isp option[value="' + data['isp_id'] + '"]').length === 0) {
-          $('<option>', {
+        }).appendTo('#cat');
+    }
+    $('#cat').val(data['cat_id']);
+    loadSubCategories(data['cat_id'], data['sub_id']);
+    
+    $('#isp_num').val(data['isp_id']);
+    if (data['isp_id'] && $('#isp option[value="' + data['isp_id'] + '"]').length === 0) {
+        $('<option>', {
             value: data['isp_id'],
             text: data['isp_shortDesc'] ? data['isp_shortDesc'] : 'ISP ID ' + data['isp_id'],
             class: 'temp-option'
-          }).appendTo('#isp');
-        }
-        $('#isp').val(data['isp_id']);
-        $('#refNo').val(data['refNo']);
-        $('#date_refNo').val(data['date_refNo']);
-        
-        admin_hideshowforms();
-        $('#date_closed').val(data['date_closed']);
-        $('#remarks').val(data['remarks']);
+        }).appendTo('#isp');
+    }
+    $('#isp').val(data['isp_id']);
+    $('#refNo').val(data['refNo']);
+    $('#date_refNo').val(data['date_refNo']);
+    
+    admin_hideshowforms();
+    $('#date_closed').val(data['date_closed']);
+    $('#remarks').val(data['remarks']);
+    $('.dv_msg').show();
+    $('#remarks_view').show();
+    loadCommentThread(data['ticket_no']);
+
+    // Manage status/input state
+    var isClosed = ($('#status').val() == 'CLOSED');
+    $(':input[type="submit"]').prop('disabled', isClosed);
+    $('#date_created, #date_refNo, #date_closed, #remarks').prop('readonly', isClosed);
+    $('#via, #status, #itsup, #cat, #sub, #isp').prop("disabled", isClosed);
+
+    $('.modal-title').text("Ticket Number: " + ticketNo);
+    $('#action').val("Save and Reply");
+    $('#operation').val("Save and Reply");
+    $('#userModal').modal({ "show": true, "backdrop": 'static' });
+}
+
+// Bind Edit Buttons (Works for both tables)
+$('#report_data tbody, #transferred_data tbody').on('click', '.edit-btn', function(e) {
+    e.stopPropagation();
+    // determine which table was clicked
+    var currentTable = $(this).closest('table').DataTable();
+    var data = currentTable.row($(this).parents('tr')).data();
+    if (data) open_ticket_modal(data);
+});
+
+
+$('#userModal').on('shown.bs.modal', function () {
+    const ticketNo = $('#ticket_no').val();
+    if (ticketNo) {
         $('.dv_msg').show();
-        $('#remarks_view').show();
-        loadCommentThread(data['ticket_no']);
+        $('.container_remarks').show();
+        loadCommentThread(ticketNo);
+    }
+});
 
-        // Manage status/input state
-        var isClosed = ($('#status').val() == 'CLOSED');
-        $(':input[type="submit"]').prop('disabled', isClosed);
-        $('#date_created, #date_refNo, #date_closed, #remarks').prop('readonly', isClosed);
-        $('#via, #status, #itsup, #cat, #sub, #isp').prop("disabled", isClosed);
-
-        $('.modal-title').text("Ticket Number: " + ticketNo);
-        $('#action').val("Save and Reply");
-        $('#operation').val("Save and Reply");
-        $('#userModal').modal({ "show": true, "backdrop": 'static' });
-    });
-
-    $('#userModal').on('shown.bs.modal', function () {
-        const ticketNo = $('#ticket_no').val();
-        if (ticketNo) {
-          $('.dv_msg').show();
-          $('.container_remarks').show();
-            loadCommentThread(ticketNo);
-        }
-    });
-
+// KPI Card Filters
 $('#card_totalval').on('click', function () {
-var val =  $(this).attr("value");
-table
-.columns( 6 )
-.search(val)
-.draw();
-} );
-
+    var val = $(this).attr("value");
+    table.columns( 6 ).search(val).draw();
+});
 
 $('#card_openval').on('click', function () {
-var val =  $(this).attr("value");
-table
-.columns( 6 )
-.search(val)
-.draw();
-} );
+    var val = $(this).attr("value");
+    table.columns( 6 ).search(val).draw();
+});
 
 $('#card_openwfaval').on('click', function () {
-var val =  $(this).attr("value");
-table
-.columns( 6 )
-.search(val)
-.draw();
-} );
+    var val = $(this).attr("value");
+    table.columns( 6 ).search(val).draw();
+});
 
 $('#card_closedval').on('click', function () {
-var val =  $(this).attr("value");
-table
-.columns( 6 )
-.search(val)
-.draw();
-} );
-
+    var val = $(this).attr("value");
+    table.columns( 6 ).search(val).draw();
+});
 
 $('#myInput').on( 'input', function () {
     table.search( this.value ).draw();
-} );
-
-} // end of data table
-
+});
 
 $('#store_graph_modal').modal('hide'); 
 
@@ -1486,23 +1837,11 @@ slct_sub();
 gtsub_id();
 admin_hideshowforms();  
 
-$('#store').on('change', function () {
-    syncHiddenFields();
-});
+$('#store').on('change', function () { syncHiddenFields(); });
+$('#itsup').on('change', function () { syncHiddenFields(); });
+$('#isp').on('change', function () { syncHiddenFields(); });
 
-$('#itsup').on('change', function () {
-    syncHiddenFields();
-});
 
-$('#isp').on('change', function () {
-    syncHiddenFields();
-});
-
-const yr =$("#yearpicker").val();
-get_card_data(yr)
-/**
- * Get card data.
- */
 function get_card_data(y){
     $.ajax({
         url: 'fetchdata/fetch_data.php',
@@ -1528,85 +1867,84 @@ function get_card_data(y){
                 $('#count_owfa').html(0);
                 $('#count_closed').html(0);
             }
-        },
-        error: function(xhr, status, error) {
         }
     });
 }
 
+// INITIALIZE ON LOAD
+const initialYr = $("#yearpicker").val();
+get_card_data(initialYr);
+getdata(initialYr);
+getdata_transfer(initialYr);
+
+
 $(function () {
-$('#datetimepicker1, #datetimepicker2, #datetimepicker3').datetimepicker()
+    $('#datetimepicker1, #datetimepicker2, #datetimepicker3').datetimepicker();
 });
 
 $("#yearpicker").on('change',function(){
-const yr =$("#yearpicker").val()
-get_card_data(this.value);
-_techgraph(yr);
-_overallpie(yr);
-_dbline(yr); 
-_catpie(yr);
-_areagraph(yr);
-
+    const yr = this.value;
+    get_card_data(yr);
+    getdata(yr);
+    getdata_transfer(yr);
+    
+    // Check if these chart functions exist before calling to prevent errors
+    if(typeof _techgraph === 'function') _techgraph(yr);
+    if(typeof _overallpie === 'function') _overallpie(yr);
+    if(typeof _dbline === 'function') _dbline(yr); 
+    if(typeof _catpie === 'function') _catpie(yr);
+    if(typeof _areagraph === 'function') _areagraph(yr);
 });
 
 $('#cat').on('change', function() {
-var category_id = this.value;
-$.ajax({
-url: "get_subcat.php",
-type: "POST",
-data: {
-category_id: category_id
-},
-cache: false,
-success: function(dataResult){
-$("#sub").html(dataResult);
-}
-}); 
+    var category_id = this.value;
+    $.ajax({
+        url: "get_subcat.php",
+        type: "POST",
+        data: { category_id: category_id },
+        cache: false,
+        success: function(dataResult){
+            $("#sub").html(dataResult);
+        }
+    }); 
 });   
 
-
 $('#add_button').click(function(){
-$('#remarks_view').empty();
-$('#report_form').trigger('reset');
-$('.modal-title').text("ADD REPORT");
-$('#subjct').attr('readonly', false);
-$('#action').val("Add");
-$('#operation').val("Add");
-$('#date_created').val('<?= $datetime->format('m/d/Y g:i A'); ?>').attr('readonly', false);
-$('#date_refNo').attr('readonly', false);
-$('#date_closed').attr('readonly', false);
-$('#store').prop("disabled", false);
-$('#via').prop("disabled", false);
-$('#status').prop("disabled", false);
-$('#itsup').prop("disabled", false);
-$('#cat').prop("disabled", false);
-$('#sub').prop("disabled", false);
-$('#isp').prop("disabled", false);
-$(':input[type="submit"]').prop('disabled', false); 
-$('#remarks').attr('readonly', false);
-$('#msgbtn').hide();
-$('#sub').html('<option value="">Select SubCategory</option>');
-$('#sub_num').val('');
-$('#it_num').val('');
-$('#cat_num').val('');
-$('#isp_num').val('');
-$('#addmsg').val('');
-syncHiddenFields();
-admin_hideshowforms();
-$("#userModal").on('hidden.bs.modal', function(){
-
-});
-$('#userModal').modal({backdrop: 'static', keyboard: false}) 
-$("#userModal").off('hidden.bs.modal').on('hidden.bs.modal', function(){
-    location.reload();
-});
-
+    $('#remarks_view').empty();
+    $('#report_form').trigger('reset');
+    $('.modal-title').text("ADD REPORT");
+    $('#subjct').attr('readonly', false);
+    $('#action').val("Add");
+    $('#operation').val("Add");
+    $('#date_created').val('<?= $datetime->format('m/d/Y g:i A'); ?>').attr('readonly', false);
+    $('#date_refNo').attr('readonly', false);
+    $('#date_closed').attr('readonly', false);
+    $('#store').prop("disabled", false);
+    $('#via').prop("disabled", false);
+    $('#status').prop("disabled", false);
+    $('#itsup').prop("disabled", false);
+    $('#cat').prop("disabled", false);
+    $('#sub').prop("disabled", false);
+    $('#isp').prop("disabled", false);
+    $(':input[type="submit"]').prop('disabled', false); 
+    $('#remarks').attr('readonly', false);
+    $('#msgbtn').hide();
+    $('#sub').html('<option value="">Select SubCategory</option>');
+    $('#sub_num').val('');
+    $('#it_num').val('');
+    $('#cat_num').val('');
+    $('#isp_num').val('');
+    $('#addmsg').val('');
+    syncHiddenFields();
+    admin_hideshowforms();
+    $('#userModal').modal({backdrop: 'static', keyboard: false}); 
+    $("#userModal").off('hidden.bs.modal').on('hidden.bs.modal', function(){
+        location.reload();
+    });
 });
 
 $(document).on('click', '#dtbsecond', function(){
-
   var val = jQuery('#ticket_no').val();
-
   $.ajax({
       type: 'POST',
       url: 'sesticket.php',
@@ -1615,49 +1953,41 @@ $(document).on('click', '#dtbsecond', function(){
         $('#img').html(response);
       }
     });
-
 });
 
-
 $(document).on('click', '#msgbtn', function(){
+    $('.dv_msg').show();
+    $('#remarks_view').show();
 
-$('.dv_msg').show();
-$('#remarks_view').show();
-
-
-if($('#msgbtn').val() == 'show'){
-$('#action').val("Save and Reply");
-$('#operation').val("Save and Reply");
-$('#msgbtn').val("hide");
-$('#container_remarks').show('slow');
-}
-else if($('#msgbtn').val() == 'hide'){
-$('#action').val("Save");
-$('#operation').val("Save and Reply");
-$('#msgbtn').val("show");
-$('#container_remarks').hide('slow');
-}
-
+    if($('#msgbtn').val() == 'show'){
+        $('#action').val("Save and Reply");
+        $('#operation').val("Save and Reply");
+        $('#msgbtn').val("hide");
+        $('#container_remarks').show('slow');
+    }
+    else if($('#msgbtn').val() == 'hide'){
+        $('#action').val("Save");
+        $('#operation').val("Save and Reply");
+        $('#msgbtn').val("show");
+        $('#container_remarks').hide('slow');
+    }
 });
 
 $('#btnClose').click(function(){
-$('#report_form').trigger('reset');
-$('.dv_msg').hide();
-$('#remarks_view').hide();
-$('#tmpsubid').remove();
+    $('#report_form').trigger('reset');
+    $('.dv_msg').hide();
+    $('#remarks_view').hide();
+    $('#tmpsubid').remove();
 });
 
-
 $('#subpie_clsbtn').click(function(event) {
-event.preventDefault();
-$('#chartdiv9').empty();
-
+    event.preventDefault();
+    $('#chartdiv9').empty();
 });
 
 $('#substr_clsbtn').click(function(event) {
-event.preventDefault();
-$('#substr_clsbtn').empty();
-
+    event.preventDefault();
+    $('#substr_clsbtn').empty();
 });
 
 $(document).on("submit", "#report_form", function (e) {
@@ -1666,8 +1996,6 @@ $(document).on("submit", "#report_form", function (e) {
 
     let $submitBtn = $(this).find(':input[type="submit"]');
     $submitBtn.prop('disabled', true);
-    var TicketNumber = $("#ticket_no").val();
-    var Store = $("#store").val();
     var DateCreated = $("#date_created").val();
     var Concern = $("#subjct").val();
     var Status = $("#status").val();
@@ -1676,8 +2004,7 @@ $(document).on("submit", "#report_form", function (e) {
     var cat_id = $("#cat").val();
     var sub_id = $("#sub").val();
     var DateClosed = $("#date_closed").val();
-    var CloseBy = $("#close_by").val();
-    var remarks = $("#remarks").val();
+    var Store = $("#store").val();
 
     var today = new Date();
     DateCreated = new Date(DateCreated);
@@ -1727,10 +2054,14 @@ $(document).on("submit", "#report_form", function (e) {
             if (ticketNo) {
                 $('#addmsg').val('');
                 loadCommentThread(ticketNo);
-                getdata();
+                const cyr = $("#yearpicker").val();
+                getdata(cyr);
+                getdata_transfer(cyr);
             } else {
                 $('#userModal').modal('hide');
-                getdata();
+                const cyr = $("#yearpicker").val();
+                getdata(cyr);
+                getdata_transfer(cyr);
             }
             return;
           }
@@ -1764,246 +2095,16 @@ $(document).on("submit", "#report_form", function (e) {
       $submitBtn.prop('disabled', false); 
     }
 });
-
-
 });
 
 </script>
 
-<div class="modal fade" id="dataModal" tabindex="-1" role="dialog" aria-labelledby="dataModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 80%; width: 80%;">
-        <form id="pdfForm" action="insert.php" method="POST">
-            <input type="hidden" name="operation" value="submit_request">
-            <input type="hidden" name="requesting_dept" id="requesting_dept">
-            <input type="hidden" name="requesting_employee" id="requesting_employee">
-            <input type="hidden" name="received_by" value="<?php echo $_SESSION['tech_id'] ?? ''; ?>">
-
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="dataModalLabel">Fixed Asset Information & Tracking</h5>
-                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-7 border-right pt-2 pb-2">
-                            <h6 class="text-uppercase mb-3" style="color:#213456; font-weight: 800;">Request Details</h6>
-                               <p style="color: red; font-size:12px;font-style: italic;">Labels that have (*) are subject to change.</p>
-
-                            <div class="row">
-
-                             <div class="form-group col-md-6">
-            <label>Ticket No</label>
-        <input type="text" class="form-control" name="ticket_no" id="modal_ticket_no">
-         </div>
-                                <div class="form-group col-md-6">
-                                    <label>Requesting Dept/Branch:</label>
-                                    <textarea class="form-control" name="requested_db_name" rows="2" readonly></textarea>
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label>Requesting Employee</label>
-                                    <textarea class="form-control" name="requested_by_name" rows="2" readonly></textarea>
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label>Ticket Created</label>
-                                    <textarea class="form-control" name="date_created" rows="2" readonly></textarea>
-                                </div>
-                                <div class="form-group col-md-6">
-                                     <label>Item Code <span style="color: red; font-size: 10px;">*</span></label>
-                                    <textarea class="form-control" name="item_code" rows="2" ></textarea>
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label>Description <span style="color: red; font-size: 10px;">*</span></label>
-                                    <textarea class="form-control" name="description" rows="2" ></textarea>
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label>Serial Number <span style="color: red; font-size: 10px;">*</span></label>
-                                    <input type="text" class="form-control" name="serial_number" required placeholder="Type the serial number here...">
-                                </div>
-                                <div class="form-group col-md-12">
-                                    <label>Purpose of Request</label>
-                                    <textarea class="form-control" name="purpose_of_request" style="height: 100px;" readonly></textarea>
-                                </div>
-                                 <div class="form-group col-md-12">
-                                    <label>Technical Workoutput</label>
-                                    <textarea class="form-control" name="technical_workoutput" id="technical_workoutput" style="height: 100px;"></textarea>
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label>Item Received By</label>
-                                    <input type="text" class="form-control" name="received_name" value="<?php echo ($_SESSION['fname'] ?? '') . ' ' . ($_SESSION['lstname'] ?? ''); ?>" readonly>
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label>Date Received <span style="color: red; font-size: 10px;">*</span></label>
-                                    <input type="date" class="form-control" name="date_received" required>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-5 pt-2 pb-2" style=" background: linear-gradient(to bottom, #ffffff, #bbc2cf); border-radius: 8px;">
-                            <h6 class="text-uppercase mb-3" style="color:#E1AD01; font-weight: 800;">Asset Request Progress</h6>
-                            <div class="tracking-container" style="max-height: 950px; overflow-y: auto; padding-right: 10px;">
-                                <ul class="tracking-timeline" id="trackingMap"></ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">
-                        <strong>SUBMIT REQUEST</strong>
-                    </button>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-
-<style>
-  .placeholder-style {
-  color: #6c757d; 
-  font-style: italic;
-}
-  #dataModal .modal-content {
-  border: none;
-  border-radius: 15px;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-}
-
-#dataModal .modal-header {
-  background-color: #213456;;
-  color: #fff;
-  border-top-left-radius: 15px;
-  border-top-right-radius: 15px;
-  border-bottom: 4px solid #E1AD01;
-}
-
-#dataModal .modal-title {
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  display: flex;
-  align-items: center;
-}
-
-#dataModal .input-group-text {
-  background-color: #494949;
-  border-right: none;
-  color: #213456;
-}
-
-#dataModal .form-control {
-  border-left: none;
-  height: 45px;
-  
-}
-
-#dataModal .form-control:focus {
-  border-color: #213456;
-  box-shadow: none;
-}
-
-#dataModal .input-group:focus-within {
-  box-shadow: 0 0 0 0.2rem rgba(225, 173, 1, 0.25);
-  border-radius: 8px;
-}
-
-#btn_chngepass {
-  background-color: #E1AD01;
-  border: none;
-  color: #213456;
-  font-weight: 700;
-  padding: 10px 40px;
-  border-radius: 30px;
-  transition: all 0.3s ease;
-}
-
-#btn_chngepass:hover {
-  background-color: #213456;
-  color: #E1AD01;
-  transform: translateY(-2px);
-}
-
-
-.toggle-password {
-  cursor: pointer;
-  position: absolute;
-  right: 15px;
-  top: 13px;
-  z-index: 10;
-  color: #6c757d;
-}
-
-.tracking-timeline {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    position: relative;
-}
-
-.tracking-timeline::before {
-    content: '';
-    position: absolute;
-    top: 5px;
-    bottom: 0;
-    left: 11px; 
-    width: 2px;
-    border-left: 2px dotted #a3a3a3;
-    z-index: 1;
-}
-
-.timeline-item {
-    position: relative;
-    padding-left: 35px;
-    padding-bottom: 20px;
-}
-
-.timeline-icon {
-    position: absolute;
-    left: 4px;
-    top: 2px;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background-color: #e0e0e0;
-    border: 3px solid #ffffff;
-    z-index: 2;
-    box-shadow: 0 0 0 1px #ccc;
-    transition: all 0.3s ease;
-}
-
-.timeline-item.completed .timeline-icon {
-    background-color: #16A34A; 
-    box-shadow: 0 0 0 2px #16A34A;
-}
-
-.timeline-item.pending .timeline-icon {
-    background-color: #E1AD01;
-    box-shadow: 0 0 0 2px #E1AD01;
-}
-
-.timeline-desc {
-    font-size: 12px;
-    font-weight: 700;
-    color: #333;
-    margin-bottom: 2px;
-    text-transform: uppercase;
-}
-
-.timeline-date {
-    font-size: 11px;
-    color: #6c757d;
-    font-style: italic;
-}
-  </style>
-
-
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<script>$(document).ready(function () {
+<script>
+$(document).ready(function () {
     $("#pdfForm").on("submit", function (e) {
         e.preventDefault();
-
         $.ajax({
             url: "insert.php",
             type: "POST",
@@ -2033,11 +2134,12 @@ $(document).on("submit", "#report_form", function (e) {
                         $('#pdfForm').trigger('reset');
 
                         if ($("#report_data").length && $.fn.DataTable.isDataTable("#report_data")) {
-    try {
-        getdata();
-    } catch (err) {
-    }
-}
+                            try {
+                                const yr = $("#yearpicker").val();
+                                getdata(yr);
+                                getdata_transfer(yr);
+                            } catch (err) {}
+                        }
                     });
                 } else {
                     Swal.fire({
@@ -2058,6 +2160,8 @@ $(document).on("submit", "#report_form", function (e) {
         });
     });
 });
+
+// Fixed Asset Button Click logic for ANY table
 $(document).on('click', '.print-btn', function(e) {
     e.preventDefault();
     e.stopPropagation();
@@ -2114,11 +2218,11 @@ $(document).on('click', '.print-btn', function(e) {
             let dbStatus = (response.status || "").toLowerCase().trim();
             let currentLevel = statusLevels[dbStatus] || 0; 
 
-            const trackSteps = [
+           const trackSteps = [
                 { desc: "Request submitted by store/user", date: response.date_created, reqLevel: 0 },
-                { desc: "Under technical evaluation", date: response.date_created, reqLevel: 0 },
-                { desc: "Submitted to technical head", date: response.date_submitted, reqLevel: 1 },
-                { desc: "Approved and noted by technical head", date: response.date_noted, reqLevel: 2 },
+                { desc: "Under assigned support evaluation", date: response.date_created, reqLevel: 0 },
+                { desc: "Submitted to technical/dept head", date: response.date_submitted, reqLevel: 1 },
+                { desc: "Approved and noted by technical/dept head", date: response.date_noted, reqLevel: 2 },
                 { desc: "For admin support validation", date: null, reqLevel: 2 }, 
                 { desc: "Validated by admin support", date: response.date_validated, reqLevel: 3 },
                 { desc: "For administrative verification", date: null, reqLevel: 3 }, 
@@ -2146,7 +2250,6 @@ $(document).on('click', '.print-btn', function(e) {
             });
 
             $('#trackingMap').html(timelineHtml);
-            
             $('#dataModal').modal('show');
         },
         error: function(xhr, status, error) {
@@ -2158,7 +2261,6 @@ $(document).on('click', '.print-btn', function(e) {
 });
 </script>
 
-<script src="https://jquery.com"></script>
 <script>
 $(document).ready(function() {
     const $modal = $('#welcomeModal');
@@ -2176,7 +2278,6 @@ $(document).ready(function() {
 });
 
 function loadDepartmentTable() {
-
     let currentPath = window.location.pathname;
     let dynamicDirectory = currentPath.substring(0, currentPath.lastIndexOf('/')) + '/';
     let targetedURL = window.location.origin + dynamicDirectory + 'fetch_department_table.php';
@@ -2304,4 +2405,23 @@ function loadDepartmentTable() {
         }
     });
 }
+
+$(document).ready(function() {
+    $('button[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+        var targetTab = $(e.target).attr("id"); 
+
+        if (targetTab === 'transferred-tab') {
+            if ($.fn.DataTable.isDataTable('#transferred_data')) {
+                $('#transferred_data').DataTable().columns.adjust().draw();
+            }
+        } else if (targetTab === 'tickets-tab') {
+            if ($.fn.DataTable.isDataTable('#report_data')) {
+                $('#report_data').DataTable().columns.adjust().draw();
+            }
+        }
+        $('#ticketTabs .nav-link').css('color', 'white');
+        $('#ticketTabs .nav-link.active').css('color', '#495057'); 
+    });
+    
+});
 </script>

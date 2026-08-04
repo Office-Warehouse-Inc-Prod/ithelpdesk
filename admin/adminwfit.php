@@ -64,6 +64,10 @@ $con1 = new dbconfig();
       <script src="../js/dataTables.select.min.js"></script>
       <script src="../js/dataTables.responsive.min.js"></script>
       <script src="../js/fnReloadAjax.js"></script>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+      <link rel="stylesheet" href="../css/jquery.dataTables.min.css" />
+<!-- Add this missing Responsive CSS file -->
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.4.1/css/responsive.dataTables.min.css" />
 
         <!-- <style>
 
@@ -406,8 +410,7 @@ hr{
 
 
 
-
-          </style> -->
+ </style> -->
 <style>
 
 /* =========================

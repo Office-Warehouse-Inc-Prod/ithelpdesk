@@ -4,8 +4,8 @@ include 'admin_function.php';
 
 $fn = new dbconfig();
 // $fn->fetch_cards_result();
-
 $mode = $_POST['mode'];
+$records = array();
 switch ($mode) {
     case 'yearch':
         $records = $fn->fetch_cards_result();
@@ -51,6 +51,9 @@ switch ($mode) {
     case 'dtbnet':
         $records['rptdatanet'] = $fn->admin_data_table_resnet();
         break;
+  case 'dtb_transfer':
+        $records['transferdata'] = $fn->admin_data_table_transfer();
+     break;
     case 'newrpt_tbl':
         $records['newrptdata'] = $fn->newreporthist();
         break;

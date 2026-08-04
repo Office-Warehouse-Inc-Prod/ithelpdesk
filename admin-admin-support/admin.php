@@ -456,7 +456,7 @@ body {
 
         <li class="nav-item dropdown">
   <a class="nav-link dropdown-toggle" href="#" id="genReportDrop" role="button" data-toggle="dropdown">
-    <i class="fa fa-chart-line"></i> FIXED ASSET <span class="badge badge-danger ml-1" id="notif_fa"></span>
+    <i class="fas fa-boxes-stacked"></i> FIXED ASSET <span class="badge badge-danger ml-1" id="notif_fa"></span>
   </a>
   <div class="dropdown-menu" aria-labelledby="genReportDrop">
     

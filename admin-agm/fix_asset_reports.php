@@ -1,936 +1,197 @@
 <?php
-$inactive = 180;
+include '../condb.php';
+$con1 = new dbconfig();
+$conn = $con1->getConnection(); 
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mode'])) {
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+    $inactive = 180;
+    if (isset($_SESSION['start']) && (time() - $_SESSION['start'] > $inactive)){
+        
+        echo json_encode(["status" => "error", "message" => "Session expired. Please log in again."]);
+        exit();
+    }
+    $_SESSION['start'] = time();
+    if ($_POST['mode'] === 'fa_tbl') {
+        try {
+            $sql = "SELECT 
+                        r.ticket_no, r.date_created, r.concern, r.service_desc, r.subject,
+                        GROUP_CONCAT(i.files_name SEPARATOR '|') AS attachment_files,
+                        r.sub_id, r.f_deptsel, r.itsup, r.store
+                    FROM reports r
+                    LEFT JOIN images i ON r.ticket_no = i.ticket_no
+                    WHERE r.status = 'Assigned' 
+                    GROUP BY r.ticket_no
+                    ORDER BY r.date_created DESC";
+                    
+            $result = $conn->query($sql);
+            
+            if ($result) {
+                echo json_encode(['fadata' => $result->fetch_all(MYSQLI_ASSOC)]);
+            } else {
+                echo json_encode(['fadata' => [], 'error' => $conn->error]);
+            }
+        } catch (Exception $e) {
+            echo json_encode(['fadata' => [], 'error' => $e->getMessage()]);
+        }
+        exit; 
+    }
+
+    if ($_POST['mode'] === 'add_remarks_only') {
+        $ticket_no = $_POST['ticket_no'] ?? '';
+        $remarks = trim($_POST['remarks_adtech'] ?? '');
+        $user_id = $_SESSION['user_id'] ?? '';
+        
+        $store = $_SESSION['str_num'] ?? '';
+
+        date_default_timezone_set('Asia/Manila');
+        $currentDate = date('Y-m-d H:i:s');
+
+        if (empty($ticket_no) || empty($remarks)) {
+            echo json_encode(["status" => "error", "message" => "Missing data."]);
+            exit;
+        }
+        if (empty($user_id)) {
+            echo json_encode(["status" => "error", "message" => "Session expired or User ID missing. Please log in again."]);
+            exit;
+        }
+
+        try {
+            $conn->begin_transaction();
+            
+            $stmt1 = $conn->prepare("
+                INSERT INTO fixed_asset_remarks (
+                    ticket_no, remarks_note, remarks_by, date_remarks
+                ) VALUES (?, ?, ?, ?)
+            ");
+            $stmt1->bind_param("ssss", $ticket_no, $remarks, $user_id, $currentDate);
+            $exec1 = $stmt1->execute();
+            
+            $notif_msg = "Technical Head added a remark on ticket no " . $ticket_no;
+            $stmt2 = $conn->prepare("
+                INSERT INTO tbl_notif (
+                    ticket_no, store, itsup, notif_data, notif_val, notif_date
+                ) VALUES (?, ?, ?, ?, '10', ?)
+            ");
+            $stmt2->bind_param("sssss", $ticket_no, $store, $user_id, $notif_msg, $currentDate);
+            $exec2 = $stmt2->execute();
+            
+            if ($exec1 && $exec2) {
+                $conn->commit();
+                echo json_encode(["status" => "success", "message" => "Remarks saved successfully."]);
+            } else {
+                $conn->rollback();
+                echo json_encode(["status" => "error", "message" => "SQL Error: Saving remarks failed."]);
+            }
+
+        } catch (Exception $e) {
+            $conn->rollback();
+            echo json_encode(["status" => "error", "message" => "Database error: " . $e->getMessage()]);
+        }
+        
+        exit();
+    }
+
+    if ($_POST['mode'] === 'newrpt_tbl') {
+        $sql = "SELECT r.ticket_no, r.date_created, r.concern, r.service_desc, r.subject, 
+                GROUP_CONCAT(i.files_name SEPARATOR '|') AS attachment_files, r.sub_id, r.f_deptsel, r.itsup, r.store 
+                FROM reports r LEFT JOIN images i ON r.ticket_no = i.ticket_no 
+                WHERE r.status = 'Assigned' GROUP BY r.ticket_no ORDER BY r.date_created DESC";
+        
+        $result = $conn->query($sql);
+        if ($result) {
+            echo json_encode(['newrptdata' => $result->fetch_all(MYSQLI_ASSOC)]);
+        } else {
+            echo json_encode(['newrptdata' => []]);
+        }
+        exit;
+    }
+    if ($_POST['mode'] === 'fetch_remarks') {
+        try {
+            $stmt = $conn->prepare("SELECT far.remarks_note, 
+                                                 CONCAT(u.fname, ' ', u.lstname) AS user_fullname, 
+                                                 far.date_remarks 
+                                          FROM fixed_asset_remarks far 
+                                          LEFT JOIN users u ON far.remarks_by = u.id 
+                                          WHERE far.ticket_no = ? 
+                                          ORDER BY far.date_remarks ASC");
+            $stmt->bind_param("s", $_POST['ticket_no']);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            echo json_encode($result->fetch_all(MYSQLI_ASSOC));
+        } catch (Exception $e) {
+            echo json_encode([["remarks_note" => "Error loading remarks.", "it_desc" => "System", "date_remarks" => ""]]);
+        }
+        exit;
+    }
+}
+
+include 'admin.php';
+$inactive = 180;
 if (isset($_SESSION['start']) && (time() - $_SESSION['start'] > $inactive)){
-    session_unset();
-    session_destroy();
+    
     header("Location: adminpanel.php");
     exit();
 }
-
 $_SESSION['start'] = time();
-  
-include 'admin.php';
-include '../condb.php';
-
-$con1 = new dbconfig();
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mode']) && $_POST['mode'] === 'fa_tbl') {
-    try {
-        $sql = "SELECT 
-                    r.ticket_no, 
-                    r.date_created, 
-                    r.concern, 
-                    r.service_desc, 
-                    r.subject,
-                    GROUP_CONCAT(i.files_name SEPARATOR '|') AS attachment_files,
-                    r.sub_id,
-                    r.f_deptsel,
-                    r.itsup,
-                    r.store
-                FROM reports r
-                LEFT JOIN images i ON r.ticket_no = i.ticket_no
-                WHERE r.status = 'Assigned' 
-                GROUP BY r.ticket_no
-                ORDER BY r.date_created DESC";
-
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        echo json_encode(['fadata' => $results]);
-        
-    } catch (Exception $e) {
-        echo json_encode(['fadata' => [], 'error' => $e->getMessage()]);
-    }
-    exit; 
-}
 ?>
 
 <head>
     <link rel="stylesheet" href="../css/bootstrap-datetimepicker.min.css"/>
     <script src="../js/bootstrap-datetimepicker.min.js"></script>
     <link rel="stylesheet" href="../css/jquery.dataTables.min.css" />
+    <link rel="stylesheet" href="styles.css" />
     <script src="../js/jquery.dataTables.min.js"></script>
     <script src="../js/dataTables.select.min.js"></script>
     <script src="../js/dataTables.responsive.min.js"></script>
     <script src="../js/fnReloadAjax.js"></script>
+      <link rel="stylesheet" href="fix_asset_reports.css" />
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
-
-    <style>
-      :root {
-  --navy: #213456;
-  --navy2: #1a2a4a;
-  --yellow: #EAAA00;
-  --bg: #EEF2F7;
-  --card: #ffffff;
-  --card2: #F8FAFF;
-  --text: #111827;
-  --muted: #6B7280;
-  --line: #E5E7EB;
-  --shadow: 0 14px 34px rgba(17,24,39,.10);
-  --radius: 18px;
-  --radius-sm: 14px;
-  --focus: 0 0 0 .2rem rgba(234,170,0,.18);
-  --theme-color: #213456;
-}
-
-body {
-  background: linear-gradient(to bottom, #ffffff, #99aac8);
-  background-attachment: fixed; 
-  margin: 0; 
-  height: 100vh; 
-} 
-
-.container.mt-3 { padding-top: 10px; padding-bottom: 24px; }
-
-#fix_asset_table { 
-  width: 100% !important; 
-  background-color: #ffffff;
-  border-collapse: collapse !important;
-  border-spacing: 0 !important;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 10px 8px rgba(108, 108, 53, 0.4);
-  border: none !important;
-}
-
-table.dataTable {
-  border-collapse: collapse !important;
-  border-spacing: 0 !important;
-}
-
-table.dataTable thead th,
-#fix_asset_table thead th {
-  background-color: var(--theme-color) !important;
-  color: white !important;
-  font-weight: 900;
-  text-transform: uppercase;
-  font-size: 0.85rem;
-  letter-spacing: .04em;
-  padding: 14px 12px !important;
-  border: none !important;
-}
-
-table.dataTable tbody tr,
-#fix_asset_table tbody tr {
-  background: #ffffff !important;
-  border: none !important;
-  box-shadow: none !important;
-  border-radius: 0 !important;
-}
-
-table.dataTable tbody td,
-#fix_asset_table tbody td {
-  padding: 14px 12px !important;
-  vertical-align: middle;
-  color: rgba(17,24,39,.85) !important;
-  border: none !important;
-  border-bottom: 1px solid var(--theme-color) !important;
-}
-
-#fix_asset_table tbody tr:hover,
-table.dataTable tbody tr:hover {
-  background-color: #bec5d1 !important;
-  color: #ffffff !important;
-  cursor: pointer;
-  transform: none !important;
-  transition: all 0.2s ease;
-}
-
-table.dataTable tbody tr td:first-child,
-table.dataTable tbody tr td:last-child {
-  border-radius: 0 !important;
-}
-
-.table-responsive {
-  border-radius: 8px;
-  margin-top: 20px;
-}
-
-.table-wrap {
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 14px;
-}
-
-.dataTables_wrapper {
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 14px;
-}
-
-.dataTables_wrapper .dataTables_length label,
-.dataTables_wrapper .dataTables_filter label,
-.dataTables_wrapper .dataTables_info {
-  color: var(--muted) !important;
-  font-weight: 600;
-}
-
-.dataTables_wrapper .dataTables_filter input:focus,
-.dataTables_wrapper .dataTables_length select:focus {
-  box-shadow: var(--focus) !important;
-  border-color: rgba(234,170,0,.45) !important;
-}
-
-.owi-navbar {
-  background-color: #213456 !important;
-  box-shadow: 0 2px 10px 2px #66738e;
-  margin-bottom: 40px;
-}
-
-.owi-navbar .nav-link,
-.owi-navbar .navbar-brand {
-  color: #fff !important;
-  font-weight: 600;
-  letter-spacing: .3px;
-}
-
-.owi-navbar .nav-link i {
-  margin-right: 6px;
-}
-
-.owi-navbar .nav-link:hover,
-.owi-navbar .navbar-brand:hover {
-  opacity: .92;
-}
-
-.owi-navbar .dropdown-menu {
-  background-color: #ffffff;
-  border: none;
-  min-width: 220px;
-  padding: .35rem;
-  box-shadow: 0 12px 24px rgba(0,0,0,0.25);
-  border-radius: 12px;
-}
-
-/* Dropdown items */
-.owi-navbar .dropdown-item {
-  color: black;
-  border-radius: 10px;
-  padding: .55rem .75rem;
-  white-space: normal; 
-}
-
-.owi-navbar .dropdown-item i {
-  margin-right: 8px;
-}
-
-.owi-navbar .dropdown-item:hover {
-  background-color: #54699e;
-  color: #fff;
-}
-
-.owi-navbar .dropdown-divider {
-  border-top: 1px solid rgba(255,255,255,0.2);
-}
-.notif-dropdown {
-  width: 360px;
-  max-width: 92vw;
-}
-
-@media (max-width: 576px) {
-  .notif-dropdown {
-    width: 92vw;
-  }
-}
-
-.owi-navbar .badge-danger {
-  background-color: #ff4d4d;
-}
-
-.owi-navbar .badge-info {
-  background-color: #28c7ff;
-  color: #002a4a;
-  font-weight: 700;
-}
-
-.owi-navbar .navbar-toggler {
-  border-color: rgba(255,255,255,0.35);
-}
-
-.owi-navbar .navbar-toggler-icon {
-  filter: brightness(0) invert(1);
-}
-
-.owi-navbar .nav-item {
-  position: relative;
-  margin: 0 5px;
-  display: flex;
-  align-items: center;
-}
-
-.owi-navbar .nav-link {
-  position: relative;
-  padding: 0.8rem 1rem !important;
-  color: rgba(255, 255, 255, 0.8) !important;
-  transition: all 0.3s ease;
-}
-
-.owi-navbar .nav-link::after {
-  content: '';
-  position: absolute;
-  width: 0;
-  height: 3px;
-  bottom: 5px; 
-  left: 50%;
-  background-color: var(--primary-color);
-  transition: width 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), left 0.3s ease;
-  transform: translateX(-50%);
-  border-radius: 10px;
-}
-
-.owi-navbar .nav-item:hover .nav-link {
-  color: #fff !important;
-}
-
-.owi-navbar .nav-item:hover .nav-link::after {
-  width: 70%; 
-}
-
-.owi-navbar .nav-item.active .nav-link {
-  color: var(--primary-color) !important;
-  font-weight: 700;
-}
-
-.owi-navbar .nav-item.active .nav-link::after {
-  width: 70%; 
-  background-color: var(--primary-color);
-}
-
-.owi-navbar .dropdown-menu {
-  border-top: 3px solid var(--primary-color) !important;
-  border-radius: 0 0 8px 8px !important;
-  margin-top: 0;
-}
-.navbar-brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-family: 'Orbitron', sans-serif;
-  font-size: 1.4rem;
-  letter-spacing: 1px;
-}
-
-.navbar-brand img {
-  transition: transform 0.3s ease;
-}
-
-.navbar-brand:hover img {
-  transform: rotate(-10deg) scale(1.1);
-}
-
-.owi-navbar .dropdown-menu {
-  border-top: 3px solid var(--primary-color);
-  margin-top: 10px;
-}
-
-:root{
-  --navy:#121C31;
-  --navy2:#1a2a4a;
-  --yellow:#EAAA00;
-
-  --bg:#EEF2F7;
-  --card:#ffffff;
-  --card2:#F8FAFF;
-  --text:#111827;
-  --muted:#6B7280;
-  --line:#E5E7EB;
-
-  --shadow: 0 14px 34px rgba(17,24,39,.10);
-  --radius:18px;
-  --radius-sm:14px;
-  --focus: 0 0 0 .2rem rgba(234,170,0,.18);
-}
-
-html, body{ height:100%; }
-
-body {
-  background: linear-gradient(to bottom, #ffffff, #99aac8);
-  background-attachment: fixed; 
-  margin: 0; 
-  height: 100vh; 
-} 
-.container.mt-3{ padding-top: 10px; padding-bottom: 24px; }
-
-.navbar, header, .topbar, .navbar-default{
-  background-color: #213456 !important;
-  border-color: rgba(255,255,255,.10) !important;
-  margin-bottom: 40px;
-}
-.navbar a, .navbar-brand, .navbar-nav > li > a,
-.navbar i, .navbar .fa, .navbar .fas{
-  color: #fff !important;
-  font-weight: 600;
-}
-.navbar-nav > li.active > a,
-.navbar-nav > li > a:hover{
-  color: var(--yellow) !important;
-}
-.navbar-nav > li.active > a{
-  border-bottom: 3px solid var(--yellow);
-}
-#new_rep_table { width:100% !important; }
-
-.table-wrap {
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 14px;
-}
-
-.dataTables_wrapper {
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 14px;
-}
-
-.dataTables_wrapper .dataTables_length label,
-.dataTables_wrapper .dataTables_filter label,
-.dataTables_wrapper .dataTables_info {
-  color: var(--muted) !important;
-  font-weight: 600;
-}
-
-.dataTables_wrapper .dataTables_filter input:focus,
-.dataTables_wrapper .dataTables_length select:focus {
-  box-shadow: var(--focus) !important;
-  border-color: rgba(234,170,0,.45) !important;
-}
-
-.dataTables_wrapper .dataTables_paginate .paginate_button {
-  border-radius: 12px !important;
-  border: 1px solid transparent !important;
-  color: var(--text) !important;
-  background: transparent !important;
-}
-.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
-  border-color: var(--line) !important;
-  background: #F8FAFC !important;
-}
-.dataTables_wrapper .dataTables_paginate .paginate_button.current {
-  background: rgba(234,170,0,.18) !important;
-  border-color: rgba(234,170,0,.35) !important;
-}
-
-table.dataTable {
-  border-collapse: collapse !important; 
-  width: 100% !important;
-}
-
-table.dataTable thead th {
-  color: white !important;
-  font-weight: 900;
-  letter-spacing: .04em;
-  text-transform: uppercase;
-  border: none !important;
-  border-bottom: 2px solid #213456 !important; 
-  background: #5273ad !important;
-  padding: 14px 12px !important;
-}
-
-table.dataTable tbody tr {
-  background: #ffffff !important;
-  box-shadow: 0 10px 22px rgba(17,24,39,.08);
-}
-
-table.dataTable tbody td {
-  border-top: none !important;
-  border-bottom: 1px solid #213456 !important; 
-  color: rgba(17,24,39,.85) !important;
-  padding: 14px 12px !important;
-}
-
-table.dataTable tbody tr:hover {
-  transition: .15s ease;
-  background: #F8FAFF !important;
-}
-
-.modal-content{
-  border: 1px solid var(--line) !important;
-  background: #ffffff !important;
-  box-shadow: 0 22px 60px rgba(17,24,39,.18);
-}
-
-.modal-header{
-  border-bottom: 3px solid var(--yellow) !important;
-  padding: 16px 18px !important;
-  background: #213456 !important;
-}
-
-.modal-title{
-  font-size: 16px;
-  font-weight: 900;
-  letter-spacing: .02em;
-  color: white;
-  text-transform: uppercase;
-}
-
-.modal-body{ padding: 18px !important; }
-.modal-footer{
-  border-top: 1px solid var(--line) !important;
-  padding: 14px 18px !important;
-}
-
-label {
-  font-size: 11px;
-  font-weight: 900;
-  color: #213456;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  margin-bottom: 6px;
-}
-
-input.form-control,
-textarea.form-control {
-  color: #6c757d !important;
-  background-color: transparent !important; 
-  border: none !important; 
-  border-bottom: 1px solid #213456 !important; 
-  border-radius: 0px !important; 
-  resize: none !important; 
-}
-
-select.custom-select-placeholder.placeholder-active,
-textarea.form-control.custom-select-placeholder:placeholder-shown {
-  color: red !important;
-  border: 1px solid #ced4da !important;
-  border-radius: .2rem !important;
-  background-color: #fff !important;
-}
-
-textarea.form-control.custom-select-placeholder::placeholder {
-  color: red !important;
-  opacity: 0.7;
-}
-
-select.custom-select-placeholder.has-value,
-textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
-  color: #212529 !important; 
-  border: none !important; 
-  border-bottom: 1px solid #213456 !important; 
-  border-radius: 0px !important;
-  background-color: transparent !important;
-}
-.form-control,
-.form-control-sm,
-select.form-control,
-textarea.form-control{
-  background: #fff !important;
-  border: 1px solid var(--line) !important;
-  color: var(--text) !important;
-  border-radius: 14px !important;
-}
-
-.form-control:focus,
-.form-control-sm:focus,
-select.form-control:focus,
-textarea.form-control:focus{
-  box-shadow: var(--focus) !important;
-  border-color: rgba(234,170,0,.45) !important;
-}
-
-.form-control[readonly],
-textarea[readonly]{ opacity: .95; }
-
-/* Spacing in grid */
-.form-group{ margin-bottom: 14px !important; }
-
-/* ===== Buttons (OWI style) ===== */
-.btn{
-  border-radius: 14px !important;
-  padding: 10px 14px !important;
-  font-weight: 900 !important;
-  letter-spacing: .02em;
-  border: 1px solid transparent !important;
-}
-
-.btn-primary{
-  background: white !important;
-  border-color: var(--navy) !important;
-  color: #213456 !important;
-}
-.btn-primary:hover{ background: #213456; color:white;}
-
-.btn-success{
-  background: rgba(22,163,74,.14) !important;
-  border-color: rgba(22,163,74,.28) !important;
-  color: #166534 !important;
-}
-.btn-success:hover{ background: rgba(22,163,74,.18) !important; }
-
-.btn-danger{
-  background: rgba(239,68,68,.14) !important;
-  border-color: rgba(239,68,68,.28) !important;
-  color: #991b1b !important;
-}
-.btn-danger:hover{ background: rgba(239,68,68,.18) !important; }
-
-#msg_thread .card.card-body{
-  background: #213456 !important;
-  border: 1px solid var(--line) !important;
-  border-radius: var(--radius-sm) !important;
-}
-
-.container_remarks{
-  background: #F8FAFF;
-  border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
-  padding: 12px;
-  max-height: 280px;
-  box-shadow: 0 20px 60px rgba(123, 128, 44, 0.605);
-  overflow: auto;
-}
-
-#remarks_view ul{ list-style: none; padding-left: 0; margin: 0; }
-
-#remarks_view li{
-  padding: 10px 12px;
-  border: 1px solid var(--line);
-  background: #ffffff;
-  border-radius: 14px;
-  margin-bottom: 10px;
-  box-shadow: 0 10px 18px rgba(17,24,39,.06);
-}
-
-hr{ border-top: 1px solid var(--line) !important; }
-
-.priority-chip{
-  padding:4px 10px;
-  border-radius:999px;
-  font-weight:900;
-  font-size:11px;
-  letter-spacing:.05em;
-}
-.p-critical{ background: rgba(239,68,68,.14); color:#991b1b; border:1px solid rgba(239,68,68,.25); }
-.p-high{     background: rgba(251,146,60,.14); color:#9a3412; border:1px solid rgba(251,146,60,.25); }
-.p-medium{   background: rgba(234,170,0,.16); color:#7a5200; border:1px solid rgba(234,170,0,.30); }
-.p-low{      background: rgba(34,197,94,.14); color:#166534; border:1px solid rgba(34,197,94,.25); }
-
-.select2-container--default .select2-selection--single{
-  background-color: #ffffff !important;
-  border: 1px solid var(--line) !important;
-  border-radius: 14px !important;
-  height: 42px !important;
-  display: flex !important;
-  align-items: center !important;
-  padding: 4px 10px !important;
-  color: var(--text) !important;
-}
-.select2-container--default .select2-selection--single .select2-selection__rendered{
-  color: var(--text) !important;
-}
-.select2-container--default .select2-selection--single .select2-selection__arrow{
-  height: 42px !important;
-}
-
-.select2-dropdown{
-  background-color: #ffffff !important;
-  color: var(--text) !important;
-  border: 1px solid var(--line) !important;
-  border-radius: 14px !important;
-  box-shadow: 0 18px 40px rgba(17,24,39,.14);
-}
-.select2-results__option{ color: var(--text) !important; }
-.select2-results__option--highlighted{
-  background: rgba(234,170,0,.16) !important;
-  color: var(--text) !important;
-}
-.btn {  
-    background-color: white !important;
-    border: 2px solid #213456;
-    border-color: var(--gold-accent);
-    font-weight: 700;
-    color: #213456;
-}
-
-.btn:hover {
-    background-color: #16243d !important;
-    border-color: var(--gold-accent);
-    color: white;
-}
-
-/* --- Buttons --- */
-.btn-success {  
-    background-color: white !important;
-    border: 2px solid #213456;
-    font-weight: 700;
-    color: #213456;
-}
-
-.btn-success:hover {
-    background-color: #16243d !important;
-    border-color: var(--gold-accent);
-    color:white;
-}
-
-::-webkit-scrollbar {
-  width: 8px;
-}
-::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
-}
-::-webkit-scrollbar-thumb {
-background: linear-gradient(135deg, #837031, #E1AD01);
-  border-radius: 10px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(135deg, #837031, #E1AD01);
-}
-
-.owi-navbar {
-  background-color: #213456 !important;
-  box-shadow: 0 2px 10px 2px #66738e;
-  margin-bottom: 40px;
-}
-
-.owi-navbar .nav-link,
-.owi-navbar .navbar-brand {
-  color: #fff !important;
-  font-weight: 600;
-  letter-spacing: .3px;
-}
-
-.owi-navbar .nav-link i {
-  margin-right: 6px;
-}
-
-.owi-navbar .nav-link:hover,
-.owi-navbar .navbar-brand:hover {
-  opacity: .92;
-}
-
-.owi-navbar .dropdown-menu {
-  background-color: #ffffff;
-  border: none;
-  min-width: 220px;
-  padding: .35rem;
-  box-shadow: 0 12px 24px rgba(0,0,0,0.25);
-  border-radius: 12px;
-}
-
-.owi-navbar .dropdown-item {
-  color: black;
-  border-radius: 10px;
-  padding: .55rem .75rem;
-  white-space: normal; 
-}
-
-.owi-navbar .dropdown-item i {
-  margin-right: 8px;
-}
-
-.owi-navbar .dropdown-item:hover {
-  background-color: #54699e;
-  color: #fff;
-}
-
-.owi-navbar .dropdown-divider {
-  border-top: 1px solid rgba(255,255,255,0.2);
-}
-.notif-dropdown {
-  width: 360px;
-  max-width: 92vw;
-}
-
-@media (max-width: 576px) {
-  .notif-dropdown {
-    width: 92vw;
-  }
-}
-
-.owi-navbar .badge-danger {
-  background-color: #ff4d4d;
-}
-
-.owi-navbar .badge-info {
-  background-color: #28c7ff;
-  color: #002a4a;
-  font-weight: 700;
-}
-
-.owi-navbar .navbar-toggler {
-  border-color: rgba(255,255,255,0.35);
-}
-
-.owi-navbar .navbar-toggler-icon {
-  filter: brightness(0) invert(1);
-}
-
-.owi-navbar .nav-item {
-  position: relative;
-  margin: 0 5px;
-  display: flex;
-  align-items: center;
-}
-
-.owi-navbar .nav-link {
-  position: relative;
-  padding: 0.8rem 1rem !important;
-  color: rgba(255, 255, 255, 0.8) !important;
-  transition: all 0.3s ease;
-}
-
-.owi-navbar .nav-link::after {
-  content: '';
-  position: absolute;
-  width: 0;
-  height: 3px;
-  bottom: 5px; 
-  left: 50%;
-  background-color: var(--primary-color);
-  transition: width 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), left 0.3s ease;
-  transform: translateX(-50%);
-  border-radius: 10px;
-}
-
-.owi-navbar .nav-item:hover .nav-link {
-  color: #fff !important;
-}
-
-.owi-navbar .nav-item:hover .nav-link::after {
-  width: 70%; 
-}
-
-.owi-navbar .nav-item.active .nav-link {
-  color: var(--primary-color) !important;
-  font-weight: 700;
-}
-
-.owi-navbar .nav-item.active .nav-link::after {
-  width: 70%; 
-  background-color: var(--primary-color);
-}
-
-.owi-navbar .dropdown-menu {
-  border-top: 3px solid var(--primary-color) !important;
-  border-radius: 0 0 8px 8px !important;
-  margin-top: 0;
-}
-.navbar-brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-family: 'Orbitron', sans-serif;
-  font-size: 1.4rem;
-  letter-spacing: 1px;
-}
-
-.navbar-brand img {
-  transition: transform 0.3s ease;
-}
-
-.navbar-brand:hover img {
-  transform: rotate(-10deg) scale(1.1);
-}
-
-.owi-navbar .dropdown-menu {
-  border-top: 3px solid var(--primary-color);
-  margin-top: 10px;
-}
-
-
-  .tracking-timeline {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    position: relative;
-  }
-
-  .tracking-timeline::before {
-    content: '';
-    position: absolute;
-    top: 5px;
-    bottom: 0;
-    left: 11px; 
-    width: 2px;
-    border-left: 2px dotted #a3a3a3;
-    z-index: 1;
-  }
-
-  .timeline-item {
-    position: relative;
-    padding-left: 35px;
-    padding-bottom: 20px;
-  }
-
-  .timeline-icon {
-    position: absolute;
-    left: 4px;
-    top: 2px;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background-color: #e0e0e0;
-    border: 3px solid #ffffff;
-    z-index: 2;
-    box-shadow: 0 0 0 1px #ccc;
-    transition: all 0.3s ease;
-  }
-
-  .timeline-item.completed .timeline-icon {
-    background-color: #16A34A; 
-    box-shadow: 0 0 0 2px #16A34A;
-  }
-
-  .timeline-item.pending .timeline-icon {
-    background-color: #E1AD01; 
-    box-shadow: 0 0 0 2px #E1AD01;
-  }
-
-  .timeline-desc {
-    font-size: 12px;
-    font-weight: 700;
-    color: #333;
-    margin-bottom: 2px;
-    text-transform: uppercase;
-  }
-
-  .timeline-date {
-    font-size: 11px;
-    color: #6c757d;
-    font-style: italic;
-  }
-    </style>
 </head>
 
 <div class="container" style="max-width:1800px;">
     <div class="row mb-12 align-items-end">
         <div class="row mb-3">
-    <div class="col-md-4">
+    <div class="col-md-3">
         <label>Year</label>
         <select id="filter_year" class="form-control filter-trigger">
             <option value="">All Years</option>
             <option value="2026">2026</option>
             </select>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
         <label>Month</label>
         <select id="filter_month" class="form-control filter-trigger">
             <option value="">All Months</option>
             <option value="01">January</option>
+            <option value="02">February</option>
+            <option value="03">March</option>
+            <option value="04">April</option>
+            <option value="05">May</option>
+            <option value="06">June</option>
+            <option value="07">July</option>
+            <option value="08">August</option>
+            <option value="09">September</option>
+            <option value="10">October</option>
+            <option value="11">November</option>
+            <option value="12">December</option>
             </select>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
         <label>Status</label>
         <select id="filter_status" class="form-control filter-trigger">
             <option value="">All Statuses</option>
-            <option value="Submitted">Submitted</option>
-            <option value="Noted">Noted</option>
-            <option value="Validated">Validated</option>
-            <option value="Printed">Printed</option>
-            <option value="Recorded">Recorded</option>
-            <option value="Verified">Verified</option>
-            <option value="Approved">Approved</option>
-            <option value="Completed">Completed</option>
+            <option value="SUBMITTED">SUBMITTED</option>
+            <option value="NOTED">NOTED</option>
+            <option value="VALIDATED">VALIDATED</option>
+            <option value="PRINTED">PRINTED</option>
+            <option value="RECORDED">RECORDED</option>
+            <option value="VERIFIED">VERIFIED</option>
+            <option value="APPROVED">APPROVED</option>
+            <option value="COMPLETED">COMPLETED</option>
         </select>
     </div>
 </div>
@@ -958,7 +219,7 @@ background: linear-gradient(135deg, #837031, #E1AD01);
 
           <div class="modal-body">
             <div class="row">
-              <div class="col-md-7 border-right pt-2 pb-2">
+               <div class="col-md-6 border-right pt-2 pb-2">
                  <h6 class="text-uppercase mb-3" style="color:#E1AD01; font-weight: 800;">Request Details</h6>
                 <div class="row">
                   <div class="form-group col-md-5">
@@ -987,17 +248,30 @@ background: linear-gradient(135deg, #837031, #E1AD01);
                   </div>
                   <div class="form-group col-md-5">
                     <label>Serial Number</label>
-                    <input type="text" class="form-control" name="serial_number" id="serial_number" required>
+                    <input type="text" class="form-control" name="serial_number" id="serial_number" >
                   </div>
+
+                   <div class="form-group col-md-5">
+                    <label>Asset Tag Number</label>
+                    <input type="text" class="form-control" name="asset_tag_number" id="asset_tag_number" >
+                  </div>
+
+                   <div class="form-group col-md-12">
+                    <label>Workoutput (Under Technical Evaluation)</label>
+                    <textarea class="form-control" name="technical_workoutput" id="technical_workoutput" style="height: 150px;" readonly></textarea>
+                  </div>
+
+
                   <div class="form-group col-md-12">
-                    <label>Purpose of Request (Created by Store/Dept User)</label>
+                    <label>Purpose of Request (From Store/Dept User)</label>
                     <textarea class="form-control" name="purpose_of_request" id="purpose_of_request" style="height: 150px;" readonly></textarea>
                   </div>
 
                    <div class="form-group col-md-12">
-                    <label>Purpose of Request (Rephrased version for printing)</label>
-                    <textarea class="form-control" name="revised_request" id="revised_request" style="height: 150px;" readonly></textarea>
+                    <label>Purpose of Request (Rephrase for Printing)</label>
+                    <textarea class="form-control" name="revised_request" id="revised_request"  style="height: 150px;" maxlength="70"></textarea>
                   </div>
+                   
                   <div class="form-group col-md-5">
                     <label>Item Received By</label>
                     <input type="text" class="form-control" name="item_received_by" id="it_desc" readonly>
@@ -1005,7 +279,7 @@ background: linear-gradient(135deg, #837031, #E1AD01);
                   <input type="hidden" class="form-control" name="received_by" value="<?php echo $_SESSION['tech_id'] ?? ''; ?>" readonly>
                   <div class="form-group col-md-5">
                     <label>Date Received</label>
-                    <input type="text" class="form-control" name="date_received" id="date_received" required>
+                    <input type="text" class="form-control" name="date_received" id="date_received" >
                   </div>
                   <div class="form-group col-md-5">
                     <label>Noted By</label>
@@ -1016,42 +290,54 @@ background: linear-gradient(135deg, #837031, #E1AD01);
                     <select class="form-control" name="status" id="status">
                         <option value="">UPDATE STATUS</option>
                         <option value="PRINTED">PRINTED</option>
-                        <option value="RECORDED">RECORDED</option>
                         <option value="VERIFIED">VERIFIED</option>
                         <option value="APPROVED">APPROVED</option>
                         <option value="COMPLETED">COMPLETED</option>
                     </select>
                   </div>
 
-                    <div class="fform-group col-md-4" id="datePrintedGroup" style="display: none;">
-                        <label>Date Printed</label>
-                        <input type="datetime-local" class="form-control status-date-input" name="date_printed" id="date_printed" disabled>
-                    </div>
-                    <div class="fform-group col-md-4" id="dateRecordedGroup" style="display: none;">
-                        <label>Date Recorded</label>
-                        <input type="datetime-local" class="form-control status-date-input" name="date_recorded" id="date_recorded" disabled>
-                    </div>
-                    <div class="fform-group col-md-4" id="dateVerifiedGroup" style="display: none;">
-                        <label>Date Verified</label>
-                        <input type="datetime-local" class="form-control status-date-input" name="date_verified" id="date_verified" disabled>
-                    </div>
-                    <div class="fform-group col-md-4" id="dateApprovedGroup" style="display: none;">
-                        <label>Date Approved</label>
-                        <input type="datetime-local" class="form-control status-date-input" name="date_approved" id="date_approved" disabled>
-                    </div>
-                    <div class="fform-group col-md-4" id="dateCompletedGroup" style="display: none;">
-                        <label>Date Completed</label>
-                        <input type="datetime-local" class="form-control status-date-input" name="date_completed" id="date_completed" disabled>
-                    </div>
+                  <div class="form-group col-md-4 date-input-container" id="datePrintedGroup" style="display: none;">
+    <label>Date Printed</label>
+    <input type="datetime-local" class="form-control status-date-input" name="date_printed" id="date_printed" disabled>
+</div>
+
+<div class="form-group col-md-4 date-input-container" id="dateVerifiedGroup" style="display: none;">
+    <label>Date Verified</label>
+    <input type="datetime-local" class="form-control status-date-input" name="date_verified" id="date_verified" disabled>
+</div>
+
+<div class="form-group col-md-4 date-input-container" id="dateApprovedGroup" style="display: none;">
+    <label>Date Approved</label>
+    <input type="datetime-local" class="form-control status-date-input" name="date_approved" id="date_approved" disabled>
+</div>
+
+<div class="form-group col-md-4 date-input-container" id="dateCompletedGroup" style="display: none;">
+    <label>Date Completed</label>
+    <input type="datetime-local" class="form-control status-date-input" name="date_completed" id="date_completed" disabled>
+</div>
                 </div>
               </div>
 
-              <div class="col-md-5 pt-2 pb-2" style="background: linear-gradient(to bottom, #ffffff, #bbc2cf);  border-radius: 8px;">
-                  <h6 class="text-uppercase mb-3" style="color:#E1AD01; font-weight: 800;">Asset Request Progress</h6>
-                  <div class="tracking-container" style="max-height: 750px; overflow-y: auto; padding-right: 10px;">
+              <div class="col-md-6 border-right pt-2 pb-2" style="background: linear-gradient(to bottom, #ffffff, #f0f3f7);">
+            <h6 class="text-uppercase mb-3" style="color:#E1AD01; font-weight: 800;">Asset Request Progress</h6>
+                  <div class="tracking-container" style="max-height: 500px; overflow-y: auto; padding-right: 10px;">
                       <ul class="tracking-timeline" id="trackingMap"></ul>
                   </div>
-              </div>
+                   <h6 class="text-uppercase mb-3" style="color:#213456; font-weight: 800;">Remarks Thread</h6>
+                
+                <div id="remarks_thread_container" class="chat-container">
+                
+                </div>
+                
+                <div class="chat-input-area mt-3">
+                    <textarea class="form-control" id="new_remark_input" rows="2" placeholder="Type a new remark..."></textarea>
+                    <button type="button" class="btn btn-sm w-100 mt-2" id="btn_send_remark" style="background-color: #E1AD01; color: #213456; font-weight: 700;">
+                        <i class="fas fa-paper-plane"></i> Send Remark
+                    </button>
+                </div>
+          </div>
+
+               
             </div>
           </div>
 
@@ -1064,72 +350,123 @@ background: linear-gradient(135deg, #837031, #E1AD01);
       </form>
     </div>
 </div>
+<div class="modal fade" id="dataModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <form id="pdfForm" action="print_form.php" method="POST" style="width: 100%;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-file-pdf mr-2"></i> PDF Generation Confirmation
+                    </h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
 
+           
+
+                <div class="modal-body text-center py-4">
+                    <div class="confirmation-text mb-4">
+                        <p class="lead mb-1">Do you want to generate a report for this Fixed Asset form?</p>
+                        <span class="text-muted">Review the Ticket Number below before proceeding.</span>
+                    </div>
+
+                    <div class="row justify-content-center">
+                        <div class="form-group col-md-8 text-left">
+                            <label for="modal_ticket_no" class="font-weight-bold text-secondary">Ticket No</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-ticket-alt"></i></span>
+                                </div>
+                                <input type="text" class="form-control" name="ticket_no" id="modal_ticket_no" readonly>
+                            </div>
+                        </div>
+                             <div class="progress-container">
+                    <div id="loadingBar" class="progress-bar-fill"></div>
+                </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-secondary px-4 py-2 rounded-pill" data-dismiss="modal">Cancel</button>
+                    <button type="submit" id="btnSubmit" class="btn btn-primary-custom">
+                        <span class="btn-text">Generate PDF</span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 <script type="text/javascript">
-  $(document).ready(function() {
-    
-    // Trigger on any filter change
-    $('.filter-trigger').change(function() {
-        refreshData();
-    });
-
-    function refreshData() {
-        let month = $('#filter_month').val();
-        let year = $('#filter_year').val();
-        let status = $('#filter_status').val();
-
-        $.post('fetchdata/fetch_data.php', {
-            mode: 'fa_reports_tbl',
-            month: month,
-            year: year,
-            status: status // Send status to PHP
-        }, function(response) {
-            // Update table
-            if ($.fn.DataTable.isDataTable('#fa_reports_table')) {
-                reptable.clear().rows.add(response.table_data).draw();
-            } else {
-                admin_datatable(response);
-            }
-            // Update metrics
-            if(response.metrics) {
-                updateMetricsUI(response.metrics);
-            }
-        }, 'json');
-    }
-
-    // Initial load
-    refreshData();
-});
-$(document).ready(function(){
-
+$(document).ready(function() {
+  window.user_id = <?= isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 'null'; ?>;
   var reptable;
-  var user_id = <?= isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 'null'; ?>; 
+  
+  $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+      if (settings.nTable.id !== 'fa_reports_table') return true;
+      
+      let filterYear = $('#filter_year').val();
+      let filterMonth = $('#filter_month').val();
+      let dateStr = data[3] || ''; 
+      
+      if (!filterYear && !filterMonth) return true;
+      
+      let rowDate = new Date(dateStr);
+      if (isNaN(rowDate.getTime())) return true;
+      
+      let rowYear = rowDate.getFullYear().toString();
+      let rowMonth = (rowDate.getMonth() + 1).toString().padStart(2, '0');
+      
+      if (filterYear && rowYear !== filterYear) return false;
+      if (filterMonth && rowMonth !== filterMonth) return false;
+      
+      return true;
+  });
+
+  $('.filter-trigger').change(function() {
+      if (reptable) {
+          reptable.draw(); 
+          if($(this).attr('id') === 'filter_status') {
+              applyStatusFilter();
+          }
+      }
+      refreshData();
+  });
 
   function getUrlParam(param) {
-    var urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get(param);
+      var urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
   }
   var targetTicket = getUrlParam('ticket_no');
 
-  // Initial trigger
-  getFAData($('#filter_month').val(), $('#filter_year').val());
-
-  // Auto filter data when inputs change
-  $('.filter-trigger').change(function() {
+  function refreshData() {
       let month = $('#filter_month').val();
       let year = $('#filter_year').val();
-      
-      if($(this).attr('id') === 'filter_status') {
-          applyStatusFilter();
-      } else {
-          getFAData(month, year);
-      }
-  });
+      let status = $('#filter_status').val();
 
+      $.post('fetchdata/fetch_data.php', {
+          mode: 'fa_reports_tbl',
+          month: month,
+          year: year,
+          status: status 
+      }, function(response) {
+          if ($.fn.DataTable.isDataTable('#fa_reports_table')) {
+              reptable.clear().rows.add(response.table_data || []).draw(false);
+              reptable.draw(); 
+              applyStatusFilter(); 
+          } else {
+              admin_datatable(response);
+          }
+          
+          if(response.metrics) {
+              updateMetricsUI(response.metrics);
+          }
+      }, 'json');
+  }
+
+  refreshData();
   setInterval(function () {
-    let month = $('#filter_month').val();
-    let year = $('#filter_year').val();
-    getFAData(month, year);
+      refreshData();
   }, 60000);
 
   function getFAData(month = '', year = '') {
@@ -1139,7 +476,6 @@ $(document).ready(function(){
           year: year
       }, function(response) {
           admin_datatable(response);
-          
           if(response.metrics) {
               updateMetricsUI(response.metrics);
           }
@@ -1151,7 +487,6 @@ $(document).ready(function(){
       
       metrics.forEach(function(item) {
           let statName = item.status ? item.status.toUpperCase() : 'UNKNOWN';
-          
            html += `
     <div class="col-md-2 col-sm-4 mb-2">
         <div class="card p-3 text-center shadow-sm" style="border-radius: 12px; border: 1px solid #e9ecef; background-color: white;">
@@ -1160,7 +495,6 @@ $(document).ready(function(){
         </div>
     </div>`;
       });
-      
       html += '</div>';
       $('#metrics_summary_div').html(html);
   }
@@ -1192,8 +526,8 @@ $(document).ready(function(){
       "order": [[ 0, "Desc" ]],
       columns: [
         {title:"Ticket No", data:"ticket_no","defaultContent": ""},
-        {title:"Requesting Dept/Branch", data:"str_name","defaultContent": ""},
-        {title:"Requesting Employee", data:"full_name","defaultContent": ""},
+        {title:"Dept/Branch", data:"str_name","defaultContent": ""},
+        {title:"Employee", data:"full_name","defaultContent": ""},
         {title:"Ticket Date", data:"ticket_created","defaultContent": ""},
         {title:"Item Code", data:"item_code","defaultContent": ""},
         {title:"Description", data:"description","defaultContent": ""},
@@ -1202,18 +536,21 @@ $(document).ready(function(){
         {title:"Noted by", data:"noted_by_desc","defaultContent": ""},
         {title:"Date Received", data:"date_received","defaultContent": ""},
         {title:"Status", data:"status","defaultContent": ""},
-        {
+       {
           title: "Action", 
           data: null, 
           render: function(data, type, row){
-            return `
-            <div style="display: flex; gap: 5px;">
-            <button type='button' class='btn btn-primary' onclick='openViewModal(this)'><i class='fas fa-eye'> </i> View</button>
-                  <button class='btn btn-primary btn-sm print-btn' data-id='${row.ticket_no}'><i class='fas fa-print'> </i> Print</button>
-                  </div>
-                 `;
-}
-}
+            let buttons = `<button type='button' class='btn btn-primary' onclick='openViewModal(this)'><i class='fas fa-eye'></i> View</button>`;
+            let currentStatus = (data.status || '').toUpperCase();
+            let allowedPrintStatuses = ['VERIFIED', 'APPROVED', 'COMPLETED', 'PRINTED'];
+            
+            if (allowedPrintStatuses.includes(currentStatus)) {
+                buttons += `<button type='button' class='btn btn-success print-btn' data-id='${data.ticket_no}'><i class='fas fa-file-pdf'></i> Print</button>`;
+            }
+
+            return `<div style="display: flex; gap: 5px;">${buttons}</div>`;
+          }
+        }
       ],
       rowCallback: function(row, data, index){
         if(data['msg_cnt'] == '1'){
@@ -1234,7 +571,7 @@ $(document).ready(function(){
             });
 
             if (foundRow) {
-              $(foundRow).find('button[name="update"]').trigger('click');
+              $(foundRow).find('.btn-primary').trigger('click');
               $('html, body').animate({
                 scrollTop: $(foundRow).offset().top - 100
               }, 800, function() {
@@ -1251,33 +588,6 @@ $(document).ready(function(){
       }
     });
   }
-
-  $('#fa_reports_table tbody').on('click', 'button[name="update"]', function (e) {
-      e.preventDefault();
-      var row = reptable.row($(this).parents('tr'));
-      var data = row.data();
-      if (!data) return;
-
-      $('#ticket_no').val(data.ticket_no || '');
-      $('#str_name').val(data.str_name || '');
-      $('#full_name').val(data.full_name || '');
-      $('#ticket_created').val(data.ticket_created || '');
-      $('#item_code').val(data.item_code || '');
-      $('#description').val(data.description || '');
-      $('#serial_number').val(data.serial_number || '');
-      $('#purpose_of_request').val(data.purpose_of_request || '');
-         $('#revised_request').val(data.revised_request || '');
-      $('#it_desc').val(data.it_desc || '');
-      $('#noted_by_desc').val(data.noted_by_desc || '');
-      $('#date_received').val(data.date_received || '');
-      $('#status').val(data.status || '');
-      $('#operation').val("update_request");
-      $('#fa_reports_Modal').modal('show');
-
-      var tid = data.ticket_no;
-      if (typeof getinfo === "function") getinfo(tid, 'remarks', user_id);
-      loadTimeline(tid, data);
-  });
 
   $(document).on('submit', '#fa_form', function(event) {
     event.preventDefault();
@@ -1368,27 +678,133 @@ function openViewModal(btn) {
     var data = $('#fa_reports_table').DataTable().row(tr).data();
     if (!data) return;
 
-    $('#ticket_no').val(data.ticket_no);
-    $('#str_name').val(data.str_name);
-    $('#full_name').val(data.full_name);
-    $('#ticket_created').val(data.ticket_created);
-    $('#item_code').val(data.item_code);
-    $('#description').val(data.description);
-    $('#serial_number').val(data.serial_number);
-    $('#purpose_of_request').val(data.purpose_of_request);
-     $('#revised_request').val(data.revised_request);
-    $('#it_desc').val(data.it_desc);
-    $('#noted_by_desc').val(data.noted_by_desc);
-    $('#date_received').val(data.date_received);
-    $('#status').val(data.status);
+    $('#ticket_no').val(data.ticket_no || '');
+    $('#str_name').val(data.str_name || '');
+    $('#full_name').val(data.full_name || '');
+    $('#ticket_created').val(data.ticket_created || '');
+    $('#item_code').val(data.item_code || '');
+    $('#description').val(data.description || '');
+    $('#serial_number').val(data.serial_number || '');
+    $('#asset_tag_number').val(data.asset_tag_number || '');
+    $('#purpose_of_request').val(data.purpose_of_request || '');
+    $('#technical_workoutput').val(data.technical_workoutput || '');
+    $('#revised_request').val(data.revised_request || '');
+    $('#it_desc').val(data.it_desc || '');
+    $('#noted_by_desc').val(data.noted_by_desc || '');
+    $('#date_received').val(data.date_received || '');
+    $('#status').val(data.status || '');
+
+       var isTechnical = data['is_technical'] !== undefined && data['is_technical'] !== null ? parseInt(data['is_technical']) : 1;
+
+      if (data['it_desc'] && data['it_desc'].trim() !== "") {
+          $('#it_desc').val(data['it_desc']);
+          $('#item_received_by_hidden').val(""); 
+      } else {
+          $('#it_desc').val(loggedInName);
+          $('#item_received_by_hidden').val(loggedInId);
+      }
+
+      if (data['noted_by_desc'] && data['noted_by_desc'].trim() !== "") {
+          $('#noted_by_desc').val(data['noted_by_desc']);
+          $('#noted_by_hidden').val("");
+      } else {
+          $('#noted_by_desc').val(loggedInName);
+          $('#noted_by_hidden').val(loggedInId);
+      }
+
+
+    $('#operation').val("save_request");
+    
     $('#fa_reports_Modal').modal('show');
 
+    if (typeof getinfo === "function") getinfo(data.ticket_no, 'remarks', window.user_id || '');
+    loadRemarks(data.ticket_no);
     loadTimeline(data.ticket_no, data);
 }
 
+function loadRemarks(ticket_no) {
+      $('#remarks_thread_container').html('<div class="text-center mt-4"><i class="fas fa-spinner fa-spin fa-2x" style="color:#cbd5e1;"></i></div>');
+      
+      $.ajax({
+          url: window.location.href,
+          type: 'POST',
+          data: { mode: 'fetch_remarks', ticket_no: ticket_no },
+          dataType: 'json',
+          success: function(response) {
+              let html = '';
+              if (Array.isArray(response) && response.length > 0) {
+                  response.forEach(function(rmk) {
+                      let userName = rmk.it_desc ? rmk.it_desc : 'System';
+                      html += `
+                          <div class="chat-message">
+                                <span style="font-size: 11px; color: #64748b; margin-bottom: 4px;"><strong>${rmk.user_fullname || 'System'}</strong> • ${rmk.date_remarks}</span>
+                              <div class="chat-bubble">${rmk.remarks_note}</div>
+                          </div>
+                      `;
+                  });
+              } else {
+                  html = `<div class="text-center mt-4 text-muted" style="font-size: 12px; font-style: italic;">No remarks found. Start the conversation!</div>`;
+              }
+              
+              $('#remarks_thread_container').html(html);
+            
+              var chatDiv = document.getElementById("remarks_thread_container");
+              if (chatDiv) chatDiv.scrollTop = chatDiv.scrollHeight;
+          },
+          error: function(xhr) {
+              console.error("Remarks Fetch Error:", xhr.responseText);
+              $('#remarks_thread_container').html('<div class="text-danger text-center mt-3" style="font-size: 12px;">Failed to fetch remarks.</div>');
+          }
+      });
+  }
+
+  $('#btn_send_remark').off('click').on('click', function() {
+      var remarks = $('#new_remark_input').val();
+      var ticket_no = $('#ticket_no').val();
+
+      if (!remarks.trim()) {
+          Swal.fire('Warning', 'Please type a remark first.', 'warning');
+          return;
+      }
+
+      var $btn = $(this);
+      $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Sending...');
+
+      $.ajax({
+          url: window.location.href,
+          type: 'POST',
+          data: { 
+              mode: 'add_remarks_only',
+              ticket_no: ticket_no, 
+              remarks_adtech: remarks 
+          },
+          dataType: 'json',
+          success: function(response) {
+              if (response.status === 'success') {
+                  $('#new_remark_input').val('');
+                  loadRemarks(ticket_no);
+                  Swal.fire({ icon: 'success', title: 'Sent!', timer: 1000, showConfirmButton: false });
+              } else {
+                  Swal.fire('Error', response.message, 'error');
+              }
+          },
+          error: function(xhr) {
+              Swal.fire('Error', 'Communication failed.', 'error');
+              console.error(xhr.responseText);
+          },
+          complete: function() {
+              $btn.prop('disabled', false).html('<i class="fas fa-paper-plane"></i> Send Remark');
+          }
+      });
+  });
 function loadTimeline(ticket_no, rowData) {
     var target = $('#trackingMap');
     target.html('<p class="text-muted" style="font-size: 12px; margin-top: 10px;">Loading timeline...</p>');
+
+    // Extract is_technical safely from rowData (defaults to 1 if missing)
+    var isTechnical = (rowData && rowData.is_technical !== undefined && rowData.is_technical !== null) 
+        ? parseInt(rowData.is_technical) 
+        : 1;
 
     $.ajax({
         url: 'get_first_comment.php',
@@ -1398,30 +814,36 @@ function loadTimeline(ticket_no, rowData) {
         success: function(response) {
             const statusLevels = {
                 'submitted': 1, 'noted': 2, 'validated': 3, 
-                'verified': 4,  'recorded': 5, 'printed': 6, 'approved': 7, 'completed': 8
+                'verified': 4, 'printed': 5, 'approved': 6, 'completed': 7
             };
 
             let dbStatus = (response.status || "").toLowerCase().trim();
             let currentLevel = statusLevels[dbStatus] || 0; 
 
-            const trackSteps = [
+            let trackSteps = [
                 { desc: "Request submitted by store/user", date: response.date_created, reqLevel: 0 },
-                { desc: "Under technical evaluation", date: response.date_created, reqLevel: 0 },
-                { desc: "Submitted to technical head", date: response.date_submitted, reqLevel: 1 },
-                { desc: "Approved and noted by technical head", date: response.date_noted, reqLevel: 2 },
-                { desc: "For admin support validation", date: null, reqLevel: 2 }, 
-                { desc: "Validated by admin support", date: response.date_validated, reqLevel: 3 },
-                { desc: "For administrative verification", date: null, reqLevel: 3 }, 
-                { desc: "Verified by the administrator", date: response.date_verified, reqLevel: 4 },
-                { desc: "For recording", date: null, reqLevel: 4 }, 
-                { desc: "Recorded", date: response.date_recorded, reqLevel: 5 },
-                { desc: "For printing request form", date: null, reqLevel: 5 }, 
-                { desc: "Printed", date: response.date_printed, reqLevel: 6 },
-                { desc: "For General Manager Approval", date: null, reqLevel: 6 }, 
-                { desc: "Approved by General Manager", date: response.date_approved, reqLevel: 7 },
-                { desc: "Ready for asset replacement", date: null, reqLevel: 7 }, 
-                { desc: "Asset replaced / Completed", date: response.date_completed, reqLevel: 8 }
+                { desc: "Under assigned support evaluation", date: response.date_created, reqLevel: 0 }
             ];
+
+            if (isTechnical === 1) {
+                trackSteps.push(
+                    { desc: "Submitted to technical/dept head", date: response.date_submitted, reqLevel: 1 },
+                    { desc: "Approved and noted by technical/dept head", date: response.date_noted, reqLevel: 2 }
+                );
+            }
+
+            trackSteps.push(
+                { desc: "For admin support validation", date: null, reqLevel: isTechnical === 1 ? 2 : 1 }, 
+                { desc: "Validated by admin support", date: response.date_validated, reqLevel: isTechnical === 1 ? 3 : 2 },
+                { desc: "For administrative verification", date: null, reqLevel: isTechnical === 1 ? 3 : 2 }, 
+                { desc: "Verified by the administrator", date: response.date_verified, reqLevel: isTechnical === 1 ? 4 : 3 },
+                { desc: "For printing request form", date: null, reqLevel: isTechnical === 1 ? 4 : 3 }, 
+                { desc: "Printed", date: response.date_printed, reqLevel: isTechnical === 1 ? 5 : 4 },
+                { desc: "For General Manager Approval", date: null, reqLevel: isTechnical === 1 ? 5 : 4 }, 
+                { desc: "Approved by General Manager", date: response.date_approved, reqLevel: isTechnical === 1 ? 6 : 5 },
+                { desc: "Ready for Asset Replacement", date: null, reqLevel: isTechnical === 1 ? 6 : 5 }, 
+                { desc: "Asset replaced / Completed", date: response.date_completed, reqLevel: isTechnical === 1 ? 7 : 6 }
+            );
 
             let timelineHtml = '';
             trackSteps.forEach((step) => {
@@ -1444,10 +866,7 @@ function loadTimeline(ticket_no, rowData) {
         }
     });
 }
-</script>
 
-<script>
-// Fixed target ID here to point correctly to #status elements
 document.getElementById('status').addEventListener('change', function() {
     const status = this.value;
     
@@ -1477,162 +896,13 @@ document.getElementById('status').addEventListener('change', function() {
         }
     }
 });
-</script>
 
-
-<script>
-$(document).on('click', '.print-btn', function() {
-    let ticket_no = $(this).data('id');
-    
-    $('#pdfForm')[0].reset();
-    
-    $('#modal_ticket_no').val(ticket_no);
-    
-    $('#dataModal').modal('show');
-});
-</script>
-<div class="modal fade" id="dataModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <form id="pdfForm" action="print_form.php" method="POST" style="width: 100%;">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">
-                        <i class="fas fa-file-pdf mr-2"></i> PDF Generation Confirmation
-                    </h5>
-                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-
-           
-
-                <div class="modal-body text-center py-4">
-                    <div class="confirmation-text mb-4">
-                        <p class="lead mb-1">Do you want to generate a report for this Fixed Asset form?</p>
-                        <span class="text-muted">Review the Ticket Number below before proceeding.</span>
-                    </div>
-
-                    <div class="row justify-content-center">
-                        <div class="form-group col-md-8 text-left">
-                            <label for="modal_ticket_no" class="font-weight-bold text-secondary">Ticket No</label>
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"><i class="fas fa-ticket-alt"></i></span>
-                                </div>
-                                <input type="text" class="form-control" name="ticket_no" id="modal_ticket_no" readonly>
-                            </div>
-                        </div>
-                             <div class="progress-container">
-                    <div id="loadingBar" class="progress-bar-fill"></div>
-                </div>
-                    </div>
-                </div>
-
-                <div class="modal-footer justify-content-center">
-                    <button type="button" class="btn btn-secondary px-4 py-2 rounded-pill" data-dismiss="modal">Cancel</button>
-                    <button type="submit" id="btnSubmit" class="btn btn-primary-custom">
-                        <span class="btn-text">Generate PDF</span>
-                    </button>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-
- <style>
-/* Modal Base Styling */
-#dataModal .modal-content {
-    border: none;
-    border-radius: 15px;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-    overflow: hidden; /* Clips the loading bar to the border radius */
-}
-
-#dataModal .modal-header {
-    background-color: #213456;
-    color: #fff;
-    border-bottom: 4px solid #E1AD01;
-}
-
-#dataModal .modal-title {
-    font-weight: 700;
-    letter-spacing: 0.5px;
-}
-
-/* Custom Loading Bar Styles */
-.progress-container {
-    width: 100%;
-    height: 5px;
-    background-color: #f1f1f1;
-    position: relative;
-    overflow: hidden;
-}
-
-.progress-bar-fill {
-    height: 100%;
-    width: 0%;
-    background-color: #E1AD01;
-    transition: width 2s linear; /* Smooth 2-second acceleration transition */
-}
-
-/* Form Styling */
-#dataModal .confirmation-text p {
-    color: #213456;
-    font-weight: 600;
-}
-
-#dataModal .input-group-text {
-    background-color: #f8f9fa;
-    border-right: none;
-    color: #213456;
-    border-top-left-radius: 8px;
-    border-bottom-left-radius: 8px;
-}
-
-#dataModal .form-control {
-    border-left: none;
-    height: 45px;
-    border-top-right-radius: 8px;
-    border-bottom-right-radius: 8px;
-    background-color: #fcfcfc;
-}
-
-#dataModal .form-control:focus {
-    border-color: #ced4da;
-    box-shadow: none;
-}
-
-.btn-primary-custom {
-    background-color: #E1AD01;
-    border: none;
-    color: #213456;
-    font-weight: 700;
-    padding: 10px 40px;
-    border-radius: 30px;
-    transition: all 0.3s ease;
-}
-
-.btn-primary-custom:hover:not(:disabled) {
-    background-color: #213456;
-    color: #E1AD01;
-    transform: translateY(-2px);
-}
-
-.btn-primary-custom:disabled {
-    background-color: #cccccc;
-    color: #666666;
-    cursor: not-allowed;
-}
-</style>
- <script>
 document.getElementById('pdfForm').addEventListener('submit', function(e) {
     e.preventDefault();
     
     const form = this;
     const loadingBar = document.getElementById('loadingBar');
     const submitBtn = document.getElementById('btnSubmit');
-    
-    // Disable submit button during action
     submitBtn.disabled = true;
     submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span> Generating...';
 
@@ -1651,5 +921,16 @@ $('#dataModal').on('hidden.bs.modal', function () {
     submitBtn.disabled = false;
     submitBtn.innerHTML = 'Generate PDF';
 });
+
+$(document).on('click', '.print-btn', function() {
+    let ticket_no = $(this).data('id');
+    
+    $('#pdfForm')[0].reset();
+    
+    $('#modal_ticket_no').val(ticket_no);
+    
+    $('#dataModal').modal('show');
+});
 </script>
+
 

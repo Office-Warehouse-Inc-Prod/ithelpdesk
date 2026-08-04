@@ -460,6 +460,61 @@ public function deptthist() {
 		return $data;
 
 	}
+	
+	public function admin_data_table_transfer()
+{
+    $query = "SELECT DISTINCT vw_transfer.*
+    FROM vw_transfer
+    LEFT JOIN users ON vw_transfer.ursID = users.id
+    WHERE vw_transfer.deptsel = '17' 
+    AND vw_transfer.f_deptsel NOT IN ('17') 
+    AND vw_transfer.status NOT IN ('ATTENDED WITH FIX ASSET','NEW REPORT', 'Assigned', 'ASSIGNED') 
+    AND vw_transfer.sub_id NOT IN ('15', '28', '34', '35')
+    AND YEAR(vw_transfer.date_created) IN (" . $_POST['yr'] . ") ORDER BY vw_transfer.date_created DESC";
+
+    $statement = $this->connection->prepare($query);
+    $statement->execute();
+    $result = $statement->fetchAll();
+    $data = array();
+    $fetchdata = array();
+
+    foreach ($result as $row) {
+        $fetchdata[] = array(
+            'ticket_no' => $row['ticket_no'],
+            'store' => $row['store'],
+            'str_code' => $row['str_code'],
+            'date_created' => date('m/d/Y H:i', strtotime($row["date_created"])),
+            'subject' => $row['subject'],
+            'concern' => $row['concern'],
+            'via' => $row['via'],
+            'status' => $row['status'],
+            'itsup' => $row['itsup'],
+            'it_desc' => $row['it_desc'],
+            'it_sel' => $row['it_sel'],
+            'cat_id' => $row['cat_id'],
+            'category' => $row['category'],
+            'sub_id' => $row['sub_id'],
+            'sub_category' => $row['sub_category'],
+            'date_closed' => ($row['status'] == 'OPEN') ? " " : date('m/d/Y H:i', strtotime($row["date_closed"])),
+            'tdc' => ($row['status'] == 'OPEN') ? $row["dtdf"] . " Days Unresolved" : $row['tdc'],
+            'crdt' => $row['crdt'],
+            'dtdf' => $row['dtdf'],
+            'years' => $row['years'],
+            'close_by' => $row['close_by'],
+            'clusers' => $row['clusers'],
+            'remarks' => $row['remarks'],
+            'isp_id' => $row['isp_id'],
+            'isp_shortDesc' => $row['isp_shortDesc'],
+            'refNo' => $row['refNo'],
+            'date_refNo' => date('m/d/Y H:i', strtotime($row["date_refNo"])),
+            'msg_cnt' => $row['msg_cnt'],
+            'is_transfer' => $row['is_transfer'] ?? 0
+        );
+    }
+    
+    $data = array_filter($fetchdata);
+    return $data;
+}
 
 
 

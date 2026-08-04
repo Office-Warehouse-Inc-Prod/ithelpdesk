@@ -139,7 +139,6 @@ class dbconfig extends dbconn
             $statement3 = $this->connection->prepare("UPDATE rars_counter SET count = :count");
             $statement3->execute(array(':count' => $rarsnum));
 
-            // FIX: Explicitly update ticket counter table right here
             if ($result) {
                 $this->updatetickno($ticknum);
             }
@@ -222,7 +221,6 @@ class dbconfig extends dbconn
 
                 $this->connection->commit();
                 
-                // FIX: Process the counter safely right inside transaction success
                 if ($result) {
                     $this->updatetickno($ticknum);
                 }
@@ -232,12 +230,43 @@ class dbconfig extends dbconn
             }
         }
 
-        // Run supporting analytical updates globally if creation was successful
         if ($result && isset($ticknum)) {
             $this->msgnewrpt($ticknum, $deptabr);
             $this->insertrptmessages($ticknum, $deptabr);
             $this->frscommt($ticknum, $deptabr, $userId);
             $this->ticket_trail($ticknum, $deptabr, $status, $userId);
+            if (isset($_POST['fix_asset_completed']) && $_POST['fix_asset_completed'] == '1') {
+                $asset_ticket   = $deptabr . '' . $ticknum;
+                $requested_by   = $_POST["uId"]; 
+                $requested_db   = $_POST["sesstr_num"]; 
+                $item_code      = $_POST['fa_item_code'];
+                $serial_num     = $_POST['fa_serial_number'];
+                $description    = $_POST['fa_description'];
+                $ticket_created = date('Y-m-d H:i:s');
+                
+                try {
+                    $stmt_asset = $this->connection->prepare(
+                        "INSERT INTO asset_requests (
+                            ticket_no, requested_by, requested_db, item_code, serial_number,  status, description, ticket_created, is_technical
+                        ) VALUES (
+                            :ticket_no, :requested_by, :requested_db, :item_code, :serial_num, :status, :description, :ticket_created, 0
+                        )"
+                    );
+                    $stmt_asset->execute(array(
+                        ':ticket_no'      => $asset_ticket,
+                        ':requested_by'   => $requested_by,
+                        ':requested_db'   => $requested_db,
+                        ':item_code'      => $item_code,
+                        ':serial_num'     => $serial_num,
+                         ':status'    => 'NOTED',
+                        ':description'    => $description,
+                        ':ticket_created' => $ticket_created
+                    ));
+                } catch (Exception $e) {
+                  
+                }
+            }
+
         }
 
         if (!empty($_FILES['files']) && isset($ticknum)) {

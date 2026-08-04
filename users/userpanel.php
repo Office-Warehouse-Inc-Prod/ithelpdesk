@@ -1,16 +1,81 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mode'])) {
+    include('db.php');
+    header('Content-Type: application/json');
+    if ($_POST['mode'] === 'fetch_remarks') {
+        try {
+            $ticket_no = $_POST['ticket_no'] ?? '';
+            $stmt = $connection->prepare("SELECT far.remarks_note, 
+                                                 CONCAT(u.fname, ' ', u.lstname) AS user_fullname, 
+                                                 far.date_remarks 
+                                          FROM fixed_asset_remarks far 
+                                          LEFT JOIN users u ON far.remarks_by = u.id 
+                                          WHERE far.ticket_no = ? 
+                                          ORDER BY far.date_remarks ASC");
+                                          
+            $stmt->execute([$ticket_no]);
+            echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
+            
+        } catch (Exception $e) {
+            echo json_encode([["remarks_note" => "Error loading remarks.", "user_fullname" => "System", "date_remarks" => ""]]);
+        }
+        exit(); 
+    }
+
+    if ($_POST['mode'] === 'add_remarks_only') {
+        try {
+            $ticket_no = $_POST['ticket_no'] ?? '';
+            $remarks = trim($_POST['remarks_adtech'] ?? '');
+            $user_id = $_SESSION['user_id'] ?? $_SESSION['tech_id'] ?? '';
+            $store = $_SESSION['str_num'] ?? '';
+            $currentDate = date('Y-m-d H:i:s');
+
+            if (empty($ticket_no) || empty($remarks)) {
+                echo json_encode(["status" => "error", "message" => "Missing data."]);
+                exit();
+            }
+
+            if (empty($user_id)) {
+                echo json_encode(["status" => "error", "message" => "Session expired or User ID missing. Please log in again."]);
+                exit();
+            }
+
+            $connection->beginTransaction();
+            $stmt1 = $connection->prepare("INSERT INTO fixed_asset_remarks (ticket_no, remarks_note, remarks_by, date_remarks) VALUES (?, ?, ?, ?)");
+            $exec1 = $stmt1->execute([$ticket_no, $remarks, $user_id, $currentDate]);
+            $notif_msg = "Store/User added a remark on ticket no " . $ticket_no;
+            $stmt2 = $connection->prepare("INSERT INTO tbl_notif (ticket_no, store, itsup, notif_data, notif_val, notif_date) VALUES (?, ?, ?, ?, '10', ?)");
+            $exec2 = $stmt2->execute([$ticket_no, $store, $user_id, $notif_msg, $currentDate]);
+            
+            if ($exec1 && $exec2) {
+                $connection->commit();
+                echo json_encode(["status" => "success", "message" => "Remarks saved successfully."]);
+            } else {
+                $connection->rollBack();
+                echo json_encode(["status" => "error", "message" => "SQL Error: Saving remarks failed."]);
+            }
+
+        } catch (Exception $e) {
+            if ($connection->inTransaction()) $connection->rollBack();
+            echo json_encode(["status" => "error", "message" => "Database error: " . $e->getMessage()]);
+        }
+        exit(); 
+    }
+}
 include 'userheader.php';
 include 'switch_modal.php';
 
-if ($_SESSION['login'] != 'true') {
+if (!isset($_SESSION['login']) || $_SESSION['login'] != 'true') {
   header("Location: index.php");
   exit();
 }
 
-include '../condb.php';
+require_once '../condb.php';
 $con1 = new dbconfig();
 ?>
-
 <style>
   :root {
     --primary-color: #E1AD01;
@@ -55,9 +120,6 @@ body {
     padding-right: 16px;
   }
 
-
-
-  /* sticky form on desktop */
   @media (min-width: 992px) {
     .sticky-form {
       position: sticky;
@@ -66,7 +128,6 @@ body {
     }
   }
 
-  /* text + labels */
   label {
     color: var(--text);
     font-weight: 800 !important;
@@ -104,7 +165,6 @@ body {
     color: #9aa3b2;
   }
 
-  /* textarea */
   .cttxtarea {
     width: 100%;
     min-height: 140px;
@@ -117,7 +177,6 @@ body {
     line-height: 1.35;
   }
 
-  /* file input */
   #file-input {
     width: 100%;
     padding: 10px;
@@ -127,7 +186,6 @@ body {
     color: var(--muted);
   }
 
-  /* buttons */
   .btn {
     border-radius: 12px !important;
     font-weight: 800;
@@ -148,7 +206,6 @@ body {
     box-shadow: 0 10px 18px rgba(22, 163, 74, .16);
   }
 
-  /* section divider */
   .soft-divider {
     height: 1px;
     background: var(--border);
@@ -182,7 +239,6 @@ body {
     }
   }
 
-  /* tiny polish */
   .section-title {
     display: flex;
     align-items: center;
@@ -196,9 +252,6 @@ body {
     font-weight: 700;
   }
 
-  /* ... KEEP YOUR EXISTING CSS ABOVE ... */
-
-  /* Make the row breathe */
   .container-fluid.mt-4 {
     padding-left: 16px;
     padding-right: 16px;
@@ -214,29 +267,23 @@ body {
     padding-right: 8px;
   }
 
-  /* IMPORTANT: sticky should be on the card, not the whole column */
   @media (min-width: 992px) {
     .sticky-form {
       position: static;
     }
 
-    /* override your current sticky-form */
     .sticky-form .card {
       position: sticky;
       top: 16px;
     }
   }
 
-  /* Right cards should never look squeezed */
   #dvtables,
   #itmcard {
     width: 100% !important;
     max-width: 100%;
   }
 
-
-
-  /* Header controls: better alignment, no squeezing */
   .ticket-controls {
     display: flex;
     align-items: center;
@@ -257,7 +304,6 @@ body {
     min-width: 220px;
   }
 
-  /* Mobile: full width controls */
   @media (max-width: 767.98px) {
     .ticket-controls {
       flex-direction: column;
@@ -277,7 +323,6 @@ body {
     }
   }
 
-  /* ===== Header / Navbar color override ===== */
   .navbar,
   header,
   .topbar,
@@ -286,7 +331,6 @@ body {
     border-color: rgba(255, 255, 255, .12) !important;
   }
 
-  /* Brand + links */
   .navbar .navbar-brand,
   .navbar .navbar-brand span,
   .navbar a,
@@ -294,7 +338,6 @@ body {
     color: #ffffff !important;
   }
 
-  /* Hover/focus */
   .navbar a:hover,
   .navbar-nav>li>a:hover,
   .navbar a:focus,
@@ -303,7 +346,6 @@ body {
     opacity: .95;
   }
 
-  /* Dropdown + caret (if any) */
   .navbar .dropdown-menu {
    background: linear-gradient(135deg, #213456, #334c7a);
     border: 1px solid rgba(255, 255, 255, .12) !important;
@@ -317,7 +359,6 @@ body {
     background: rgba(255, 255, 255, .08) !important;
   }
 
-  /* Icons */
   .navbar i,
   .navbar .fa,
   .navbar .fas {
@@ -408,7 +449,7 @@ body {
     font-size: 0.85rem;
     letter-spacing: 0.5px;
     padding: 15px 12px;
-    border-bottom: 3px solid #E1AD01; /* The accent stripe */
+    border-bottom: 3px solid #E1AD01;
 }
 
 #items_table tbody tr {
@@ -429,6 +470,226 @@ body {
     color: #6c757d;
     font-style: italic;
     padding: 30px;
+}
+
+.container_remarks {
+    display: flex !important;
+    flex-direction: column;
+    max-height: 480px;
+    overflow-y: auto;
+    background-color: #f0f2f5 !important;
+    border: 1px solid #dee2e6;
+    border-radius: 12px;
+    padding: 15px;
+    margin-top: 10px;
+}
+
+.dv_msg {
+    display: block !important;
+}
+
+#remarks_view {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+#userModal .modal-dialog{
+  max-width: 1100px; 
+  margin: 1.25rem auto;
+}
+
+#userModal .modal-content{
+  border-radius: 16px;
+  border: none;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+#userModal .modal-header{
+    background-color: #213456;
+    color: #fff;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    border-bottom: 4px solid #E1AD01; 
+}
+
+#userModal_header{
+  font-weight: 700;
+  font-size: 18px;
+  margin: 0;
+}
+
+#userModal .modal-body{
+  padding: 16px 18px;
+}
+
+#userModal .modal-title {
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+}
+
+#userModal .input-group-text {
+    background-color: white;
+    border-right: none;
+    color: #213456;
+}
+
+#userModal .form-control {
+    border-left: none;
+    height: 45px;
+    border-radius: 0 8px 8px 0;
+}
+
+#userModal .form-control:focus {
+    border-color: #213456;
+    box-shadow: none;
+}
+
+#userModal .input-group:focus-within {
+    box-shadow: 0 0 0 0.2rem rgba(225, 173, 1, 0.25);
+    border-radius: 8px;
+}
+
+.m_col {
+    background: #ffffff;
+    padding: 2rem !important;
+    border-right: 1px solid #edf2f7;
+}
+
+.m_col label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #718096;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.m_col .form-control {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 0.6rem 0.75rem;
+    transition: all 0.2s ease;
+    background-color: #f8fafc;
+}
+
+.m_col .form-control:focus {
+    background-color: #fff;
+    border-color: #1C0770;
+    box-shadow: 0 0 0 3px rgba(28, 7, 112, 0.1);
+    outline: none;
+}
+
+.m_col textarea {
+    min-height: 80px;
+}
+
+#msg_thread {
+    padding: 1rem 1.5rem;
+    background: linear-gradient(to bottom, #ffffff, #99aac8);
+    height: 100%;
+}
+
+#addmsg {
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 1rem;
+    background: #ffffff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.chat-bubble {
+    max-width: 85%;
+    padding: 10px 14px;
+    border-radius: 18px;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    position: relative;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    word-wrap: break-word;
+}
+
+.chat-left {
+    align-self: flex-start;
+    background: #ffffff;
+    color: #1e293b;
+    border-bottom-left-radius: 4px;
+    border: 1px solid #e5e7eb;
+}
+
+.chat-right {
+    align-self: flex-end;
+    background: #1C0770;
+    color: #ffffff;
+    border-bottom-right-radius: 4px;
+}
+
+.msg-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    font-size: 0.7rem;
+    margin-bottom: 4px;
+}
+
+.chat-left .msg-meta {
+    color: #64748b;
+}
+
+.chat-right .msg-meta {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.chat-left .msg-meta-name {
+    color: #213456;
+    font-weight: bold;
+}
+
+.chat-right .msg-meta-name {
+    color: #ffffff;
+    font-weight: bold;
+}
+
+.btn-success {
+    background-color: #1C0770 !important;
+    border: none;
+    padding: 0.6rem 2rem;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: transform 0.2s ease;
+}
+
+.btn-success:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(28, 7, 112, 0.2);
+}
+
+.btn-danger {
+    background-color: #fff;
+    border: 1px solid #e2e8f0;
+    color: #e53e3e;
+    padding: 0.6rem 1.5rem;
+    font-weight: 600;
+    border-radius: 8px;
+}
+
+.btn-danger:hover {
+    background-color: #fff5f5;
+    color: #c53030;
+}
+
+#userModal .modal-footer{
+  border-top: 1px solid rgba(0,0,0,0.08);
+  background: rgba(255,255,255,0.92);
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  padding: 12px 14px;
 }
 </style>
 
@@ -461,8 +722,12 @@ body {
                 <input type="hidden" name="str_adrs" id="str_adrs" value="<?php echo $_SESSION['str_adrs']; ?>">
                 <input type="hidden" name="str_contact" id="str_contact"
                   value="<?php echo $_SESSION['str_contact']; ?>">
-                <!-- <input type="hidden" name="deptsel" id="deptsel" value="2">       1=IT default (change if needed) -->
-                <input type="hidden" name="select_tos" id="select_tos" value="GENERAL"> <!-- default TOS -->
+         
+                <input type="hidden" name="select_tos" id="select_tos" value="GENERAL"> 
+                <input type="hidden" name="fix_asset_completed" id="fix_asset_completed" value="0">
+                <input type="hidden" name="fa_item_code" id="fa_item_code" value="">
+                <input type="hidden" name="fa_serial_number" id="fa_serial_number" value="">
+                <input type="hidden" name="fa_description" id="fa_description" value="">
 
                 <label><i class="fa fa-user-circle-o"></i>  Attention To:</label>
                 <select class="form-control" id="deptsel" name="deptsel" required>
@@ -571,6 +836,12 @@ body {
                 <!-- SUBMIT -->
                 <div class="row">
                   <div class="col-12">
+                    
+                    <!-- --- ADDED FIX ASSET: REQUIRE BUTTON BEFORE SUBMIT --- -->
+                    <button type="button" id="btnFixAsset" class="btn btn-warning w-100 w-100-mobile mb-2" style="display:none; font-weight:bold; background-color: #E1AD01; border-color: #E1AD01;">
+                       <i class="fas fa-edit"></i> Submit Fixed Asset Form
+                    </button>
+
                     <input type="submit" name="action" id="action" class="btn btn-primary w-100 w-100-mobile"
                       value="Save Ticket" />
                   </div>
@@ -603,10 +874,6 @@ body {
 
           <div class="ticket-controls">
             <div class="left-actions">
-              <!--<button type="button" id="addmsg" class="btn btn-primary">
-                Follow up report <i class="fa fa-comment" aria-hidden="true"></i>
-              </button>-->
-
               <input type="hidden" class="form-control form-control-sm" name="slctdtick" id="slctdtick">
             </div>
 
@@ -669,7 +936,6 @@ body {
 </div>
 
 <div class="col-md-12">
-
 
   <!-- MERCH DR CARD (shows only when deptsel == 4) -->
   <div id="merchDrCard" class="card shadow-sm mt-3" style="display:none;border:1px solid #e5e7eb;border-radius:10px;">
@@ -770,8 +1036,371 @@ body {
 
   </div>
 
-
-
+</div><div class="modal fade" id="fixAssetModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" style="border-radius: 12px; overflow: hidden;">
+      <div class="modal-header" style="background: linear-gradient(135deg, #213456, #334c7a); color: #fff; border-bottom: 4px solid #E1AD01;">
+        <h5 class="modal-title font-weight-bold">Fixed Asset Request Form</h5>
+        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body bg-light">
+        <div class="form-group">
+            <label>Requesting Employee</label>
+            <input type="text" class="form-control" value="<?php echo htmlspecialchars($_SESSION['fname'] . ' ' . $_SESSION['lstname']); ?>" readonly>
+        </div>
+        <div class="form-group">
+            <label>Requesting Dept/Branch</label>
+            <input type="text" class="form-control" value="<?php echo !empty($_SESSION['str_name']) ? htmlspecialchars($_SESSION['str_name']) : htmlspecialchars($_SESSION['str_num']); ?>" readonly>
+        </div>
+        <div class="form-group">
+            <label>Item Code <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="modal_fa_item_code" required placeholder="Enter item code">
+        </div>
+         <div class="form-group">
+            <label>Description <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="modal_fa_description" required placeholder="Enter item description">
+        </div>
+        <div class="form-group">
+            <label>Serial Number <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="modal_fa_serial_number" required placeholder="Enter serial number">
+        </div>
+       
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" id="btnSaveFixAsset">Save & Continue</button>
+      </div>
+    </div>
+  </div>
 </div>
+
+
+<div class="modal fade" id="ticket_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+     <div class="modal-content" style="border-radius: 16px; border: none; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2); overflow: hidden;">
+       <div class="modal-header" style="background: linear-gradient(135deg, #213456, #334c7a); color: #fff; padding: 16px 18px; border-bottom: 4px solid #E1AD01;">
+           <h5 class="modal-title font-weight-bold" id="createReportModalLabel">
+               <i class="fa fa-ticket mr-2" aria-hidden="true"></i> Ticket Details
+           </h5>
+           <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close" style="opacity: 0.8; outline: none; background: none; border: none;">
+             <span aria-hidden="true" style="font-size: 28px;">&times;</span>
+           </button>
+       </div>
+      
+       <div class="modal-body" style="padding: 20px; background-color: #f8fafc;">
+         <form method="post" id="modal_form" enctype="multipart/form-data">
+             <div class="row" id="modal_columns_row">
+                 
+                 <div class="col-md-6 border-right pt-2 pb-2" id="col_ticket_info">
+                     <div class="form-row">
+                         <div class="form-group col-md-6">
+                             <label>TICKET#</label>
+                             <input type="text" class="form-control" name="ModalTicket_no" id="ModalTicket_no" readonly required>
+                         </div>
+
+                         <div class="form-group col-md-6">
+                             <label>DATE CREATED</label>
+                             <input type="text" class="form-control" name="ModalDate_create" id="ModalDate_create" readonly required>
+                         </div>
+
+                         <div class="form-group col-md-6">
+                             <label>STORE</label>
+                             <input type="text" class="form-control" name="ModalStore" id="ModalStore" readonly>
+                         </div>
+
+                         <div class="form-group col-md-6">
+                             <label>SUBJECT</label>
+                             <input type="text" class="form-control" name="ModalSubject" id="ModalSubject" readonly>
+                         </div>
+
+                         <div class="form-group col-md-12">
+                             <label>STATUS</label>
+                             <input type="text" class="form-control" name="ModalStatus" id="ModalStatus" readonly>
+                         </div>
+
+                         <div class="form-group col-md-12">
+                             <label><strong>Attachments</strong></label>
+                             <div id="attached_files" class="form-control" style="min-height:90px; background:#f8f9fa; overflow:auto;"></div>
+                         </div>
+                         
+                         <div class="col-12 d-flex justify-content-between align-items-center mb-2">
+                             <div>
+                                 <a href="#" id="rars" class="mr-3 font-weight-bold text-primary">RARS FORM</a>
+                                 <a href="#" id="vwfile" class="font-weight-bold text-primary">VIEW ATTACHMENTS</a>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+
+                 <div class="col-md-8 border-right pt-2 pb-2" id="col_comment_thread" style="background: #fafbfc;">
+                     <h6 class="text-uppercase mb-3" style="color:#213456; font-weight: 800; font-size: 13px;">Comment Thread</h6>
+                     
+                     <div class="container_remarks" style="display: flex; flex-direction: column-reverse; height: 380px; overflow-y: auto; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; margin-top: 10px;">
+                         <div id="remarks_view" style="display: flex; flex-direction: column; width: 100%; gap: 10px;"></div>
+                     </div>
+
+                     <div class="d-flex align-items-start mt-3">
+                         <textarea class="form-control" id="Modal_reply" name="Modal_reply" style="height: 60px; resize: none;" placeholder="Type a message..."></textarea>
+                         <button type="submit" class="btn btn-primary ml-2 px-3 py-2" name="Modal_action" id="Modal_action" style="height: 60px; border-radius: 8px;">
+                             <i class="fa fa-paper-plane" aria-hidden="true"></i>
+                         </button>
+                     </div>
+
+                     <input type="hidden" name="Modal_uId" id="Modal_uId" value="<?php echo $_SESSION['user_id'] ?? ''; ?>">
+                     <input type="hidden" name="operation" id="operation" value="Addcomment">
+                     <div id="alrtmsg" class="mt-2"></div>
+                 </div>
+
+                 <div class="col-md-2 pt-2 pb-2" id="col_asset_progress" style="display: none;">
+                     <h6 class="text-uppercase mb-3" style="color:#E1AD01; font-weight: 800; font-size: 13px;">Asset Request Progress</h6>
+                     <div class="tracking-container" style="max-height: 480px; overflow-y: auto; padding-right: 5px;">
+                         <ul class="tracking-timeline" id="trackingMap" style="list-style: none; padding: 0; margin: 0; position: relative;"></ul>
+                     </div>
+                 </div>
+
+             </div>
+         </form>
+       </div>
+     </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+    function checkFixAssetCondition() {
+        var dept = $('#deptsel').val();
+        var subj = ($('#subject').val() || '').toUpperCase();
+        if (dept == '2' && (subj.includes('FIX ASSET') || subj.includes('FIXED ASSET'))) {
+            $('#btnFixAsset').show();
+            $('#file-input').prop('required', true); 
+            $('#concern').prop('required', true);   
+            if ($('#fix_asset_completed').val() == '0') {
+                $('#action').prop('disabled', true);
+            } else {
+                if ($('#concern').val().length >= 10) {
+                    $('#action').prop('disabled', false); 
+                }
+            }
+        } else {
+            $('#btnFixAsset').hide();
+            $('#file-input').prop('required', false);
+            if ($('#concern').val().length >= 10) {
+                $('#action').prop('disabled', false);
+            }
+        }
+    }
+
+    $(document).ready(function() {
+        $('#btnFixAsset').click(function(e) {
+            e.preventDefault();
+            $('#fixAssetModal').modal('show');
+        });
+        $('#btnSaveFixAsset').click(function() {
+            var ic = $('#modal_fa_item_code').val();
+            var sn = $('#modal_fa_serial_number').val();
+            var desc = $('#modal_fa_description').val();
+
+            if (ic.trim() === '' || sn.trim() === '' || desc.trim() === '') {
+                alert('Please fill out all required fields in the Fixed Asset form.');
+                return;
+            }
+            $('#fa_item_code').val(ic);
+            $('#fa_serial_number').val(sn);
+            $('#fa_description').val(desc);
+            $('#fix_asset_completed').val('1');
+            
+            $('#fixAssetModal').modal('hide');
+            checkFixAssetCondition();
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Fixed Asset Info Saved',
+                text: 'You may now submit the ticket.',
+                timer: 1500,
+                showConfirmButton: false
+            });
+        });
+        $('#deptsel').on('change', function() {
+            checkFixAssetCondition();
+        });
+        
+        $('#subject').on('change select2:select', function() {
+            checkFixAssetCondition();
+        });
+    });
+
+    function timeAgo(dateParam) {
+        if (!dateParam) return "";
+        let date = new Date(dateParam.replace(/-/g, "/"));
+        let now = new Date();
+        let seconds = Math.floor((now - date) / 1000);
+        
+        let interval = Math.floor(seconds / 86400);
+        if (interval >= 1) return interval + " day" + (interval === 1 ? "" : "s") + " ago";
+        
+        interval = Math.floor(seconds / 3600);
+        if (interval >= 1) return interval + " hour" + (interval === 1 ? "" : "s") + " ago";
+        
+        interval = Math.floor(seconds / 60);
+        if (interval >= 1) return interval + " minute" + (interval === 1 ? "" : "s") + " ago";
+        
+        return "just now";
+    }
+
+/**
+ * Valtxt.
+ */
+function valtxt(){
+    if($('#subject').val() == null || $('#subject').val().trim()==""){
+        $('#subject').addClass('border-danger');
+        setTimeout(() => { $('#subject').removeClass('border-danger'); }, 5000);
+        return false;
+    }else if ($('#select_tos').val() == null || $('#select_tos').val().trim()==""){
+        $('#select_tos').addClass('border-danger');
+        setTimeout(() => { $('#select_tos').removeClass('border-danger'); }, 5000);
+        return false;
+    }else if ($('#concern').val().trim()==""){
+        $('#concern').addClass('border-danger');
+        setTimeout(() => { $('#concern').removeClass('border-danger'); }, 5000);
+        return false;
+    }
+    let dept = $('#deptsel').val();
+    let subj = ($('#subject').val() || '').toUpperCase();
+    if (dept == '2' && (subj.includes('FIX ASSET') || subj.includes('FIXED ASSET'))) {
+        if ($('#fix_asset_completed').val() == '0') {
+            alert("Please click 'Submit Fixed Asset Form' and fill out the details first.");
+            return false;
+        }
+        if ($('#file-input').get(0).files.length === 0) {
+            alert("An attached file is required for Fixed Asset requests.");
+            return false;
+        }
+    }
+
+    return true;
+}
+
+const validationLength = 1000;
+const concern = document.getElementById('concern');
+const action = document.getElementById('action');
+
+concern.addEventListener('input', function() {
+  const inputValue = concern.value;
+  const inputLength = inputValue.length;
+
+  if (inputLength > validationLength) {
+    concern.value = inputValue.substr(0, validationLength);
+  }
+  let dept = $('#deptsel').val();
+  let subj = ($('#subject').val() || '').toUpperCase();
+  let isFixAsset = (dept == '2' && (subj.includes('FIX ASSET') || subj.includes('FIXED ASSET')));
+  let faCompleted = $('#fix_asset_completed').val() == '1';
+
+  if (isFixAsset && !faCompleted) {
+      action.disabled = true;
+  } else {
+      action.disabled = inputLength < 10; 
+  }
+});
+
+    function checkFixAssetCondition() {
+        var dept = $('#deptsel').val();
+        var subj = ($('#subject').val() || '').toUpperCase();
+        
+        if (dept == '2' && (subj.includes('FIX ASSET') || subj.includes('FIXED ASSET'))) {
+            $('#btnFixAsset').show();
+            $('#file-input').prop('required', true); 
+            $('#concern').prop('required', true);   
+            var isFormCompleted = $('#fix_asset_completed').val() == '1';
+            var isFileAttached = $('#file-input').get(0).files.length > 0;
+            var isConcernValid = $('#concern').val().trim().length >= 10;
+            
+            if (isFormCompleted && isFileAttached && isConcernValid) {
+                $('#action').prop('disabled', false); 
+            } else {
+                $('#action').prop('disabled', true);
+            }
+        } else {
+            $('#btnFixAsset').hide();
+            $('#file-input').prop('required', false);
+            if ($('#concern').val().length >= 10) {
+                $('#action').prop('disabled', false);
+            }
+        }
+    }
+
+    $(document).ready(function() {
+        $('#btnFixAsset').click(function(e) {
+            e.preventDefault();
+            $('#fixAssetModal').modal('show');
+        });
+        $('#btnSaveFixAsset').click(function() {
+            var ic = $('#modal_fa_item_code').val();
+            var sn = $('#modal_fa_serial_number').val();
+            var desc = $('#modal_fa_description').val();
+
+            if (ic.trim() === '' || sn.trim() === '' || desc.trim() === '') {
+                alert('Please fill out all required fields in the Fixed Asset form.');
+                return;
+            }
+            $('#fa_item_code').val(ic);
+            $('#fa_serial_number').val(sn);
+            $('#fa_description').val(desc);
+            $('#fix_asset_completed').val('1');
+            
+            $('#fixAssetModal').modal('hide');
+            checkFixAssetCondition(); 
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Fixed Asset Info Saved',
+                text: 'Ensure your file is attached and your concern is filled before submitting.',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        });
+        $('#deptsel').on('change', function() { checkFixAssetCondition(); });
+        $('#subject').on('change select2:select', function() { checkFixAssetCondition(); });
+        $('#file-input').on('change', function() { checkFixAssetCondition(); });
+        $('#concern').on('input', function() { checkFixAssetCondition(); });
+    });
+
+function valtxt(){
+    if($('#subject').val() == null || $('#subject').val().trim()==""){
+        $('#subject').addClass('border-danger');
+        setTimeout(() => { $('#subject').removeClass('border-danger'); }, 5000);
+        return false;
+    }else if ($('#select_tos').val() == null || $('#select_tos').val().trim()==""){
+        $('#select_tos').addClass('border-danger');
+        setTimeout(() => { $('#select_tos').removeClass('border-danger'); }, 5000);
+        return false;
+    }else if ($('#concern').val().trim()==""){
+        $('#concern').addClass('border-danger');
+        setTimeout(() => { $('#concern').removeClass('border-danger'); }, 5000);
+        return false;
+    }
+
+    let dept = $('#deptsel').val();
+    let subj = ($('#subject').val() || '').toUpperCase();
+    if (dept == '2' && (subj.includes('FIX ASSET') || subj.includes('FIXED ASSET'))) {
+        if ($('#fix_asset_completed').val() == '0') {
+            alert("Please click 'Submit Fixed Asset Form' and fill out the details first.");
+            return false;
+        }
+        if ($('#file-input').get(0).files.length === 0) {
+            alert("An attached file is required for Fixed Asset requests.");
+            return false;
+        }
+        if ($('#concern').val().trim().length < 10) {
+            alert("A detailed concern is required for Fixed Asset requests.");
+            return false;
+        }
+    }
+
+    return true;
+}
+</script>
+
 
 <?php include 'userpanel_obj.php'; ?>
