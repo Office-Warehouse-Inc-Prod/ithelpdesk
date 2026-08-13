@@ -1,6 +1,4 @@
 <?php
-
-
 include '../condb.php';
 include 'tech_header.php';
 include 'chrtdashboard.php';
@@ -11,10 +9,7 @@ $conn=new dbconfig();
 $datetime = new DateTime();
 $timezone = new DateTimeZone('Asia/Manila');
 $datetime->setTimezone($timezone);
-
 ?>
-
-
 
 <head>
 <link rel="stylesheet" href="../plugins/DataTables-1.10.25/media/css/dataTables.bootstrap.min.css"/>
@@ -25,7 +20,7 @@ $datetime->setTimezone($timezone);
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 <script src="../js/ellipsis.js"></script>
-    <link rel="stylesheet" href="techdashboard.css" />
+<link rel="stylesheet" href="techdashboard.css" />
 </head>
 <style>
 
@@ -55,8 +50,6 @@ body {
   background-repeat: no-repeat;
   min-height: 100vh;
 } 
-
-     
 
   .admin-table th {
     background-color: linear-gradient(135deg, #213456, #334c7a) !important;
@@ -138,8 +131,8 @@ body {
 
   .card-header { padding: 0.5rem 0.75rem; }
   .card-header .nav { margin: 0; align-items: center; }
-  .nav-tabs { border-bottom: 0; }
-  .nav-tabs .nav-link { border: none; border-radius: 6px; }
+  .nav-tabs { border-bottom: 0; color: #E1AD01; }
+  .nav-tabs .nav-link { border: none; border-radius: 6px; color:#E1AD01; }
   .nav-tabs .nav-link:focus, .nav-tabs .nav-link:active { outline: none; color:#213456; box-shadow: none; }
   .nav-tabs.nav-fill .nav-link { text-align: center; }
 
@@ -208,7 +201,7 @@ body {
 label {
   font-size: 11px;
   font-weight: 900;
-  color: #e1ad01; 
+  color: #213456; 
   letter-spacing: .08em;
   text-transform: uppercase;
   margin-bottom: 6px;
@@ -663,7 +656,7 @@ textarea.form-control:focus {
     
   }
 
- 
+  
 
   #admin_report.admin-table th.active.text-center {
     background-color: #2b9827 !important;
@@ -703,6 +696,85 @@ textarea.form-control:focus {
     box-shadow: none !important;
   }
 
+
+#transferred_data {
+  width: 100%;
+  border-collapse: collapse; 
+  color: #213456;
+  font-family: 'Poppins', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#transferred_data thead tr {
+  color: #213456; 
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700; 
+  font-size: 1.2rem; 
+  text-align: center;
+}
+
+#transferred_data tbody tr {
+  background: transparent; 
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+#transferred_data tbody tr:hover,
+#transferred_data tbody tr:hover td {
+  background: #dbdbd84d; 
+  color: #213456;
+}
+
+#transferred_data th,
+#transferred_data td {
+  padding: 10px 12px;
+  border: none; 
+  border-bottom: 1px solid #ccc; 
+    color: #213456; 
+}
+
+#transferred_data tbody tr:last-child td {
+  border-bottom: none;
+}
+
+#transferred_data tbody tr td {
+  font-weight: 400;
+  font-size: 0.9rem;
+  color: inherit; 
+}
+
+#transferred_data::-webkit-scrollbar {
+  height: 6px;
+}
+
+#transferred_data::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #213456, #334c7a); 
+  border-radius: 3px;
+}
+.card-header { padding: 0.5rem 0.75rem; }
+  .card-header .nav-tabs {
+    border-bottom: 0;
+    gap: 15px; /* Controls the exact gap size between the tabs */
+    padding-left: 15px;
+  }
+  .nav-tabs .nav-link {
+    color: rgba(255, 255, 255, 0.7) !important; /* Inactive color: subtle white */
+    padding: .6rem 1rem;
+    font-weight: 700;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    transition: 0.3s;
+  }
+  .nav-tabs .nav-link:hover {
+    color: #ffffff !important; /* Solid white on hover */
+  }
+  .nav-tabs .nav-link.active {
+    background: transparent !important;
+    color: #E1AD01 !important; /* Active color: Readable Gold */
+    border-bottom: 3px solid #E1AD01 !important;
+    border-radius: 6px 6px 0 0;
+  }
+  .nav-tabs .nav-link:focus { outline: none; box-shadow: none; }
 </style>
 
 
@@ -717,7 +789,7 @@ textarea.form-control:focus {
          <table id="admin_report" class="table admin-table m-0">
                     <thead>  
                       <tr>
-                       
+                        
                         <th colspan="6" class="compliance text-center" style="background-color: #a29341; color: #fff; font-weight: 700; text-transform: uppercase; font-size: 13px; padding: 6px;">
                           COMPLIANCE TICKET REPORTS
                         </th>
@@ -966,14 +1038,14 @@ textarea.form-control:focus {
   <div class="col-12 mb-3">
     <div class="card card2" style="background: #ffffff; border-radius:12px;">
       <div class="card-header p-0" style="background: linear-gradient(135deg, #213456, #334c7a); border-bottom: none;">
-        <ul class="nav nav-tabs nav-fill card-header-tabs" id="ticketTabs" role="tablist">
+        <ul class="nav nav-tabs card-header-tabs" id="ticketTabs" role="tablist">
           <li class="nav-item" role="presentation">
-            <button class="nav-link active text-white" id="tickets-tab" data-toggle="tab" data-target="#tickets" type="button" role="tab" aria-controls="tickets" aria-selected="true" style="font-weight:700; border: none;">
+            <button class="nav-link active " id="tickets-tab" data-toggle="tab" data-target="#tickets" type="button" role="tab" aria-controls="tickets" aria-selected="true" style="font-weight:700; border: none;">
               TICKETS
             </button>
           </li>
           <li class="nav-item" role="presentation">
-            <button class="nav-link text-white" id="transferred-tab" data-toggle="tab" data-target="#transferred" type="button" role="tab" aria-controls="transferred" aria-selected="false" style="font-weight:700; border: none;">
+            <button class="nav-link" id="transferred-tab" data-toggle="tab" data-target="#transferred" type="button" role="tab" aria-controls="transferred" aria-selected="false" style="font-weight:700; border: none;">
               TRANSFERRED TICKETS
             </button>
           </li>
@@ -1061,7 +1133,7 @@ textarea.form-control:focus {
                         class="form-control form-control-sm datetimepicker-input"
                         data-target="#datetimepicker1"
                         value="<?php echo $datetime->format('m/d/Y g:i A'); ?>" />
-                     
+                      
                     </div>
                   </div>
 
@@ -1212,14 +1284,13 @@ textarea.form-control:focus {
                   </div>
 
                   <div class="form-group col-12">
-                    <label>Work Output:</label>
-                    <textarea name="remarks" id="remarks" class="form-control form-control-sm"
-                      placeholder="Your Workoutput"></textarea>
+                    <textarea name="remarks" id="remarks" class="form-control form-control-sm"></textarea>
                   </div>
 
                   <div class="col-12">
                     <label style="font-weight: bold;">Attached File:</label>
                     <p><input id="file-input" type="file" name="file" Multiple></p>
+                    <div id="file-preview-container" class="d-flex flex-wrap mt-2 gap-2"></div>
                   </div>
 
                   <div class="col-12">
@@ -1236,7 +1307,7 @@ textarea.form-control:focus {
                     <hr />
                   </div>
 
-                  <div class="card" id="img" name="img"></div>
+                  <div class="card" id="img" name="img" style="cursor: pointer;"></div>
 
                 </div><!-- /.row -->
 
@@ -1290,7 +1361,7 @@ textarea.form-control:focus {
 
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="dataModalLabel">Fixed Asset Information & Tracking</h5>
+                    <h5 class="modal-title" id="dataModalLabel">Fixed Asset Information</h5>
                     <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -1300,7 +1371,6 @@ textarea.form-control:focus {
                     <div class="row">
                         <div class="col-md-7 border-right pt-2 pb-2">
                             <h6 class="text-uppercase mb-3" style="color:#213456; font-weight: 800;">Request Details</h6>
-                               <p style="color: red; font-size:12px;font-style: italic;">Labels that have (*) are subject to change.</p>
 
                             <div class="row">
 
@@ -1321,27 +1391,24 @@ textarea.form-control:focus {
                                     <textarea class="form-control" name="date_created" rows="2" readonly></textarea>
                                 </div>
                                 <div class="form-group col-md-6">
-                                     <label>Item Code <span style="color: red; font-size: 10px;">*</span></label>
-                                    <textarea class="form-control" name="item_code" rows="2" ></textarea>
+                                     <label>Item Code</span></label>
+                                    <textarea class="form-control" name="item_code" rows="2" placeholder="Type the Name of Item  here..."></textarea>
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label>Description <span style="color: red; font-size: 10px;">*</span></label>
-                                    <textarea class="form-control" name="description" rows="2" ></textarea>
+                                    <textarea class="form-control" name="description" rows="2" placeholder="Type the description here..." required></textarea>
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label>Serial Number <span style="color: red; font-size: 10px;">*</span></label>
-                                    <input type="text" class="form-control" name="serial_number" required placeholder="Type the serial number here...">
+                                    <label>Serial Number</span></label>
+                                    <input type="text" class="form-control" name="serial_number" placeholder="Type the serial number here...">
                                 </div>
                                 <div class="form-group col-md-12">
                                     <label>Purpose of Request</label>
                                     <textarea class="form-control" name="purpose_of_request" style="height: 100px;" readonly></textarea>
                                 </div>
-                                 <div class="form-group col-md-12">
-                                    <label>Technical Workoutput</label>
-                                    <textarea class="form-control" name="technical_workoutput" id="technical_workoutput" style="height: 100px;"></textarea>
-                                </div>
+                                
                                 <div class="form-group col-md-6">
-                                    <label>Item Received By</label>
+                                    <label>Item Received/Inspected By</label>
                                     <input type="text" class="form-control" name="received_name" value="<?php echo ($_SESSION['fname'] ?? '') . ' ' . ($_SESSION['lstname'] ?? ''); ?>" readonly>
                                 </div>
                                 <div class="form-group col-md-6">
@@ -1352,10 +1419,29 @@ textarea.form-control:focus {
                         </div>
 
                         <div class="col-md-5 pt-2 pb-2" style=" background: linear-gradient(to bottom, #ffffff, #bbc2cf); border-radius: 8px;">
-                            <h6 class="text-uppercase mb-3" style="color:#E1AD01; font-weight: 800;">Asset Request Progress</h6>
-                            <div class="tracking-container" style="max-height: 950px; overflow-y: auto; padding-right: 10px;">
-                                <ul class="tracking-timeline" id="trackingMap"></ul>
+                            <h6 class="text-uppercase mb-3" style="color:#E1AD01; font-weight: 800;">Technical Service Report</h6>
+                            <label>Problem Reported:</label>
+                            <div class="form-group col-md-12">
+                              <textarea class="form-control" name="problem_reported"  style="height: 120px;" required> </textarea>
                             </div>
+                             <label>Verification/Findings: </label>
+                            <div class="form-group col-md-12">
+                              <textarea class="form-control" name="verification_findings"  style="height: 120px;" required></textarea>
+                            </div>
+                             <label>Work Done/Technical Solutions Provided:</label>
+                            <div class="form-group col-md-12">
+                              <textarea class="form-control" name="work_done"  style="height: 120px;" required></textarea>
+                            </div>
+                             <label>Status/Work Output:</label>
+                            <div class="form-group col-md-12">
+                              <textarea class="form-control" name="status_workoutput"  style="height: 120px;" required></textarea>
+                            </div>
+                             <label>Recommendations/Suggestions:</label>
+                            <div class="form-group col-md-12">
+                              <textarea class="form-control" name="recommendation"  style="height: 120px;" required></textarea>
+                            </div>
+  
+                           
                         </div>
                     </div>
                 </div>
@@ -1370,7 +1456,11 @@ textarea.form-control:focus {
     </div>
 </div>
 
-<!-- modal addnew button -->
+<div id="customLightbox" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:99999; justify-content:center; align-items:center;">
+    <span style="position:absolute; top:20px; right:40px; color:white; font-size:50px; cursor:pointer;" onclick="$('#customLightbox').fadeOut();">&times;</span>
+    <img id="lightboxImg" src="" style="max-width:90%; max-height:90%; border-radius:8px; box-shadow:0 4px 20px rgba(0,0,0,0.5); object-fit: contain;">
+</div>
+
 <script type='text/javascript'>
 $( document ).ready(function() {
 
@@ -1516,26 +1606,6 @@ function loadCommentThread(ticket_no) {
     });
 }
 
-function loadTechnicalWorkOutput(ticket_no) {
-    $('textarea[name="technical_workoutput"]').val('Loading technical output...');
-
-    $.ajax({
-        url: 'get_tech_workoutput.php', 
-        type: 'POST',
-        dataType: 'json',
-        data: { ticket_no: ticket_no },
-        success: function(response) {
-            if (response && response.comment_details) {
-                $('textarea[name="technical_workoutput"]').val(response.comment_details);
-            } else {
-                $('textarea[name="technical_workoutput"]').val('No previous technical output found for your session.');
-            }
-        },
-        error: function(xhr) {
-            $('textarea[name="technical_workoutput"]').val('Error loading data.');
-        }
-    });
-}
 
 // Global table variables
 var table;
@@ -1769,12 +1839,23 @@ function open_ticket_modal(data) {
     
     admin_hideshowforms();
     $('#date_closed').val(data['date_closed']);
-    $('#remarks').val(data['remarks']);
+    
+    $('#remarks').val(data['remarks'] || "Problem Reported:\n\nVerification/Findings:\n\nWork Done/Technical Solutions Provided:\nStatus/Workoutput:\nRecommendations/Suggestions:");
+    
     $('.dv_msg').show();
     $('#remarks_view').show();
     loadCommentThread(data['ticket_no']);
 
-    // Manage status/input state
+    $('#img').html('<p class="text-muted text-center w-100">Loading attachments...</p>');
+    $.ajax({
+        type: 'POST',
+        url: 'sesticket.php',
+        data: { tktval: ticketNo },
+        success: function(response) {
+            $('#img').html(response);
+        }
+    });
+
     var isClosed = ($('#status').val() == 'CLOSED');
     $(':input[type="submit"]').prop('disabled', isClosed);
     $('#date_created, #date_refNo, #date_closed, #remarks').prop('readonly', isClosed);
@@ -1786,10 +1867,8 @@ function open_ticket_modal(data) {
     $('#userModal').modal({ "show": true, "backdrop": 'static' });
 }
 
-// Bind Edit Buttons (Works for both tables)
 $('#report_data tbody, #transferred_data tbody').on('click', '.edit-btn', function(e) {
     e.stopPropagation();
-    // determine which table was clicked
     var currentTable = $(this).closest('table').DataTable();
     var data = currentTable.row($(this).parents('tr')).data();
     if (data) open_ticket_modal(data);
@@ -1888,7 +1967,6 @@ $("#yearpicker").on('change',function(){
     getdata(yr);
     getdata_transfer(yr);
     
-    // Check if these chart functions exist before calling to prevent errors
     if(typeof _techgraph === 'function') _techgraph(yr);
     if(typeof _overallpie === 'function') _overallpie(yr);
     if(typeof _dbline === 'function') _dbline(yr); 
@@ -1928,6 +2006,7 @@ $('#add_button').click(function(){
     $('#isp').prop("disabled", false);
     $(':input[type="submit"]').prop('disabled', false); 
     $('#remarks').attr('readonly', false);
+    $('#remarks').val("Problem Reported:\n\nVerification/Findings:\n\nWork Done/Technical Solutions Provided:\nStatus/Workoutput:\nRecommendations/Suggestions:");
     $('#msgbtn').hide();
     $('#sub').html('<option value="">Select SubCategory</option>');
     $('#sub_num').val('');
@@ -1935,6 +2014,8 @@ $('#add_button').click(function(){
     $('#cat_num').val('');
     $('#isp_num').val('');
     $('#addmsg').val('');
+    $('#file-preview-container').empty(); // clear preview
+    $('#img').empty(); // clear existing fetched images
     syncHiddenFields();
     admin_hideshowforms();
     $('#userModal').modal({backdrop: 'static', keyboard: false}); 
@@ -1953,6 +2034,68 @@ $(document).on('click', '#dtbsecond', function(){
         $('#img').html(response);
       }
     });
+});
+
+// IMAGE PREVIEW / LIGHTBOX FOR EXISTING IMAGES & NEW THUMBNAILS
+$(document).on('click', '#img img, #file-preview-container img', function() {
+    var src = $(this).attr('src');
+    if(src) {
+        $('#lightboxImg').attr('src', src);
+        $('#customLightbox').css('display', 'flex').hide().fadeIn(250);
+    }
+});
+
+// FILE PREVIEW LOGIC FOR NEW ATTACHMENTS
+$('#file-input').on('change', function() {
+    var previewContainer = $('#file-preview-container');
+    previewContainer.empty(); 
+    
+    var validExtensions = ['jpg', 'jpeg', 'gif', 'png', 'txt', 'pdf', 'docx', 'doc', 'xlsx', 'xls'];
+    var files = this.files;
+
+    if(files) {
+        for (var i = 0; i < files.length; ++i) {
+            var file = files[i];
+            var fileName = file.name;
+            var fileSize = file.size;
+            var ext = fileName.split('.').pop().toLowerCase();
+
+            if (fileSize >= 2097152) { // 2MB limit
+                alert("File '" + fileName + "' must not exceed 2MB");
+                this.value = "";
+                previewContainer.empty();
+                return false;
+            }
+
+            if ($.inArray(ext, validExtensions) === -1) {
+                alert("Invalid file extension for '" + fileName + "'");
+                this.value = "";
+                previewContainer.empty();
+                return false;
+            }
+
+            // Generate Preview
+            var reader = new FileReader();
+            reader.onload = (function(f, extension) {
+                return function(e) {
+                    var previewHtml = '';
+                    if (['jpg', 'jpeg', 'gif', 'png'].includes(extension)) {
+                        // Image Thumbnail
+                        previewHtml = '<div class="preview-item border position-relative shadow-sm" style="width: 100px; height: 100px; border-radius: 8px; overflow: hidden; display:inline-block;"><img src="' + e.target.result + '" style="width: 100%; height: 100%; object-fit: cover; cursor: pointer;" title="' + f.name + '"></div>';
+                    } else if (extension === 'pdf') {
+                        // PDF Icon
+                        previewHtml = '<div class="preview-item border position-relative text-center d-flex flex-column justify-content-center shadow-sm" style="width: 100px; height: 100px; border-radius: 8px; background:#f8f9fa; display:inline-block;"><i class="fas fa-file-pdf fa-2x text-danger mb-1 mt-2"></i><span class="small text-truncate w-100 px-1" title="' + f.name + '">' + f.name + '</span></div>';
+                    } else {
+                        // General Document Icon
+                        previewHtml = '<div class="preview-item border position-relative text-center d-flex flex-column justify-content-center shadow-sm" style="width: 100px; height: 100px; border-radius: 8px; background:#f8f9fa; display:inline-block;"><i class="fas fa-file-alt fa-2x text-secondary mb-1 mt-2"></i><span class="small text-truncate w-100 px-1" title="' + f.name + '">' + f.name + '</span></div>';
+                    }
+                    previewContainer.append(previewHtml);
+                };
+            })(file, ext);
+
+            reader.readAsDataURL(file);
+        }
+    }
 });
 
 $(document).on('click', '#msgbtn', function(){
@@ -1975,6 +2118,8 @@ $(document).on('click', '#msgbtn', function(){
 
 $('#btnClose').click(function(){
     $('#report_form').trigger('reset');
+    $('#file-preview-container').empty(); // clear preview
+    $('#img').empty(); // clear existing fetched images
     $('.dv_msg').hide();
     $('#remarks_view').hide();
     $('#tmpsubid').remove();
@@ -2057,12 +2202,24 @@ $(document).on("submit", "#report_form", function (e) {
                 const cyr = $("#yearpicker").val();
                 getdata(cyr);
                 getdata_transfer(cyr);
+                
+                // Refresh attachments to include the ones just saved
+                $.ajax({
+                    type: 'POST',
+                    url: 'sesticket.php',
+                    data: { tktval: ticketNo },
+                    success: function(res) {
+                        $('#img').html(res);
+                    }
+                });
             } else {
                 $('#userModal').modal('hide');
                 const cyr = $("#yearpicker").val();
                 getdata(cyr);
                 getdata_transfer(cyr);
             }
+            $('#file-input').val("");
+            $('#file-preview-container').empty(); // clear preview
             return;
           }
 
@@ -2161,7 +2318,6 @@ $(document).ready(function () {
     });
 });
 
-// Fixed Asset Button Click logic for ANY table
 $(document).on('click', '.print-btn', function(e) {
     e.preventDefault();
     e.stopPropagation();
@@ -2176,7 +2332,7 @@ $(document).on('click', '.print-btn', function(e) {
     console.log('FIXED ASSET click', ticket_no);
 
     $('#modal_ticket_no').val(ticket_no);
-    $('textarea[name="technical_workoutput"]').val('Loading...');
+    $('textarea[name="technical_workoutput"]').val("Verification/Findings:\nWork Done/Technical Solutions Provided:\nStatus/Workoutput:\nRecommendations/Suggestions:");
     
     $('#userModal').modal('hide');
 
@@ -2194,15 +2350,9 @@ $(document).on('click', '.print-btn', function(e) {
             $('#pdfForm').trigger('reset');
             $('#modal_ticket_no').val(ticket_no);
             
-            if (response.technical_workoutput) {
-                $('textarea[name="technical_workoutput"]').val(response.technical_workoutput);
-            } else {
-                $('textarea[name="technical_workoutput"]').val('No technical comments found for your session.');
-            }
-
-            $('textarea[name="purpose_of_request"]').val(response.purpose || '');
-            $('textarea[name="item_code"]').val(response.cat_desc || ''); 
-            $('textarea[name="description"]').val(response.sub_cat || '');      
+     // Re-apply format after reset
+$('textarea[name="technical_workoutput"]').val("Problem Reported: \n\n\nVerification/Findings: \n\n\nWork Done/Technical Solutions Provided: \n\n\nStatus/Work Output: \n\n\nRecommendations/Suggestions: ");
+            $('textarea[name="purpose_of_request"]').val(response.purpose || '');  
             $('input[name="serial_number"]').val(response.serial_number || '');
             $('textarea[name="date_created"]').val(response.date_created || '');     
             $('textarea[name="requested_by_name"]').val(response.requested_by_name || '');    
@@ -2419,8 +2569,7 @@ $(document).ready(function() {
                 $('#report_data').DataTable().columns.adjust().draw();
             }
         }
-        $('#ticketTabs .nav-link').css('color', 'white');
-        $('#ticketTabs .nav-link.active').css('color', '#495057'); 
+        
     });
     
 });

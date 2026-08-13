@@ -290,7 +290,7 @@ function admin_datatable(t) {
         render: function (data, type, row) {
           if (type === 'display') {
             if (data == '1 Days Unresolved') data = '1 Day Unresolved';
-            else if (data == '01/01/1970 01:00' || data == '01/01/1970 08:00' || data < 0 || data == 0 || data == '0 Days Unresolved') data = '';
+            else if (data == '' || data == '' || data < 0 || data == 0 || data == '0 Days Unresolved') data = '';
           }
           return data;
         }
@@ -441,7 +441,7 @@ function admin_datatable_transfer(t) {
         render: function (data, type, row) {
           if (type === 'display') {
             if (data == '1 Days Unresolved') data = '1 Day Unresolved';
-            else if (data == '01/01/1970 01:00' || data == '01/01/1970 08:00' || data < 0 || data == 0 || data == '0 Days Unresolved') data = '';
+            else if (data == '' || data == '' || data < 0 || data == 0 || data == '0 Days Unresolved') data = '';
           }
           return data;
         }

@@ -1,4 +1,10 @@
-
+<?php
+session_start();
+if ($_SESSION['login'] != 'true') {
+  header("Location: index.php");
+  exit();
+}
+?>
 <!-- // DEVELOPMENT NOTE: -->
 <!-- Main Dev:
 Derek Alejo
@@ -16,14 +22,6 @@ OJT - Karl Magpayo -->
 - Optimized AJAX calls for fetching notifications and counts to reduce server load and improve responsiveness.
 Minor Fixes:
 - Fixed potential JavaScript errors when notification data is empty or malformed. -->
-
-<?php
-session_start();
-if ($_SESSION['login'] != 'true') {
-  header("Location: index.php");
-  exit();
-}
-?>
 
 <!DOCTYPE html>
 <html lang="en">

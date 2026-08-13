@@ -285,12 +285,11 @@ body.dark-mode .form-control::placeholder {
 
 
 .status-open td {
-  color: rgb(167, 149, 13) !important;
-  border: 1px solid rgb(197, 197, 55);
+  color: #D46D25 !important;
 }
 
 .status-pending td {
-  color: red !important;
+  color: #E63946 !important;
   border: 1px solid red;
 }
 

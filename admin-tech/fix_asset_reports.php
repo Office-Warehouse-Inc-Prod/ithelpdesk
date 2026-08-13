@@ -131,8 +131,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mode'])) {
 include 'admin.php';
 $inactive = 180;
 if (isset($_SESSION['start']) && (time() - $_SESSION['start'] > $inactive)){
-    
-    header("Location: adminpanel.php");
+    // replace server-side redirect with client-side 3-minute redirect
+    echo '<script>setTimeout(function(){ window.location.href = "adminpanel.php"; }, 180000);</script>';
     exit();
 }
 $_SESSION['start'] = time();
@@ -147,6 +147,7 @@ $_SESSION['start'] = time();
     <script src="../js/dataTables.select.min.js"></script>
     <script src="../js/dataTables.responsive.min.js"></script>
     <script src="../js/fnReloadAjax.js"></script>
+      <link rel="stylesheet" href="fix_asset_reports.css" />
       <link rel="stylesheet" href="fix_asset.css" />
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -219,7 +220,7 @@ $_SESSION['start'] = time();
 
           <div class="modal-body">
             <div class="row">
-               <div class="col-md-6 border-right pt-2 pb-2">
+               <div class="col-md-5 border-right pt-2 pb-2">
                  <h6 class="text-uppercase mb-3" style="color:#E1AD01; font-weight: 800;">Request Details</h6>
                 <div class="row">
                   <div class="form-group col-md-5">
@@ -256,10 +257,7 @@ $_SESSION['start'] = time();
                     <input type="text" class="form-control" name="asset_tag_number" id="asset_tag_number" >
                   </div>
 
-                   <div class="form-group col-md-12">
-                    <label>Workoutput (Under Technical Evaluation)</label>
-                    <textarea class="form-control" name="technical_workoutput" id="technical_workoutput" style="height: 150px;" readonly></textarea>
-                  </div>
+               
 
 
                   <div class="form-group col-md-12">
@@ -273,12 +271,12 @@ $_SESSION['start'] = time();
                   </div>
                    
                   <div class="form-group col-md-5">
-                    <label>Item Received By</label>
+                    <label>Item Inspected/Received By</label>
                     <input type="text" class="form-control" name="item_received_by" id="it_desc" readonly>
                   </div>
                   <input type="hidden" class="form-control" name="received_by" value="<?php echo $_SESSION['tech_id'] ?? ''; ?>" readonly>
                   <div class="form-group col-md-5">
-                    <label>Date Received</label>
+                    <label>Date Inspected/Received</label>
                     <input type="text" class="form-control" name="date_received" id="date_received" >
                   </div>
                   <div class="form-group col-md-5">
@@ -292,33 +290,71 @@ $_SESSION['start'] = time();
                         <option value="PRINTED">PRINTED</option>
                         <option value="VERIFIED">VERIFIED</option>
                         <option value="APPROVED">APPROVED</option>
+                        <option value="REJECTED">REJECTED</option>
                         <option value="COMPLETED">COMPLETED</option>
                     </select>
                   </div>
 
                   <div class="form-group col-md-4 date-input-container" id="datePrintedGroup" style="display: none;">
-    <label>Date Printed</label>
-    <input type="datetime-local" class="form-control status-date-input" name="date_printed" id="date_printed" disabled>
-</div>
+                        <label>Date Printed</label>
+                        <input type="datetime-local" class="form-control status-date-input" name="date_printed" id="date_printed" disabled>
+                  </div>
 
-<div class="form-group col-md-4 date-input-container" id="dateVerifiedGroup" style="display: none;">
-    <label>Date Verified</label>
-    <input type="datetime-local" class="form-control status-date-input" name="date_verified" id="date_verified" disabled>
-</div>
+                    <div class="form-group col-md-4 date-input-container" id="dateVerifiedGroup" style="display: none;">
+                        <label>Date Verified</label>
+                        <input type="datetime-local" class="form-control status-date-input" name="date_verified" id="date_verified" disabled>
+                    </div>
 
-<div class="form-group col-md-4 date-input-container" id="dateApprovedGroup" style="display: none;">
-    <label>Date Approved</label>
-    <input type="datetime-local" class="form-control status-date-input" name="date_approved" id="date_approved" disabled>
-</div>
+                    <div class="form-group col-md-4 date-input-container" id="dateApprovedGroup" style="display: none;">
+                        <label>Date Approved</label>
+                        <input type="datetime-local" class="form-control status-date-input" name="date_approved" id="date_approved" disabled>
+                    </div>
 
-<div class="form-group col-md-4 date-input-container" id="dateCompletedGroup" style="display: none;">
-    <label>Date Completed</label>
-    <input type="datetime-local" class="form-control status-date-input" name="date_completed" id="date_completed" disabled>
-</div>
+                     <div class="form-group col-md-4 date-input-container" id="dateRejectedGroup" style="display: none;">
+                        <label>Date Rejected</label>
+                        <input type="datetime-local" class="form-control status-date-input" name="date_rejected" id="date_rejected" disabled>
+                    </div>
+
+                    <div class="form-group col-md-4 date-input-container" id="dateCompletedGroup" style="display: none;">
+                        <label>Date Completed</label>
+                        <input type="datetime-local" class="form-control status-date-input" name="date_completed" id="date_completed" disabled>
+                    </div>
                 </div>
               </div>
 
-              <div class="col-md-6 border-right pt-2 pb-2" style="background: linear-gradient(to bottom, #ffffff, #f0f3f7);">
+
+                <div class="col-md-4 pt-2 pb-2" style="border-radius: 0 8px 8px 0;">
+                 <div class="form-group col-md-12" id="technical_workoutput_section">
+                    <label>Workoutput (Under Assigned Support Evaluation)</label>
+                    <textarea class="form-control" name="technical_workoutput" id="technical_workoutput" style="height: 350px;"></textarea>
+                  </div>
+                  
+                  <div id="additional_technical_fields">
+                      <label>Problem Reported:</label>
+                      <div class="form-group col-md-12">
+                        <textarea class="form-control" name="problem_reported" id="problem_reported" style="height: 120px;" required readonly> </textarea>
+                      </div>
+                       <label>Verification/Findings: </label>
+                      <div class="form-group col-md-12">
+                        <textarea class="form-control" name="verification_findings" id="verification_findings" style="height: 120px;" required readonly></textarea>
+                      </div>
+                       <label>Work Done/Technical Solutions Provided:</label>
+                      <div class="form-group col-md-12">
+                        <textarea class="form-control" name="work_done" id="work_done" style="height: 120px;" required readonly></textarea>
+                      </div>
+                       <label>Status/Work Output:</label>
+                      <div class="form-group col-md-12">
+                        <textarea class="form-control" name="status_workoutput" id="status_workoutput" style="height: 120px;" required readonly></textarea>
+                      </div>
+                       <label>Recommendations/Suggestions:</label>
+                      <div class="form-group col-md-12">
+                        <textarea class="form-control" name="recommendation" id="recommendation" style="height: 120px;" required readonly></textarea>
+                      </div>
+                  </div>
+
+              </div>
+
+              <div class="col-md-3 border-right pt-2 pb-2" style="background: linear-gradient(to bottom, #ffffff, #f0f3f7);">
             <h6 class="text-uppercase mb-3" style="color:#E1AD01; font-weight: 800;">Asset Request Progress</h6>
                   <div class="tracking-container" style="max-height: 500px; overflow-y: auto; padding-right: 10px;">
                       <ul class="tracking-timeline" id="trackingMap"></ul>
@@ -529,18 +565,24 @@ $(document).ready(function() {
         {title:"Dept/Branch", data:"str_name","defaultContent": ""},
         {title:"Employee", data:"full_name","defaultContent": ""},
         {title:"Ticket Date", data:"ticket_created","defaultContent": ""},
-        {title:"Item Code", data:"item_code","defaultContent": ""},
         {title:"Description", data:"description","defaultContent": ""},
         {title:"Serial", data:"serial_number","defaultContent": ""},
         {title:"Received by", data:"it_desc","defaultContent": ""},
         {title:"Noted by", data:"noted_by_desc","defaultContent": ""},
         {title:"Date Received", data:"date_received","defaultContent": ""},
         {title:"Status", data:"status","defaultContent": ""},
-      {
+       {
           title: "Action", 
           data: null, 
           render: function(data, type, row){
             let buttons = `<button type='button' class='btn btn-primary' onclick='openViewModal(this)'><i class='fas fa-eye'></i> View</button>`;
+            let currentStatus = (data.status || '').toUpperCase();
+            let allowedPrintStatuses = ['VERIFIED', 'APPROVED', 'COMPLETED', 'PRINTED'];
+            
+            if (allowedPrintStatuses.includes(currentStatus)) {
+                buttons += `<button type='button' class='btn btn-success print-btn' data-id='${data.ticket_no}'><i class='fas fa-file-pdf'></i> Print</button>`;
+            }
+
             return `<div style="display: flex; gap: 5px;">${buttons}</div>`;
           }
         }
@@ -681,11 +723,47 @@ function openViewModal(btn) {
     $('#asset_tag_number').val(data.asset_tag_number || '');
     $('#purpose_of_request').val(data.purpose_of_request || '');
     $('#technical_workoutput').val(data.technical_workoutput || '');
+    $('#problem_reported').val(data.problem_reported || '');
+    $('#verification_findings').val(data.verification_findings || '');
+    $('#work_done').val(data.work_done || '');
+    $('#status_workoutput').val(data.status_workoutput || '');
+    $('#recommendation').val(data.recommendation || '');
     $('#revised_request').val(data.revised_request || '');
     $('#it_desc').val(data.it_desc || '');
     $('#noted_by_desc').val(data.noted_by_desc || '');
     $('#date_received').val(data.date_received || '');
     $('#status').val(data.status || '');
+
+       var isTechnical = data['is_technical'] !== undefined && data['is_technical'] !== null ? parseInt(data['is_technical']) : 1;
+       if (isTechnical === 1) {
+          $('#signature_attachment_section').hide();
+          $('#file-input').prop('required', false);
+          
+          $('#technical_workoutput_section').hide();
+          $('#additional_technical_fields').show();
+      } else {
+          $('#signature_attachment_section').show();
+          $('#file-input').prop('required', true);
+          
+          $('#technical_workoutput_section').show();
+          $('#additional_technical_fields').hide();
+      }
+      if (data['it_desc'] && data['it_desc'].trim() !== "") {
+          $('#it_desc').val(data['it_desc']);
+          $('#item_received_by_hidden').val(""); 
+      } else {
+          $('#it_desc').val(loggedInName);
+          $('#item_received_by_hidden').val(loggedInId);
+      }
+
+      if (data['noted_by_desc'] && data['noted_by_desc'].trim() !== "") {
+          $('#noted_by_desc').val(data['noted_by_desc']);
+          $('#noted_by_hidden').val("");
+      } else {
+          $('#noted_by_desc').val(loggedInName);
+          $('#noted_by_hidden').val(loggedInId);
+      }
+
 
     $('#operation').val("save_request");
     
@@ -771,10 +849,13 @@ function loadRemarks(ticket_no) {
           }
       });
   });
-
 function loadTimeline(ticket_no, rowData) {
     var target = $('#trackingMap');
     target.html('<p class="text-muted" style="font-size: 12px; margin-top: 10px;">Loading timeline...</p>');
+
+    var isTechnical = (rowData && rowData.is_technical !== undefined && rowData.is_technical !== null) 
+        ? parseInt(rowData.is_technical) 
+        : 1;
 
     $.ajax({
         url: 'get_first_comment.php',
@@ -784,38 +865,59 @@ function loadTimeline(ticket_no, rowData) {
         success: function(response) {
             const statusLevels = {
                 'submitted': 1, 'noted': 2, 'validated': 3, 
-                'verified': 4, 'printed': 5, 'approved': 6, 'completed': 7
+                'verified': 4, 'printed': 5, 'approved': 6, 'rejected': 6, 'completed': 7
             };
 
             let dbStatus = (response.status || "").toLowerCase().trim();
             let currentLevel = statusLevels[dbStatus] || 0; 
 
-           const trackSteps = [
+            let trackSteps = [
                 { desc: "Request submitted by store/user", date: response.date_created, reqLevel: 0 },
-                { desc: "Under assigned support evaluation", date: response.date_created, reqLevel: 0 },
-                { desc: "Submitted to technical/dept head", date: response.date_submitted, reqLevel: 1 },
-                { desc: "Approved and noted by technical/dept head", date: response.date_noted, reqLevel: 2 },
-                { desc: "For admin support validation", date: null, reqLevel: 2 }, 
-                { desc: "Validated by admin support", date: response.date_validated, reqLevel: 3 },
-                { desc: "For administrative verification", date: null, reqLevel: 3 }, 
-                { desc: "Verified by the administrator", date: response.date_verified, reqLevel: 4 },
-                { desc: "For printing request form", date: null, reqLevel: 4 }, 
-                { desc: "Printed", date: response.date_printed, reqLevel: 5 },
-                { desc: "For General Manager Approval", date: null, reqLevel: 5 }, 
-                { desc: "Approved by General Manager", date: response.date_approved, reqLevel: 6 },
-                { desc: "Ready for asset replacement", date: null, reqLevel: 6 }, 
-                { desc: "Asset replaced / Completed", date: response.date_completed, reqLevel: 7 }
+                { desc: "Under assigned support evaluation", date: response.date_created, reqLevel: 0 }
             ];
+
+            if (isTechnical === 1) {
+                trackSteps.push(
+                    { desc: "Submitted to technical/dept head", date: response.date_submitted, reqLevel: 1 },
+                    { desc: "Approved and noted by technical/dept head", date: response.date_noted, reqLevel: 2 }
+                );
+            }
+
+            trackSteps.push(
+                { desc: "For admin support validation", date: null, reqLevel: isTechnical === 1 ? 2 : 1 }, 
+                { desc: "Validated by admin support", date: response.date_validated, reqLevel: isTechnical === 1 ? 3 : 2 },
+                { desc: "For administrative verification", date: null, reqLevel: isTechnical === 1 ? 3 : 2 }, 
+                { desc: "Verified by the administrator", date: response.date_verified, reqLevel: isTechnical === 1 ? 4 : 3 },
+                { desc: "For printing request form", date: null, reqLevel: isTechnical === 1 ? 4 : 3 }, 
+                { desc: "Printed", date: response.date_printed, reqLevel: isTechnical === 1 ? 5 : 4 },
+                { desc: "For General Manager Approval", date: null, reqLevel: isTechnical === 1 ? 5 : 4 }
+            );
+
+            if (dbStatus === 'rejected') {
+                trackSteps.push(
+                    { desc: "Rejected by General Manager", date: response.date_rejected || response.date_updated, reqLevel: isTechnical === 1 ? 6 : 5, isRejected: true }
+                );
+            } else {
+                trackSteps.push(
+                    { desc: "Approved by General Manager", date: response.date_approved, reqLevel: isTechnical === 1 ? 6 : 5 },
+                    { desc: "Transferred to PD for Procurement", date: null, reqLevel: isTechnical === 1 ? 6 : 5 }, 
+                    { desc: "Asset replaced / Completed", date: response.date_completed, reqLevel: isTechnical === 1 ? 7 : 6 }
+                );
+            }
 
             let timelineHtml = '';
             trackSteps.forEach((step) => {
                 let statusClass = (currentLevel >= step.reqLevel) ? "completed" : "";
+                
                 let dateDisplay = step.date ? `<div class="timeline-date">${step.date}</div>` : '';
+
+                let iconStyle = step.isRejected ? 'style="background-color: #dc3545; border-color: #dc3545;"' : '';
+                let textStyle = step.isRejected ? 'style="color: #dc3545; font-weight: bold;"' : '';
 
                 timelineHtml += `
                     <li class="timeline-item ${statusClass}">
-                        <div class="timeline-icon"></div>
-                        <div class="timeline-desc">${step.desc}</div>
+                        <div class="timeline-icon" ${iconStyle}></div>
+                        <div class="timeline-desc" ${textStyle}>${step.desc}</div>
                         ${dateDisplay}
                     </li>
                 `;

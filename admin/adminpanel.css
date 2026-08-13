@@ -833,7 +833,6 @@ body.dark-mode .toggle-label-text {
     --chat-bg: #f4f7f9;
 }
 
-/* --- Left Side: Refined Input Panel --- */
 .m_col {
     background: #ffffff;
     padding: 2rem !important;
@@ -887,7 +886,6 @@ body.dark-mode .toggle-label-text {
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
-/* Received (Support/Other Users) - Navy Style */
 .msg-received {
     align-self: flex-start;
     background-color: var(--navy-primary);
@@ -999,6 +997,61 @@ body.dark-mode .toggle-label-text {
 
 
 
+
+#transferred_data {
+  width: 100%;
+  border-collapse: collapse; 
+  color: #213456;
+  font-family: 'Poppins', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#transferred_data thead tr {
+  background: linear-gradient(135deg, #213456, #334c7a);
+  color: #213456; 
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700; 
+  font-size: 1.2rem; 
+  text-align: center;
+}
+
+#transferred_data tbody tr {
+  background: transparent; 
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+#transferred_data tbody tr:hover,
+#transferred_data tbody tr:hover td {
+  background: #dbdbd84d; 
+  color: #213456;
+}
+
+#transferred_data th,
+#transferred_data td {
+  padding: 10px 12px;
+  border: none; 
+  border-bottom: 1px solid #ccc; 
+    color: #213456; 
+}
+
+#transferred_data tbody tr:last-child td {
+  border-bottom: none;
+}
+
+#transferred_data tbody tr td {
+  font-weight: 400;
+  font-size: 0.9rem;
+  color: inherit; 
+}
+
+#transferred_data::-webkit-scrollbar {
+  height: 6px;
+}
+
+#transferred_data::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #213456, #334c7a); 
+  border-radius: 3px;
+}
 
     
 

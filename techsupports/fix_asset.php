@@ -132,10 +132,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mode'])) {
 include 'tech_header.php';
 $inactive = 180;
 if (isset($_SESSION['start']) && (time() - $_SESSION['start'] > $inactive)){
-    session_unset();
-    session_destroy();
-    header("Location: techdashboard.php");
-    exit();
+  session_unset();
+  // removed session_destroy() to avoid "headers already sent" warnings
+  echo '<script>setTimeout(function(){ window.location.href = "techdashboard.php"; }, 180000);</script>';
+  exit();
 }
 $_SESSION['start'] = time();
 ?>
@@ -144,12 +144,12 @@ $_SESSION['start'] = time();
       <script src="../js/bootstrap-datetimepicker.min.js"></script>
       <link rel="stylesheet" href="../css/jquery.dataTables.min.css" />
       <link rel="stylesheet" href="styles.css" />
+       <link rel="stylesheet" href="fix_asset.css" />
 
       <script src="../js/jquery.dataTables.min.js"></script>
       <script src="../js/dataTables.select.min.js"></script>
       <script src="../js/dataTables.responsive.min.js"></script>
       <script src="../js/fnReloadAjax.js"></script>
-           <link rel="stylesheet" href="fix_asset.css" />
   </head>
 
 
@@ -175,7 +175,7 @@ $_SESSION['start'] = time();
       <div class="modal-body">
         <div class="row">
 
-          <div class="col-md-5 border-right pt-2 pb-2">
+          <div class="col-md-6 border-right pt-2 pb-2">
               <h6 class="text-uppercase mb-3" style="color:#213456; font-weight: 800;">Request Details</h6>
          
               <div class="row">
@@ -207,26 +207,47 @@ $_SESSION['start'] = time();
 
                   <div class="form-group col-md-6">
                       <label>Description </label>
-                      <input type="text" class="form-control" name="description" id="description" >
+                      <input type="text" class="form-control" name="description" id="description" required>
                   </div>
 
-                  <div class="form-group col-md-12">
+                  <div class="form-group col-md-6">
                       <label>Serial Number </label>
-                      <input type="text" class="form-control" name="serial_number" id="serial_number" required>
+                      <input type="text" class="form-control" name="serial_number" id="serial_number">
                   </div>
 
                   <div class="form-group col-md-12">
                       <label>Purpose of Request</label>
                       <textarea class="form-control" name="purpose" id="purpose_of_request" style="height: 100px;" readonly></textarea>
                   </div>
-
                    <div class="form-group col-md-12">
-                      <label>Technical Workoutput</label>
-                      <textarea class="form-control" name="technical_workoutput" id="technical_workoutput" style="height: 100px;"></textarea>
-                  </div>
+                 <label>Problem Reported </label>
+                  <textarea class="form-control" name="problem_reported" id="problem_reported" style="height: 100px;"></textarea>
+                </div>
+
+                 <div class="form-group col-md-12">
+                   <label>Verification/Findings </label>
+                  <textarea class="form-control" name="verification_findings" id="verification_findings" style="height: 100px;"></textarea>
+                </div>
+
+                 <div class="form-group col-md-12">
+                   <label>Work Done/Technical Solutions Provided </label>
+                  <textarea class="form-control" name="work_done" id="work_done" style="height: 100px;"></textarea>
+                </div>
+
+                 <div class="form-group col-md-12">
+                   <label>Status/Work Output </label>
+                  <textarea class="form-control" name="status_workoutput" id="status_workoutput" style="height: 100px;"></textarea>
+                </div>
+
+                 <div class="form-group col-md-12">
+                   <label>Recommendations/Suggestions </label>
+                  <textarea class="form-control" name="recommendation" id="recommendation" style="height: 100px;"></textarea>
+                </div>
+
+                  
 
                   <div class="form-group col-md-6">
-                      <label>Item Received By</label>
+                      <label>Item Received/Inspected By</label>
                       <input type="text" class="form-control" name="item_received_by" id="it_desc" readonly>
                   </div>
                   
@@ -240,17 +261,15 @@ $_SESSION['start'] = time();
           </div>
           
     
-          <div class="col-md-4 border-right pt-2 pb-2" style="background: linear-gradient(to bottom, #ffffff, #f0f3f7);">
-              <h6 class="text-uppercase mb-3" style="color:#E1AD01; font-weight: 800;">Asset Request Progress</h6>
-              <div class="tracking-container" style="max-height: 850px; overflow-y: auto; padding-right: 10px;">
+          <div class="col-md-6 border-right pt-2 pb-2" style="background: linear-gradient(to bottom, #ffffff, #f0f3f7);">
+            <h6 class="text-uppercase mb-3" style="color:#E1AD01; font-weight: 800;">Asset Request Progress</h6>
+             <div class="tracking-container" style="max-height: 950px; overflow-y: auto; padding-right: 10px;">
                   <ul class="tracking-timeline" id="trackingMap">
             
                   </ul>
               </div>
-          </div>
-
-          <div class="col-md-3 pt-2 pb-2" style="background: #f8f9fa; border-radius: 0 8px 8px 0;">
-              <h6 class="text-uppercase mb-3" style="color:#213456; font-weight: 800;">Remarks Thread</h6>
+              
+                   <h6 class="text-uppercase mb-3" style="color:#213456; font-weight: 800;">Remarks Thread</h6>
               
               <div id="remarks_thread_container" class="chat-container">
                
@@ -262,7 +281,10 @@ $_SESSION['start'] = time();
                       <i class="fas fa-paper-plane"></i> Send Remark
                   </button>
               </div>
+             
           </div>
+
+        
 
         </div>
       </div>
@@ -350,7 +372,6 @@ $_SESSION['start'] = time();
           {title:"Dept/Branch", data:"str_name","defaultContent": ""},
           {title:"Employee", data:"full_name","defaultContent": ""},
           {title:"Ticket Created", data:"ticket_created","defaultContent": ""},
-          {title:"Item Code", data:"item_code","defaultContent": ""},
           {title:"Description", data:"description","defaultContent": ""},
           {title:"Serial Number", data:"serial_number","defaultContent": ""},
           {title:"Received by", data:"it_desc","defaultContent": ""},
@@ -380,7 +401,11 @@ $_SESSION['start'] = time();
           $('#description').val(data['description']);
           $('#serial_number').val(data['serial_number']);
           $('#purpose_of_request').val(data['purpose_of_request']);
-            $('#technical_workoutput').val(data['technical_workoutput']);
+            $('#problem_reported').val(data['problem_reported']);
+            $('#verification_findings').val(data['verification_findings']);
+            $('#work_done').val(data['work_done']);
+            $('#status_workoutput').val(data['status_workoutput']);
+            $('#recommendation').val(data['recommendation']);
           $('#it_desc').val(data['it_desc']);
           $('#date_received').val(data['date_received']);
           $('#status').val(data['status']);
@@ -406,50 +431,75 @@ $_SESSION['start'] = time();
               success: function(response) {
                    const statusLevels = {
                 'submitted': 1, 'noted': 2, 'validated': 3, 
-                'verified': 4, 'printed': 5, 'approved': 6, 'completed': 7
+                'verified': 4, 'printed': 5, 'approved': 6, 'rejected': 6, 'completed': 7
             };
 
             let dbStatus = (response.status || "").toLowerCase().trim();
             let currentLevel = statusLevels[dbStatus] || 0; 
 
-            const trackSteps = [
-                { desc: "Request submitted by store/user", date: response.date_created, reqLevel: 0 },
-                { desc: "Under assigned support evaluation", date: response.date_created, reqLevel: 0 },
-                { desc: "Submitted to technical/dept head", date: response.date_submitted, reqLevel: 1 },
-                { desc: "Approved and noted by technical/dept head", date: response.date_noted, reqLevel: 2 },
-                { desc: "For admin support validation", date: null, reqLevel: 2 }, 
-                { desc: "Validated by admin support", date: response.date_validated, reqLevel: 3 },
-                { desc: "For administrative verification", date: null, reqLevel: 3 }, 
-                { desc: "Verified by the administrator", date: response.date_verified, reqLevel: 4 },
-                { desc: "For printing request form", date: null, reqLevel: 4 }, 
-                { desc: "Printed", date: response.date_printed, reqLevel: 5 },
-                { desc: "For General Manager Approval", date: null, reqLevel: 5 }, 
-                { desc: "Approved by General Manager", date: response.date_approved, reqLevel: 6 },
-                { desc: "Ready for asset replacement", date: null, reqLevel: 6 }, 
-                { desc: "Asset replaced / Completed", date: response.date_completed, reqLevel: 7 }
-            ];
+            
+                    let trackSteps = [
+                        { desc: "Request submitted by store/user", date: response.date_created, reqLevel: 0 },
+                        { desc: "Under assigned support evaluation", date: response.date_created, reqLevel: 0 }
+                    ];
 
-                  let timelineHtml = '';
-                  
-                  trackSteps.forEach((step) => {
-                      let statusClass = (currentLevel >= step.reqLevel) ? "completed" : "";
-                      let dateDisplay = step.date ? `<div class="timeline-date" style="font-size: 11px; color: #6B7280;">${step.date}</div>` : '';
+                    // Assuming isTechnical is defined in tech_header or globally
+                    let isTech = typeof isTechnical !== 'undefined' ? isTechnical : 1; 
 
-                      timelineHtml += `
-                          <li class="timeline-item ${statusClass}">
-                              <div class="timeline-icon"></div>
-                              <div class="timeline-desc" style="font-size: 13px; font-weight: 600; color: #213456;">${step.desc}</div>
-                              ${dateDisplay}
-                          </li>
-                      `;
-                  });
+                    if (isTech === 1) {
+                        trackSteps.push(
+                            { desc: "Submitted to technical/dept head", date: response.date_submitted, reqLevel: 1 },
+                            { desc: "Approved and noted by technical/dept head", date: response.date_noted, reqLevel: 2 }
+                        );
+                    }
 
-                  $('#trackingMap').html(timelineHtml);
-              },
-              error: function() {
-                  $('#trackingMap').html('<p class="text-danger">Failed to load progress timeline.</p>');
-              }
-          });
+                    trackSteps.push(
+                        { desc: "For admin support validation", date: null, reqLevel: isTech === 1 ? 2 : 1 }, 
+                        { desc: "Validated by admin support", date: response.date_validated, reqLevel: isTech === 1 ? 3 : 2 },
+                        { desc: "For administrative verification", date: null, reqLevel: isTech === 1 ? 3 : 2 }, 
+                        { desc: "Verified by the administrator", date: response.date_verified, reqLevel: isTech === 1 ? 4 : 3 },
+                        { desc: "For printing request form", date: null, reqLevel: isTech === 1 ? 4 : 3 }, 
+                        { desc: "Printed", date: response.date_printed, reqLevel: isTech === 1 ? 5 : 4 },
+                        { desc: "For General Manager Approval", date: null, reqLevel: isTech === 1 ? 5 : 4 }
+                    );
+
+                    if (dbStatus === 'rejected') {
+                        trackSteps.push(
+                            { desc: "Rejected by General Manager", date: response.date_rejected || response.date_updated, reqLevel: isTech === 1 ? 6 : 5, isRejected: true }
+                        );
+                    } else {
+                        trackSteps.push(
+                            { desc: "Approved by General Manager", date: response.date_approved, reqLevel: isTech === 1 ? 6 : 5 },
+                            { desc: "Ready for Asset Replacement", date: null, reqLevel: isTech === 1 ? 6 : 5 }, 
+                            { desc: "Asset replaced / Completed", date: response.date_completed, reqLevel: isTech === 1 ? 7 : 6 }
+                        );
+                    }
+
+                    let timelineHtml = '';
+                    trackSteps.forEach((step) => {
+
+                     let statusClass = (currentLevel >= step.reqLevel) ? "completed" : "";
+                
+                let dateDisplay = step.date ? `<div class="timeline-date">${step.date}</div>` : '';
+
+              let iconStyle = step.isRejected ? 'style="background-color: #dc3545; border-color: #dc3545;"' : '';
+                let textStyle = step.isRejected ? 'style="color: #dc3545; font-weight: bold;"' : '';
+
+                timelineHtml += `
+                    <li class="timeline-item ${statusClass}">
+                        <div class="timeline-icon" ${iconStyle}></div>
+                        <div class="timeline-desc" ${textStyle}>${step.desc}</div>
+                        ${dateDisplay}
+                    </li>
+                `;
+                    });
+
+                    $('#trackingMap').html(timelineHtml);
+                },
+                error: function() {
+                    $('#trackingMap').html('<li class="text-danger small">Failed to load progress timeline.</li>');
+                }
+            });
           $('#newrpt_Modal').modal('show');
       });
     }

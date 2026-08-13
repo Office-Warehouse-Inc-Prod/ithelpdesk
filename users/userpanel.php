@@ -9,13 +9,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mode'])) {
         try {
             $ticket_no = $_POST['ticket_no'] ?? '';
             $stmt = $connection->prepare("SELECT far.remarks_note, 
-                                                 CONCAT(u.fname, ' ', u.lstname) AS user_fullname, 
-                                                 far.date_remarks 
-                                          FROM fixed_asset_remarks far 
-                                          LEFT JOIN users u ON far.remarks_by = u.id 
-                                          WHERE far.ticket_no = ? 
-                                          ORDER BY far.date_remarks ASC");
-                                          
+                                               CONCAT(u.fname, ' ', u.lstname) AS user_fullname, 
+                                               far.date_remarks 
+                                        FROM fixed_asset_remarks far 
+                                        LEFT JOIN users u ON far.remarks_by = u.id 
+                                        WHERE far.ticket_no = ? 
+                                        ORDER BY far.date_remarks ASC");
+                                        
             $stmt->execute([$ticket_no]);
             echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
             
@@ -384,7 +384,7 @@ body {
 
 
  .card {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .card:hover {
@@ -725,9 +725,8 @@ body {
          
                 <input type="hidden" name="select_tos" id="select_tos" value="GENERAL"> 
                 <input type="hidden" name="fix_asset_completed" id="fix_asset_completed" value="0">
+                <input type="hidden" name="is_fix_asset" id="is_fix_asset" value="0">
                 <input type="hidden" name="fa_item_code" id="fa_item_code" value="">
-                <input type="hidden" name="fa_serial_number" id="fa_serial_number" value="">
-                <input type="hidden" name="fa_description" id="fa_description" value="">
 
                 <label><i class="fa fa-user-circle-o"></i>  Attention To:</label>
                 <select class="form-control" id="deptsel" name="deptsel" required>
@@ -748,15 +747,41 @@ body {
 
                     
 
-                <!-- SUBJECT -->
                 <label><i class="fas fa-envelope"></i> Subject</label>
                 <select class="form-control" id="subject" name="subject" required>
                   <option value='' selected disabled>---Select Category---</option>
                 </select>
-                <!-- <input type="text" class="form-control" name="subject" id="subject"
-                       style="font-size: 12px; text-transform: uppercase;"
-                       minlength="5" maxlength="35" autocomplete="off"
-                       placeholder="Type subject (optional if selecting below)"> -->
+
+                <div class="mt-2" id="subcategory_container" style="display:none;">
+                  <label><i class="fas fa-list-ul"></i> Subcategory</label>
+                  <select class="form-control selectpicker" name="subcategory" id="subcategory">
+                    <option value='' selected disabled>---Select Subcategory---</option>
+                  </select>
+                </div>
+                
+                <div id="inline_fixed_asset_fields" style="display:none; background: #fff3cd; padding: 10px; border-radius: 8px; margin-top: 10px; margin-bottom: 10px; border: 1px solid #ffeeba;">
+                    <h6 style="color: #856404; font-weight: bold; margin-bottom: 10px;"><i class="fas fa-info-circle"></i> Fixed Asset Details</h6>
+                    
+                    <div class="form-group" id="inline_fa_description_container">
+                        <label>Description <span class="text-danger">*</span></label>
+                        <select class="form-control selectpicker" id="inline_fa_description_sel" name="inline_fa_description_sel">
+                            <option value="" selected disabled>Select Item</option>
+                            <option value="CABINET">CABINET</option>
+                            <option value="MOBILE PED">MOBILE PED</option>
+                            <option value="LADDER">LADDER</option>
+                            <option value="PUSH CART">PUSH CART</option>
+                            <option value="LAMINATOR">LAMINATOR</option>
+                            <option value="OTHER">OTHER</option>
+                        </select>
+                        <input type="text" class="form-control mt-2" id="inline_fa_description_txt" name="inline_fa_description_txt" placeholder="Enter item description" style="display:none;">
+                    </div>
+
+                    <div class="form-group" id="inline_fa_serial_container">
+                        <label>Serial Number</label>
+                        <input type="text" class="form-control" id="inline_fa_serial_number" name="inline_fa_serial_number" placeholder="Enter serial number (Optional)">
+                    </div>
+                </div>
+
                 <div class="mt-2">
                   <select class="form-control selectpicker" name="subjectimp" id="subjectimp"
                     style="font-size: 12px; text-transform: uppercase;">
@@ -820,26 +845,23 @@ body {
 
                 <input type="hidden" id="status" name="status" value="NEW REPORT">
 
-                <!-- CONCERN -->
-                <label style="font-weight: bold;" id="titleconcern">Concern</label>
-                <p class="mb-2">
-                  <textarea class="cttxtarea" id="concern" name="concern" minlength="10" maxlength="1000" row="2"
-                    placeholder="Input your message here"></textarea>
-                </p>
+                <div id="concern_container">
+                  <label style="font-weight: bold;" id="titleconcern">Concern</label>
+                  <p class="mb-2">
+                    <textarea class="cttxtarea" id="concern" name="concern" minlength="10" maxlength="1000" row="2"
+                      placeholder="Input your message here"></textarea>
+                  </p>
+                </div>
 
-                <!-- FILE -->
-                <label style="font-weight: bold;">Attached File</label>
+                <label style="font-weight: bold;" id="label_attached_file">Attached File</label>
                 <p class="mb-3">
                   <input id="file-input" type="file" name="files[]" multiple>
                 </p>
 
-                <!-- SUBMIT -->
                 <div class="row">
                   <div class="col-12">
-                    
-                    <!-- --- ADDED FIX ASSET: REQUIRE BUTTON BEFORE SUBMIT --- -->
                     <button type="button" id="btnFixAsset" class="btn btn-warning w-100 w-100-mobile mb-2" style="display:none; font-weight:bold; background-color: #E1AD01; border-color: #E1AD01;">
-                       <i class="fas fa-edit"></i> Submit Fixed Asset Form
+                        <i class="fas fa-edit"></i> Submit Fixed Asset Form
                     </button>
 
                     <input type="submit" name="action" id="action" class="btn btn-primary w-100 w-100-mobile"
@@ -1015,7 +1037,6 @@ body {
             </div>
           </div>
 
-          <!-- Items table -->
           <div class="table-responsive mt-3">
             <table class="table table-bordered table-hover mb-0" id="merchItemsTable" style="font-size:13px;">
               
@@ -1036,44 +1057,6 @@ body {
 
   </div>
 
-</div><div class="modal fade" id="fixAssetModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content" style="border-radius: 12px; overflow: hidden;">
-      <div class="modal-header" style="background: linear-gradient(135deg, #213456, #334c7a); color: #fff; border-bottom: 4px solid #E1AD01;">
-        <h5 class="modal-title font-weight-bold">Fixed Asset Request Form</h5>
-        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body bg-light">
-        <div class="form-group">
-            <label>Requesting Employee</label>
-            <input type="text" class="form-control" value="<?php echo htmlspecialchars($_SESSION['fname'] . ' ' . $_SESSION['lstname']); ?>" readonly>
-        </div>
-        <div class="form-group">
-            <label>Requesting Dept/Branch</label>
-            <input type="text" class="form-control" value="<?php echo !empty($_SESSION['str_name']) ? htmlspecialchars($_SESSION['str_name']) : htmlspecialchars($_SESSION['str_num']); ?>" readonly>
-        </div>
-        <div class="form-group">
-            <label>Item Code <span class="text-danger">*</span></label>
-            <input type="text" class="form-control" id="modal_fa_item_code" required placeholder="Enter item code">
-        </div>
-         <div class="form-group">
-            <label>Description <span class="text-danger">*</span></label>
-            <input type="text" class="form-control" id="modal_fa_description" required placeholder="Enter item description">
-        </div>
-        <div class="form-group">
-            <label>Serial Number <span class="text-danger">*</span></label>
-            <input type="text" class="form-control" id="modal_fa_serial_number" required placeholder="Enter serial number">
-        </div>
-       
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-primary" id="btnSaveFixAsset">Save & Continue</button>
-      </div>
-    </div>
-  </div>
 </div>
 
 
@@ -1081,12 +1064,12 @@ body {
   <div class="modal-dialog modal-xl" role="document">
      <div class="modal-content" style="border-radius: 16px; border: none; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2); overflow: hidden;">
        <div class="modal-header" style="background: linear-gradient(135deg, #213456, #334c7a); color: #fff; padding: 16px 18px; border-bottom: 4px solid #E1AD01;">
-           <h5 class="modal-title font-weight-bold" id="createReportModalLabel">
-               <i class="fa fa-ticket mr-2" aria-hidden="true"></i> Ticket Details
-           </h5>
-           <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close" style="opacity: 0.8; outline: none; background: none; border: none;">
+            <h5 class="modal-title font-weight-bold" id="createReportModalLabel">
+                <i class="fa fa-ticket mr-2" aria-hidden="true"></i> Ticket Details
+            </h5>
+            <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close" style="opacity: 0.8; outline: none; background: none; border: none;">
              <span aria-hidden="true" style="font-size: 28px;">&times;</span>
-           </button>
+            </button>
        </div>
       
        <div class="modal-body" style="padding: 20px; background-color: #f8fafc;">
@@ -1168,65 +1151,152 @@ body {
 </div>
 
 <script type="text/javascript">
+    function validateSubmitButton() {
+        var isFixAsset = $('#is_fix_asset').val() == '1';
+        var concernLength = $('#concern').val().trim().length;
+        var subcatText = ($('#subcategory option:selected').text() || '').toUpperCase();
+        var isValid = true;
+
+        if (isFixAsset) {
+            if ($('#inline_fixed_asset_fields').is(':visible') && $('#inline_fa_description_container').is(':visible')) {
+                var descSel = $('#inline_fa_description_sel').val();
+                var descTxt = $('#inline_fa_description_txt').val();
+                if (!descSel || (descSel === 'OTHER' && !descTxt)) {
+                    isValid = false;
+                }
+            }
+            if (concernLength < 10) {
+                isValid = false;
+            }
+            if (subcatText.includes('REPLACEMENT') && $('#file-input').get(0).files.length === 0) {
+                isValid = false;
+            }
+        } else {
+            if (concernLength < 10) {
+                isValid = false;
+            }
+        }
+
+        $('#action').prop('disabled', !isValid);
+    }
+
     function checkFixAssetCondition() {
         var dept = $('#deptsel').val();
         var subj = ($('#subject').val() || '').toUpperCase();
-        if (dept == '2' && (subj.includes('FIX ASSET') || subj.includes('FIXED ASSET'))) {
-            $('#btnFixAsset').show();
-            $('#file-input').prop('required', true); 
-            $('#concern').prop('required', true);   
-            if ($('#fix_asset_completed').val() == '0') {
-                $('#action').prop('disabled', true);
-            } else {
-                if ($('#concern').val().length >= 10) {
-                    $('#action').prop('disabled', false); 
+        var subcatText = ($('#subcategory option:selected').text() || '').toUpperCase();
+        
+        var isFixAsset = (dept == '2' && (subj.includes('FIX ASSET') || subj.includes('FIXED ASSET')));
+        var isReplacement = subcatText.includes('REPLACEMENT');
+        var isNew = subcatText.includes('NEW');
+        var isTransfer = subcatText.includes('TRANSFER');
+
+        if (isFixAsset) {
+            $('#is_fix_asset').val('1');
+            $('#btnFixAsset').hide(); 
+
+            if (isReplacement || isNew || isTransfer) {
+                $('#inline_fixed_asset_fields').slideDown();
+
+                if (isReplacement) {
+                    $('#inline_fa_serial_container').show();
+                    $('#inline_fa_description_container').show();
+                    $('#concern_container').show();
+                    $('#concern').prop('required', true);
+                    $('#file-input').prop('required', true);
+                    $('#label_attached_file').html('Attached File <span class="text-danger">*</span>');
+                } else if (isNew) {
+                    $('#inline_fa_serial_container').hide();
+                    $('#inline_fa_description_container').show();
+                    $('#concern_container').show();
+                    $('#concern').prop('required', true);
+                    $('#file-input').prop('required', false);
+                    $('#label_attached_file').html('Attached File (Optional)');
+                } else if (isTransfer) {
+                    $('#inline_fa_serial_container').hide();
+                    $('#inline_fa_description_container').hide(); // Hidden for Transfer
+                    $('#concern_container').show();
+                    $('#concern').prop('required', true);
+                    $('#file-input').prop('required', false);
+                    $('#label_attached_file').html('Attached File (Optional)');
                 }
+
+                validateSubmitButton();
+            } else {
+                $('#inline_fixed_asset_fields').hide();
+                validateSubmitButton();
             }
         } else {
-            $('#btnFixAsset').hide();
+            $('#is_fix_asset').val('0');
+            $('#inline_fixed_asset_fields').hide();
+            $('#concern_container').show();
+            $('#concern').prop('required', true);
             $('#file-input').prop('required', false);
-            if ($('#concern').val().length >= 10) {
-                $('#action').prop('disabled', false);
-            }
+            $('#label_attached_file').html('Attached File');
+            validateSubmitButton();
         }
     }
 
     $(document).ready(function() {
-        $('#btnFixAsset').click(function(e) {
-            e.preventDefault();
-            $('#fixAssetModal').modal('show');
-        });
-        $('#btnSaveFixAsset').click(function() {
-            var ic = $('#modal_fa_item_code').val();
-            var sn = $('#modal_fa_serial_number').val();
-            var desc = $('#modal_fa_description').val();
-
-            if (ic.trim() === '' || sn.trim() === '' || desc.trim() === '') {
-                alert('Please fill out all required fields in the Fixed Asset form.');
-                return;
+        $('#inline_fa_description_sel').change(function() {
+            if ($(this).val() == 'OTHER') {
+                $('#inline_fa_description_txt').show().prop('required', true);
+            } else {
+                $('#inline_fa_description_txt').hide().prop('required', false).val('');
             }
-            $('#fa_item_code').val(ic);
-            $('#fa_serial_number').val(sn);
-            $('#fa_description').val(desc);
-            $('#fix_asset_completed').val('1');
-            
-            $('#fixAssetModal').modal('hide');
-            checkFixAssetCondition();
-
-            Swal.fire({
-                icon: 'success',
-                title: 'Fixed Asset Info Saved',
-                text: 'You may now submit the ticket.',
-                timer: 1500,
-                showConfirmButton: false
-            });
+            validateSubmitButton();
         });
+
         $('#deptsel').on('change', function() {
-            checkFixAssetCondition();
+            if(typeof checkFixAssetCondition === "function") {
+                checkFixAssetCondition();
+            }
         });
         
         $('#subject').on('change select2:select', function() {
-            checkFixAssetCondition();
+            var selectedSubj = $(this).val() || "";
+            var dept = $('#deptsel').val();
+            
+            if (dept == '2') {
+                if (selectedSubj && (selectedSubj.toUpperCase().includes('FIX ASSET') || selectedSubj.toUpperCase().includes('FIXED ASSET'))) {
+                    $('#subcategory_container').fadeIn();
+                    $.ajax({
+                        url: "select.php",
+                        type: "get",
+                        dataType: 'json',
+                        data: { type: 'sub_category', cat_id: 37 },
+                        success: function(response) {
+                            var $subcat = $('#subcategory');
+                            $subcat.empty();
+                            $subcat.append('<option value="" selected disabled>---Select Subcategory---</option>');
+                            if(response && response.length > 0) {
+                                $.each(response, function(index, item) {
+                                    $subcat.append('<option value="' + item.id + '">' + item.text + '</option>');
+                                });
+                            }
+                        }
+                    });
+                } else {
+                    $('#subcategory_container').fadeOut();
+                    $('#subcategory').val('');
+                }
+            } else {
+                $('#subcategory_container').fadeOut();
+                $('#subcategory').val('');
+            }
+            
+            if(typeof checkFixAssetCondition === "function") {
+                checkFixAssetCondition();
+            }
+        });
+
+        $('#subcategory').on('change', function() {
+            if(typeof checkFixAssetCondition === "function") {
+                checkFixAssetCondition();
+            }
+        });
+        
+        $('#file-input').on('change', function() {
+             validateSubmitButton();
         });
     });
 
@@ -1248,9 +1318,6 @@ body {
         return "just now";
     }
 
-/**
- * Valtxt.
- */
 function valtxt(){
     if($('#subject').val() == null || $('#subject').val().trim()==""){
         $('#subject').addClass('border-danger');
@@ -1260,20 +1327,28 @@ function valtxt(){
         $('#select_tos').addClass('border-danger');
         setTimeout(() => { $('#select_tos').removeClass('border-danger'); }, 5000);
         return false;
-    }else if ($('#concern').val().trim()==""){
+    }
+    
+    let isFixAsset = $('#is_fix_asset').val() == '1';
+    let subcatText = ($('#subcategory option:selected').text() || '').toUpperCase();
+
+    if ($('#concern').val().trim()==""){
         $('#concern').addClass('border-danger');
         setTimeout(() => { $('#concern').removeClass('border-danger'); }, 5000);
         return false;
     }
-    let dept = $('#deptsel').val();
-    let subj = ($('#subject').val() || '').toUpperCase();
-    if (dept == '2' && (subj.includes('FIX ASSET') || subj.includes('FIXED ASSET'))) {
-        if ($('#fix_asset_completed').val() == '0') {
-            alert("Please click 'Submit Fixed Asset Form' and fill out the details first.");
-            return false;
+
+    if (isFixAsset) {
+        if ($('#inline_fixed_asset_fields').is(':visible') && $('#inline_fa_description_container').is(':visible')) {
+            var descSel = $('#inline_fa_description_sel').val();
+            var descTxt = $('#inline_fa_description_txt').val();
+            if (!descSel || (descSel === 'OTHER' && !descTxt)) {
+                alert("Please complete Fixed Asset Description.");
+                return false;
+            }
         }
-        if ($('#file-input').get(0).files.length === 0) {
-            alert("An attached file is required for Fixed Asset requests.");
+        if (subcatText.includes('REPLACEMENT') && $('#file-input').get(0).files.length === 0) {
+            alert("An attached file is required for Replacement Fixed Asset requests.");
             return false;
         }
     }
@@ -1292,114 +1367,10 @@ concern.addEventListener('input', function() {
   if (inputLength > validationLength) {
     concern.value = inputValue.substr(0, validationLength);
   }
-  let dept = $('#deptsel').val();
-  let subj = ($('#subject').val() || '').toUpperCase();
-  let isFixAsset = (dept == '2' && (subj.includes('FIX ASSET') || subj.includes('FIXED ASSET')));
-  let faCompleted = $('#fix_asset_completed').val() == '1';
-
-  if (isFixAsset && !faCompleted) {
-      action.disabled = true;
-  } else {
-      action.disabled = inputLength < 10; 
-  }
+  
+  validateSubmitButton();
 });
 
-    function checkFixAssetCondition() {
-        var dept = $('#deptsel').val();
-        var subj = ($('#subject').val() || '').toUpperCase();
-        
-        if (dept == '2' && (subj.includes('FIX ASSET') || subj.includes('FIXED ASSET'))) {
-            $('#btnFixAsset').show();
-            $('#file-input').prop('required', true); 
-            $('#concern').prop('required', true);   
-            var isFormCompleted = $('#fix_asset_completed').val() == '1';
-            var isFileAttached = $('#file-input').get(0).files.length > 0;
-            var isConcernValid = $('#concern').val().trim().length >= 10;
-            
-            if (isFormCompleted && isFileAttached && isConcernValid) {
-                $('#action').prop('disabled', false); 
-            } else {
-                $('#action').prop('disabled', true);
-            }
-        } else {
-            $('#btnFixAsset').hide();
-            $('#file-input').prop('required', false);
-            if ($('#concern').val().length >= 10) {
-                $('#action').prop('disabled', false);
-            }
-        }
-    }
-
-    $(document).ready(function() {
-        $('#btnFixAsset').click(function(e) {
-            e.preventDefault();
-            $('#fixAssetModal').modal('show');
-        });
-        $('#btnSaveFixAsset').click(function() {
-            var ic = $('#modal_fa_item_code').val();
-            var sn = $('#modal_fa_serial_number').val();
-            var desc = $('#modal_fa_description').val();
-
-            if (ic.trim() === '' || sn.trim() === '' || desc.trim() === '') {
-                alert('Please fill out all required fields in the Fixed Asset form.');
-                return;
-            }
-            $('#fa_item_code').val(ic);
-            $('#fa_serial_number').val(sn);
-            $('#fa_description').val(desc);
-            $('#fix_asset_completed').val('1');
-            
-            $('#fixAssetModal').modal('hide');
-            checkFixAssetCondition(); 
-
-            Swal.fire({
-                icon: 'success',
-                title: 'Fixed Asset Info Saved',
-                text: 'Ensure your file is attached and your concern is filled before submitting.',
-                timer: 2000,
-                showConfirmButton: false
-            });
-        });
-        $('#deptsel').on('change', function() { checkFixAssetCondition(); });
-        $('#subject').on('change select2:select', function() { checkFixAssetCondition(); });
-        $('#file-input').on('change', function() { checkFixAssetCondition(); });
-        $('#concern').on('input', function() { checkFixAssetCondition(); });
-    });
-
-function valtxt(){
-    if($('#subject').val() == null || $('#subject').val().trim()==""){
-        $('#subject').addClass('border-danger');
-        setTimeout(() => { $('#subject').removeClass('border-danger'); }, 5000);
-        return false;
-    }else if ($('#select_tos').val() == null || $('#select_tos').val().trim()==""){
-        $('#select_tos').addClass('border-danger');
-        setTimeout(() => { $('#select_tos').removeClass('border-danger'); }, 5000);
-        return false;
-    }else if ($('#concern').val().trim()==""){
-        $('#concern').addClass('border-danger');
-        setTimeout(() => { $('#concern').removeClass('border-danger'); }, 5000);
-        return false;
-    }
-
-    let dept = $('#deptsel').val();
-    let subj = ($('#subject').val() || '').toUpperCase();
-    if (dept == '2' && (subj.includes('FIX ASSET') || subj.includes('FIXED ASSET'))) {
-        if ($('#fix_asset_completed').val() == '0') {
-            alert("Please click 'Submit Fixed Asset Form' and fill out the details first.");
-            return false;
-        }
-        if ($('#file-input').get(0).files.length === 0) {
-            alert("An attached file is required for Fixed Asset requests.");
-            return false;
-        }
-        if ($('#concern').val().trim().length < 10) {
-            alert("A detailed concern is required for Fixed Asset requests.");
-            return false;
-        }
-    }
-
-    return true;
-}
 </script>
 
 

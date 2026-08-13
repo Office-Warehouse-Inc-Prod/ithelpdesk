@@ -131,10 +131,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mode'])) {
 include 'admin.php';
 $inactive = 180;
 if (isset($_SESSION['start']) && (time() - $_SESSION['start'] > $inactive)){
-    session_unset();
-    session_destroy();
-    header("Location: adminpanel.php");
-    exit();
+  session_unset();
+  // removed session_destroy() to avoid "headers already sent" warnings
+  echo '<script>setTimeout(function(){ window.location.href = "adminpanel.php"; }, 180000);</script>';
+  exit();
 }
 $_SESSION['start'] = time();
 ?>
@@ -284,8 +284,10 @@ $_SESSION['start'] = time();
             <input type="hidden" name="operation" id="operation" value="update_request">
             <input type="hidden" name="u_id" value="<?php echo $_SESSION['user_id'] ?? ''; ?>">
             <div class="form-group col-md-3">
-      <select class="form-control form-control-sm custom-select-placeholder placeholder-active" name="approve_method_agm" id="approve_method_agm" required>
-      <option value="2">APPROVE WITH E-SIGNATURE</option>
+      <label style="font-weight: bold;" id="label_attached_file">Attached File</label>
+                <p class="mb-3">
+                  <input id="file-input" type="file" name="files[]" multiple>
+                </p>
       </select>
       </div>
            
@@ -517,7 +519,7 @@ $(document).ready(function(){
                 { desc: "Printed", date: response.date_printed, reqLevel: isTechnical === 1 ? 5 : 4 },
                 { desc: "For General Manager Approval", date: null, reqLevel: isTechnical === 1 ? 5 : 4 }, 
                 { desc: "Approved by General Manager", date: response.date_approved, reqLevel: isTechnical === 1 ? 6 : 5 },
-                { desc: "Ready for Asset Replacement", date: null, reqLevel: isTechnical === 1 ? 6 : 5 }, 
+                { desc:  "Transferred to PD for Procurement", date: null, reqLevel: isTechnical === 1 ? 6 : 5 }, 
                 { desc: "Asset replaced / Completed", date: response.date_completed, reqLevel: isTechnical === 1 ? 7 : 6 }
             );
             let timelineHtml = '';

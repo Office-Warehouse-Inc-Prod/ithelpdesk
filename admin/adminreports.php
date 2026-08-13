@@ -14,6 +14,14 @@ $ph_datetime = date('l, F d, Y - h:i A');
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" />
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@linways/table-to-excel@1.0.4/dist/tableToExcel.min.js"></script>
+  <!-- jQuery (load this first) -->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css"/>
+
+<!-- DataTables JS (load this strictly AFTER jQuery) -->
+<script type="text/javascript" src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
 
 <style>
 ::-webkit-scrollbar { 
@@ -423,7 +431,7 @@ select.form-control, .form-control, .form-select {
                           <th class="text-center fw-bold" style="font-size: 12px; vertical-align: middle;">NEW TECH</th>
                           <th class="text-center fw-bold" style="font-size: 12px; vertical-align: middle;">REQUESTED DATE</th>
                           <th class="text-center fw-bold" style="font-size: 12px; vertical-align: middle;">APPROVAL DATE</th>
-                           <th class="text-center fw-bold" style="font-size: 12px; vertical-align: middle;">TURNAROUND</th>
+                      
                       </tr>
                     </thead>
                     <tbody id="transfer-logs-table-body">
@@ -546,7 +554,7 @@ select.form-control, .form-control, .form-select {
   <div class="modal-dialog modal-dialog-centered modal-xl" style="max-width: 95%;">
     <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; background: rgba(255, 255, 255, 0.95);">
       <div class="modal-header border-0 pb-0" style="background-color: var(--theme-color); color: #fff;">
-        <h5 class="modal-title font-weight-bold" id="nonEscaModalLabel" style="font-size:1.5rem;">DEPARTMENT OVERVIEW (NON-ESCALATED)</h5>
+        <h5 class="modal-title font-weight-bold" id="nonEscaModalLabel" style="font-size:1.5rem;">DEPARTMENT OVERVIEW (ESCALATED)</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body pt-3">
@@ -615,7 +623,10 @@ $(document).ready(function() {
     });
 
     function renderUserActivityLogs() {
-        let searchTerm = $('#searchUserLog').val().toLowerCase();
+        let searchInput = $('#searchUserLog');
+        if (searchInput.length === 0) return;
+        
+        let searchTerm = searchInput.val().toLowerCase();
         let html3 = '';
 
         filteredLogsCache = globalUserLogs.filter(row => {
@@ -679,7 +690,10 @@ $(document).ready(function() {
     });
 
    function renderTransferLogs() {
-        let searchTerm = $('#searchTransferLog').val().toLowerCase();
+        let searchInput = $('#searchTransferLog');
+        if (searchInput.length === 0) return;
+
+        let searchTerm = searchInput.val().toLowerCase();
         let htmlTransfer = '';
 
         filteredTransferLogsCache = globalTransferLogs.filter(row => {
@@ -716,7 +730,6 @@ $(document).ready(function() {
                         <td class="text-center" style="font-size:13px;">${row.new_support || 'N/A'}</td>
                         <td class="text-center" style="font-size:13px;">${row.request_date || 'N/A'}</td>
                         <td class="text-center" style="font-size:13px;">${row.approval_date || 'N/A'}</td>
-                        <td class="text-center fw-bold ${turnaroundColor}" style="font-size:13px;">${turnaroundText}</td>
                     </tr>`;
             });
         } else {
@@ -888,25 +901,25 @@ $(document).ready(function() {
                 renderUserActivityLogs();
 
             },
-           error: function(xhr, status, error) {
-    console.error("AJAX Exception Trace:", xhr.responseText, error);
-    let errorMessage = "Communications fault encountered.";
-    try {
-        let serverResponse = JSON.parse(xhr.responseText);
-        if (serverResponse.message) {
-            errorMessage = "Backend Error: " + serverResponse.message;
-        }
-    } catch (e) {
-        if (xhr.status === 404) {
-            errorMessage = "Error 404: 'fetch_department_table.php' was not found. Check the file path!";
-        } else if (xhr.responseText) {
-            errorMessage = "Raw Server Error: " + xhr.responseText.substring(0, 150) + "...";
-        }
-    }
+            error: function(xhr, status, error) {
+                console.error("AJAX Exception Trace:", xhr.responseText, error);
+                let errorMessage = "Communications fault encountered.";
+                try {
+                    let serverResponse = JSON.parse(xhr.responseText);
+                    if (serverResponse.message) {
+                        errorMessage = "Backend Error: " + serverResponse.message;
+                    }
+                } catch (e) {
+                    if (xhr.status === 404) {
+                        errorMessage = "Error 404: 'fetch_department_table.php' was not found. Check the file path!";
+                    } else if (xhr.responseText) {
+                        errorMessage = "Raw Server Error: " + xhr.responseText.substring(0, 150) + "...";
+                    }
+                }
 
-    $('#dept-table-body, #dept-table-body-non-escalated, #user-activity-table-body, #transfer-logs-table-body')
-        .html(`<tr><td colspan="12" class="text-center text-danger py-4 fw-bold"><i class="fas fa-exclamation-triangle me-2"></i> ${errorMessage}</td></tr>`);
-}
+                $('#dept-table-body, #dept-table-body-non-escalated, #user-activity-table-body, #transfer-logs-table-body')
+                    .html(`<tr><td colspan="12" class="text-center text-danger py-4 fw-bold"><i class="fas fa-exclamation-triangle me-2"></i> ${errorMessage}</td></tr>`);
+            }
         });
     }
 
@@ -982,5 +995,3 @@ $(document).ready(function() {
     });
 });
 </script>
-</body>
-</html>

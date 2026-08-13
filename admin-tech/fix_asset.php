@@ -132,10 +132,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mode'])) {
 include 'admin.php';
 $inactive = 180;
 if (isset($_SESSION['start']) && (time() - $_SESSION['start'] > $inactive)){
-    session_unset();
-    session_destroy();
-    header("Location: adminpanel.php");
-    exit();
+  session_unset();
+  // removed session_destroy() to avoid "headers already sent" warnings
+  // use client-side redirect after 3 minutes (180000 ms)
+  echo '<script>setTimeout(function(){ window.location.href = "adminpanel.php"; }, 180000);</script>';
+  exit();
 }
 $_SESSION['start'] = time();
 ?>
@@ -223,9 +224,9 @@ $_SESSION['start'] = time();
                         <input type="text" class="form-control" name="description" id="description" >
                     </div>
 
-                    <div class="form-group col-md-12">
+                    <div class="form-group col-md-6">
                         <label>Serial Number </label>
-                        <input type="text" class="form-control" name="serial_number" id="serial_number" required>
+                        <input type="text" class="form-control" name="serial_number" id="serial_number">
                     </div>
 
                     <div class="form-group col-md-12">
@@ -233,20 +234,17 @@ $_SESSION['start'] = time();
                         <textarea class="form-control" name="purpose" id="purpose_of_request" style="height: 100px;" readonly></textarea>
                     </div>
 
-                    <div class="form-group col-md-12">
-                        <label>Technical Workoutput</label>
-                        <textarea class="form-control" name="technical_workoutput" id="technical_workoutput" style="height: 100px;" readonly></textarea>
-                    </div>
+                   
 
                     <div class="form-group col-md-6">
-                        <label>Item Received By</label>
+                        <label>Item Received/inspected By</label>
                         <input type="text" class="form-control" name="item_received_by" id="it_desc" readonly>
                     </div>
                     
                     <input type="hidden" class="form-control" name="received_by" value="<?php echo $_SESSION['tech_id'] ?? ''; ?>" readonly>
 
                     <div class="form-group col-md-6">
-                        <label>Date Received</label>
+                        <label>Date Received/Inspected</label>
                         <input type="text" class="form-control" name="date_received" id="date_received" required>
                     </div>
                 </div>
@@ -254,15 +252,30 @@ $_SESSION['start'] = time();
 
                 
             <div class="col-md-4 border-right pt-2 pb-2" style="background: linear-gradient(to bottom, #ffffff, #f0f3f7);">
-                <h6 class="text-uppercase mb-3" style="color:#E1AD01; font-weight: 800;">Asset Request Progress</h6>
-                <div class="tracking-container" style="max-height: 850px; overflow-y: auto; padding-right: 10px;">
-                    <ul class="tracking-timeline" id="trackingMap">
-              
-                    </ul>
-                </div>
+                <label>Problem Reported:</label>
+                            <div class="form-group col-md-12">
+                              <textarea class="form-control" name="problem_reported" id="problem_reported" style="height: 120px;" required readonly> </textarea>
+                            </div>
+                             <label>Verification/Findings: </label>
+                            <div class="form-group col-md-12">
+                              <textarea class="form-control" name="verification_findings" id="verification_findings" style="height: 120px;" required readonly></textarea>
+                            </div>
+                             <label>Work Done/Technical Solutions Provided:</label>
+                            <div class="form-group col-md-12">
+                              <textarea class="form-control" name="work_done" id="work_done" style="height: 120px;" required readonly></textarea>
+                            </div>
+                             <label>Status/Work Output:</label>
+                            <div class="form-group col-md-12">
+                              <textarea class="form-control" name="status_workoutput" id="status_workoutput" style="height: 120px;" required readonly></textarea>
+                            </div>
+                             <label>Recommendations/Suggestions:</label>
+                            <div class="form-group col-md-12">
+                              <textarea class="form-control" name="recommendation" id="recommendation" style="height: 120px;" required readonly></textarea>
+                            </div>
             </div>
 
             <div class="col-md-3 pt-2 pb-2" style="background: #f8f9fa; border-radius: 0 8px 8px 0;">
+              
                 <h6 class="text-uppercase mb-3" style="color:#213456; font-weight: 800;">Remarks Thread</h6>
                 
                 <div id="remarks_thread_container" class="chat-container">
@@ -279,14 +292,20 @@ $_SESSION['start'] = time();
               </div>
             </div>
 
-          <div class="modal-footer">
+       
+          <div class="modal-footer d-flex justify-content-between align-items-center">
     <input type="hidden" name="operation" id="operation" value="update_request">
     <input type="hidden" name="u_id" value="<?php echo $_SESSION['user_id'] ?? ''; ?>">
-    <div class="form-group col-md-3">
-        <select class="form-control form-control-sm custom-select-placeholder placeholder-active" name="approve_method_tech" id="approve_method_tech" required>
-        <option value="2">APPROVE WITH E-SIGNATURE</option>
-        </select>
-        </div>
+     <div class="form-group col-md-5 mb-0">
+               <label style="font-weight: bold;" id="label_attached_file">Attach your E-Signature</label>
+               <div class="d-flex align-items-center">
+                   <input id="file-input" type="file" name="files[]" class="form-control-file" accept=".png, .jpg, .jpeg" required>
+               </div>
+               <div id="signature_preview_container" class="mt-2" style="display: none;">
+                   <span style="font-size: 11px; color: #555; display: block; margin-bottom: 3px;">Current Signature Preview:</span>
+                   <img id="signature_preview_img" src="" alt="Signature Preview" style="max-height: 50px; border: 1px solid #ccc; border-radius: 4px; padding: 2px; background: #fff;">
+               </div>
+            </div>
     
     <button type="submit" class="btn"><strong>APPROVE REQUEST</strong></button>
   </div>
@@ -369,7 +388,6 @@ $_SESSION['start'] = time();
           {title:"Dept/Branch", data:"str_name","defaultContent": ""},
           {title:"Employee", data:"full_name","defaultContent": ""},
           {title:"Ticket Date", data:"ticket_created","defaultContent": ""},
-          {title:"Item Code", data:"item_code","defaultContent": ""},
           {title:"Description", data:"description","defaultContent": ""},
           {title:"Serial", data:"serial_number","defaultContent": ""},
           {title:"Received by", data:"it_desc","defaultContent": ""},
@@ -402,7 +420,11 @@ $_SESSION['start'] = time();
         $('#serial_number').val(data['serial_number']);
         
         $('#purpose_of_request').val(data['purpose_of_request']);
-              $('#technical_workoutput').val(data['technical_workoutput']);
+        $('#problem_reported').val(data['problem_reported']);
+          $('#verification_findings').val(data['verification_findings']);
+            $('#work_done').val(data['work_done']);
+              $('#status_workoutput').val(data['status_workoutput']);
+                $('#recommendation').val(data['recommendation']);
         $('#it_desc').val(data['it_desc']);
         $('#date_received').val(data['date_received']);
       $('#status').val(data['status']);
@@ -450,7 +472,7 @@ $_SESSION['start'] = time();
                   { desc: "Printed", date: response.date_printed, reqLevel: 5 },
                   { desc: "For General Manager Approval", date: null, reqLevel: 5 }, 
                   { desc: "Approved by General Manager", date: response.date_approved, reqLevel: 6 },
-                  { desc: "Ready for asset replacement", date: null, reqLevel: 6 }, 
+                  { desc:  "Transferred to PD for Procurement", date: null, reqLevel: 6 }, 
                   { desc: "Asset replaced / Completed", date: response.date_completed, reqLevel: 7 }
               ];
 
@@ -610,6 +632,19 @@ $_SESSION['start'] = time();
         }
       });
     });
+  });
+
+   // Preview newly selected image on the fly
+  $('#file-input').on('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+              $('#signature_preview_img').attr('src', e.target.result);
+              $('#signature_preview_container').show();
+          }
+          reader.readAsDataURL(file);
+      }
   });
 
   let inactivityTime = function(){

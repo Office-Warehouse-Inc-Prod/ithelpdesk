@@ -1,4 +1,3 @@
-
 <script type="text/javascript">
 
 
@@ -9,11 +8,13 @@ $(document).ready(function(){
 
 $("#deptsel").on("change", function(){
     $('#subject').val('');
+    $('#subcategory_container').fadeOut();
+    $('#subcategory').val('');
         let val = $(this).val();
         
             $("#subject").select2({
       width: '100%',
-      minimumResultsForSearch: Infinity, // Disable the search box
+      minimumResultsForSearch: Infinity,
       ajax: {
         url: "select.php",
         type: "get",
@@ -259,7 +260,7 @@ $(function(){
  
                     }else{
                         $('input[name="Alu"]').addClass('border-success')
-                        $('#action').attr('disabled',false)
+                        validateSubmitButton()
                     }
                 }
             })
@@ -293,23 +294,6 @@ function getdesc(alu){
 }
 
 
-  
-
-const validationLength = 1000;
-const concern = document.getElementById('concern');
-const action = document.getElementById('action');
-
-concern.addEventListener('input', function() {
-  const inputValue = concern.value;
-  const inputLength = inputValue.length;
-
-  if (inputLength > validationLength) {
-    concern.value = inputValue.substr(0, validationLength);
-  }
-
-  action.disabled = inputLength < 9;
-});
-
 /**
  * Hide.
  */
@@ -325,67 +309,8 @@ const customElement = $("<div>", {
 "text"  : ""
 });
 
-
-// $("#deptsel").change(function (e) { 
-// e.preventDefault();
-
-// let deptval = this.value;
-// _get_tos(deptval);
-// //  console.log(deptval);
-
-// switch (deptval) {
-//   case '1':
-//   $('#dvtables').show();
-//   $('#reports_table').show();
-//   // $('#sop').val('Add');
-  
-//     break;
-//   case '2':
-
-//   // $('#sop').val('admin_add');
-//     break;
-//     case '3':
-//   // $('#sop').val('mktg_add');
-//     break;
-//     case '4':
-//   // $('#sop').val('ld_add');
-//     break;
-
-
-//   default:
-//     break;
-// }
-
-// // console.log(operationVAL)
-
-// });
-
-
-
-
-// function _get_tos(deptval){
-//   $.post('fetch.php',{deptval:deptval, operation:'get_tos'},function(data){
-    
-//     var sel = $("#select_tos");
-//     sel.empty();
-//     sel.append('<option selected disabled value="0">Select TOS Here...</option>');
-//     for (var i=0; i<data.length; i++) {
-//     //   sel.append('<option value="' + data[i].str_no + '">' + data[i].str_name + '</option>');
-//       sel.append('<option value="' + data[i].service_desc + '">' + data[i].service_desc + '</option>');
-//     }
-
-//   },'json');
-// }
-
-
-
-
-
-
 $("#stat_picker").change(function(){
-
-
-getdata(this.value)
+    getdata(this.value)
 })
 
 $('#action').val("Save ticket");
@@ -450,7 +375,7 @@ data: dataset,
   "order": [[ 7, "Desc" ]],
 columns: [
 { 
-    title: "ACTION", 
+    title: "REPLY", 
     data: null, 
     render: function(data, type, row) {
         return `
@@ -463,35 +388,15 @@ columns: [
     }
 },
 {title:"Date Created",data: "Dt_Created"},
-{ title:"Ticket #",data: "TicketNum" },
-{ title:"ASSIGNED TO:",data: "deptsel_val" },
+{ title:"Ticket No",data: "TicketNum" },
 { title:"SUBJECT",data: "Concern" },
-{ title:"TOS",data: "Tos" },
+{ title:"Type of Service",data: "Tos" },
 { title:"STATUS",data: "Status" },
 { title:"ASSIGNED SUPPORT",data: "AsgnSup" },
 {title:"ID", data:"series_id","defaultContent": "","visible": false},
 
 ],
-
-// "columnDefs": [
-//        { 
-
-//            targets: [2],
-//            render: function ( data, type, row) {
-//                if(type === 'display'){
-//                    if(data['brncd_dptdesc']==data.substr(0,3)+"| STORE OPERATION"){
-//                     return data.substr(0,3)
-//                    }
-//                    else {
-//                    return data
-//                    }
-//            }
-//            return data;
-//          }
-//        }
-//    ],
 rowCallback: function(row, data, index){
-// console.log(data['NewRpt'])
 if(data['Status'].toUpperCase() == 'NEW REPORT' && data['NewRpt'] =='1'){
 
 $(row).find('td:eq(0)').css("font-weight", "bold");
@@ -867,34 +772,8 @@ getdata();
 
 
 }, 15000);
-/**
- * Valtxt.
- */
-function valtxt(){
-if($('#subject').val().trim()==""){
-$('#subject').addClass('border-danger');
-setTimeout(() => {
-$('#subject').removeClass('border-danger');
-}, 5000);
-return false;
 
-}else if ($('#select_tos').val().trim()==""){
-$('#select_tos').addClass('border-danger');
-setTimeout(() => {
-$('#select_tos').removeClass('border-danger');
-}, 5000);
-return false;
 
-}else if ($('#concern').val().trim()==""){
-$('#concern').addClass('border-danger');
-setTimeout(() => {
-$('#concern').removeClass('border-danger');
-}, 5000);
-return false;
-
-}onchange
-return true
-}
 $('#reports_table').on( 'click','tbody tr',function () {
 
 $("#reports_table tbody tr").removeClass('row_selected');        
@@ -1001,187 +880,6 @@ else if (statres1 == "RETURN BY SUPPLIER") {
 
 }
 
-//
-
-// // console.log(statres1);
-// if (statres1 == "SUBJECT FOR CLOSING") {
-//   var isGood=confirm('Would you like to close this ticket:'+' '+tickres1);
-//     if (isGood) {
-//       // alert('true');
-//       var data = statres1;
-//       $.ajax({
-//         url: "insert.php",
-//         method: "POST",
-//         data: new FormData(stat_form),
-//         contentType: false,
-//         processData: false,
-//         success: function (data) {
-//           // alert(addmsgx);
-//           // $("#report_form")[0].reset();
-//           Swal.fire({
-//              icon: 'success',
-//              title: 'Your work has been saved',
-//              showConfirmButton: false,
-//              timer: 1500
-//           });
-//           getdata();
-//       //     setTimeout(function(){// wait for 5 secs(2)
-//       //      location.reload(); // then reload the page.(3)
-//       // }, 2000); 
-//         },
-//       });
-
-
-//     } else  {
-//       // alert('false');
-//     }
-// }
-
-// else if (statres1 == "READY FOR PULL OUT") {
-//   var isGood=confirm('Would you like to confirm pull out this item on ticket:'+' '+tickres1);
-//     if (isGood) {
-//       // alert('true');
-//       var data = statres1;
-//       $.ajax({
-//         url: "insert.php",
-//         method: "POST",
-//         data: new FormData(stat_form),
-//         contentType: false,
-//         processData: false,
-//         success: function (data) {
-//           // alert(addmsgx);
-//           // $("#report_form")[0].reset();
-//           Swal.fire({
-//              icon: 'success',
-//              title: 'Your work has been saved',
-//              showConfirmButton: false,
-//              timer: 1500
-//           });
-//           getdata();
-//       //     setTimeout(function(){// wait for 5 secs(2)
-//       //      location.reload(); // then reload the page.(3)
-//       // }, 2000); 
-//         },
-//       });
-
-// // console.log(' deptsel change event triggered ');
-// // console.log(' select_tos change event triggered ');
-// // console.log(' subjectimp change event triggered ');
-// // console.log(' Alu keyup event triggered ');
-// // console.log(' Additem click event triggered ');
-// // console.log(' report_form submit event triggered ');
-// // console.log(' modal_form submit event triggered ');
-// // console.log(' action click event triggered ');
-// // console.log(' file-input change event triggered ');
-// // console.log(' Additem click event triggered ');
-// // console.log(' reports_table row click event triggered ');
-// // console.log(' stat_picker change event triggered ');
-// // console.log(' addmsg click event triggered ');
-// // console.log(' clsmodaltick click event triggered ');
-
-//     } else  {
-//       alert('false');
-//     }
-// }
-
-// else if (statres1 == "SUPPLIER PULL OUT") {
-//   var isGood=confirm('Would you like to confirm pull out this item on ticket:'+' '+tickres1);
-//     if (isGood) {
-//       // alert('true');
-//       var data = statres1;
-//       $.ajax({
-//         url: "insert.php",
-//         method: "POST",
-//         data: new FormData(stat_form),
-//         contentType: false,
-//         processData: false,
-//         success: function (data) {
-//           // alert(addmsgx);
-//           // $("#report_form")[0].reset();
-//           Swal.fire({
-//              icon: 'success',
-//              title: 'Your work has been saved',
-//              showConfirmButton: false,
-//              timer: 1500
-//           });
-//           getdata();
-//       //     setTimeout(function(){// wait for 5 secs(2)
-//       //      location.reload(); // then reload the page.(3)
-//       // }, 2000); 
-//         },
-//       });
-
-
-//     } else  {
-//       alert('false');
-//     }
-// }
-
-// else if (statres1 == "RETURN TO STORE") {
-//   var isGood=confirm('Would you like to confirm this return item on ticket:'+' '+tickres1);
-//     if (isGood) {
-//       // alert('true');
-//       var data = statres1;
-//       $.ajax({
-//         url: "insert.php",
-//         method: "POST",
-//         data: new FormData(stat_form),
-//         contentType: false,
-//         processData: false,
-//         success: function (data) {
-//           // alert(addmsgx);
-//           // $("#report_form")[0].reset();
-//           Swal.fire({
-//              icon: 'success',
-//              title: 'Your work has been saved',
-//              showConfirmButton: false,
-//              timer: 1500
-//           });
-//           getdata();
-//       //     setTimeout(function(){// wait for 5 secs(2)
-//       //      location.reload(); // then reload the page.(3)
-//       // }, 2000); 
-//         },
-//       });
-
-
-//     } else  {
-//       alert('false');
-//     }
-// }
-
-// else if (statres1 == "RETURN BY SUPPLIER") {
-//   var isGood=confirm('Would you like to confirm this return item on ticket:'+' '+tickres1);
-//     if (isGood) {
-//       // alert('true');
-//       var data = statres1;
-//       $.ajax({
-//         url: "insert.php",
-//         method: "POST",
-//         data: new FormData(stat_form),
-//         contentType: false,
-//         processData: false,
-//         success: function (data) {
-//           // alert(addmsgx);
-//           // $("#report_form")[0].reset();
-//           Swal.fire({
-//              icon: 'success',
-//              title: 'Your work has been saved',
-//              showConfirmButton: false,
-//              timer: 1500
-//           });
-//           getdata();
-//       //     setTimeout(function(){// wait for 5 secs(2)
-//       //      location.reload(); // then reload the page.(3)
-//       // }, 2000); 
-//         },
-//       });
-
-
-//     } else  {
-//       alert('false');
-//     }
-// }
 
 (tdata['Status']=='CLOSED') ? $("#addmsg").attr('disabled',true):$("#addmsg").attr('disabled',false);
 // console.log(tdata)
@@ -1262,10 +960,7 @@ $('#Modal_reply').addClass('border-danger');
 setTimeout(() => {
 $('#Modal_reply').removeClass('border-danger');
 }, 5000);
-// return false;
-//           alert("Please complete to proceed");
 }
-// clearconsole();
 });
 
 
@@ -1366,7 +1061,7 @@ $('#action').click(function () {
                     }                        
                 }
             }
-  
+ 
 };
 // end of validition for file upload size
 
@@ -1490,143 +1185,6 @@ var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate()+' '+
 
 
 
-// Merchandising Module,
-
-
-// $(function () {
-
-//   // ---------- TOGGLE MERCH MODE ----------
-//   function toggleMerchMode() {
-//     const val = $("#deptsel").val();
-
-//     if (val === "4") {
-//       $("#topFieldsDefault, #itemSectionDefault").hide();
-//       $("#topFieldsMerch, #itemSectionMerch").stop(true,true).slideDown(200);
-//     } else {
-//       $("#topFieldsMerch, #itemSectionMerch").hide();
-//       $("#topFieldsDefault, #itemSectionDefault").stop(true,true).slideDown(200);
-//     }
-//   }
-
-//   $("#deptsel").on("change", toggleMerchMode);
-//   toggleMerchMode(); // run once
-
-
-//   // ---------- MERCH ITEMS STORAGE ----------
-//   let merchItems = [];
-
-//   function refreshMerchTable() {
-//     const $tbody = $("#merchItemsTable tbody");
-//     $tbody.empty();
-
-//     merchItems.forEach((it, idx) => {
-//       $tbody.append(`
-//         <tr data-index="${idx}">
-//           <td>${idx + 1}</td>
-//           <td>${escapeHtml(it.alu)}</td>
-//           <td>${escapeHtml(it.desc)}</td>
-//           <td>${escapeHtml(it.serial)}</td>
-//           <td>${escapeHtml(it.defect)}</td>
-//           <td>${escapeHtml(it.vendor)}</td>
-//           <td>${it.qty}</td>
-//           <td>${escapeHtml(it.classificationLabel)}</td>
-//           <td class="text-center">
-//             <button type="button" class="btn btn-danger btn-sm btnRemove">
-//               <i class="fas fa-trash"></i>
-//             </button>
-//           </td>
-//         </tr>
-//       `);
-//     });
-
-//     $("#merch_items_json").val(JSON.stringify(merchItems));
-//   }
-
-//   function escapeHtml(str) {
-//     return String(str || "")
-//       .replaceAll("&","&amp;")
-//       .replaceAll("<","&lt;")
-//       .replaceAll(">","&gt;")
-//       .replaceAll('"',"&quot;")
-//       .replaceAll("'","&#039;");
-//   }
-
-//   // ---------- ADD ITEM ----------
-// $("#m_addItem").on("click", function () {
-//   const alu    = $("#m_alu").val().trim();
-//   const desc   = $("#m_desc").val().trim();
-//   // const serial = $("#m_serial").val().trim();
-//   const defect = $("#m_defect").val().trim();
-//   const vendor = $("#m_vendor").val().trim();
-//   const qty    = parseInt($("#m_qty").val(), 10) || 0;
-//   const cls    = $("#m_classification").val();
-
-// const serial = $("#m_serial").val().trim();
-
-// if (!alu || !desc || !serial || !defect || !vendor || !cls || qty <= 0) {
-//   alert("Please complete ALU, Description, Serial #, Nature of Defect, Vendor, Qty, and Classification.");
-//   return;
-// }
-
-// const existsSame = merchItems.some(x => x.alu === alu && (x.serial || "").toUpperCase() === serial.toUpperCase());
-// if (existsSame) {
-//   if (!confirm("Same ALU and Serial already exists. Add again?")) return;
-// }
-
-//   const classificationLabel = (cls === "STORE_UNIT") ? "Store Unit" : "Customer Unit";
-
-//   merchItems.push({
-//     alu,
-//     desc,
-//     serial,
-//     defect,
-//     vendor,
-//     qty,
-//     classification: cls,
-//     classificationLabel
-//   });
-
-//   // clear inputs
-//   $("#m_alu,#m_desc,#m_serial,#m_defect,#m_vendor").val("");
-//   $("#m_qty").val(1);
-//   $("#m_classification").prop("selectedIndex", 0);
-
-//   refreshMerchTable();
-// });
-
-//   // ---------- REMOVE ITEM ----------
-//   $("#merchItemsTable").on("click", ".btnRemove", function () {
-//     const idx = $(this).closest("tr").data("index");
-//     merchItems.splice(idx, 1);
-//     refreshMerchTable();
-//   });
-
-// });
-
-
-
-// $("#report_form").on("submit", function(e){
-//   e.preventDefault();
-
-//   $.ajax({
-//     url: "save_merch_items.php",
-//     method: "POST",
-//     data: $(this).serialize(), // includes ticket_no + merch_items_json + uId
-//     dataType: "json",
-//     success: function(res){
-//       if(res.status === "success"){
-//         alert("Saved! Inserted: " + res.inserted);
-//       }else{
-//         alert("Error: " + res.message);
-//       }
-//     },
-//     error: function(xhr){
-//       alert("Server error. Check console.");
-//       console.log(xhr.responseText);
-//     }
-//   });
-// }); // old pd merch
-
 $(function () {
   let items = [];
 
@@ -1681,13 +1239,11 @@ $(function () {
     const qty = parseInt($("#m_qty").val(), 10) || 0;
     const cls = $("#m_classification").val();
 
-    // serial required (since duplicates are allowed by serial)
     if (!alu || !desc || !serial || !defect || !vendor || qty <= 0 || !cls) {
       alert("Complete ALU, Description, Serial #, Nature of Defect, Vendor, Qty, Classification.");
       return;
     }
 
-    // allow duplicates ALU by design
     items.push({ alu, desc, serial, defect, vendor, qty, classification: cls });
 
     $("#m_alu,#m_desc,#m_serial,#m_defect,#m_vendor").val("");
@@ -1703,7 +1259,6 @@ $(function () {
     refreshTable();
   });
 
-  // SUBMIT: create ticket first, then save items
 $("#merch_ticket_form").on("submit", function(e){
   e.preventDefault();
 
@@ -1720,7 +1275,6 @@ $("#merch_ticket_form").on("submit", function(e){
   const $btn = $("#btnSubmitMerch");
   $btn.prop("disabled", true).text("Submitting...");
 
-  // send all form fields + items_json
   const payload = $(this).serialize() + "&items_json=" + encodeURIComponent(items_json);
 
   $.ajax({
@@ -1767,4 +1321,3 @@ $("#merch_ticket_form").on("submit", function(e){
 });
 });
 </script>
-

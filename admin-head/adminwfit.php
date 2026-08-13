@@ -4,8 +4,8 @@ $inactive = 180;
 
  if (isset($_SESSION['start']) && (time() - $_SESSION['start'] > $inactive)){
   session_unset();
-  session_destroy();
-  header("Location: adminpanel.php");
+  // removed session_destroy() to avoid "headers already sent" warnings
+  echo '<script>setTimeout(function(){ window.location.href = "adminpanel.php"; }, 180000);</script>';
   exit();
  }
 
@@ -64,6 +64,10 @@ $con1 = new dbconfig();
       <script src="../js/dataTables.select.min.js"></script>
       <script src="../js/dataTables.responsive.min.js"></script>
       <script src="../js/fnReloadAjax.js"></script>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+      <link rel="stylesheet" href="../css/jquery.dataTables.min.css" />
+<!-- Add this missing Responsive CSS file -->
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.4.1/css/responsive.dataTables.min.css" />
 
         <!-- <style>
 
@@ -406,8 +410,7 @@ hr{
 
 
 
-
-          </style> -->
+ </style> -->
 <style>
 
 /* =========================
@@ -461,8 +464,7 @@ body {
 }
 .navbar-nav > li.active > a{
   border-bottom: 3px solid var(--yellow);
-}
-#new_rep_table { width:100% !important; }
+}#new_rep_table { width:100% !important; }
 
 .table-wrap {
   background: var(--card);
@@ -471,7 +473,6 @@ body {
   box-shadow: var(--shadow);
   padding: 14px;
 }
-
 
 .dataTables_wrapper {
   background: var(--card);
@@ -509,33 +510,42 @@ body {
   border-color: rgba(234,170,0,.35) !important;
 }
 
+/* Base table configurations */
 table.dataTable {
   border-collapse: collapse !important; 
   width: 100% !important;
+  border: none !important; /* Strips external table wrapper border */
 }
 
+/* Header line config */
 table.dataTable thead th {
   color: white !important;
   font-weight: 900;
   letter-spacing: .04em;
   text-transform: uppercase;
-  border: none !important;
-  border-bottom: 2px solid #213456 !important; 
   background: #5273ad !important;
   padding: 14px 12px !important;
+  /* Strip all borders except bottom horizontal line */
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-bottom: 2px solid #213456 !important; 
 }
-
 
 table.dataTable tbody tr {
   background: #ffffff !important;
   box-shadow: 0 10px 22px rgba(17,24,39,.08);
 }
 
+/* Body column line config */
 table.dataTable tbody td {
-  border-top: none !important;
-  border-bottom: 1px solid #213456 !important;
   color: rgba(17,24,39,.85) !important;
   padding: 14px 12px !important;
+  /* Strip all vertical lines and keep cleanly isolated navy horizontal lines */
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-bottom: 1px solid #213456 !important;
 }
 
 table.dataTable tbody tr:hover {
@@ -543,6 +553,7 @@ table.dataTable tbody tr:hover {
   background: #F8FAFF !important;
 }
 
+/* ===== Modal (clean light) ===== */
 .modal-content{
   border: 1px solid var(--line) !important;
   background: #ffffff !important;
@@ -634,6 +645,7 @@ textarea[readonly]{ opacity: .95; }
 /* Spacing in grid */
 .form-group{ margin-bottom: 14px !important; }
 
+/* ===== Buttons (OWI style) ===== */
 .btn{
   border-radius: 14px !important;
   padding: 10px 14px !important;
@@ -663,12 +675,14 @@ textarea[readonly]{ opacity: .95; }
 }
 .btn-danger:hover{ background: rgba(239,68,68,.18) !important; }
 
+/* Collapse thread card */
 #msg_thread .card.card-body{
   background: #213456 !important;
   border: 1px solid var(--line) !important;
   border-radius: var(--radius-sm) !important;
 }
 
+/* Thread container */
 .container_remarks{
   background: #F8FAFF;
   border: 1px solid var(--line);
@@ -692,6 +706,7 @@ textarea[readonly]{ opacity: .95; }
 
 hr{ border-top: 1px solid var(--line) !important; }
 
+/* ===== Priority chips (same but readable on light bg) ===== */
 .priority-chip{
   padding:4px 10px;
   border-radius:999px;
@@ -704,6 +719,7 @@ hr{ border-top: 1px solid var(--line) !important; }
 .p-medium{   background: rgba(234,170,0,.16); color:#7a5200; border:1px solid rgba(234,170,0,.30); }
 .p-low{      background: rgba(34,197,94,.14); color:#166534; border:1px solid rgba(34,197,94,.25); }
 
+/* ===== Select2 (light) ===== */
 .select2-container--default .select2-selection--single{
   background-color: #ffffff !important;
   border: 1px solid var(--line) !important;
@@ -733,6 +749,7 @@ hr{ border-top: 1px solid var(--line) !important; }
   background: rgba(234,170,0,.16) !important;
   color: var(--text) !important;
 }
+/* --- Buttons --- */
 .btn {  
     background-color: white !important;
     border: 2px solid #213456;
@@ -747,6 +764,7 @@ hr{ border-top: 1px solid var(--line) !important; }
     color: white;
 }
 
+/* --- Buttons --- */
 .btn-success {  
     background-color: white !important;
     border: 2px solid #213456;

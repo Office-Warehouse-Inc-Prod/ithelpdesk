@@ -863,9 +863,15 @@ public function fathist() {
                 it.itsup,          
                 ar.date_received, 
                 ar.created_at,
-               itt.it_desc AS noted_by_desc,       
+               itt.it_desc AS noted_by_desc,    
+			   fat.problem_reported,
+				fat.verification_findings,
+				fat.work_done,
+				fat.status_workoutput,
+				fat.recommendation,        
                 ar.status          
             FROM asset_requests ar
+			LEFT JOIN fixed_asset_techoutput fat ON ar.ticket_no = fat.ticket_no
             LEFT JOIN it_tech it ON ar.item_received_by = it.itsup
             LEFT JOIN reports r ON ar.ticket_no = r.ticket_no
             LEFT JOIN users u ON r.userId = u.id
@@ -886,8 +892,13 @@ public function fathist() {
                 'serial_number'=> $row["serial_number"],
                 'asset_tag_number' => $row["asset_tag_number"],
                 'purpose_of_request' => $row["purpose_of_request"],
+					'problem_reported' => $row["problem_reported"],
+				'verification_findings' => $row["verification_findings"],
+				'work_done' => $row["work_done"],
+				'status_workoutput' => $row["status_workoutput"],
+				'recommendation' => $row["recommendation"],
 				'revised_request' => $row["revised_request"],
-					'is_technical' => $row["is_technical"],
+				'is_technical' => $row["is_technical"],
 				'technical_workoutput' => $row["technical_workoutput"],
                 'it_desc' => $row["it_desc"],
                 'date_received' => $row["date_received"],    

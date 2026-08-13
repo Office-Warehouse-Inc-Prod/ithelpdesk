@@ -131,8 +131,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mode'])) {
 include 'admin.php';
 $inactive = 180;
 if (isset($_SESSION['start']) && (time() - $_SESSION['start'] > $inactive)){
-    
-    header("Location: adminpanel.php");
+    // replace server-side redirect with client-side 3-minute redirect
+    echo '<script>setTimeout(function(){ window.location.href = "adminpanel.php"; }, 180000);</script>';
     exit();
 }
 $_SESSION['start'] = time();
@@ -841,7 +841,7 @@ function loadTimeline(ticket_no, rowData) {
                 { desc: "Printed", date: response.date_printed, reqLevel: isTechnical === 1 ? 5 : 4 },
                 { desc: "For General Manager Approval", date: null, reqLevel: isTechnical === 1 ? 5 : 4 }, 
                 { desc: "Approved by General Manager", date: response.date_approved, reqLevel: isTechnical === 1 ? 6 : 5 },
-                { desc: "Ready for Asset Replacement", date: null, reqLevel: isTechnical === 1 ? 6 : 5 }, 
+                { desc:  "Transferred to PD for Procurement", date: null, reqLevel: isTechnical === 1 ? 6 : 5 }, 
                 { desc: "Asset replaced / Completed", date: response.date_completed, reqLevel: isTechnical === 1 ? 7 : 6 }
             );
 

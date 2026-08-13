@@ -111,26 +111,58 @@ select.form-control:focus, .form-control:focus{
 }
 
 
-.dashcard.bg-assigned { border-top: 4px solid #8CC0EB !important;  }
-.dashcard.bg-assigned:hover { box-shadow: 0 22px 40px -5px rgba(140, 192, 235, 0.3); border-color: #2577ba; }
+.dashcard.bg-assigned { 
+  border-top: 4px solid #8CC0EB !important;  
+}
+.dashcard.bg-assigned:hover { 
+  box-shadow: 0 22px 40px -5px rgba(140, 192, 235, 0.3); 
+  border-color: #2577ba; 
+}
 
-.dashcard.bg-onprocess { border-top: 4px solid #E9B63B !important;  }
-.dashcard.bg-onprocess:hover { box-shadow: 0 22px 40px -5px rgba(233, 182, 59, 0.3); border-color: #E9B63B; }
+.dashcard.bg-onprocess { 
+  border-top: 4px solid #E9B63B !important;  
+}
+.dashcard.bg-onprocess:hover { 
+  box-shadow: 0 22px 40px -5px rgba(233, 182, 59, 0.3); 
+  border-color: #E9B63B; 
+}
 
-.dashcard.bg-pending { border-top: 4px solid #AF3E3E !important; }
-.dashcard.bg-pending:hover { box-shadow: 0 22px 40px -5px rgba(175, 62, 62, 0.3); border-color: #AF3E3E; }
+.dashcard.bg-pending { 
+  border-top: 4px solid #AF3E3E !important; 
+}
+.dashcard.bg-pending:hover { 
+  box-shadow: 0 22px 40px -5px rgba(175, 62, 62, 0.3); 
+  border-color: #AF3E3E; 
+}
 
-.dashcard.bg-nonesca { border-top: 4px solid #8E7DBE !important;}
-.dashcard.bg-nonesca:hover { box-shadow: 0 22px 40px -5px rgba(142, 125, 190, 0.3); border-color: #260d6d; }
+.dashcard.bg-nonesca { 
+  border-top: 4px solid #8E7DBE !important;
+}
+.dashcard.bg-nonesca:hover { 
+  box-shadow: 0 22px 40px -5px rgba(142, 125, 190, 0.3); 
+  border-color: #260d6d; 
+}
 
-.dashcard.bg-subforclosing { border-top: 4px solid #EDA35A !important; }
-.dashcard.bg-subforclosing:hover { box-shadow: 0 22px 40px -5px rgba(237, 163, 90, 0.3); border-color: #EDA35A; }
+.dashcard.bg-subforclosing { 
+  border-top: 4px solid #EDA35A !important; 
+}
+.dashcard.bg-subforclosing:hover { 
+  box-shadow: 0 22px 40px -5px rgba(237, 163, 90, 0.3); 
+  border-color: #EDA35A; 
+}
 
-.dashcard.bg-closed { border-top: 4px solid #5D866C !important;  }
-.dashcard.bg-closed:hover { box-shadow:0 22px 40px -5px rgba(93, 134, 108, 0.3); border-color: #5D866C; }
+.dashcard.bg-closed { 
+  border-top: 4px solid #5D866C !important;  
+}
+.dashcard.bg-closed:hover { 
+  box-shadow:0 22px 40px -5px rgba(93, 134, 108, 0.3); 
+  border-color: #5D866C; 
+}
 
 
-.dashcard, .dashcard *{ color: var(--text) !important; }
+.dashcard, .dashcard *{ 
+  color: var(--text) !important; 
+}
 
 .dashcard .card-body{
 }
@@ -263,7 +295,6 @@ select.form-control:focus, .form-control:focus{
 .btn-email{ background:#20c997 !important; }
 .btn-disabled{ background:#94a3b8 !important; cursor:not-allowed; }
 
-/* ===== Optional: status text only (if your JS colors rows) ===== */
 .status-open td{ color:#b91c1c !important; }
 .status-fixed td{ color:#c2410c !important; }
 .status-closed td{ color:#15803d !important; }
@@ -443,75 +474,6 @@ select.form-control:focus, .form-control:focus{
     box-shadow: 0 0 0 3px rgba(225, 173, 1, 0.15);
 }
 
-/* --- Right Side: Premium Messenger Thread --- */
-#msg_thread {
-    background-color: #213456;
-
-}
-
-.container_remarks {
-    background: var(--chat-bg);
-    height: 500px;
-    overflow-y: auto;
-    box-shadow: 0 20px 60px rgba(123, 128, 44, 0.605);
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    border: none;
-}
-
-
-
-/* Received (Support/Other Users) - Navy Style */
-.msg-received {
-    align-self: flex-start;
-    background-color: var(--navy-primary);
-    color: #ffffff;
-    border-radius: 20px 20px 20px 5px;
-}
-
-/* Sent (You) - Gold Style */
-.msg-sent {
-    align-self: flex-end;
-    background-color: var(--gold-accent);
-    color: #ffffff;
-    border-radius: 20px 20px 5px 20px;
-}
-
-/* Bubble Meta Info */
-.msg-info {
-    font-size: 0.7rem;
-    margin-bottom: 4px;
-    font-weight: 600;
-    display: block;
-}
-
-.msg-received .msg-info { color: rgba(255,255,255,0.7); }
-.msg-sent .msg-info { color: #ffffff; text-align: right; }
-
-/* --- Chat Input Footer --- */
-.chat-input-box {
-    background: #ffffff;
-    padding: 20px;
-    border-top: 1px solid #e2e8f0;
-    border-radius: 0 0 12px 0;
-}
-
-#addmsg {
-    border-radius: 25px;
-    padding: 12px 20px;
-    background-color: #f8fafc;
-    border: 1px solid #e2e8f0;
-    transition: all 0.3s ease;
-}
-
-#addmsg:focus {
-    background-color: #ffffff;
-    border-color: var(--gold-accent);
-    box-shadow: 0 4px 12px rgba(225, 173, 1, 0.1);
-    outline: none;
-}
 .card2 {
     border: none;
     border-radius: 15px;
@@ -605,6 +567,294 @@ background: linear-gradient(135deg, #837031, #E1AD01);
 }
 
 
+.container_remarks {
+    display: flex !important;
+    flex-direction: column;
+    max-height: 480px;
+    overflow-y: auto;
+    background-color: #f0f2f5 !important;
+    border: 1px solid #dee2e6;
+    border-radius: 12px;
+    padding: 15px;
+    margin-top: 10px;
+}
+
+.dv_msg {
+    display: block !important;
+}
+
+#remarks_view {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+#userModal .modal-dialog{
+  max-width: 1100px; 
+  margin: 1.25rem auto;
+}
+
+#userModal .modal-content{
+  border-radius: 16px;
+  border: none;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+#userModal .modal-header{
+    background-color: #213456;
+    color: #fff;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    border-bottom: 4px solid #E1AD01; 
+}
+
+#userModal_header{
+  font-weight: 700;
+  font-size: 18px;
+  margin: 0;
+}
+
+#userModal .modal-body{
+  padding: 16px 18px;
+}
+
+#userModal .modal-title {
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+}
+
+#userModal .input-group-text {
+    background-color: white;
+    border-right: none;
+    color: linear-gradient(135deg, #213456, #334c7a);
+}
+
+#userModal .form-control {
+    border-left: none;
+    height: 45px;
+    border-radius: 0 8px 8px 0;
+}
+
+#userModal .form-control:focus {
+    border-color: linear-gradient(135deg, #213456, #334c7a);
+    box-shadow: none;
+}
+
+#userModal .input-group:focus-within {
+    box-shadow: 0 0 0 0.2rem rgba(225, 173, 1, 0.25);
+    border-radius: 8px;
+}
+
+.m_col {
+    background: #ffffff;
+    padding: 2rem !important;
+    border-right: 1px solid #edf2f7;
+}
+
+.m_col label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #718096;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.m_col .form-control {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 0.6rem 0.75rem;
+    transition: all 0.2s ease;
+    background-color: #f8fafc;
+}
+
+.m_col .form-control:focus {
+    background-color: #fff;
+    border-color: #1C0770;
+    box-shadow: 0 0 0 3px rgba(28, 7, 112, 0.1);
+    outline: none;
+}
+
+.m_col textarea {
+    min-height: 80px;
+}
+
+#msg_thread {
+    padding: 1rem 1.5rem;
+    background: linear-gradient(to bottom, #ffffff, #99aac8);
+    height: 100%;
+}
+
+#addmsg {
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 1rem;
+    background: #ffffff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.chat-bubble {
+    max-width: 85%;
+    padding: 10px 14px;
+    border-radius: 18px;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    position: relative;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    word-wrap: break-word;
+}
+
+.chat-left {
+    align-self: flex-start;
+    background: #ffffff;
+    color: #1e293b;
+    border-bottom-left-radius: 4px;
+    border: 1px solid #e5e7eb;
+}
+
+.chat-right {
+    align-self: flex-end;
+    background: #1C0770;
+    color: #ffffff;
+    border-bottom-right-radius: 4px;
+}
+
+.msg-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    font-size: 0.7rem;
+    margin-bottom: 4px;
+}
+
+.chat-left .msg-meta {
+    color: #64748b;
+}
+
+.chat-right .msg-meta {
+    color: #ffffff; 
+}
+
+.chat-left .msg-meta-name {
+    color: #213456;
+    font-weight: bold;
+}
+
+.chat-right .msg-meta-name {
+    color: #ffffff;
+    font-weight: bold;
+}
+
+
+.chat-right .msg-time {
+    color: #ffffff !important; 
+}
+
+.chat-left .msg-time {
+    color: #64748b !important;
+}
+.chat-left .msg-meta {
+    color: #64748b;
+}
+
+.chat-right .msg-meta {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.chat-left .msg-meta-name {
+    color: linear-gradient(135deg, #213456, #334c7a);
+    font-weight: bold;
+}
+
+.chat-right .msg-meta-name {
+    color: #ffffff;
+    font-weight: bold;
+}
+
+
+#transferred_data {
+  width: 100%;
+  border-collapse: collapse; 
+  color: #213456;
+  font-family: 'Poppins', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#transferred_data thead tr {
+  color: #213456; 
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700; 
+  font-size: 1.2rem; 
+  text-align: center;
+}
+
+#transferred_data tbody tr {
+  background: transparent; 
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+#transferred_data tbody tr:hover,
+#transferred_data tbody tr:hover td {
+  background: #dbdbd84d; 
+  color: #213456;
+}
+
+#transferred_data th,
+#transferred_data td {
+  padding: 10px 12px;
+  border: none; 
+  border-bottom: 1px solid #ccc; 
+    color: #213456; 
+}
+
+#transferred_data tbody tr:last-child td {
+  border-bottom: none;
+}
+
+#transferred_data tbody tr td {
+  font-weight: 400;
+  font-size: 0.9rem;
+  color: inherit; 
+}
+
+#transferred_data::-webkit-scrollbar {
+  height: 6px;
+}
+
+#transferred_data::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #213456, #334c7a); 
+  border-radius: 3px;
+}
+.card-header { padding: 0.5rem 0.75rem; }
+  .card-header .nav-tabs {
+    border-bottom: 0;
+    gap: 15px; 
+    padding-left: 15px;
+  }
+  .nav-tabs .nav-link {
+    color: rgba(255, 255, 255, 0.7) !important; 
+    padding: .6rem 1rem;
+    font-weight: 700;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    transition: 0.3s;
+  }
+  .nav-tabs .nav-link:hover {
+    color: #ffffff !important; /* Solid white on hover */
+  }
+  .nav-tabs .nav-link.active {
+    background: transparent !important;
+    color: #E1AD01 !important; /* Active color: Readable Gold */
+    border-bottom: 3px solid #E1AD01 !important;
+    border-radius: 6px 6px 0 0;
+  }
+  .nav-tabs .nav-link:focus { outline: none; box-shadow: none; }
 </style>
 
 
@@ -631,7 +881,7 @@ background: linear-gradient(135deg, #837031, #E1AD01);
               </div>
               <select class="form-control" name="yearpicker" id="yearpicker" required>
                 <option value="2019,2020,2021,2022,2023,2024,2025,2026">OVERALL</option>
-		<option value="2026" selected>2026</option>
+		            <option value="2026" selected>2026</option>
                 <option value="2025">2025</option>
                 <option value="2024">2024</option>
                 <option value="2023">2023</option>
@@ -777,38 +1027,65 @@ background: linear-gradient(135deg, #837031, #E1AD01);
               </div>
             </div>
           </div>
-<div class="row">
+        <div class="row">
+          <div class="col-12 mb-3">
+            <div class="card card2">
+              
+        <div class="card-header" style="background: linear-gradient(135deg, #213456, #334c7a); border-bottom: none; padding-bottom: 0;">
+          <ul class="nav nav-tabs card-header-tabs" id="ticketTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="tickets-tab" data-toggle="tab" data-target="#tickets" type="button" role="tab" aria-controls="tickets" aria-selected="true" style="font-weight: bold; border: 1px solid #ffffff;">
+                TICKETS
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="transferred-tab" data-toggle="tab" data-target="#transferred" type="button" role="tab" aria-controls="transferred" aria-selected="false" style="color: white; font-weight: bold; border: 1px solid #ffffff;">
+                TRANSFERRED TICKETS
+              </button>
+            </li>
+          </ul>
+        </div>
 
+   <div class="card-body">
+  <div class="tab-content" id="ticketTabsContent">
+    <!-- TICKETS TAB -->
+    <div class="tab-pane fade show active" id="tickets" role="tabpanel" aria-labelledby="tickets-tab">
+      <!-- Removed max-height and overflow-y to allow full height -->
+      <div class="table-responsive" style="width:100%;">
+        <table id="report_data" class="table table-hover w-100">
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+    </div>
 
-<div class="card card2">
-<h5 class="card-header text-black">TICKETS</h5>
-<div class="card-body">
-<div class="row col-md-12 mb-3">
-  
-<div class="col-md-12">
-<table id="report_data" class="table  table-striped table-responsive table-condensed text-center borderless"></table>
-
+    <!-- TRANSFERRED TICKETS TAB -->
+    <div class="tab-pane fade" id="transferred" role="tabpanel" aria-labelledby="transferred-tab">
+      <!-- Removed max-height and overflow-y to allow full height -->
+      <div class="table-responsive" style="width:100%;">
+        <table id="transferred_data" class="table table-hover w-100">
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 </div>
-<!-- <button type="button" id="add_button" class=" second btn btn-xs btn-success" data-toggle="modal" data-target="#userModal"><i class="fas fa-plus"></i></button> -->
-</div>
-
-
-
-
-
-</div>
-</div>
-
-
-
-
-
+      
+    </div>
+  </div>
 </div>
 
 <div class="col-lg-12 Down" id="Down">
   <input type="hidden" id="myInput">
 </div>
-</div> <!--end of container-->
+
+           
+
+          </div><!-- /.container-fluid -->
+      </div><!-- /#layoutSidenav_content -->
+    </div><!-- /#wrapper -->
+  </div><!-- /.container-fluid --> <!--end of container-->
 
 
 
@@ -988,11 +1265,11 @@ style="text-transform:uppercase">
 
 <div  class="col-12 col-lg-12 mb-3">
 
-       <label style="font-weight: bold; color:white;">Add Comment:</label>
+       <label style="font-weight: bold; color: #E1AD01;">Add Comment:</label>
 <textarea name="admsg" id="addmsg" class="form-control form-control-sm" placeholder="Reply to their message or give an updates regarding on this ticket..." required></textarea> 
 </div>
 <div class="col-12 col-lg-12 mt-4 mb-2 dv_msg">
-<label for="remarks_view" style="font-weight: bold; color: white;">Comment Thread:</label>
+<label for="remarks_view" style="font-weight: bold; color: #E1AD01;">Comment Thread:</label>
    <hr>
 <div class="container_remarks" >
 <div id="remarks_view"></div>
@@ -1304,6 +1581,26 @@ $(document).ready(function () {
             }
         });
     });
+});
+
+
+$(document).ready(function() {
+    $('button[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+        var targetTab = $(e.target).attr("id"); 
+
+        if (targetTab === 'transferred-tab') {
+            if ($.fn.DataTable.isDataTable('#transferred_data')) {
+                $('#transferred_data').DataTable().columns.adjust().draw();
+            }
+        } else if (targetTab === 'tickets-tab') {
+            if ($.fn.DataTable.isDataTable('#report_data')) {
+                $('#report_data').DataTable().columns.adjust().draw();
+            }
+        }
+        $('#ticketTabs .nav-link').css('color', 'white');
+        $('#ticketTabs .nav-link.active').css('color', '#495057'); 
+    });
+    
 });
 </script>
 <?php

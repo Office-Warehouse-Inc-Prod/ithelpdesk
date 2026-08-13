@@ -1244,11 +1244,14 @@ if ($_POST["operation"] == "Save and Reply") {
     }
 }
 
+
 if (isset($_POST["operation"]) && $_POST["operation"] === "update_request") {
     
     header('Content-Type: application/json');
     
-    if (empty($_POST['ticket_no'])) {
+    $ticketNo = $_POST['ticket_no'] ?? null;
+
+    if (empty($ticketNo)) {
         echo json_encode(["status" => "error", "message" => "Missing Ticket Number."]);
         exit();
     }
@@ -1256,11 +1259,35 @@ if (isset($_POST["operation"]) && $_POST["operation"] === "update_request") {
     try {
         $connection->beginTransaction();
         
-        $ticketNo = $_POST['ticket_no'] ?? null;
         $currentDate = date('Y-m-d H:i:s');
         $techId = $_POST['tech_id'] ?? $_SESSION['tech_id'] ?? '';
+        $storeNum = $_SESSION["str_num"] ?? '';
 
-        $statement = $connection->prepare("
+        $fileNameToSave = '';
+        
+        if (isset($_FILES['files']['name'][0]) && !empty($_FILES['files']['name'][0]) && $_FILES['files']['error'][0] === UPLOAD_ERR_OK) {
+            $uploadDir = __DIR__ . '/image/';
+            
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0755, true);
+            }
+            
+            $tmpName = $_FILES['files']['tmp_name'][0];
+            if (is_uploaded_file($tmpName)) {
+                $originalName = basename($_FILES['files']['name'][0]);
+                $uniqueName = time() . '_' . preg_replace('/[^A-Za-z0-9._-]/', '_', $originalName);
+                $dest = $uploadDir . $uniqueName;
+                
+                if (move_uploaded_file($tmpName, $dest)) {
+                    $fileNameToSave = 'image/' . $uniqueName;
+                }
+            }
+        }
+
+        $standardRemark = "The Fixed Asset Request has been successfully validated and verified by the Admin Department. The request is now in the printing stage and is awaiting the approval of the General Manager, Ma'am Althea Bunachita, before proceeding to the next step of the asset request process.";
+        
+        // 1. Update Asset Request
+        $stmtUpdate = $connection->prepare("
             UPDATE asset_requests
             SET
                 serial_number = :serial_number,
@@ -1271,16 +1298,16 @@ if (isset($_POST["operation"]) && $_POST["operation"] === "update_request") {
             WHERE ticket_no = :ticket_no
         ");
 
-        $result = $statement->execute([
-            ':serial_number' => $_POST['serial_number'] ?? '',
-            ':date_received' => $_POST['date_received'] ?? '',
-            ':date_verified' => $currentDate,
-            ':status'        => 'VERIFIED',
-            ':approve_method_head' => $_POST['approve_method_head'] ?? '',
-            ':ticket_no'     => $ticketNo
+        $updateSuccess = $stmtUpdate->execute([
+            ':serial_number'       => $_POST['serial_number'] ?? '',
+            ':date_received'       => $_POST['date_received'] ?? '',
+            ':date_verified'       => $currentDate,
+            ':status'              => 'VERIFIED',
+            ':approve_method_head' => $fileNameToSave,
+            ':ticket_no'           => $ticketNo
         ]);
 
-        $statement2 = $connection->prepare("
+        $stmtNotif = $connection->prepare("
             INSERT INTO tbl_notif (
                 ticket_no, store, itsup, notif_data, notif_val, notif_date
             ) VALUES (
@@ -1288,16 +1315,37 @@ if (isset($_POST["operation"]) && $_POST["operation"] === "update_request") {
             )
         ");
 
-        $result2 = $statement2->execute([
+        $notifSuccess = $stmtNotif->execute([
             ':ticket_no'  => $ticketNo,
-            ':store'      => $_SESSION["str_num"] ?? "",
-            ':itsup'      => $_SESSION["tech_id"] ?? "",
-            ':notif_data' => "Fixed asset " . $ticketNo . " has been Verified by Ma'am Alma Villanueva and waiting for approval",
+            ':store'      => $storeNum,
+            ':itsup'      => $techId,
+            ':notif_data' => "Fixed asset {$ticketNo} has been Verified by Ma'am Alma Villanueva and waiting for approval",
             ':notif_val'  => '8',
             ':notif_date' => $currentDate
         ]);
 
-        if ($result && $result2) {
+        $stmtRemarks = $connection->prepare("
+            INSERT INTO reports_remarks (ticket_no, remarks_detail, remarks_date, itsup) 
+            VALUES (:ticket_no, :remarks_detail, :remarks_date, 78)
+        ");
+        $stmtRemarks->execute([
+            ':ticket_no'      => $ticketNo,
+            ':remarks_detail' => $standardRemark,
+            ':remarks_date'   => $currentDate
+        ]);
+
+        $stmtComments = $connection->prepare("
+            INSERT INTO reports_comments (ticket_no, comment_details, comment_date, userId) 
+            VALUES (:ticket_no, :comment_details, :comment_date, :userId)
+        ");
+        $stmtComments->execute([
+            ':ticket_no'       => $ticketNo,
+            ':comment_details' => $standardRemark,
+            ':comment_date'    => $currentDate,
+            ':userId'          => '414'
+        ]);
+
+        if ($updateSuccess && $notifSuccess) {
             $connection->commit();
 
             try {
@@ -1308,7 +1356,6 @@ if (isset($_POST["operation"]) && $_POST["operation"] === "update_request") {
                 if ($emailRow && !empty($emailRow['email'])) {
                     $receiverEmail = trim($emailRow['email']);
                     
-                    // Fetch joined details for email body
                     $stmtDetails = $connection->prepare("
                         SELECT 
                             ar.ticket_no, 
@@ -1325,9 +1372,16 @@ if (isset($_POST["operation"]) && $_POST["operation"] === "update_request") {
                             it.itsup,          
                             ar.date_received, 
                             ar.created_at,
-                            ar.noted_by,       
+                            ar.noted_by,
+                            fat.problem_reported,
+                            fat.verification_findings,
+                            fat.work_done,
+                            fat.status_workoutput,
+                            fat.recommendation,
+                            fat.is_technical, 
                             ar.status          
                         FROM asset_requests ar
+                        LEFT JOIN fixed_asset_techoutput fat ON ar.ticket_no = fat.ticket_no
                         LEFT JOIN it_tech it ON ar.item_received_by = it.itsup
                         LEFT JOIN reports r ON ar.ticket_no = r.ticket_no
                         LEFT JOIN users u ON r.userId = u.id
@@ -1338,139 +1392,184 @@ if (isset($_POST["operation"]) && $_POST["operation"] === "update_request") {
                     $stmtDetails->execute([':ticket_no' => $ticketNo]);
                     $ticketData = $stmtDetails->fetch(PDO::FETCH_ASSOC);
                     
-                    $display_dept     = $ticketData['str_name'] ?? 'N/A';
-                    $display_user     = $ticketData['full_name'] ?? 'N/A';
-                    $display_receiver = $ticketData['it_desc'] ?? 'N/A';
-                    $display_date_rec = $ticketData['date_received'] ?? 'N/A';
-                    $display_item     = $ticketData['item_code'] ?? 'N/A';
-                    $display_desc     = $ticketData['description'] ?? 'N/A';
-                    $display_serial   = $ticketData['serial_number'] ?? 'N/A';
-                    $display_purpose  = $ticketData['purpose_of_request'] ?? 'N/A';
-                    $display_tech_out = $ticketData['technical_workoutput'] ?? 'N/A';
-                    $display_created  = $ticketData['ticket_created'] ?? 'N/A';
+                    if ($ticketData) {
+                        $display_dept     = $ticketData['str_name'] ?? 'N/A';
+                        $display_user     = $ticketData['full_name'] ?? 'N/A';
+                        $display_receiver = $ticketData['it_desc'] ?? 'N/A';
+                        $display_date_rec = $ticketData['date_received'] ?? 'N/A';
+                        $display_item     = $ticketData['item_code'] ?? 'N/A';
+                        $display_desc     = $ticketData['description'] ?? 'N/A';
+                        $display_serial   = $ticketData['serial_number'] ?? 'N/A';
+                        $display_purpose  = $ticketData['purpose_of_request'] ?? 'N/A';
+                        $display_tech_out = $ticketData['technical_workoutput'] ?? 'N/A';
+                        $display_created  = $ticketData['ticket_created'] ?? 'N/A';
 
-                    $mail = new PHPMailer(true);
-                    $mail->isSMTP();
-                    $mail->Host       = 'mail.officewarehouse.com.ph';
-                    $mail->SMTPAuth   = true;
-                    $mail->Username   = 'helpdesk_noreply@officewarehouse.com.ph';
-                    $mail->Password   = 'Owi@123456**';
-                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-                    $mail->Port       = 587;
-                    
-                    $mail->setFrom('helpdesk_noreply@officewarehouse.com.ph', 'HELPDESK AI');
-                    $mail->addAddress($receiverEmail);
-                    $mail->isHTML(true);
-                    
-                    $mail->Subject = "Asset Request Verified: {$ticketNo}";
-                    $mailBody = '
-                    <html>
-                    <body style="margin:0;padding:20px;background:#f4f6f9;font-family:Arial,sans-serif;">
-                        <table width="700" align="center" cellpadding="0" cellspacing="0" style="background:#ffffff;border:1px solid #cabb89;border-radius:8px;overflow:hidden;">
-                            <tr>
-                                <td style="background:#E1AD01;color:#ffffff;padding:18px 24px;font-size:20px;font-weight:bold;">
-                                    Helpdesk AI: Asset Request Verified
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="padding:24px;font-size:14px;color:#333;">
-                                    <p>Good day,</p>
-                                    <p>A fixed asset request has been <strong>Verified</strong> and is now waiting for final approval. Please see the details below:</p>
-                                    
-                                    <table cellpadding="8" cellspacing="0" width="100%" style="border-collapse:collapse;margin-top:10px;">
-                                        <tr style="background:#f3e8c3;">
-                                            <td style="border:1px solid #cabb89;width:180px;"><strong>Ticket No.</strong></td>
-                                            <td style="border:1px solid #cabb89;">' . htmlspecialchars($ticketNo) . '</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="border:1px solid #cabb89;"><strong>Status</strong></td>
-                                            <td style="border:1px solid #cabb89;">VERIFIED</td>
-                                        </tr>
-                                        <tr style="background:#f3e8c3;">
-                                            <td style="border:1px solid #cabb89;"><strong>Requesting Dept</strong></td>
-                                            <td style="border:1px solid #cabb89;">' . htmlspecialchars($display_dept) . '</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="border:1px solid #cabb89;"><strong>Requested By</strong></td>
-                                            <td style="border:1px solid #cabb89;">' . htmlspecialchars($display_user) . '</td>
-                                        </tr>
-                                        <tr style="background:#f3e8c3;">
-                                            <td style="border:1px solid #cabb89;"><strong>Item Received By</strong></td>
-                                            <td style="border:1px solid #cabb89;">' . htmlspecialchars($display_receiver) . '</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="border:1px solid #cabb89;"><strong>Date Received</strong></td>
-                                            <td style="border:1px solid #cabb89;">' . htmlspecialchars($display_date_rec) . '</td>
-                                        </tr>
-                                        <tr style="background:#f3e8c3;">
-                                            <td style="border:1px solid #cabb89;"><strong>Item Code</strong></td>
-                                            <td style="border:1px solid #cabb89;">' . htmlspecialchars($display_item) . '</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="border:1px solid #cabb89;"><strong>Description</strong></td>
-                                            <td style="border:1px solid #cabb89;">' . htmlspecialchars($display_desc) . '</td>
-                                        </tr>
-                                        <tr style="background:#f3e8c3;">
-                                            <td style="border:1px solid #cabb89;"><strong>Serial Number</strong></td>
-                                            <td style="border:1px solid #cabb89;">' . htmlspecialchars($display_serial) . '</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="border:1px solid #cabb89;"><strong>Purpose of Request</strong></td>
-                                            <td style="border:1px solid #cabb89;">' . nl2br(htmlspecialchars($display_purpose)) . '</td>
-                                        </tr>
-                                        <tr style="background:#f3e8c3;">
-                                            <td style="border:1px solid #cabb89;"><strong>Technical Workoutput</strong></td>
-                                            <td style="border:1px solid #cabb89;">' . nl2br(htmlspecialchars($display_tech_out)) . '</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="border:1px solid #cabb89;"><strong>Date Created</strong></td>
-                                            <td style="border:1px solid #cabb89;">' . htmlspecialchars($display_created) . '</td>
-                                        </tr>
-                                    </table>
-                                    
-                                    <p style="margin-top:20px;">Please log in to the <strong>OWI Helpdesk</strong> to review and approve this request.</p>
-                                    <div style="text-align:center;margin-top:25px;">
-                                        <a href="https://owihelpdesk.officewarehouse.com.ph" 
-                                           style="background:#627bc5;color:#ffffff;padding:12px 24px;text-decoration:none;border-radius:5px;display:inline-block;font-weight:bold;">
-                                            Open OWI Helpdesk
-                                        </a>
-                                    </div>
-                                    <p style="margin-top:20px;">Thank you.</p>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="background:#8bacf6;color:#ffffff;text-align:center;padding:10px;font-size:12px;">
-                                    OWI Helpdesk System Notification
-                                </td>
-                            </tr>
-                        </table>
-                    </body>
-                    </html>';
+                        $mail = new PHPMailer(true);
+                        $mail->isSMTP();
+                        $mail->Host       = 'mail.officewarehouse.com.ph';
+                        $mail->SMTPAuth   = true;
+                        $mail->Username   = 'helpdesk_noreply@officewarehouse.com.ph';
+                        $mail->Password   = 'Owi@123456**';
+                        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                        $mail->Port       = 587;
+                        
+                        $mail->setFrom('helpdesk_noreply@officewarehouse.com.ph', 'HELPDESK AI');
+                        $mail->addAddress($receiverEmail);
+                        $mail->isHTML(true);
+                        
+                        $mail->Subject = "Asset Request Verified: {$ticketNo}";
+                        $techWorkOutputHtml = '';
+                        
+                        if (isset($ticketData['is_technical']) && $ticketData['is_technical'] == 1) {
+                            $probRep  = htmlspecialchars($_POST['problem_reported'] ?? $ticketData['problem_reported'] ?? '');
+                            $veriFind = htmlspecialchars($_POST['verification_findings'] ?? $ticketData['verification_findings'] ?? '');
+                            $workDone = htmlspecialchars($_POST['work_done'] ?? $ticketData['work_done'] ?? '');
+                            $statOut  = htmlspecialchars($_POST['status_workoutput'] ?? $ticketData['status_workoutput'] ?? '');
+                            $recomm   = htmlspecialchars($_POST['recommendation'] ?? $ticketData['recommendation'] ?? '');
 
-                    $mail->Body = $mailBody;
-                    $mail->AltBody = "Asset Request Verified: {$ticketNo}. Requested By: {$display_user} ({$display_dept}). Item Received By: {$display_receiver}.";
+                            $techWorkOutputHtml = '
+                            <h1><strong>Technical Work Output</strong></h1>
+                            <table cellpadding="8" cellspacing="0" width="100%" style="border-collapse:collapse;margin-top:10px;">
+                                <tr>
+                                    <td style="border:1px solid #cabb89; width:200px;"><strong>Problem Reported</strong></td>
+                                    <td style="border:1px solid #cabb89;">' . nl2br($probRep) . '</td>
+                                </tr>
+                                <tr>
+                                    <td style="border:1px solid #cabb89;"><strong>Verification/Findings</strong></td>
+                                    <td style="border:1px solid #cabb89;">' . nl2br($veriFind) . '</td>
+                                </tr>
+                                <tr>
+                                    <td style="border:1px solid #cabb89;"><strong>Work Done/Technical Solutions Provided</strong></td>
+                                    <td style="border:1px solid #cabb89;">' . nl2br($workDone) . '</td>
+                                </tr>
+                                <tr>
+                                    <td style="border:1px solid #cabb89;"><strong>Status/Work Output</strong></td>
+                                    <td style="border:1px solid #cabb89;">' . $statOut . '</td>
+                                </tr>
+                                <tr>
+                                    <td style="border:1px solid #cabb89;"><strong>Recommendations/Suggestions</strong></td>
+                                    <td style="border:1px solid #cabb89;">' . nl2br($recomm) . '</td>
+                                </tr>       
+                                <tr>
+                                    <td style="border:1px solid #cabb89;"><strong>Date Created</strong></td>
+                                     <td style="border:1px solid #cabb89;">' . htmlspecialchars($display_created) . '</td>
+                                </tr>
+                            </table>';
+                        }
 
-                    $mail->send();
+                        $mailBody = '
+                        <html>
+                        <body style="margin:0;padding:20px;background: #f4f6f9;font-family:Arial,sans-serif;">
+                            <table width="700" align="center" cellpadding="0" cellspacing="0" style="background:#ffffff;border:1px solid #cabb89;border-radius:8px;overflow:hidden;">
+                                <tr>
+                                    <td style="background: #E1AD01;color:#ffffff;padding:18px 24px;font-size:20px;font-weight:bold;">
+                                        Helpdesk AI: Asset Request Verified
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:24px;font-size:14px;color:#333;">
+                                        <p>Good day,</p>
+                                        <p>A fixed asset request has been verified and is ready for printing. Please see the details below:</p>
+                                        
+                                        <table cellpadding="8" cellspacing="0" width="100%" style="border-collapse:collapse;margin-top:10px;">
+                                            <tr style="background:#f3e8c3;">
+                                                <td style="border:1px solid #cabb89;width:200px;"><strong>Ticket No.</strong></td>
+                                                <td style="border:1px solid #cabb89;">' . htmlspecialchars($ticketNo) . '</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="border:1px solid #cabb89;"><strong>Status</strong></td>
+                                                <td style="border:1px solid #cabb89;">VERIFIED</td>
+                                            </tr>
+                                            <tr style="background:#f3e8c3;">
+                                                <td style="border:1px solid #cabb89;"><strong>Requesting Dept</strong></td>
+                                                <td style="border:1px solid #cabb89;">' . htmlspecialchars($display_dept) . '</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="border:1px solid #cabb89;"><strong>Requested By</strong></td>
+                                                <td style="border:1px solid #cabb89;">' . htmlspecialchars($display_user) . '</td>
+                                            </tr>
+                                            <tr style="background:#f3e8c3;">
+                                                <td style="border:1px solid #cabb89;"><strong>Item Received By</strong></td>
+                                                <td style="border:1px solid #cabb89;">' . htmlspecialchars($display_receiver) . '</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="border:1px solid #cabb89;"><strong>Date Received</strong></td>
+                                                <td style="border:1px solid #cabb89;">' . htmlspecialchars($display_date_rec) . '</td>
+                                            </tr>
+                                            <tr style="background:#f3e8c3;">
+                                                <td style="border:1px solid #cabb89;"><strong>Item Code</strong></td>
+                                                <td style="border:1px solid #cabb89;">' . htmlspecialchars($display_item) . '</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="border:1px solid #cabb89;"><strong>Description</strong></td>
+                                                <td style="border:1px solid #cabb89;">' . htmlspecialchars($display_desc) . '</td>
+                                            </tr>
+                                            <tr style="background:#f3e8c3;">
+                                                <td style="border:1px solid #cabb89;"><strong>Serial Number</strong></td>
+                                                <td style="border:1px solid #cabb89;">' . htmlspecialchars($display_serial) . '</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="border:1px solid #cabb89;"><strong>Purpose of Request</strong></td>
+                                                <td style="border:1px solid #cabb89;">' . nl2br(htmlspecialchars($display_purpose)) . '</td>
+                                            </tr>
+                                            <tr style="background:#f3e8c3;">
+                                                <td style="border:1px solid #cabb89;"><strong>Technical Workoutput</strong></td>
+                                                <td style="border:1px solid #cabb89;">' . nl2br(htmlspecialchars($display_tech_out)) . '</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="border:1px solid #cabb89;"><strong>Date Created</strong></td>
+                                                <td style="border:1px solid #cabb89;">' . htmlspecialchars($display_created) . '</td>
+                                            </tr>
+                                        </table>
+
+                                        ' . $techWorkOutputHtml . '
+                                        
+                                        <p style="margin-top:20px;">Please log in to the <strong>OWI Helpdesk</strong> to review this asset request.</p>
+                                        <div style="text-align:center;margin-top:25px;">
+                                            <a href="https://owihelpdesk.officewarehouse.com.ph" 
+                                               style="background:#627bc5;color:#ffffff;padding:12px 24px;text-decoration:none;border-radius:5px;display:inline-block;font-weight:bold;">
+                                                Open OWI Helpdesk
+                                            </a>
+                                        </div>
+                                        <p style="margin-top:20px;">Thank you.</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="background: #E1AD01;color:#ffffff;text-align:center;padding:10px;font-size:12px;">
+                                        OWI Helpdesk System Notification
+                                    </td>
+                                </tr>
+                            </table>
+                        </body>
+                        </html>';
+
+                        $mail->Body = $mailBody;
+                        $mail->AltBody = "Asset Request Verified: {$ticketNo}. Requested By: {$display_user} ({$display_dept}). Item Received By: {$display_receiver}.";
+
+                        $mail->send();
+                    }
                 }
             } catch (Exception $emailEx) {
-                // Silently fail if email fails, ensuring the JSON response is still sent below
+                // Logs the email failure to server error logs so you can trace it, without halting the JSON success response.
+                error_log("Failed to send verification email for ticket {$ticketNo}: " . $emailEx->getMessage());
             }
 
             echo json_encode(["status" => "success", "message" => "Fixed Asset Request Verified successfully."]);
         } else {
             $connection->rollBack();
-            echo json_encode(["status" => "error", "message" => "SQL Error: Execution failed."]);
+            echo json_encode(["status" => "error", "message" => "SQL Error: Execution failed during database update."]);
         }
     } catch (PDOException $e) {
         if ($connection->inTransaction()) {
             $connection->rollBack();
         }
-        echo json_encode(["status" => "error", "message" => "Database error: " . $e->getMessage()]);
-        exit();
+        // Logs actual SQL error to the server silently and outputs a clean JSON error.
+        error_log("Database Error (update_request): " . $e->getMessage());
+        echo json_encode(["status" => "error", "message" => "Database error occurred. Please contact IT support."]);
     }
+    
+    exit();
 }
-
-
 
 
 if (isset($_POST["operation"]) && $_POST["operation"] === "add_remarks_only") {

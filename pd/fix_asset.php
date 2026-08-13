@@ -2,10 +2,10 @@
 $inactive = 180;
 
 if (isset($_SESSION['start']) && (time() - $_SESSION['start'] > $inactive)){
-    session_unset();
-    session_destroy();
-    header("Location: adminpanel.php");
-    exit();
+  session_unset();
+  // removed session_destroy() to avoid "headers already sent" warnings
+  echo '<script>setTimeout(function(){ window.location.href = "adminpanel.php"; }, 180000);</script>';
+  exit();
 }
 
 $_SESSION['start'] = time();

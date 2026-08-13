@@ -9,7 +9,7 @@ if ($conn->connect_error) {
 $sql = "SELECT COUNT(*) as total 
         FROM asset_requests ar      
         LEFT JOIN reports r ON ar.ticket_no = r.ticket_no
-        WHERE ar.status IN ('RECORDED', 'NOTED', 'VERIFIED','APPROVED')   AND (
+        WHERE ar.status IN ('VERIFIED', 'NOTED')   AND (
                       (ar.is_technical = 0 AND r.status = 'ON PROCESS') 
                       OR 
                       (ar.is_technical = 1)

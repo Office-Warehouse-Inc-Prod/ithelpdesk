@@ -146,58 +146,70 @@ class dbconfig extends dbconn
                     ar.description, 
                     ar.serial_number, 
                     ar.asset_tag_number, 
-					ar.is_technical,
+                    ar.is_technical,
+                    ar.date_received,
+                    ar.revised_request,
                     r.concern AS purpose_of_request,
                     ar.technical_workoutput, 
+                    fat.problem_reported,
+                    fat.verification_findings,
+                    fat.work_done,
+                    fat.status_workoutput,
+                    fat.recommendation,
                     it.it_desc,
-                    it.itsup,          
-                    CASE 
-        WHEN ar.is_technical = 0 THEN r.date_created 
-        ELSE ar.date_received 
-    END AS date_received,
+                    it.itsup,
                     ar.created_at,
-                    itt.it_desc AS noted_by_desc,       
-                    ar.status          
+                    itt.it_desc AS noted_by_desc,
+                    ar.status
                 FROM asset_requests ar
+                LEFT JOIN fixed_asset_techoutput fat ON ar.ticket_no = fat.ticket_no
                 LEFT JOIN it_tech it ON ar.item_received_by = it.itsup
                 LEFT JOIN reports r ON ar.ticket_no = r.ticket_no
                 LEFT JOIN users u ON r.userId = u.id
                 LEFT JOIN it_tech itt ON ar.noted_by = itt.itsup
-                LEFT JOIN tbl_branch b ON r.store = b.str_num  
-                WHERE ar.status = 'NOTED' 
+                LEFT JOIN tbl_branch b ON r.store = b.str_num
+                WHERE ar.status = 'NOTED'
                   AND (
-                      (ar.is_technical = 0 AND r.status = 'ON PROCESS') 
-                      OR 
+                      (ar.is_technical = 0 AND r.status = 'ON PROCESS')
+                      OR
                       (ar.is_technical = 1)
                   )
                 ORDER BY ar.created_at ASC";
-            
+
     $statement = $this->connection->prepare($query);
     $statement->execute();
     $result = $statement->fetchAll();
     $fetchdata = array();
-    
+
     foreach ($result as $row) {
         $fetchdata[] = array(
-            'ticket_no' => $row["ticket_no"],
-            'str_name' => $row["str_name"],
-            'full_name' => $row['full_name'],
-            'ticket_created' => $row['ticket_created'],
-            'item_code' => $row['item_code'],
-            'description' => $row["description"],
-            'serial_number' => $row["serial_number"],
-			   'is_technical' => $row["is_technical"],
-            'asset_tag_number' => $row["asset_tag_number"],
-            'purpose_of_request' => $row["purpose_of_request"],
-            'technical_workoutput' => $row["technical_workoutput"],
-            'it_desc' => $row["it_desc"],
-            'noted_by_desc' => $row["noted_by_desc"],
-            'date_received' => $row["date_received"],    
-            'status' => $row["status"]
+            'ticket_no' => $row["ticket_no"] ?? '',
+            'str_name' => $row["str_name"] ?? '',
+            'full_name' => $row['full_name'] ?? '',
+            'ticket_created' => $row['ticket_created'] ?? '',
+            'item_code' => $row['item_code'] ?? '',
+            'description' => $row["description"] ?? '',
+            'serial_number' => $row["serial_number"] ?? '',
+            'is_technical' => $row["is_technical"] ?? 0,
+            'asset_tag_number' => $row["asset_tag_number"] ?? '',
+            'purpose_of_request' => $row["purpose_of_request"] ?? '',
+            'technical_workoutput' => $row["technical_workoutput"] ?? '',
+            'revised_request' => $row["revised_request"] ?? '',
+            'problem_reported' => $row["problem_reported"] ?? '',
+            'verification_findings' => $row["verification_findings"] ?? '',
+            'work_done' => $row["work_done"] ?? '',
+            'status_workoutput' => $row["status_workoutput"] ?? '',
+            'recommendation' => $row["recommendation"] ?? '',
+            'it_desc' => $row["it_desc"] ?? '',
+            'noted_by_desc' => $row["noted_by_desc"] ?? '',
+            'date_received' => $row["date_received"] ?? '',
+            'status' => $row["status"] ?? ''
         );
-    }   
-    
-    return array_filter($fetchdata);
+    }
+
+    return array_values(array_filter($fetchdata, static function ($row) {
+        return !empty($row['ticket_no']);
+    }));
 }
 
 	
@@ -226,7 +238,7 @@ public function faprintingthist() {
             LEFT JOIN reports r ON ar.ticket_no = r.ticket_no
             LEFT JOIN users u ON r.userId = u.id
 			  LEFT JOIN it_tech itt ON ar.noted_by = itt.itsup
-            LEFT JOIN tbl_branch b ON r.store = b.str_num  WHERE ar.status IN ('APPROVED')  ORDER BY ar.created_at ASC";
+            LEFT JOIN tbl_branch b ON r.store = b.str_num  WHERE ar.status IN ('VERIFIED')  ORDER BY ar.created_at ASC";
         $statement = $this->connection->prepare($query);
         $statement->execute();
         $result = $statement->fetchAll();
@@ -338,7 +350,6 @@ public function fareportsthist() {
     $mStmt->execute($params); 
     $metrics = $mStmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Primary data selection query
     $query = "SELECT 
                 ar.ticket_no, 
                 b.str_name, 
@@ -352,6 +363,11 @@ public function fareportsthist() {
 				ar.revised_request,
 				ar.is_technical,
 				ar.technical_workoutput,
+				fat.problem_reported,
+				fat.verification_findings,
+				fat.work_done,
+				fat.status_workoutput,
+				fat.recommendation,       
                 it.it_desc,
                 it.itsup,           
                 ar.date_received, 
@@ -359,6 +375,7 @@ public function fareportsthist() {
                 itt.it_desc AS noted_by_desc,        
                 ar.status           
             FROM asset_requests ar
+			LEFT JOIN fixed_asset_techoutput fat ON ar.ticket_no = fat.ticket_no
             LEFT JOIN it_tech it ON ar.item_received_by = it.itsup
             LEFT JOIN reports r ON ar.ticket_no = r.ticket_no
             LEFT JOIN users u ON r.userId = u.id
@@ -385,6 +402,11 @@ public function fareportsthist() {
             'purpose_of_request' => $row["purpose_of_request"],
 			 'revised_request' => $row["revised_request"],
 			  'technical_workoutput' => $row["technical_workoutput"],
+			  'problem_reported' => $row["problem_reported"],
+				'verification_findings' => $row["verification_findings"],
+				'work_done' => $row["work_done"],
+				'status_workoutput' => $row["status_workoutput"],
+				'recommendation' => $row["recommendation"],
               'is_technical'       => $row["is_technical"],
             'it_desc'            => $row["it_desc"],
             'date_received'      => $row["date_received"],    

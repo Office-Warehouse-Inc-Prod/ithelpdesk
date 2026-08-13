@@ -100,8 +100,8 @@ class dbconfig extends dbconn
             $userId = $_POST["uId"];
             $status = $_POST["status"];
             
-            $statement = $this->connection->prepare("INSERT INTO reports (ticket_no, date_created, deptsel, store, concern, service_desc, status, subject, userId, sub_ticket, alu, serial_no, type_unit, pd_tag) 
-                VALUES (:ticket_no, :date_created, :deptsel, :store, :concern, :service_desc, :status, :subject, :userId, :sub_ticket, :alu, :serial_no, :type_unit, :pd_tag)");
+            $statement = $this->connection->prepare("INSERT INTO reports (ticket_no, date_created, deptsel, store, concern, service_desc, status, subject, sub_id, userId, sub_ticket, alu, serial_no, type_unit, pd_tag) 
+                VALUES (:ticket_no, :date_created, :deptsel, :store, :concern, :service_desc, :status, :subject, :sub_id, :userId, :sub_ticket, :alu, :serial_no, :type_unit, :pd_tag)");
             
             $result = $statement->execute(array(
                 ':ticket_no' => $deptabr . '' . $ticknum,
@@ -111,6 +111,7 @@ class dbconfig extends dbconn
                 ':service_desc' => $service_desc,
                 ':status' => $status,
                 ':subject' => strtoupper(trim($_POST["subject"])),
+                ':sub_id' => isset($_POST["subcategory"]) ? $_POST["subcategory"] : null,
                 ':userId' => $userId,
                 ':deptsel' => $_POST["deptsel"],
                 ':sub_ticket' => $deptabr . '' . $ticknum,
@@ -151,8 +152,8 @@ class dbconfig extends dbconn
             $status = $_POST["status"];
             $ticknox = $_POST['ticket_no'];
             
-            $statement = $this->connection->prepare("INSERT INTO reports (ticket_no, date_created, deptsel, store, concern, service_desc, status, subject, userId, sub_ticket, type_unit, pd_tag, multitag) 
-                VALUES (:ticket_no, :date_created, :deptsel, :store, :concern, :service_desc, :status, :subject, :userId, :sub_ticket, :type_unit, :pd_tag, :multitag)");
+            $statement = $this->connection->prepare("INSERT INTO reports (ticket_no, date_created, deptsel, store, concern, service_desc, status, subject, sub_id, userId, sub_ticket, type_unit, pd_tag, multitag) 
+                VALUES (:ticket_no, :date_created, :deptsel, :store, :concern, :service_desc, :status, :subject, :sub_id, :userId, :sub_ticket, :type_unit, :pd_tag, :multitag)");
             
             $result = $statement->execute(array(
                 ':ticket_no' => $deptabr . '' . $ticknum,
@@ -162,6 +163,7 @@ class dbconfig extends dbconn
                 ':service_desc' => $service_desc,
                 ':status' => $status,
                 ':subject' => strtoupper(trim($_POST["subject"])),
+                ':sub_id' => isset($_POST["subcategory"]) ? $_POST["subcategory"] : null,
                 ':userId' => $userId,
                 ':deptsel' => $_POST["deptsel"],
                 ':sub_ticket' => $deptabr . '' . $ticknum,
@@ -194,7 +196,7 @@ class dbconfig extends dbconn
                 $status = $_POST["status"];
                 $computed_ticket = $deptabr . '' . $ticknum;
 
-                $statement = $this->connection->prepare("INSERT INTO reports (ticket_no, date_created, deptsel, store, concern, service_desc, status, subject, userId) VALUES (:ticket_no, :date_created, :deptsel, :store, :concern, :service_desc, :status, :subject, :userId)");
+                $statement = $this->connection->prepare("INSERT INTO reports (ticket_no, date_created, deptsel, store, concern, service_desc, status, subject, sub_id, userId) VALUES (:ticket_no, :date_created, :deptsel, :store, :concern, :service_desc, :status, :subject, :sub_id, :userId)");
                 $result = $statement->execute(array(
                     ':ticket_no' => $computed_ticket,
                     ':date_created' => date('Y-m-d H:i:s'),
@@ -203,6 +205,7 @@ class dbconfig extends dbconn
                     ':service_desc' => $service_desc,
                     ':status' => $status,
                     ':subject' => strtoupper(trim($_POST["subject"])),
+                    ':sub_id' => isset($_POST["subcategory"]) ? $_POST["subcategory"] : null,
                     ':userId' => $userId,
                     ':deptsel' => $_POST["deptsel"]
                 ));
@@ -235,19 +238,22 @@ class dbconfig extends dbconn
             $this->insertrptmessages($ticknum, $deptabr);
             $this->frscommt($ticknum, $deptabr, $userId);
             $this->ticket_trail($ticknum, $deptabr, $status, $userId);
-            if (isset($_POST['fix_asset_completed']) && $_POST['fix_asset_completed'] == '1') {
+            if (isset($_POST['is_fix_asset']) && $_POST['is_fix_asset'] == '1') {
                 $asset_ticket   = $deptabr . '' . $ticknum;
                 $requested_by   = $_POST["uId"]; 
                 $requested_db   = $_POST["sesstr_num"]; 
-                $item_code      = $_POST['fa_item_code'];
-                $serial_num     = $_POST['fa_serial_number'];
-                $description    = $_POST['fa_description'];
+                $item_code      = ''; 
+                $serial_num     = isset($_POST['inline_fa_serial_number']) ? $_POST['inline_fa_serial_number'] : '';
+                $description    = isset($_POST['inline_fa_description_sel']) ? $_POST['inline_fa_description_sel'] : '';
+                if ($description == 'OTHER' || empty($description)) {
+                    $description = isset($_POST['inline_fa_description_txt']) ? $_POST['inline_fa_description_txt'] : $description;
+                }
                 $ticket_created = date('Y-m-d H:i:s');
                 
                 try {
                     $stmt_asset = $this->connection->prepare(
                         "INSERT INTO asset_requests (
-                            ticket_no, requested_by, requested_db, item_code, serial_number,  status, description, ticket_created, is_technical
+                            ticket_no, requested_by, requested_db, item_code, serial_number, status, description, ticket_created, is_technical
                         ) VALUES (
                             :ticket_no, :requested_by, :requested_db, :item_code, :serial_num, :status, :description, :ticket_created, 0
                         )"
@@ -263,7 +269,7 @@ class dbconfig extends dbconn
                         ':ticket_created' => $ticket_created
                     ));
                 } catch (Exception $e) {
-                  
+                    
                 }
             }
 
@@ -633,7 +639,7 @@ class dbconfig extends dbconn
         if ($statement->rowCount() > 0) {
             foreach ($result as $row) {
                 $fetchdata[] = array(
-                    'FDetails' => (trim($row['DESCRIPTION1']) == "") ? "No Data Found" : strtoupper($row["ALU"] . '     ' . $row["LOCAL_UPC"] . '   ' . $row["DESCRIPTION1"]),
+                    'FDetails' => (trim($row['DESCRIPTION1']) == "") ? "No Data Found" : strtoupper($row["ALU"] . '    ' . $row["LOCAL_UPC"] . '  ' . $row["DESCRIPTION1"]),
                     'Price_WT' => (trim($row['Price']) == "") ? "No Data Found" : strtoupper($row["Price"])
                 );
             }

@@ -367,6 +367,7 @@ else{
  }
      echo 'Data has been updated';
 }
+
 if (isset($_POST["operation"]) && $_POST["operation"] === "update_request") {
     
     header('Content-Type: application/json');
@@ -402,10 +403,29 @@ if (isset($_POST["operation"]) && $_POST["operation"] === "update_request") {
             }
         }
 
+         $fileNameToSave = '';
+        if (!empty($_FILES['files']['name'][0])) {
+            $uploadDir = __DIR__ . '/image/';
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0755, true);
+            }
+            $files = $_FILES['files'];
+          
+            if (is_uploaded_file($files['tmp_name'][0])) {
+                $originalName = basename($files['name'][0]);
+                $uniqueName = time() . '_' . preg_replace('/[^A-Za-z0-9._-]/', '_', $originalName);
+                $dest = $uploadDir . $uniqueName;
+                if (move_uploaded_file($files['tmp_name'][0], $dest)) {
+                    $fileNameToSave = 'image/' . $uniqueName;
+                }
+            }
+        }
+
         $statement = $connection->prepare("
             UPDATE asset_requests
             SET
                 serial_number = :serial_number,
+                description = :description,
                 asset_tag_number = :asset_tag_number,
                 revised_request = :revised_request,
                 date_received = :date_received,
@@ -423,6 +443,7 @@ if (isset($_POST["operation"]) && $_POST["operation"] === "update_request") {
         $result = $statement->execute([
             ':serial_number'    => !empty($_POST['serial_number']) ? $_POST['serial_number'] : 'N/A',
             ':asset_tag_number' => !empty($_POST['asset_tag_number']) ? $_POST['asset_tag_number'] : 'N/A',
+            ':description'  => $_POST['description'] ?? '',
             ':revised_request'  => $_POST['revised_request'] ?? '',
             ':date_received'    => $_POST['date_received'] ?? '',
             ':date_validated'   => date('Y-m-d H:i:s'),
@@ -431,10 +452,12 @@ if (isset($_POST["operation"]) && $_POST["operation"] === "update_request") {
             ':technical_workoutput' => $_POST['technical_workoutput'] ?? '',
             ':purpose_of_request' => $_POST['purpose_of_request'] ?? '',
             ':noted_by'         => $final_noted_by,
-            ':approve_method_adminsup'  => '2',
+            ':approve_method_adminsup'  =>$fileNameToSave,
             ':status'           => 'VALIDATED',
             ':ticket_no'        => $ticketNo
         ]);
+
+    
 
         if ($result) {
             $connection->commit();
@@ -461,9 +484,15 @@ if (isset($_POST["operation"]) && $_POST["operation"] === "update_request") {
                             it.itsup,          
                             ar.date_received, 
                             ar.created_at,
-                            ar.noted_by,       
+                            ar.noted_by,
+                            fat.problem_reported,
+                            fat.verification_findings,
+                            fat.work_done,
+                            fat.status_workoutput,
+                            fat.recommendation,            
                             ar.status          
                         FROM asset_requests ar
+                        LEFT JOIN fixed_asset_techoutput fat ON ar.ticket_no = fat.ticket_no
                         LEFT JOIN it_tech it ON ar.item_received_by = it.itsup
                         LEFT JOIN reports r ON ar.ticket_no = r.ticket_no
                         LEFT JOIN users u ON r.userId = u.id
@@ -499,19 +528,52 @@ if (isset($_POST["operation"]) && $_POST["operation"] === "update_request") {
                     $mail->isHTML(true);
                     
                     $mail->Subject = "Asset Request Validated: {$ticketNo}";
+                    
+                    $techWorkOutputHtml = '';
+                    if ($existingRecord && $existingRecord['is_technical'] == 1) {
+                        $techWorkOutputHtml = '
+                        <h1><strong>Technical Work Output</strong></h1>
+                        <table cellpadding="8" cellspacing="0" width="100%" style="border-collapse:collapse;margin-top:10px;">
+                            <tr>
+                                <td style="border:1px solid #cabb89;"><strong>Problem Reported</strong></td>
+                                <td style="border:1px solid #cabb89;">' . nl2br(htmlspecialchars($_POST['problem_reported'] ?? '')) . '</td>
+                            </tr>
+                            <tr>
+                                <td style="border:1px solid #cabb89;"><strong>Verification/Findings</strong></td>
+                                <td style="border:1px solid #cabb89;">' . nl2br(htmlspecialchars($_POST['verification_findings'] ?? '')) . '</td>
+                            </tr>
+                            <tr>
+                                <td style="border:1px solid #cabb89;"><strong>Work Done/Technical Solutions Provided</strong></td>
+                                <td style="border:1px solid #cabb89;">' . nl2br(htmlspecialchars($_POST['work_done'] ?? '')) . '</td>
+                            </tr>
+                            <tr>
+                                <td style="border:1px solid #cabb89;"><strong>Status/Work Output</strong></td>
+                                <td style="border:1px solid #cabb89;">' . htmlspecialchars($_POST['status_workoutput'] ?? '') . '</td>
+                            </tr>
+                            <tr>
+                                <td style="border:1px solid #cabb89;"><strong>Recommendations/Suggestions</strong></td>
+                                <td style="border:1px solid #cabb89;">' . nl2br(htmlspecialchars($_POST['recommendation'] ?? '')) . '</td>
+                            </tr>       
+                            <tr>
+                                <td style="border:1px solid #cabb89;"><strong>Date Created</strong></td>
+                                 <td style="border:1px solid #cabb89;">' . htmlspecialchars($display_created) . '</td>
+                            </tr>
+                        </table>';
+                    }
+
                     $mailBody = '
                     <html>
-                    <body style="margin:0;padding:20px;background:#f4f6f9;font-family:Arial,sans-serif;">
+                    <body style="margin:0;padding:20px;background: #f4f6f9;font-family:Arial,sans-serif;">
                         <table width="700" align="center" cellpadding="0" cellspacing="0" style="background:#ffffff;border:1px solid #cabb89;border-radius:8px;overflow:hidden;">
                             <tr>
-                                <td style="background:#E1AD01;color:#ffffff;padding:18px 24px;font-size:20px;font-weight:bold;">
+                                <td style="background: #E1AD01;color:#ffffff;padding:18px 24px;font-size:20px;font-weight:bold;">
                                     Helpdesk AI: Asset Request Validated
                                 </td>
                             </tr>
                             <tr>
                                 <td style="padding:24px;font-size:14px;color:#333;">
                                     <p>Good day,</p>
-                                    <p>A fixed asset request has been validated and approved. Please see the details below:</p>
+                                    <p>A fixed asset request has been validated by admin support. Please see the details below:</p>
                                     
                                     <table cellpadding="8" cellspacing="0" width="100%" style="border-collapse:collapse;margin-top:10px;">
                                         <tr style="background:#f3e8c3;">
@@ -563,6 +625,8 @@ if (isset($_POST["operation"]) && $_POST["operation"] === "update_request") {
                                             <td style="border:1px solid #cabb89;">' . htmlspecialchars($display_created) . '</td>
                                         </tr>
                                     </table>
+
+                                    ' . $techWorkOutputHtml . '
                                     
                                     <p style="margin-top:20px;">Please log in to the <strong>OWI Helpdesk</strong> to review this asset request.</p>
                                     <div style="text-align:center;margin-top:25px;">
@@ -575,7 +639,7 @@ if (isset($_POST["operation"]) && $_POST["operation"] === "update_request") {
                                 </td>
                             </tr>
                             <tr>
-                                <td style="background:#8bacf6;color:#ffffff;text-align:center;padding:10px;font-size:12px;">
+                                <td style="background: #E1AD01;color:#ffffff;text-align:center;padding:10px;font-size:12px;">
                                     OWI Helpdesk System Notification
                                 </td>
                             </tr>
@@ -701,7 +765,6 @@ if (isset($_POST["operation"]) && $_POST["operation"] === "update_printing_reque
     exit(); 
 }
 
-
 if (isset($_POST["operation"]) && $_POST["operation"] === "save_request") {
     
     header('Content-Type: application/json');
@@ -714,17 +777,19 @@ if (isset($_POST["operation"]) && $_POST["operation"] === "save_request") {
     $status = !empty($_POST['status']) ? $_POST['status'] : null;
     $ticket_no = $_POST['ticket_no'];
     $currentDate = date('Y-m-d H:i:s'); 
+    $techId = $_SESSION['tech_id'] ?? '';
+    $userId = $_SESSION['id'] ?? '7'; 
 
     $allowed_statuses = [
         'PRINTED'   => 'date_printed',
         'RECORDED'  => 'date_recorded',
         'VERIFIED'  => 'date_verified',
         'APPROVED'  => 'date_approved',
+        'REJECTED'   => 'date_rejected',
         'COMPLETED' => 'date_completed'
     ];
 
     try {
-        // Start database transaction
         $connection->beginTransaction();
 
         $sql = "UPDATE asset_requests SET status = :status";
@@ -733,7 +798,6 @@ if (isset($_POST["operation"]) && $_POST["operation"] === "save_request") {
             ':ticket_no' => $ticket_no
         ];
 
-       // Ensure these editable fields are ALSO saved to the database
         $editable_fields = ['serial_number', 'asset_tag_number', 'revised_request', 'date_received'];
         foreach ($editable_fields as $field) {
             if (isset($_POST[$field])) {
@@ -758,7 +822,6 @@ if (isset($_POST["operation"]) && $_POST["operation"] === "save_request") {
         $result = $statement->execute($params);
 
         if ($result) {
-            
             if ($status === 'RECORDED') {
                 $statement2 = $connection->prepare("
                     INSERT INTO tbl_notif (
@@ -771,17 +834,111 @@ if (isset($_POST["operation"]) && $_POST["operation"] === "save_request") {
                 $statement2->execute([
                     ':ticket_no'  => $ticket_no,
                     ':store'      => $_SESSION["str_num"] ?? "",
-                    ':itsup'      => $_SESSION["tech_id"] ?? "",
+                    ':itsup'      => $techId,
                     ':notif_data' => "Fixed asset " . $ticket_no . " has been already validated and recorded and waiting for verification",
                     ':notif_val'  => '7',
                     ':notif_date' => $currentDate
                 ]);
             }
 
+            
+
+            if ($status === 'APPROVED') {
+                $standardRemark = "The Asset Request has been approved by Ma'am Althea Bunachita. The request is currently moving forward to the Purchasing Department for Procurement.";
+
+                $stmtInfo = $connection->prepare("
+                    SELECT ar.item_received_by, r.store 
+                    FROM asset_requests ar 
+                    LEFT JOIN reports r ON ar.ticket_no = r.ticket_no 
+                    WHERE ar.ticket_no = :ticket_no 
+                    LIMIT 1
+                ");
+                $stmtInfo->execute([':ticket_no' => $ticket_no]);
+                $requestInfo = $stmtInfo->fetch(PDO::FETCH_ASSOC);
+                
+                $itemReceivedBy = $requestInfo['item_received_by'] ?? $techId;
+                $storeNum = $requestInfo['store'] ?? ($_SESSION["str_num"] ?? "");
+
+                $stmtReports = $connection->prepare("
+                    UPDATE reports 
+                    SET remarks = :remarks, f_deptsel = 19
+                    WHERE ticket_no = :ticket_no
+                ");
+                $stmtReports->execute([
+                    ':remarks' => $standardRemark,
+                    ':ticket_no' => $ticket_no
+                ]);
+
+                $stmtReassigned = $connection->prepare("
+                    INSERT INTO tbl_reassigned (ticket_no, date_created, itsup, r_remarks, deptsel, f_deptsel) 
+                    VALUES (:ticket_no, :date_created, :itsup, :r_remarks, 1, 19)
+                ");
+                $stmtReassigned->execute([
+                    ':ticket_no' => $ticket_no,
+                    ':date_created' => $currentDate,
+                    ':itsup' => $itemReceivedBy,
+                    ':r_remarks' => $standardRemark
+                ]);
+
+                $stmtLogs = $connection->prepare("
+                    INSERT INTO tbl_reports_transfer_logs (ticket_no, store, itsup, status, created_by, created_at, deptsel) 
+                    VALUES (:ticket_no, :store, :itsup, 'APPROVED', :created_by, :created_at, 2)
+                ");
+                $stmtLogs->execute([
+                    ':ticket_no' => $ticket_no,
+                    ':store' => $storeNum,
+                    ':itsup' => $itemReceivedBy,
+                    ':created_by' => $userId,
+                    ':created_at' => $currentDate
+                ]);
+
+                $stmtRemarks = $connection->prepare("
+                    INSERT INTO reports_remarks (ticket_no, remarks_detail, remarks_date, itsup) 
+                    VALUES (:ticket_no, :remarks_detail, :remarks_date, :itsup)
+                ");
+                $stmtRemarks->execute([
+                    ':ticket_no' => $ticket_no,
+                    ':remarks_detail' => $standardRemark,
+                    ':remarks_date' => $currentDate,
+                    ':itsup' => '78'
+                ]);
+
+                $stmtComments = $connection->prepare("
+                    INSERT INTO reports_comments (ticket_no, comment_details, comment_date, userId) 
+                    VALUES (:ticket_no, :comment_details, :comment_date, :userId)
+                ");
+                $stmtComments->execute([
+                    ':ticket_no' => $ticket_no,
+                    ':comment_details' => $standardRemark,
+                    ':comment_date' => $currentDate,
+                    ':userId' => '414'
+                ]);
+
+                // Reset and Update Notifications
+                $stmtNotifReset = $connection->prepare("
+                    UPDATE tbl_notif 
+                    SET notif_val = 0 
+                    WHERE ticket_no = :ticket_no
+                ");
+                $stmtNotifReset->execute([':ticket_no' => $ticket_no]);
+
+                $stmtNotifInsert = $connection->prepare("
+                    INSERT INTO tbl_notif (ticket_no, store, itsup, notif_data, notif_val, notif_date) 
+                    VALUES (:ticket_no, :store, :itsup, :notif_data, 6, :notif_date)
+                ");
+                $stmtNotifInsert->execute([
+                    ':ticket_no'  => $ticket_no,
+                    ':store'      => $storeNum,
+                    ':itsup'      => $techId,
+                    ':notif_data' => "Fixed asset " . $ticket_no . " has been Approved.",
+                    ':notif_date' => $currentDate
+                ]);
+            }
+
             $connection->commit();
+            
             if ($status === 'PRINTED') {
                 try {
-                   
                     $stmtEmail = $connection->prepare("SELECT email FROM fixed_asset_email WHERE val = '4' LIMIT 1");
                     $stmtEmail->execute();
                     $emailRow = $stmtEmail->fetch(PDO::FETCH_ASSOC);
@@ -932,7 +1089,7 @@ if (isset($_POST["operation"]) && $_POST["operation"] === "save_request") {
                         $mail->send();
                     }
                 } catch (Exception $emailEx) {
-                   
+                   // Handle email exception quietly to protect JSON output
                 }
             }
 

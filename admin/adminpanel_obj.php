@@ -38,6 +38,95 @@ $("#dept_id").on("change", function () {
 }); 
 
 
+ function timeAgo(dateParam) {
+        if (!dateParam) return "";
+        let date = new Date(dateParam.replace(/-/g, "/"));
+        let now = new Date();
+        let seconds = Math.floor((now - date) / 1000);
+        
+        let interval = Math.floor(seconds / 86400);
+        if (interval >= 1) return interval + " day" + (interval === 1 ? "" : "s") + " ago";
+        
+        interval = Math.floor(seconds / 3600);
+        if (interval >= 1) return interval + " hour" + (interval === 1 ? "" : "s") + " ago";
+        
+        interval = Math.floor(seconds / 60);
+        if (interval >= 1) return interval + " minute" + (interval === 1 ? "" : "s") + " ago";
+        
+        return "just now";
+    }
+
+  
+    function loadCommentThread(ticket_no) {
+        const $remarksView = $('#remarks_view');
+        const ticketValue = (ticket_no || '').toString().trim();
+
+        if (!ticketValue) return;
+        
+        $remarksView.fadeOut(150, function() {
+            $remarksView.html('<div class="text-center text-muted mt-4 mb-4"><div class="spinner-border spinner-border-sm me-2 text-primary"></div>Loading conversation...</div>').fadeIn(150);
+        });
+
+        $.ajax({
+            url: 'get_comments.php', 
+            type: 'POST',
+            dataType: 'json',
+            data: { ticket_no: ticketValue },
+            success: function(response) {
+                let html = '';
+                
+                if (Array.isArray(response) && response.length > 0) {
+                    var currentUserIdStr = "<?= $_SESSION['user_id'] ?? '' ?>";
+                    var currentUserNameStr = "<?= $_SESSION['fname'] ?? '' ?>";
+                    let reversedResponse = response.slice().reverse();
+
+                    reversedResponse.forEach(function(comment, index) {
+                        let sender = comment.userId || 'Unknown';
+                        
+                        let isMe = false;
+                        if(currentUserIdStr !== "" && sender === currentUserIdStr) isMe = true;
+                        if(currentUserNameStr !== "" && sender.includes(currentUserNameStr)) isMe = true;
+                        
+                        let bubbleClass = isMe ? 'chat-right' : 'chat-left';
+                        let delay = index * 0.05; 
+                        let relativeTime = timeAgo(comment.comment_date);
+                        let replyTimeColor = isMe ? "color: #e2e8f0;" : "color: #64748b;";
+                        
+                        html += `
+                            <div class="chat-bubble ${bubbleClass}" style="animation-delay: ${delay}s;">
+                                <div class="msg-meta">
+                                    <span class="msg-meta-name">${sender}</span>
+                                    <span class="msg-time">${comment.comment_date}</span> 
+                                </div>
+                                <div style="white-space: pre-wrap;">${comment.comment_details}</div>
+                                
+                                <div class="reply-time" style="font-size: 0.65rem; text-align: right; margin-top: 6px; opacity: 0.85; font-style: italic; ${replyTimeColor}">
+                                    Replied ${relativeTime}
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    html = '<div class="text-center text-muted mt-3" style="font-size:13px;"><i class="fas fa-comments mb-2" style="font-size:24px; opacity:0.5;"></i><br>No comments yet. Start the conversation!</div>';
+                }
+                
+               $remarksView.fadeOut(150, function() {
+                    $remarksView.html(html).fadeIn(300);
+                    $('.dv_msg, .container_remarks').slideDown(300); 
+
+                    setTimeout(() => {
+                        const $container = $('.container_remarks');
+                        if ($container.length) {
+                            $container.animate({ scrollTop: 0 }, 600, 'swing');
+                        }
+                    }, 200);
+                });
+            },
+            error: function(xhr) {
+                $remarksView.html('<div class="text-danger text-center mt-3">Error loading comments.</div>');
+            }
+        });
+    }
 
 
 //for debug purposes enable here
@@ -116,506 +205,728 @@ $('#myInput').on( 'input', function () {
  * Getdata.
  */
 function getdata(yr) {
-    $.post(
-        'fetchdata/fetch_data.php',
-        {
-            yr: yr,
-            dept_id: $('#dept_id').val(),
-            mode: 'dtb'
-        },
-        function (data) {
-            admin_datatable(data);
-        },
-        'json'
-    );
-}
-
-// Reload chart when department changes
-// $('#dept_id').on('change', function () {
-//     const selectedDept = $(this).val();
-//     _overallpie(curyrs, selectedDept);
-//       _areagraph(curyrs);
-//        getdata(curyrs);
-//          get_card_data(curyrs);
-// });
-
-// getdata();
-
-var table
-/**
- * Admin datatable.
- */
-function admin_datatable(t){
-const dataset=t.rptdata;
-table = $("#report_data").DataTable({
-  dom:
-    "<'dt-top d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-2'"+
-      "<'dt-left d-flex align-items-center gap-2'l<f>>" +
-      "<'dt-right d-flex align-items-center gap-2'B>" +
-    ">" +
-    "<'dt-table'rt>" +
-    "<'dt-bottom d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-2'ip>",
-
-  buttons: [
-
-    {
-      extend: 'excelHtml5',
-      text: '<i class="fas fa-file-excel"></i> <span class="d-none d-md-inline">Export</span>',
-      attr: {
-        title: 'Export to Excel',
-        class: 'btn btn-success btn-sm rounded-pill px-3 shadow-sm'
-      }
+        $.post(
+            'fetchdata/fetch_data.php',
+            {
+                yr: yr,
+                dept_id: $('#dept_id').val(),
+                mode: 'dtb'
+            },
+            function (data) {
+                admin_datatable(data);
+            },
+            'json'
+        );
     }
-  ],
 
-  pagingType: "simple_numbers",
-  bDestroy: true,
-  responsive: {
-    details: {
-      type: 'inline',
-      target: 'tr'
+    /**
+     * Getdata Transfer (Added).
+     */
+    function getdata_transfer(yr) {
+        $.post(
+            'fetchdata/fetch_data.php',
+            {
+                yr: yr,
+                dept_id: $('#dept_id').val(),
+                mode: 'dtb_transfer'
+            },
+            function (data) {
+                admin_datatable_transfer(data);
+            },
+            'json'
+        );
     }
-  },
-  lengthChange: false,
-  autoWidth: false,
 
-  language: {
-    search: "",
-    searchPlaceholder: "Search tickets…",
-    zeroRecords: "No matching tickets found",
-    info: "Showing _START_ to _END_ of _TOTAL_ tickets",
-    infoEmpty: "No tickets to show"
-  },
+    var table;
+    var table_transfer;
 
-  pageLength: 10,
-  data: dataset,
-  order: [[5, "desc"]],
+    /**
+     * Admin datatable.
+     */
+    function admin_datatable(t){
+        const dataset = t.rptdata;
+        table = $("#report_data").DataTable({
+            dom:
+                "<'dt-top d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-2'"+
+                "<'dt-left d-flex align-items-center gap-2'l<f>>" +
+                "<'dt-right d-flex align-items-center gap-2'B>" +
+                ">" +
+                "<'dt-table'rt>" +
+                "<'dt-bottom d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-2'ip>",
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    text: '<i class="fas fa-file-excel"></i> <span class="d-none d-md-inline">Export</span>',
+                    attr: {
+                        title: 'Export to Excel',
+                        class: 'btn btn-success btn-sm rounded-pill px-3 shadow-sm'
+                    }
+                }
+            ],
+            pagingType: "simple_numbers",
+            bDestroy: true,
+            responsive: {
+                details: {
+                    type: 'inline',
+                    target: 'tr'
+                }
+            },
+            lengthChange: false,
+            autoWidth: false,
+            language: {
+                search: "",
+                searchPlaceholder: "Search tickets…",
+                zeroRecords: "No matching tickets found",
+                info: "Showing _START_ to _END_ of _TOTAL_ tickets",
+                infoEmpty: "No tickets to show"
+            },
+            pageLength: 10,
+            data: dataset,
+            order: [[5, "desc"]],
+            columns: [
+                {
+                    title: "Actions",
+                    data: null,
+                    orderable: false,
+                    width: "130px", // ⭐ VERY IMPORTANT
+                    className: "text-center",
+                    render: function(data, type, row){
+                        // ✏️ EDIT
+                        let editBtn = `
+                            <button class='btn btn-circle btn-edit'
+                                    name='update'
+                                    title='Edit Ticket'>
+                                <i class='fas fa-pen'></i>
+                            </button>
+                        `;
 
-  columns: [
-{
-    title: "Actions",
-    data: null,
-    orderable:false,
-    width:"130px", // ⭐ VERY IMPORTANT
-    className:"text-center",
-render:function(data,type,row){
+                        // 📞 VIBER
+                        let viberBtn = row.contactNumber
+                            ? `
+                                <a href="#"
+                                    class="btn btn-circle btn-viber viber-call"
+                                    data-ticket_no="${row.ticket_no}"
+                                    data-dept_id="${row.f_deptsel}"
+                                    data-number="${row.contactNumber}"
+                                    title="Call via Viber">
+                                    <i class="fab fa-viber"></i>
+                                </a>
+                              `
+                            : `
+                                <button class="btn btn-circle btn-disabled"
+                                        disabled
+                                        title="No Contact Number">
+                                    <i class="fab fa-viber"></i>
+                                </button>
+                              `;
 
-    // ✏️ EDIT
-    let editBtn = `
-        <button class='btn btn-circle btn-edit'
-                name='update'
-                title='Edit Ticket'>
-            <i class='fas fa-pen'></i>
-        </button>
-    `;
+                        // ✉️ EMAIL
+                        let emailBtn = row.dept_email
+                            ? `
+                                <a href="mailto:${row.dept_email}?subject=Helpdesk Ticket ${row.ticket_no}"
+                                    class="btn btn-circle btn-email"
+                                    title="Send Email">
+                                    <i class="fas fa-envelope"></i>
+                                </a>
+                              `
+                            : `
+                                <button class="btn btn-circle btn-disabled"
+                                        disabled
+                                        title="No Email">
+                                    <i class="fas fa-envelope"></i>
+                                </button>
+                              `;
 
-    // 📞 VIBER
-    let viberBtn = row.contactNumber
-        ? `
-  <a href="#"
-     class="btn btn-circle btn-viber viber-call"
-     data-ticket_no="${row.ticket_no}"
-     data-dept_id="${row.f_deptsel}"
-     data-number="${row.contactNumber}"
-     title="Call via Viber">
-      <i class="fab fa-viber"></i>
-  </a>
-          `
-        : `
-            <button class="btn btn-circle btn-disabled"
-                    disabled
-                    title="No Contact Number">
-                <i class="fab fa-viber"></i>
-            </button>
-          `;
+                        return `
+                            <div class="action-btn-group">
+                                ${editBtn}
+                                ${viberBtn}
+                                ${emailBtn}
+                            </div>
+                        `;
+                    }
+                },
+                {
+                    title: "",
+                    data: "msg_cnt",
+                    className: "text-center",
+                    defaultContent: "",
+                    render: function (data, type, row) {
+                        if (type === 'display') {
+                            return (String(data) === '1')
+                                ? "<span title='New message'><i class='fas fa-envelope'></i></span>"
+                                : "";
+                        }
+                        return data;
+                    }
+                },
+                { title: "Ticket No", data: "ticket_no", defaultContent: "" },
+                { 
+                    title: "Priority Level", 
+                    data: "priority_desc", 
+                    defaultContent: "",
+                    render: function (data, type, row) {
+                        if (type !== 'display') return data;
+                        const s = (data || "").toUpperCase();
+                        let cls = "badge bg-secondary";
 
-    // ✉️ EMAIL
-    let emailBtn = row.dept_email
-        ? `
-            <a href="mailto:${row.dept_email}?subject=Helpdesk Ticket ${row.ticket_no}"
-               class="btn btn-circle btn-email"
-               title="Send Email">
-                <i class="fas fa-envelope"></i>
-            </a>
-          `
-        : `
-            <button class="btn btn-circle btn-disabled"
-                    disabled
-                    title="No Email">
-                <i class="fas fa-envelope"></i>
-            </button>
-          `;
+                        if (s === "CRITICAL") cls = "badge bg-danger";
+                        else if (s === "HIGH") cls = "badge bg-warning text-dark";
+                        else if (s === "MEDIUM") cls = "badge bg-warning text-dark";
+                        else if (s === "LOW") cls = "badge bg-info text-dark";
 
-    return `
-        <div class="action-btn-group">
-            ${editBtn}
-            ${viberBtn}
-            ${emailBtn}
-        </div>
-    `;
-}
-},
+                        return `<span class="${cls} px-2 py-1">${data}</span>`;
+                    }
+                },
+                { title: "Store", data: "str_code", defaultContent: "" },
+                {
+                    title: "Date Created",
+                    data: "date_created",
+                    defaultContent: "",
+                    render: function(data, type, row){
+                        if(type === 'sort' || type === 'type'){
+                            let parts = data.split(" ");
+                            let date = parts[0].split("/");
+                            let time = parts[1];
+                            return date[2] + "-" + date[0] + "-" + date[1] + " " + time;
+                        }
+                        return data; 
+                    }
+                },
+                { title: "Subject", data: "subject", defaultContent: "" },
+                {
+                    title: "Status",
+                    data: "status",
+                    defaultContent: "",
+                    render: function (data, type, row) {
+                        if (type !== 'display') return data;
 
-    {
-      title: "",
-      data: "msg_cnt",
-      className: "text-center",
-      defaultContent: "",
-      render: function (data, type, row) {
-        if (type === 'display') {
-          return (String(data) === '1')
-            ? "<span title='New message'><i class='fas fa-envelope'></i></span>"
-            : "";
+                        const s = (data || "").toUpperCase();
+                        let cls = "badge bg-secondary";
+
+                        if (s === "ASSIGNED") cls = "badge bg-warning text-dark";
+                        else if (s === "CLOSED") cls = "badge bg-success text-white";
+                        else if (s === "SUBJECT FOR CLOSING") cls = "badge bg-primary text-white";
+                        else if (s === "ON PROCESS") cls = "badge bg-info";
+                        else if (s === "ATTENDED WITH FIX ASSET") cls = "badge bg-info text-dark";
+                        else if (s === "PENDING") cls = "badge bg-danger text-white";
+
+                        return `<span class="${cls} px-2 py-1">${data}</span>`;
+                    }
+                },
+                {
+                    title: "Non Escalated",
+                    data: "non_escalated_tag",
+                    defaultContent: "",
+                    visible: false,
+                    searchable: true
+                },
+                {
+                    title: "Assigned Dept",
+                    data: null,
+                    defaultContent: "",
+                    render: function (data, type, row) {
+                        const dept = row.dept_desc || row.it_desc || "";
+                        return dept;
+                    }
+                },
+                { title: "Dept Personnel", data: "category", defaultContent: "" },
+                {
+                    title: "Date Closed",
+                    data: "date_closed",
+                    defaultContent: "",
+                    render: function (data, type, row) {
+                        if (type !== 'display') return data;
+                        if (!data) return "";
+                        if (data === "01/01/1970 01:00" || data === "01/01/1970 08:00") return "";
+                        return data;
+                    }
+                },
+                {
+                    title: "Days",
+                    data: "tdc",
+                    defaultContent: "",
+                    render: function (data, type, row) {
+                        if (type !== 'display') return data;
+                        if (data === null || data === undefined || data === "") return "";
+                        const n = parseInt(data, 10);
+                        if (isNaN(n) || n < 0) return "";
+                        const isOpen = (row.status || '').toUpperCase() !== 'CLOSED';
+                        const dayWord = (n === 1) ? "Day" : "Days";
+                        return isOpen ? `${n} ${dayWord} Unresolved` : `${n} ${dayWord}`;
+                    }
+                },
+                {
+                    title: "Work Output",
+                    data: "remarks",
+                    defaultContent: "",
+                    render: function (data, type, row) {
+                        if (type !== 'display') return data;
+                        if (!data) return "";
+                        const txt = String(data);
+                        return txt.length > 60 ? (txt.slice(0, 60) + "…") : txt;
+                    }
+                }
+            ],
+            rowCallback: function (row, data) {
+                $(row).removeClass('status-open status-closed status-subject-closing status-fixed');
+                const s = (data['status'] || "").toUpperCase();
+
+                if (s === 'ASSIGNED') $(row).addClass('status-open');
+                else if (s === 'ON PROCESS') $(row).addClass('status-fixed');
+                else if (s === 'CLOSED') $(row).addClass('status-closed');
+                else if (s === 'SUBJECT FOR CLOSING') $(row).addClass('status-subject-closing');
+            }
+        });
+
+        $('#report_data tbody').off('dblclick').on('dblclick', 'tr', function () {
+            var data = table.row($(this)).data();
+            if (!data) return;
+            open_ticket_modal(data);
+            
+            // Retained additional manual bindings for main table
+            $('#subjct').attr('readonly', true);
+            var tid = $(this).find('td:eq(2)').html(); 
+            $('#ticket_no').val(data['ticket_no']);
+            $('#f_deptsel').val(data['f_deptsel']);  
+            $('#str_num').val(data['store']);
+            $('#store').val(data['store']);
+            $('#date_createdx').val(data['date_created']);
+            $('#subjct').val(data['subject']);
+            $('#concern').val(data['concern']);
+            $('#status').val(data['status']);
+            $('#non_escalated_tag').val(data['non_escalated_tag']);
+            $('#priority_desc').val(data['priority_desc']);
+            $('#close_by').val(data['close_by']);
+
+            admin_hideshowforms();
+            $('#date_closed').val(data['date_closed']);
+            $('#remarks').val(data['remarks']);
+
+            if($('#status').val() == 'CLOSED') {
+                $(':input[type="submit"]').prop('disabled', true); 
+                $('#date_createdx, #date_refNo, #date_closed, #remarks').attr('readonly', true);
+                $('#store, #via, #status, #itsup, #cat, #sub, #isp').prop("disabled", true);
+            } else {
+                $(':input[type="submit"]').prop('disabled', false); 
+                $('#date_createdx, #date_refNo, #date_closed, #remarks').attr('readonly', false);
+                $('#store, #via, #status, #itsup, #cat, #sub, #isp').prop("disabled", false);
+            }
+
+            var option = document.createElement("option");
+            option.value = 0;
+            option.id = 'tmpsubid';
+            option.selected = 'selected';
+            option.text = $(this).find('td:eq(10)').html();
+
+            getinfo(tid, 'remarks', user_id);
+
+            $('.modal-title').text("Ticket Number: " + tid);
+            $('#action').val("Save and Reply");
+            $('#operation').val("Save and Reply"); 
+            $('#userModal').modal({ "show": true, "backdrop": 'static' });
+
+            var valtick = $('#ticket_no').val();
+            $.ajax({
+                type: 'POST',
+                url: 'sesticket.php',
+                data: {tktval: valtick},
+                success: function(response) {
+                    $('#img').html(response);
+                }
+            });
+
+            $('#msgbtn').show();
+            $('#msg_thread').show();
+            $('.dv_msg').show();
+            $('#remarks_view').show();
+            $('#addmsg').val("");
+        });
+        
+        // Also bind the edit button to open the modal
+        $('#report_data tbody').off('click', '.btn-edit').on('click', '.btn-edit', function (e) {
+            e.preventDefault();
+            var data = table.row($(this).closest('tr')).data();
+            if (!data) return;
+            open_ticket_modal(data);
+        });
+
+        // Retain dashboard card filtering clicks
+        $('#card_totalval').on('click', function () {
+            var val =  $(this).attr("value");
+            table.columns( 7 ).search(val).draw();
+        });
+        $('#card_assigned').on('click', function () {
+            var val =  $(this).attr("value");
+            table.columns( 7 ).search(val).draw();
+        });
+        $('#card_onprocess').on('click', function () {
+            var val =  $(this).attr("value");
+            table.columns( 7 ).search(val).draw();
+        });
+        $('#card_pending').on('click', function () {
+            var val =  $(this).attr("value");
+            table.columns( 7 ).search(val).draw();
+        });
+        $('#card_nonesca').on('click', function () {
+            var val =  $(this).attr("value");
+            table.columns( 7 ).search(val).draw();
+        });
+        $('#card_subforclosing').on('click', function () {
+            var val =  $(this).attr("value");
+            table.columns( 7 ).search(val).draw();
+        });
+        $('#card_closed').on('click', function () {
+            var val =  $(this).attr("value");
+            table.columns( 7 ).search(val).draw();
+        });
+
+        $('.clcktxt').click(function () { 
+            var val =  $(this).attr("value");
+            table.columns(7).search(val).draw();
+            $('#network_tb').slideToggle();
+            $('html, body').animate({ scrollTop: 1600 }, 1000);
+        });
+    }
+
+    /**
+     * Admin datatable for Transferred (Added).
+     */
+    function admin_datatable_transfer(t) {
+        const dataset = t.transferdata;
+        table_transfer = $("#transferred_data").DataTable({
+            dom:
+                "<'dt-top d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-2'"+
+                "<'dt-left d-flex align-items-center gap-2'l<f>>" +
+                "<'dt-right d-flex align-items-center gap-2'B>" +
+                ">" +
+                "<'dt-table'rt>" +
+                "<'dt-bottom d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-2'ip>",
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    text: '<i class="fas fa-file-excel"></i> <span class="d-none d-md-inline">Export Transferred</span>',
+                    attr: {
+                        title: 'Export Transferred Tickets',
+                        class: 'btn btn-success btn-sm rounded-pill px-3 shadow-sm'
+                    }
+                }
+            ],
+            pagingType: "simple_numbers",
+            bDestroy: true,
+            responsive: {
+                details: {
+                    type: 'inline',
+                    target: 'tr'
+                }
+            },
+            lengthChange: false,
+            autoWidth: false,
+            language: {
+                search: "",
+                searchPlaceholder: "Search transferred...",
+                zeroRecords: "No matching tickets found",
+                info: "Showing _START_ to _END_ of _TOTAL_ tickets",
+                infoEmpty: "No tickets to show"
+            },
+            pageLength: 10,
+            data: dataset,
+            order: [[5, "desc"]],
+            columns: [
+                {
+                    title: "Actions",
+                    data: null,
+                    orderable: false,
+                    width: "130px",
+                    className: "text-center",
+                    render: function(data, type, row){
+                        let editBtn = `
+                            <button class='btn btn-circle btn-edit' name='update' title='Edit Ticket'>
+                                <i class='fas fa-pen'></i>
+                            </button>
+                        `;
+
+                        let viberBtn = row.contactNumber
+                            ? `<a href="#" class="btn btn-circle btn-viber viber-call" data-ticket_no="${row.ticket_no}" data-dept_id="${row.f_deptsel}" data-number="${row.contactNumber}" title="Call via Viber"><i class="fab fa-viber"></i></a>`
+                            : `<button class="btn btn-circle btn-disabled" disabled title="No Contact Number"><i class="fab fa-viber"></i></button>`;
+
+                        let emailBtn = row.dept_email
+                            ? `<a href="mailto:${row.dept_email}?subject=Helpdesk Ticket ${row.ticket_no}" class="btn btn-circle btn-email" title="Send Email"><i class="fas fa-envelope"></i></a>`
+                            : `<button class="btn btn-circle btn-disabled" disabled title="No Email"><i class="fas fa-envelope"></i></button>`;
+
+                        return `<div class="action-btn-group">${editBtn}${viberBtn}${emailBtn}</div>`;
+                    }
+                },
+                {
+                    title: "",
+                    data: "msg_cnt",
+                    className: "text-center",
+                    defaultContent: "",
+                    render: function (data, type, row) {
+                        if (type === 'display') return (String(data) === '1') ? "<span title='New message'><i class='fas fa-envelope'></i></span>" : "";
+                        return data;
+                    }
+                },
+                { title: "Ticket No", data: "ticket_no", defaultContent: "" },
+                { 
+                    title: "Priority Level", 
+                    data: "priority_desc", 
+                    defaultContent: "",
+                    render: function (data, type, row) {
+                        if (type !== 'display') return data;
+                        const s = (data || "").toUpperCase();
+                        let cls = "badge bg-secondary";
+
+                        if (s === "CRITICAL") cls = "badge bg-danger";
+                        else if (s === "HIGH") cls = "badge bg-warning text-dark";
+                        else if (s === "MEDIUM") cls = "badge bg-warning text-dark";
+                        else if (s === "LOW") cls = "badge bg-info text-dark";
+
+                        return `<span class="${cls} px-2 py-1">${data}</span>`;
+                    }
+                },
+                { title: "Store", data: "str_code", defaultContent: "" },
+                {
+                    title: "Date Created",
+                    data: "date_created",
+                    defaultContent: "",
+                    render: function(data, type, row){
+                        if(type === 'sort' || type === 'type'){
+                            let parts = data.split(" ");
+                            let date = parts[0].split("/");
+                            let time = parts[1];
+                            return date[2] + "-" + date[0] + "-" + date[1] + " " + time;
+                        }
+                        return data; 
+                    }
+                },
+                { title: "Subject", data: "subject", defaultContent: "" },
+                {
+                    title: "Status",
+                    data: "status",
+                    defaultContent: "",
+                    render: function (data, type, row) {
+                        if (type !== 'display') return data;
+
+                        const s = (data || "").toUpperCase();
+                        let cls = "badge bg-secondary";
+
+                        if (s === "ASSIGNED") cls = "badge bg-warning text-dark";
+                        else if (s === "CLOSED") cls = "badge bg-success text-white";
+                        else if (s === "SUBJECT FOR CLOSING") cls = "badge bg-primary text-white";
+                        else if (s === "ON PROCESS") cls = "badge bg-info";
+                        else if (s === "ATTENDED WITH FIX ASSET") cls = "badge bg-info text-dark";
+                        else if (s === "PENDING") cls = "badge bg-danger text-white";
+
+                        return `<span class="${cls} px-2 py-1">${data}</span>`;
+                    }
+                },
+                { title: "Non Escalated", data: "non_escalated_tag", defaultContent: "", visible: false, searchable: true },
+                {
+                    title: "Assigned Dept",
+                    data: null,
+                    defaultContent: "",
+                    render: function (data, type, row) {
+                        return row.dept_desc || row.it_desc || "";
+                    }
+                },
+                { title: "Dept Personnel", data: "category", defaultContent: "" },
+                {
+                    title: "Date Closed",
+                    data: "date_closed",
+                    defaultContent: "",
+                    render: function (data, type, row) {
+                        if (type !== 'display') return data;
+                        if (!data || data === "01/01/1970 01:00" || data === "01/01/1970 08:00") return "";
+                        return data;
+                    }
+                },
+                {
+                    title: "Days",
+                    data: "tdc",
+                    defaultContent: "",
+                    render: function (data, type, row) {
+                        if (type !== 'display') return data;
+                        if (data === null || data === undefined || data === "") return "";
+                        const n = parseInt(data, 10);
+                        if (isNaN(n) || n < 0) return "";
+                        const isOpen = (row.status || '').toUpperCase() !== 'CLOSED';
+                        const dayWord = (n === 1) ? "Day" : "Days";
+                        return isOpen ? `${n} ${dayWord} Unresolved` : `${n} ${dayWord}`;
+                    }
+                },
+                {
+                    title: "Work Output",
+                    data: "remarks",
+                    defaultContent: "",
+                    render: function (data, type, row) {
+                        if (type !== 'display') return data;
+                        if (!data) return "";
+                        const txt = String(data);
+                        return txt.length > 60 ? (txt.slice(0, 60) + "…") : txt;
+                    }
+                }
+            ],
+            rowCallback: function (row, data) {
+                $(row).removeClass('status-open status-closed status-subject-closing status-fixed');
+                const s = (data['status'] || "").toUpperCase();
+
+                if (s === 'ASSIGNED') $(row).addClass('status-open');
+                else if (s === 'ON PROCESS') $(row).addClass('status-fixed');
+                else if (s === 'CLOSED') $(row).addClass('status-closed');
+                else if (s === 'SUBJECT FOR CLOSING') $(row).addClass('status-subject-closing');
+            }
+        });
+
+        $('#transferred_data tbody').off('dblclick').on('dblclick', 'tr', function () {
+            var data = table_transfer.row($(this)).data();
+            if (!data) return;
+            open_ticket_modal(data);
+        });
+
+        $('#transferred_data tbody').off('click', '.btn-edit').on('click', '.btn-edit', function (e) {
+            e.preventDefault();
+            var data = table_transfer.row($(this).closest('tr')).data();
+            if (!data) return;
+            open_ticket_modal(data);
+        });
+    }
+
+    function open_ticket_modal(data) {
+        var tid = data['ticket_no'];
+        $('#status').html(window.originalStatusOptions);
+
+        if (data['status'] === 'ON PROCESS') {
+            $('#status').html(
+                '<option value="ON PROCESS" style="color: #333;">ON PROCESS</option>' +
+                '<option value="PENDING" style="color: #333;">PENDING</option>' +
+                '<option value="SUBJECT FOR CLOSING" style="color: #333;">SUBJECT FOR CLOSING</option>'
+            );
+        } else if (data['status'] === 'PENDING') {
+            $('#status').html(
+                '<option value="PENDING" style="color: #333;">PENDING</option>' +
+                '<option value="SUBJECT FOR CLOSING" style="color: #333;">SUBJECT FOR CLOSING</option>'
+            );
         }
-        return data;
-      }
-    },
-    { title: "Ticket No", data: "ticket_no", defaultContent: "" },
-    { title: "Priority Level", data: "priority_desc", defaultContent: "",
-      render: function (data, type, row) {
-        if (type !== 'display') return data;
-        const s = (data || "").toUpperCase();
-        let cls = "badge bg-secondary";
 
-        if (s === "CRITICAL") cls = "badge bg-danger";
-        else if (s === "HIGH") cls = "badge bg-warning text-dark";
-        else if (s === "MEDIUM") cls = "badge bg-warning text-dark";
-        else if (s === "LOW") cls = "badge bg-info text-dark";
+        $('#subjct').attr('readonly', true);
+        $('#ticket_no').val(data['ticket_no']);
+        $('#str_num').val(data['store']);
+        $('#store').val(data['store']);
+        $('#date_createdx').val(data['date_created']);
+        $('#subjct').val(data['subject']);
+        $('#concern').val(data['concern']);
+        $('#via').val(data['via']);
+        $('#status').val(data['status']);
+        $('#it_num').val(data['itsup']);
+        
+        console.log("Ticket: " + data['ticket_no'] + " | is_transfer raw value: ", data['is_transfer']);
+        
+        var isTransferValue = parseInt($.trim(data['is_transfer'])) === 1;
 
-        return `<span class="${cls} px-2 py-1">${data}</span>`;
-      }
-    },
-    { title: "Store", data: "str_code", defaultContent: "" },
-    // { title: "Date Created", data: "date_created", defaultContent: "" },
-      {
-  title:"Date Created",
-  data:"date_created",
-  defaultContent:"",
-  render: function(data, type, row){
+        $('#userModal #is_transfer').prop('checked', isTransferValue).trigger('change');
+        if (data['itsup'] && $('#itsup option[value="' + data['itsup'] + '"]').length === 0) {
+            $('<option>', {
+                value: data['itsup'],
+                text: data['it_desc'] ? data['it_desc'] : 'Support ID ' + data['itsup'],
+                class: 'temp-option'
+            }).appendTo('#itsup');
+        }
+        $('#itsup').val(data['itsup']);
 
-      if(type === 'sort' || type === 'type'){
-          // Convert MM/DD/YYYY HH:MM:SS to YYYY-MM-DD HH:MM:SS
-          let parts = data.split(" ");
-          let date = parts[0].split("/");
-          let time = parts[1];
+        $('#cat_num').val(data['cat_id']);
+        $('#close_by').val(data['close_by']);
+        $('#cl_desc').val(data['clusers']);
 
-          return date[2] + "-" + date[0] + "-" + date[1] + " " + time;
-      }
+        if (data['cat_id'] && $('#cat option[value="' + data['cat_id'] + '"]').length === 0) {
+            $('<option>', {
+                value: data['cat_id'],
+                text: data['category'] ? data['category'] : 'Category ID ' + data['cat_id'],
+                class: 'temp-option'
+            }).appendTo('#cat');
+        }
+        $('#cat').val(data['cat_id']);
 
-      return data; // display normally
-  }
-},
-    
-    { title: "Subject", data: "subject", defaultContent: "" },
-    // { title: "Via", data: "via", defaultContent: "" },
+        $('#sub_num').val(data['sub_id']);
+        if (data['sub_id'] && $('#sub option[value="' + data['sub_id'] + '"]').length === 0) {
+            $('<option>', {
+                value: data['sub_id'],
+                text: data['sub_category'] ? data['sub_category'] : 'Sub Category ID ' + data['sub_id'],
+                class: 'temp-option'
+            }).appendTo('#sub');
+        }
+        $('#sub').val(data['sub_id']);
+        $('#isp_num').val(data['isp_id']);
+        $('#isp').val(data['isp_id']);
+        $('#refNo').val(data['refNo']);
+        $('#date_refNo').val(data['date_refNo']);
+        $('#file-input').val("");
+        
+        if(typeof admin_hideshowforms === "function") admin_hideshowforms();
+        
+        $('#date_closed').val(data['date_closed']);
+        $('#remarks').val(data['remarks']);
+        
+        $('#remarks_view').show();
+        $('.dv_msg').show();
+        $('.container_remarks').show();
+        $('#msg_thread').slideDown(300);
+        $('#userModal').modal({ "show": true, "backdrop": 'static' });
+        loadCommentThread(data['ticket_no']);
+        
+        if(typeof unilayout_netshowmodalform === "function") unilayout_netshowmodalform();
 
-    // ✅ Status pill badge (modern + readable)
-    {
-      title: "Status",
-      data: "status",
-      defaultContent: "",
-      render: function (data, type, row) {
-        if (type !== 'display') return data;
+        $('#itsup').off('change').on('change', function () {
+            var itfrstsup = $('#it_num').val();
+            var itchange = this.value;
+            if (itfrstsup != itchange) {
+                $('#remarks').attr("placeholder", "Reason for re-assign/ Workoutput");
+                $('#remarks').val("");
+            } else {
+                $('#remarks').val(data['remarks']);
+            }
+        });
 
-        const s = (data || "").toUpperCase();
-        let cls = "badge bg-secondary";
+        if ($('#status').val() == 'CLOSED') {
+            $(':input[type="submit"]').prop('disabled', true);
+            $('#date_createdx, #date_refNo, #date_closed, #remarks').attr('readonly', true);
+            $('#store, #via, #status, #itsup, #cat, #sub, #isp, #is_transfer').prop("disabled", true);
+        } else {
+            $(':input[type="submit"]').prop('disabled', false);
+            $('#date_createdx, #date_refNo, #date_closed, #subjct, #remarks').attr('readonly', false);
+            $('#store, #via, #status, #itsup, #cat, #sub, #isp, #is_transfer').prop("disabled", false);
+        }
 
-        if (s === "ASSIGNED") cls = "badge bg-warning text-dark";
-        else if (s === "CLOSED") cls = "badge bg-success text-white";
-        else if (s === "SUBJECT FOR CLOSING") cls = "badge bg-primary text-white";
-        else if (s === "ON PROCESS") cls = "badge bg-info";
-        else if (s === "ATTENDED WITH FIX ASSET") cls = "badge bg-info text-dark";
-        else if (s === "PENDING") cls = "badge bg-danger text-white";
+        if (typeof getinfo === "function") getinfo(tid, 'remarks', user_id);
+        if (typeof gtsub_id === "function") gtsub_id();
 
-        return `<span class="${cls} px-2 py-1">${data}</span>`;
-      }
-    },
-    {
-      title: "Non Escalated",
-      data: "non_escalated_tag",
-      defaultContent: "",
-      visible: false,
-      searchable: true
-    },
+        $('.modal-title').text("Ticket Number: " + tid);
+        $('#action').val("Save and Reply");
+        $('#operation').val("Save and Reply");
+        $('#userModal').modal({ "show": true, "backdrop": 'static' });
 
-    // ✅ Assigned Department (new) with fallback to old it_desc
-    {
-      title: "Assigned Dept",
-      data: null,
-      defaultContent: "",
-      render: function (data, type, row) {
-        const dept = row.dept_desc || row.it_desc || "";
-        return dept;
-      }
-    },
-    { title: "Dept Personnel", data: "category", defaultContent: "" },
+        $.ajax({
+            type: 'POST',
+            url: 'sesticket.php',
+            data: { tktval: data['ticket_no'] },
+            success: function (response) {
+                $('#img').html(response);
+            }
+        });
 
-    // { title: "Category", data: "category", defaultContent: "" },
-    // { title: "Subcategory", data: "sub_category", defaultContent: "" },zz
-
-    // Date Closed clean
-    {
-      title: "Date Closed",
-      data: "date_closed",
-      defaultContent: "",
-      render: function (data, type, row) {
-        if (type !== 'display') return data;
-
-        if (!data) return "";
-        if (data === "01/01/1970 01:00" || data === "01/01/1970 08:00") return "";
-        return data;
-      }
-    },
-
-    // Days Completion clean + human-friendly
-{
-  title: "Days",
-  data: "tdc",
-  defaultContent: "",
-  render: function (data, type, row) {
-    // keep sorting numeric
-    if (type !== 'display') return data;
-
-    if (data === null || data === undefined || data === "") return "";
-
-    const n = parseInt(data, 10);
-    if (isNaN(n) || n < 0) return "";
-
-    const isOpen = (row.status || '').toUpperCase() !== 'CLOSED';
-    const dayWord = (n === 1) ? "Day" : "Days";
-
-    return isOpen ? `${n} ${dayWord} Unresolved` : `${n} ${dayWord}`;
-  }
-},
-
-
-    {
-      title: "Work Output",
-      data: "remarks",
-      defaultContent: "",
-      render: function (data, type, row) {
-        if (type !== 'display') return data;
-        if (!data) return "";
-        // compact view
-        const txt = String(data);
-        return txt.length > 60 ? (txt.slice(0, 60) + "…") : txt;
-      }
+        $('#msgbtn').show();
+        $('#msg_thread').show();
+        $('#addmsg').val("");
     }
-  ],
 
-  rowCallback: function (row, data) {
-    // reset classes
-    $(row).removeClass('status-open status-closed status-subject-closing status-fixed');
+    $('#store_graph_modal').modal('hide'); 
 
-    const s = (data['status'] || "").toUpperCase();
+    if(typeof admin_hideshowforms === "function") admin_hideshowforms();  
 
-    if (s === 'ASSIGNED') $(row).addClass('status-open');
-    else if (s === 'ON PROCESS') $(row).addClass('status-fixed');
-    else if (s === 'CLOSED') $(row).addClass('status-closed');
-    else if (s === 'SUBJECT FOR CLOSING') $(row).addClass('status-subject-closing');
-  }
-});
-
-
-$('#report_data tbody').on('dblclick', 'tr', function () {
-
-  // Simulate the original `button` click by using this `tr` as parent
-  var data = table.row($(this)).data();
-  if (!data) return;
-  // console.log(data);
-  $('#subjct').attr('readonly', true);
-  var tid = $(this).find('td:eq(2)').html(); 
-  $('#ticket_no').val(data['ticket_no']);
-  // $('#f_deptsel').val(data['f_deptsel']); // new 
-  $('#f_deptsel').val(data['f_deptsel']); // new 
-  
-  $('#str_num').val(data['store']);
-  $('#store').val(data['store']);
-  $('#date_createdx').val(data['date_created']);
-  $('#subjct').val(data['subject']);
-  $('#concern').val(data['concern']);
-  // $('#via').val(data['via']);
-  $('#status').val(data['status']);
-  $('#non_escalated_tag').val(data['non_escalated_tag']);
-  // console.log(data['priority_desc']);
-  $('#priority_desc').val(data['priority_desc']);
-  $('#close_by').val(data['close_by']);
-
-  admin_hideshowforms();
-  $('#date_closed').val(data['date_closed']);
-  $('#remarks').val(data['remarks']);
-  // $('#remarks').val('');
-  // unilayout_netshowmodalform();
-
-
-
-  if($('#status').val() == 'CLOSED') {
-    $(':input[type="submit"]').prop('disabled', true); 
-    $('#date_createdx').attr('readonly', true);
-    $('#date_refNo').attr('readonly', true);
-    $('#date_closed').attr('readonly', true);
-    $('#store').prop("disabled", true);
-    $('#via').prop("disabled", true);
-    $('#status').prop("disabled", true);
-    $('#itsup').prop("disabled", true);
-    $('#cat').prop("disabled", true);
-    $('#sub').prop("disabled", true);
-    $('#isp').prop("disabled", true);
-    $('#remarks').attr('readonly', true);
-  } else {
-    $(':input[type="submit"]').prop('disabled', false); 
-    $('#date_createdx').attr('readonly', false);
-    $('#date_refNo').attr('readonly', false);
-    $('#date_closed').attr('readonly', false);
-    $('#store').prop("disabled", false);
-    $('#via').prop("disabled", false);
-    $('#status').prop("disabled", false);
-    $('#itsup').prop("disabled", false);
-    $('#cat').prop("disabled", false);
-    $('#sub').prop("disabled", false);
-    $('#isp').prop("disabled", false);
-    $('#remarks').attr('readonly', false);
-  }
-
-  // ✅ Retained block as requested
-  // var sst = document.querySelector("#sub");  
-  var option = document.createElement("option");
-  option.value = 0;
-  option.id = 'tmpsubid';
-  option.selected = 'selected';
-  option.text = $(this).find('td:eq(10)').html();
-  // sst.add(option);   
-
-  getinfo(tid, 'remarks', user_id);
-  
-  // gtsub_id();
-
-  $('.modal-title').text("Ticket Number: " + tid);
-  $('#action').val("Save and Reply");
-  $('#operation').val("Save and Reply"); 
-  $('#userModal').modal({ "show": true, "backdrop": 'static' });
-
-  var valtick = $('#ticket_no').val();
-
-  $.ajax({
-      type: 'POST',
-      url: 'sesticket.php',
-      data: {tktval: valtick},
-      success: function(response) {
-        $('#img').html(response);
-      }
-    });
-
-$('#msgbtn').show();
-$('msg_thread').show();
-$('.dv_msg').show();
-$('#remarks_view').show();
-$('#addmsg').val("");
-
-});
-
-
-
-
-
-// table
-// .search( '' )
-// .columns().search( '' )
-// .draw();
-
-
-$('#card_totalval').on('click', function () {
-var val =  $(this).attr("value");
-// alert(val);
-table
-.columns( 7 )
-.search(val)
-.draw();
-} );
-
-$('#card_assigned').on('click', function () {
-// var val =  $(this).attr("value");
-var val =  $(this).attr("value");
-// alert(val);
-table
-.columns( 7 )
-.search(val)
-.draw();
-} );
-
-$('#card_onprocess').on('click', function () {
-var val =  $(this).attr("value");
-// alert(val);
-table
-.columns( 7 )
-.search(val)
-.draw();
-} );
-
-$('#card_pending').on('click', function () {
-var val =  $(this).attr("value");
-// alert(val);
-table
-.columns( 7 )
-.search(val)
-.draw();
-} );
-
-$('#card_nonesca').on('click', function () {
-var val =  $(this).attr("value");
-// alert(val);
-table
-.columns( 7 )
-.search(val)
-.draw();
-} );
-
-$('#card_subforclosing').on('click', function () {
-var val =  $(this).attr("value");
-// alert(val);
-table
-.columns( 7 )
-.search(val)
-.draw();
-} );
-
-$('#card_closed').on('click', function () {
-var val =  $(this).attr("value");
-// alert(val);
-table
-.columns( 7 )
-.search(val)
-.draw();
-} );
-
-
-$('.clcktxt').click(function () { 
-  var val =  $(this).attr("value");
-// alert(val);
-table.columns(7).search(val).draw();
-$('#network_tb').slideToggle();
-    $('html, body').animate({
-        scrollTop: 1600
-    }, 1000);
-});
-
-} // end of data table
-
-
-
-
-$('#store_graph_modal').modal('hide'); 
-
-// crd_btm();
-// slct_isp();
-// slct_itsup();
-// slct_sub();
-// gtsub_id();
-admin_hideshowforms();  
-
-const yr =$("#yearpicker").val();
-getdata(yr)
-get_card_data(yr)
+    const yr = $("#yearpicker").val();
+    getdata(yr);
+    getdata_transfer(yr); // Init transfer data
+    get_card_data(yr);
 /**
  * Get card data.
  */

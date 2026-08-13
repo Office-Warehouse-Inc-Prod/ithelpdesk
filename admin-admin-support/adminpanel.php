@@ -662,7 +662,7 @@ textarea.form-control:focus {
         
 <div id="welcomeModal" class="modal-overlay" style="display: none; ">
     <div class="modal-content">
-        <h3>IT HelpDesk Efficiency & Performance Report</h3>
+        <h3>Admin HelpDesk Efficiency & Performance Report</h3>
         <p>As of the Year -  2026</p>
          <table id="admin_report" class="table admin-table m-0">
                     <thead>  

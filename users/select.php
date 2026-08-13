@@ -176,7 +176,43 @@ if ($type === 'category' || $type === 'category_id') {
     mysqli_close($conn);
     echo json_encode($data);
     exit;
+} elseif ($type === 'sub_category') {
+    $cat_id = isset($_GET['cat_id']) ? $_GET['cat_id'] : 37;
+    $stmt = $conn->prepare("SELECT sub_id, sub_cat FROM subcat WHERE cat_id = ?");
+    $stmt->bind_param("i", $cat_id);
+    if ($stmt->execute()) {
+        $result = $stmt->get_result();
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $data[] = array('id' => $row['sub_id'], 'text' => $row['sub_cat']);
+            }
+        }
+    }
+    $stmt->close();
+    mysqli_close($conn);
+    echo json_encode($data);
+    exit;
 }
+
+elseif ($type === 'sub_category') {
+    $cat_id = isset($_GET['cat_id']) ? $_GET['cat_id'] : 37;
+    $stmt = $conn->prepare("SELECT sub_id, sub_cat FROM subcat WHERE cat_id = ?");
+    $stmt->bind_param("i", $cat_id);
+    if ($stmt->execute()) {
+        $result = $stmt->get_result();
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $data[] = array('id' => $row['sub_id'], 'text' => $row['sub_cat']);
+            }
+        }
+    }
+    $stmt->close();
+    mysqli_close($conn);
+    echo json_encode($data);
+    exit;
+}
+
+
 
 
 ?>

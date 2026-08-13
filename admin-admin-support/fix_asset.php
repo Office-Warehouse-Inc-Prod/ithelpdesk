@@ -4,7 +4,7 @@ $con1 = new dbconfig();
 $conn = $con1->getConnection(); 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mode'])) {
-    if (session_status() === PHP_SESSION_NONE) {
+      if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
     $inactive = 180;
@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mode'])) {
             $sql = "SELECT 
                         r.ticket_no, r.date_created, r.concern, r.service_desc, r.subject,
                         GROUP_CONCAT(i.files_name SEPARATOR '|') AS attachment_files,
-                        r.sub_id, r.f_deptsel, r.itsup, r.store, r.is_technical
+                        r.sub_id, r.f_deptsel, r.itsup, r.store, r.is_technical, r.date_submitted
                     FROM reports r
                     LEFT JOIN images i ON r.ticket_no = i.ticket_no
                     WHERE r.status = 'Assigned' 
@@ -95,9 +95,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mode'])) {
         exit();
     }
 
-    if ($_POST['mode'] === 'newrpt_tbl') {
+   if ($_POST['mode'] === 'newrpt_tbl') {
         $sql = "SELECT r.ticket_no, r.date_created, r.concern, r.service_desc, r.subject, 
-                GROUP_CONCAT(i.files_name SEPARATOR '|') AS attachment_files, r.sub_id, r.f_deptsel, r.itsup, r.store, r.is_technical 
+                GROUP_CONCAT(i.files_name SEPARATOR '|') AS attachment_files, r.sub_id, 
+                r.f_deptsel, r.itsup, r.store, r.is_technical, r.date_submitted 
                 FROM reports r LEFT JOIN images i ON r.ticket_no = i.ticket_no 
                 WHERE r.status = 'Assigned' GROUP BY r.ticket_no ORDER BY r.date_created DESC";
         
@@ -132,10 +133,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mode'])) {
 include 'admin.php';
 $inactive = 180;
 if (isset($_SESSION['start']) && (time() - $_SESSION['start'] > $inactive)){
-    session_unset();
-    session_destroy();
-    header("Location: adminpanel.php");
-    exit();
+  session_unset();
+  echo '<script>setTimeout(function(){ window.location.href = "adminpanel.php"; }, 180000);</script>';
+  exit();
 }
 $_SESSION['start'] = time();
 ?>
@@ -179,7 +179,7 @@ $_SESSION['start'] = time();
 
           <div class="modal-body">
             <div class="row">
-              <div class="col-md-6 border-right pt-2 pb-2">
+              <div class="col-md-5 border-right pt-2 pb-2">
             
                 <h6 class="text-uppercase mb-3" style="color:#213456; font-weight: 800;">Request Details</h6> 
                 
@@ -212,7 +212,7 @@ $_SESSION['start'] = time();
 
                   <div class="form-group col-md-5">
                     <label>Description</label>
-                    <input type="text" class="form-control" name="description" id="description" readonly>
+                    <input type="text" class="form-control" name="description" id="description">
                   </div>
 
                   <div class="form-group col-md-5">
@@ -226,24 +226,20 @@ $_SESSION['start'] = time();
                   </div>
 
                     <div class="form-group col-md-12">
-                    <label>Workoutput (Under Assigned Support Evaluation)</label>
-                    <textarea class="form-control" name="technical_workoutput" id="technical_workoutput" style="height: 150px;"></textarea>
-                  </div>
-
-
-                  <div class="form-group col-md-12">
                     <label>Purpose of Request</label>
                     <textarea class="form-control" name="purpose_of_request" id="purpose_of_request" style="height: 150px;" readonly></textarea>
                   </div>
 
+                   
+
                    <div class="form-group col-md-12">
                     <label>Purpose of Request (Rephrase for Printing)</label>
-                    <textarea class="form-control" name="revised_request"  style="height: 150px;" maxlength="70"></textarea>
+                    <textarea class="form-control" name="revised_request" id="revised_request"  style="height: 150px;" maxlength="90" required></textarea>
                   </div>
 
                     
                   <div class="form-group col-md-5">
-                      <label>Item Received By</label>
+                      <label>Item Inspected/Received By</label>
                       <input type="text" class="form-control" id="it_desc" readonly>
                       <input type="hidden" name="item_received_by" id="item_received_by_hidden">
                   </div>
@@ -257,8 +253,8 @@ $_SESSION['start'] = time();
                   <input type="hidden" class="form-control" name="received_by" value="<?php echo $_SESSION['tech_id'] ?? ''; ?>" readonly>
 
                   <div class="form-group col-md-5">
-                    <label>Date Received</label>
-                    <input type="text" class="form-control" name="date_received" id="date_received" required>
+                    <label>Date Inspected/Received</label>
+                    <input type="date" class="form-control" name="date_received" id="date_received" required>
                   </div>
 
 
@@ -267,13 +263,44 @@ $_SESSION['start'] = time();
                 </div>
               </div>
 
+              <div class="col-md-4 pt-2 pb-2" style="border-radius: 0 8px 8px 0;">
+                 <div class="form-group col-md-12" id="technical_workoutput_section">
+                    <label>Workoutput (Under Assigned Support Evaluation)</label>
+                    <textarea class="form-control" name="technical_workoutput" id="technical_workoutput" style="height: 350px;"></textarea>
+                  </div>
+                  
+                  <div id="additional_technical_fields">
+                      <label>Problem Reported:</label>
+                      <div class="form-group col-md-12">
+                        <textarea class="form-control" name="problem_reported" id="problem_reported" style="height: 120px;" required readonly> </textarea>
+                      </div>
+                       <label>Verification/Findings: </label>
+                      <div class="form-group col-md-12">
+                        <textarea class="form-control" name="verification_findings" id="verification_findings" style="height: 120px;" required readonly></textarea>
+                      </div>
+                       <label>Work Done/Technical Solutions Provided:</label>
+                      <div class="form-group col-md-12">
+                        <textarea class="form-control" name="work_done" id="work_done" style="height: 120px;" required readonly></textarea>
+                      </div>
+                       <label>Status/Work Output:</label>
+                      <div class="form-group col-md-12">
+                        <textarea class="form-control" name="status_workoutput" id="status_workoutput" style="height: 120px;" required readonly></textarea>
+                      </div>
+                       <label>Recommendations/Suggestions:</label>
+                      <div class="form-group col-md-12">
+                        <textarea class="form-control" name="recommendation" id="recommendation" style="height: 120px;" required readonly></textarea>
+                      </div>
+                  </div>
+
+              </div>
+
               
 
-            <div class="col-md-6 pt-2 pb-2" style=" background: linear-gradient(to bottom, #ffffff, #d7dce4);border-radius: 0 8px 8px 0;">
-                   <h6 class="text-uppercase mb-3" style="color:#E1AD01; font-weight: 800;">Asset Request Progress</h6>
-                  <div class="tracking-container" style="max-height: 550px; overflow-y: auto; padding-right: 10px;">
+            <div class="col-md-3 pt-2 pb-2" style=" background: linear-gradient(to bottom, #ffffff, #d7dce4);border-radius: 0 8px 8px 0;">
+                  <h6 class="text-uppercase mb-3" style="color:#E1AD01; font-weight: 800;">Asset Request Progress</h6>
+                  <div class="tracking-container" style="max-height: 450px; overflow-y: auto; padding-right: 10px;">
                       <ul class="tracking-timeline" id="trackingMap">
-                          </ul>
+                      </ul>
                   </div>
                    <h6 class="text-uppercase mb-3" style="color:#213456; font-weight: 800;">Remarks Thread</h6>
                 
@@ -293,9 +320,20 @@ $_SESSION['start'] = time();
             </div>
           </div>
 
-          <div class="modal-footer">
+          <div class="modal-footer d-flex justify-content-between align-items-center">
             <input type="hidden" name="operation" id="operation" value="update_request">
              <input type="hidden" name="u_id" value="<?php echo $_SESSION['user_id'] ?? ''; ?>">
+              
+              <div class="form-group col-md-5 mb-0" id="signature_attachment_section">
+               <label style="font-weight: bold;" id="label_attached_file">Attach E-Signature</label>
+               <div class="d-flex align-items-center">
+                   <input id="file-input" type="file" name="files[]" class="form-control-file" accept=".png, .jpg, .jpeg">
+               </div>
+               <div id="signature_preview_container" class="mt-2" style="display: none;">
+                   <span style="font-size: 11px; color: #555; display: block; margin-bottom: 3px;">Current Signature Preview:</span>
+                   <img id="signature_preview_img" src="" alt="Signature Preview" style="max-height: 50px; border: 1px solid #ccc; border-radius: 4px; padding: 2px; background: #fff;">
+               </div>
+            </div>
            
             <button type="submit" class="btn"><strong>APPROVE REQUEST</strong></button>
           </div>
@@ -385,14 +423,17 @@ $(document).ready(function(){
   $("div.selected select").val("OPEN");
 
   function getdata(){
-    $.post('fetchdata/fetch_data.php', {mode: 'fa_tbl'}, function(data){
-      admin_datatable(data);
+    $.post('fetchdata/fetch_data.php', {mode:'fa_tbl'}, function(data){
+      admin_datatable(data || {});
     }, 'json');
   }
   getdata();
 
   function admin_datatable(t){
-    const dataset = t.fadata;
+    const dataset = Array.isArray(t && t.fadata) ? t.fadata : [];
+    if ($.fn.DataTable.isDataTable('#fix_asset_table')) {
+      $('#fix_asset_table').DataTable().destroy();
+    }
     reptable = $("#fix_asset_table").DataTable({
       "dom": '<"pull-left"lf><"pull-right">tip',
       stateSave: true,
@@ -413,15 +454,12 @@ $(document).ready(function(){
         {title:"Dept/Branch", data:"str_name","defaultContent": ""},
         {title:"Employee", data:"full_name","defaultContent": ""},
         {title:"Ticket Date", data:"ticket_created","defaultContent": ""},
-        {title:"Item Code", data:"item_code","defaultContent": ""},
+     
         {title:"Description", data:"description","defaultContent": ""},
-        {title:"Serial", data:"serial_number","defaultContent": ""},
-        {title:"Received by", data:"it_desc","defaultContent": ""},
-        {title:"Date Received", data:"date_received","defaultContent": ""},
-        {title:"Noted by", data:"noted_by_desc","defaultContent": ""},
+        {title:"Date Received/Inspected", data:"date_received","defaultContent": ""},
         {title:"Status", data:"status","defaultContent": ""},
         {title:"Update", data:null,"defaultContent": "<Button class='btn btn-danger' name='update'><i class='fas fa-edit'></i></Button>"},
-        {title:"Is Technical", data:"is_technical", visible: false, "defaultContent": "1"} // Added hidden column to capture is_technical mapping
+        {title:"Is Technical", data:"is_technical", visible: false, "defaultContent": "0"} 
       ],
       rowCallback: function(row, data, index){
         if(data['msg_cnt'] == '1'){
@@ -452,10 +490,43 @@ $(document).ready(function(){
       $('#asset_tag_number').val(data['asset_tag_number']); 
       $('#purpose_of_request').val(data['purpose_of_request']); 
       $('#technical_workoutput').val(data['technical_workoutput']);
-      $('#date_received').val(data['date_received']);
+      $('#problem_reported').val(data['problem_reported']);
+      $('#verification_findings').val(data['verification_findings']);
+      $('#work_done').val(data['work_done']);
+      $('#status_workoutput').val(data['status_workoutput']);
+      $('#recommendation').val(data['recommendation']);
       $('#status').val(data['status']);
 
-      var isTechnical = data['is_technical'] !== undefined && data['is_technical'] !== null ? parseInt(data['is_technical']) : 1;
+      var isTechnical = (data['is_technical'] !== undefined && data['is_technical'] !== null) ? parseInt(data['is_technical']) : 1;
+      
+      // Get current date robustly formatted as YYYY-MM-DD (accounting for timezone differences)
+      var d = new Date();
+      var dateNow = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+
+      if (isTechnical === 1) {
+          $('#signature_attachment_section').hide();
+          $('#file-input').prop('required', false);
+          
+          $('#technical_workoutput_section').hide();
+          $('#additional_technical_fields').show();
+          
+          // Fetch date_submitted from the database if technical, fallback to current date if missing/empty
+          var dateSubmitted = (data['date_submitted'] && data['date_submitted'].trim() !== "") 
+                              ? data['date_submitted'].split(' ')[0] 
+                              : dateNow;
+                              
+          $('#date_received').val(dateSubmitted);
+
+      } else {
+          $('#signature_attachment_section').show();
+          $('#file-input').prop('required', true);
+          
+          $('#technical_workoutput_section').show();
+          $('#additional_technical_fields').hide();
+
+          // Default Date Inspected/Received to current date (now) if not technical
+          $('#date_received').val(dateNow);
+      }
 
       if (data['it_desc'] && data['it_desc'].trim() !== "") {
           $('#it_desc').val(data['it_desc']);
@@ -518,7 +589,7 @@ $(document).ready(function(){
                 { desc: "Printed", date: response.date_printed, reqLevel: isTechnical === 1 ? 5 : 4 },
                 { desc: "For General Manager Approval", date: null, reqLevel: isTechnical === 1 ? 5 : 4 }, 
                 { desc: "Approved by General Manager", date: response.date_approved, reqLevel: isTechnical === 1 ? 6 : 5 },
-                { desc: "Ready for Asset Replacement", date: null, reqLevel: isTechnical === 1 ? 6 : 5 }, 
+                { desc: "Transferred to PD for Procurement", date: null, reqLevel: isTechnical === 1 ? 6 : 5 }, 
                 { desc: "Asset replaced / Completed", date: response.date_completed, reqLevel: isTechnical === 1 ? 7 : 6 }
             );
 
@@ -665,6 +736,18 @@ $(document).ready(function(){
     });
   });
 });
+
+  $('#file-input').on('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+              $('#signature_preview_img').attr('src', e.target.result);
+              $('#signature_preview_container').show();
+          }
+          reader.readAsDataURL(file);
+      }
+  });
 
     function loadRemarks(ticket_no) {
         $('#remarks_thread_container').html('<div class="text-center mt-4"><i class="fas fa-spinner fa-spin fa-2x" style="color:#cbd5e1;"></i></div>');

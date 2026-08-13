@@ -743,7 +743,83 @@ $query = "
 
 
 
+public function admin_data_table_transfer()
+{
+    $yr = isset($_POST['yr']) ? intval($_POST['yr']) : date('Y');
+    
+    $dept_ids = isset($_POST['dept_id']) 
+        ? $_POST['dept_id'] 
+        : '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19';
 
+    $dept_ids_array = array_filter(array_map('intval', explode(',', $dept_ids)));
+    if (empty($dept_ids_array)) {
+        $dept_ids_array = range(1, 19);
+    }
+    $dept_ids_clean = implode(',', $dept_ids_array);
+
+    $query = "SELECT DISTINCT vw_transfer.*
+        FROM vw_transfer
+        LEFT JOIN users ON vw_transfer.ursID = users.id
+        WHERE vw_transfer.f_deptsel IN ({$dept_ids_clean}) 
+        AND vw_transfer.status NOT IN ('ATTENDED WITH FIX ASSET','NEW REPORT', 'Assigned', 'ASSIGNED') 
+        AND vw_transfer.sub_id NOT IN ('15', '28', '34', '35') 
+        AND YEAR(vw_transfer.date_created) = :yr";
+
+    $statement = $this->connection->prepare($query);
+    $statement->bindValue(':yr', $yr, PDO::PARAM_INT);
+    $statement->execute();
+    
+    $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+    $data = array();
+
+    foreach ($result as $row) {
+        
+        $date_created = !empty($row["date_created"]) ? date('m/d/Y H:i', strtotime($row["date_created"])) : "";
+        $date_closed  = (!empty($row["date_closed"]) && strtoupper($row['status']) !== 'OPEN') 
+                        ? date('m/d/Y H:i', strtotime($row["date_closed"])) 
+                        : "";
+        $date_refNo   = !empty($row["date_refNo"]) ? date('m/d/Y H:i', strtotime($row["date_refNo"])) : "";
+
+        $data[] = array(
+            'ticket_no' => $row['ticket_no'] ?? '',
+            'store' => $row['store'] ?? '',
+            'str_code' => $row['str_code'] ?? '',
+            'date_created' => $date_created,
+            'subject' => $row['subject'] ?? '',
+            'concern' => $row['concern'] ?? '',
+            'via' => $row['via'] ?? '',
+            'status' => $row['status'] ?? '',
+            'itsup' => $row['itsup'] ?? '',
+            'it_desc' => $row['it_desc'] ?? '',
+            'it_sel' => $row['it_sel'] ?? '',
+            'cat_id' => $row['cat_id'] ?? '',
+            'category' => $row['category'] ?? '',
+            'sub_id' => $row['sub_id'] ?? '',
+            'sub_category' => $row['sub_category'] ?? '',
+            'date_closed' => $date_closed,
+            'tdc' => (strtoupper($row['status'] ?? '') === 'OPEN') ? ($row["dtdf"] ?? '') . " Days Unresolved" : ($row['tdc'] ?? ''),
+            'crdt' => $row['crdt'] ?? '',
+            'dtdf' => $row['dtdf'] ?? '',
+            'years' => $row['years'] ?? '',
+            'close_by' => $row['close_by'] ?? '',
+            'clusers' => $row['clusers'] ?? '',
+            'remarks' => $row['remarks'] ?? '',
+            'isp_id' => $row['isp_id'] ?? '',
+            'isp_shortDesc' => $row['isp_shortDesc'] ?? '',
+            'refNo' => $row['refNo'] ?? '',
+            'date_refNo' => $date_refNo,
+            'msg_cnt' => $row['msg_cnt'] ?? '0',
+            'is_transfer' => $row['is_transfer'] ?? 0,
+            
+            'priority_desc' => $row['priority_desc'] ?? '0',
+            'contactNumber' => $row['contactNumber'] ?? '',
+            'dept_email' => $row['dept_email'] ?? '',
+            'non_escalated_tag' => $row['non_escalated_tag'] ?? ''
+        );
+    }
+    
+    return array_filter($data);
+}
 
 
 /**

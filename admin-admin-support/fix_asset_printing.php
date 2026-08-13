@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mode'])) {
                     WHERE r.status = 'Assigned' 
                     GROUP BY r.ticket_no
                     ORDER BY r.date_created DESC";
-                    
+                
             $result = $conn->query($sql);
             
             if ($result) {
@@ -111,12 +111,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mode'])) {
     if ($_POST['mode'] === 'fetch_remarks') {
         try {
             $stmt = $conn->prepare("SELECT far.remarks_note, 
-                                                 CONCAT(u.fname, ' ', u.lstname) AS user_fullname, 
-                                                 far.date_remarks 
-                                          FROM fixed_asset_remarks far 
-                                          LEFT JOIN users u ON far.remarks_by = u.id 
-                                          WHERE far.ticket_no = ? 
-                                          ORDER BY far.date_remarks ASC");
+                                           CONCAT(u.fname, ' ', u.lstname) AS user_fullname, 
+                                           far.date_remarks 
+                                    FROM fixed_asset_remarks far 
+                                    LEFT JOIN users u ON far.remarks_by = u.id 
+                                    WHERE far.ticket_no = ? 
+                                    ORDER BY far.date_remarks ASC");
             $stmt->bind_param("s", $_POST['ticket_no']);
             $stmt->execute();
             $result = $stmt->get_result();
@@ -131,14 +131,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mode'])) {
 include 'admin.php';
 $inactive = 180;
 if (isset($_SESSION['start']) && (time() - $_SESSION['start'] > $inactive)){
-    session_unset();
-    session_destroy();
-    header("Location: adminpanel.php");
-    exit();
+  // use client-side redirect after 3 minutes to avoid "headers already sent"
+  echo '<script>setTimeout(function(){ window.location.href = "adminpanel.php"; }, 180000);</script>';
+  exit();
 }
 $_SESSION['start'] = time();
 ?>
-
 <head>
     <link rel="stylesheet" href="../css/bootstrap-datetimepicker.min.css"/>
     <script src="../js/bootstrap-datetimepicker.min.js"></script>
@@ -218,15 +216,15 @@ $_SESSION['start'] = time();
                     <label>Asset Tag Number</label>
                     <input type="text" class="form-control" name="asset_tag_number" id="asset_tag_number" >
                   </div>
-                   <div class="form-group col-md-12">
-                    <label>Workoutput (Under Technical Evaluation)</label>
-                    <textarea class="form-control" name="technical_workoutput" id="technical_workoutput" style="height: 150px;" readonly></textarea>
-                  </div>
-
-
+                  
                   <div class="form-group col-md-12">
                     <label>Purpose of Request (From Store/Dept User)</label>
                     <textarea class="form-control" name="purpose_of_request" id="purpose_of_request" style="height: 150px;" readonly></textarea>
+                  </div>
+
+                   <div class="form-group col-md-12">
+                    <label>Workoutput (Under Assigned Support Evaluation)</label>
+                    <textarea class="form-control" name="technical_workoutput" id="technical_workoutput" style="height: 150px;" readonly></textarea>
                   </div>
 
                    <div class="form-group col-md-12">
@@ -410,7 +408,6 @@ $(document).ready(function(){
         {title:"Dept/Branch", data:"str_name","defaultContent": ""},
         {title:"Employee", data:"full_name","defaultContent": ""},
         {title:"Ticket Date", data:"ticket_created","defaultContent": ""},
-        {title:"Item Code", data:"item_code","defaultContent": ""},
         {title:"Description", data:"description","defaultContent": ""},
         {title:"Serial", data:"serial_number","defaultContent": ""},
         
@@ -496,7 +493,7 @@ var isTechnical = data['is_technical'] !== undefined && data['is_technical'] !==
         success: function(response) {
            const statusLevels = {
                 'submitted': 1, 'noted': 2, 'validated': 3, 
-                'verified': 4, 'printed': 5, 'approved': 6, 'completed': 7
+                'verified': 4, 'printed': 5, 'approved': 6,  'rejected': 6, 'completed': 7
             };
 
             let dbStatus = (response.status || "").toLowerCase().trim();
@@ -514,29 +511,41 @@ var isTechnical = data['is_technical'] !== undefined && data['is_technical'] !==
                 );
             }
 
-            trackSteps.push(
+              trackSteps.push(
                 { desc: "For admin support validation", date: null, reqLevel: isTechnical === 1 ? 2 : 1 }, 
                 { desc: "Validated by admin support", date: response.date_validated, reqLevel: isTechnical === 1 ? 3 : 2 },
                 { desc: "For administrative verification", date: null, reqLevel: isTechnical === 1 ? 3 : 2 }, 
                 { desc: "Verified by the administrator", date: response.date_verified, reqLevel: isTechnical === 1 ? 4 : 3 },
                 { desc: "For printing request form", date: null, reqLevel: isTechnical === 1 ? 4 : 3 }, 
                 { desc: "Printed", date: response.date_printed, reqLevel: isTechnical === 1 ? 5 : 4 },
-                { desc: "For General Manager Approval", date: null, reqLevel: isTechnical === 1 ? 5 : 4 }, 
-                { desc: "Approved by General Manager", date: response.date_approved, reqLevel: isTechnical === 1 ? 6 : 5 },
-                { desc: "Ready for Asset Replacement", date: null, reqLevel: isTechnical === 1 ? 6 : 5 }, 
-                { desc: "Asset replaced / Completed", date: response.date_completed, reqLevel: isTechnical === 1 ? 7 : 6 }
+                { desc: "For General Manager Approval", date: null, reqLevel: isTechnical === 1 ? 5 : 4 }
             );
+
+            if (dbStatus === 'rejected') {
+                trackSteps.push(
+                    { desc: "Rejected by General Manager", date: response.date_rejected || response.date_updated, reqLevel: isTechnical === 1 ? 6 : 5, isRejected: true }
+                );
+            } else {
+                trackSteps.push(
+                    { desc: "Approved by General Manager", date: response.date_approved, reqLevel: isTechnical === 1 ? 6 : 5 },
+                    { desc:  "Transferred to PD for Procurement", date: null, reqLevel: isTechnical === 1 ? 6 : 5 }, 
+                    { desc: "Asset replaced / Completed", date: response.date_completed, reqLevel: isTechnical === 1 ? 7 : 6 }
+                );
+            }
 
             let timelineHtml = '';
             
             trackSteps.forEach((step) => {
                 let statusClass = (currentLevel >= step.reqLevel) ? "completed" : "";
                 let dateDisplay = step.date ? `<div class="timeline-date">${step.date}</div>` : '';
+                let iconStyle = step.isRejected ? 'style="background-color: #dc3545; border-color: #dc3545;"' : '';
+                let textStyle = step.isRejected ? 'style="color: #dc3545; font-weight: bold;"' : '';
+
 
                 timelineHtml += `
                     <li class="timeline-item ${statusClass}">
-                        <div class="timeline-icon"></div>
-                        <div class="timeline-desc">${step.desc}</div>
+                        <div class="timeline-icon" ${iconStyle}></div>
+                        <div class="timeline-desc" ${textStyle}>${step.desc}</div>
                         ${dateDisplay}
                     </li>
                 `;

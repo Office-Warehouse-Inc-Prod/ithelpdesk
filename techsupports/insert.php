@@ -200,19 +200,18 @@ else{
      echo 'Data has been updated';
 
 
-}
-if (isset($_POST["operation"]) && $_POST["operation"] == "submit_request") {
+}if (isset($_POST["operation"]) && $_POST["operation"] == "submit_request") {
     try {
         $connection->beginTransaction();
         $statement = $connection->prepare("
             INSERT INTO asset_requests (
                 ticket_no, requested_db, requested_by, ticket_created, 
-                item_code, description, serial_number, purpose_of_request, technical_workoutput,
+                item_code, description, serial_number, purpose_of_request, 
                 item_received_by, date_received, is_technical, status, date_submitted
             ) VALUES (
                 :ticket_no, :requested_db, :requested_by, :ticket_created, 
-                :item_code, :description, :serial_number, :purpose_of_request, :technical_workoutput, 
-                :item_received_by, :date_received,:is_technical, :status, :date_submitted
+                :item_code, :description, :serial_number, :purpose_of_request, 
+                :item_received_by, :date_received, :is_technical, :status, :date_submitted
             )
         ");
 
@@ -220,20 +219,20 @@ if (isset($_POST["operation"]) && $_POST["operation"] == "submit_request") {
         $currentDate  = date('Y-m-d H:i:s');
         
         $result = $statement->execute([
-            ':ticket_no'          => $ticketNo,
-            ':requested_db'       => $_POST['requesting_dept'] ?? null,
-            ':requested_by'       => $_POST['requesting_employee'] ?? null,
-            ':ticket_created'     => $_POST['date_created'] ?? null,
-            ':item_code'          => $_POST['item_code'] ?? null,
-            ':description'        => $_POST['description'] ?? null,
-            ':serial_number'      => $_POST['serial_number'] ?? null,
-            ':purpose_of_request' => $_POST['purpose_of_request'] ?? null,
-            ':technical_workoutput'=> $_POST['technical_workoutput'] ?? null,
-            ':item_received_by'   => $_POST['received_by'] ?? null,
-            ':date_received'      => $_POST['date_received'] ?? null,
-             ':is_technical'             => '1',
-            ':status'             => 'SUBMITTED',
-            ':date_submitted'     => $currentDate
+            ':ticket_no'           => $ticketNo,
+            ':requested_db'        => $_POST['requesting_dept'] ?? null,
+            ':requested_by'        => $_POST['requesting_employee'] ?? null,
+            ':ticket_created'      => $_POST['date_created'] ?? null,
+            ':item_code'           => $_POST['item_code'] ?? null,
+            ':description'         => $_POST['description'] ?? null,
+            ':serial_number'       => $_POST['serial_number'] ?? null,
+            ':purpose_of_request'  => $_POST['purpose_of_request'] ?? null,
+           
+            ':item_received_by'    => $_POST['received_by'] ?? null,
+            ':date_received'       => $_POST['date_received'] ?? null,
+            ':is_technical'        => '1',
+            ':status'              => 'SUBMITTED',
+            ':date_submitted'      => $currentDate
         ]);
 
         $statement2 = $connection->prepare("
@@ -253,8 +252,26 @@ if (isset($_POST["operation"]) && $_POST["operation"] == "submit_request") {
             ':notif_date' => $currentDate
         ]);
 
-        if ($result && $result2) {
+        $statement3 = $connection->prepare("
+            INSERT INTO fixed_asset_techoutput (
+                ticket_no, problem_reported, verification_findings, work_done, status_workoutput, recommendation
+            ) VALUES (
+                :ticket_no, :problem_reported, :verification_findings, :work_done, :status_workoutput, :recommendation
+            )
+        ");
+
+        $result3 = $statement3->execute([
+            ':ticket_no'             => $computed_ticket ?? $ticketNo,
+            ':problem_reported'      => $_POST['problem_reported'] ?? null,
+            ':verification_findings' => $_POST['verification_findings'] ?? null,
+            ':work_done'             => $_POST['work_done'] ?? null,
+            ':status_workoutput'     => $_POST['status_workoutput'] ?? null,
+            ':recommendation'        => $_POST['recommendation'] ?? null
+        ]);
+
+        if ($result && $result2 && $result3) {
             $connection->commit();
+            
             $stmtEmail = $connection->prepare("SELECT email FROM fixed_asset_email WHERE val = '1' LIMIT 1");
             $stmtEmail->execute();
             $emailRow = $stmtEmail->fetch(PDO::FETCH_ASSOC);
@@ -290,6 +307,7 @@ if (isset($_POST["operation"]) && $_POST["operation"] == "submit_request") {
                 ");
                 $stmtDetails->execute([':ticket_no' => $ticketNo]);
                 $ticketData = $stmtDetails->fetch(PDO::FETCH_ASSOC);
+                
                 $display_dept     = $ticketData['str_name'] ?? $_POST['requesting_dept'] ?? 'N/A';
                 $display_user     = $ticketData['full_name'] ?? $_POST['requesting_employee'] ?? 'N/A';
                 $display_receiver = $ticketData['it_desc'] ?? $_POST['received_by'] ?? 'N/A';
@@ -308,6 +326,7 @@ if (isset($_POST["operation"]) && $_POST["operation"] == "submit_request") {
                     $mail->addAddress($receiverEmail);
                     $mail->isHTML(true);
                     $mail->Subject = "New Fixed Asset Request: {$ticketNo}";
+                    
                     $mailBody = '
                     <html>
                     <body style="margin:0;padding:20px;background:#f4f6f9;font-family:Arial,sans-serif;">
@@ -340,7 +359,7 @@ if (isset($_POST["operation"]) && $_POST["operation"] == "submit_request") {
                                             <td style="border:1px solid #cabb89;">' . htmlspecialchars($display_user) . '</td>
                                         </tr>
                                         <tr style="background:#f3e8c3;">
-                                            <td style="border:1px solid #cabb89;"><strong>Item Received By</strong></td>
+                                            <td style="border:1px solid #cabb89;"><strong>Assigned Tech Support</strong></td>
                                             <td style="border:1px solid #cabb89;">' . htmlspecialchars($display_receiver) . '</td>
                                         </tr>
                                         <tr>
@@ -363,11 +382,37 @@ if (isset($_POST["operation"]) && $_POST["operation"] == "submit_request") {
                                             <td style="border:1px solid #cabb89;"><strong>Purpose of Request</strong></td>
                                             <td style="border:1px solid #cabb89;">' . nl2br(htmlspecialchars($_POST['purpose_of_request'] ?? '')) . '</td>
                                         </tr>
-                                        <tr style="background:#f3e8c3;">
-                                            <td style="border:1px solid #cabb89;"><strong>Technical Workoutput</strong></td>
-                                            <td style="border:1px solid #cabb89;">' . nl2br(htmlspecialchars($_POST['technical_workoutput'] ?? '')) . '</td>
+                                        
+                                    </table>
+                                      
+                                   
+                                    <h1><strong>Technical Work Output</strong></h1>
+                                       
+
+                                    <table cellpadding="8" cellspacing="0" width="100%" style="border-collapse:collapse;margin-top:10px;">
+                    
+                                        
+                                        <tr>
+                                            <td style="border:1px solid #cabb89;"><strong>Problem Reported</strong></td>
+                                            <td style="border:1px solid #cabb89;">' . nl2br(htmlspecialchars($_POST['problem_reported'] ?? '')) . '</td>
                                         </tr>
                                         <tr>
+                                            <td style="border:1px solid #cabb89;"><strong>Verification/Findings</strong></td>
+                                            <td style="border:1px solid #cabb89;">' . nl2br(htmlspecialchars($_POST['verification_findings'] ?? '')) . '</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="border:1px solid #cabb89;"><strong>Work Done/Technical Solutions Provided</strong></td>
+                                            <td style="border:1px solid #cabb89;">' . nl2br(htmlspecialchars($_POST['work_done'] ?? '')) . '</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="border:1px solid #cabb89;"><strong>Status/Work Output</strong></td>
+                                            <td style="border:1px solid #cabb89;">' . htmlspecialchars($_POST['status_workoutput'] ?? '') . '</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="border:1px solid #cabb89;"><strong>Recommendations/Suggestions</strong></td>
+                                            <td style="border:1px solid #cabb89;">' . nl2br(htmlspecialchars($_POST['recommendation'] ?? '')) . '</td>
+                                        </tr>       
+                                       <tr>
                                             <td style="border:1px solid #cabb89;"><strong>Date Created</strong></td>
                                             <td style="border:1px solid #cabb89;">' . htmlspecialchars($_POST['date_created'] ?? '') . '</td>
                                         </tr>
@@ -376,7 +421,7 @@ if (isset($_POST["operation"]) && $_POST["operation"] == "submit_request") {
                                     <p style="margin-top:20px;">Please log in to the <strong>OWI Helpdesk</strong> to review and approve this asset request.</p>
                                     <div style="text-align:center;margin-top:25px;">
                                         <a href="https://owihelpdesk.officewarehouse.com.ph" 
-                                           style="background:#627bc5;color:#ffffff;padding:12px 24px;text-decoration:none;border-radius:5px;display:inline-block;font-weight:bold;">
+                                           style="background:#cabb89;color:#ffffff;padding:16px 24px;text-decoration:none;border-radius:5px;display:inline-block;font-weight:bold;">
                                             Open OWI Helpdesk
                                         </a>
                                     </div>
@@ -384,7 +429,7 @@ if (isset($_POST["operation"]) && $_POST["operation"] == "submit_request") {
                                 </td>
                             </tr>
                             <tr>
-                                <td style="background:#8bacf6;color:#ffffff;text-align:center;padding:10px;font-size:12px;">
+                                <td style="background: #cabb89;color:#ffffff;text-align:center;padding:10px;font-size:12px;">
                                     OWI Helpdesk System Notification
                                 </td>
                             </tr>
@@ -422,7 +467,7 @@ if(isset($_POST["operation"]) && $_POST["operation"] == "update_request") {
             UPDATE asset_requests
             SET
                item_code = :item_code,
-               technical_workoutput = :technical_workoutput,
+              
                description = :description,
                serial_number = :serial_number,
                date_received = :date_received
@@ -431,14 +476,34 @@ if(isset($_POST["operation"]) && $_POST["operation"] == "update_request") {
 
         $result = $statement->execute([
             ':item_code'      => $_POST['item_code'],
-            ':technical_workoutput'      => $_POST['technical_workoutput'],
+           
             ':description'      => $_POST['description'],
             ':serial_number'      => $_POST['serial_number'],
             ':date_received'      => $_POST['date_received'],
             ':ticket_no'          => $_POST['ticket_no']
         ]);
 
-        if($result){
+        $statement2 = $connection->prepare("
+            UPDATE fixed_asset_techoutput
+            SET
+               problem_reported = :problem_reported,
+               verification_findings = :verification_findings,
+               work_done = :work_done,
+               status_workoutput = :status_workoutput,
+               recommendation = :recommendation
+            WHERE ticket_no = :ticket_no
+        ");
+
+        $result2 = $statement2->execute([
+            ':problem_reported'      => $_POST['problem_reported'],
+            ':verification_findings'      => $_POST['verification_findings'],
+            ':work_done'      => $_POST['work_done'],
+            ':status_workoutput'      => $_POST['status_workoutput'],
+            ':recommendation'      => $_POST['recommendation'],
+            ':ticket_no'          => $_POST['ticket_no']
+        ]);
+
+        if($result && $result2) {
             echo json_encode(["status" => "success", "message" => "Request updated successfully."]);
         } else {
             echo json_encode(["status" => "error", "message" => "Failed to update the database."]);
@@ -447,7 +512,7 @@ if(isset($_POST["operation"]) && $_POST["operation"] == "update_request") {
     } catch(PDOException $e) {
         echo json_encode(["status" => "error", "message" => "SQL Error: " . $e->getMessage()]);
     }
-    exit(); // Ensure the script stops here so it doesn't output trailing HTML
+    exit(); 
 }
 }
 

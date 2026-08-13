@@ -1449,11 +1449,7 @@ WHERE
                 LEFT JOIN it_tech itt ON ar.noted_by = itt.itsup
                 LEFT JOIN tbl_branch b ON r.store = b.str_num  
                 WHERE ar.status = 'APPROVED' 
-                  AND (
-                      (ar.is_technical = 0 AND r.status = 'ON PROCESS') 
-                      OR 
-                      (ar.is_technical = 1 AND r.status = 'ON PROCESS')
-                  )
+    
                 ORDER BY ar.created_at ASC";
             
     $statement = $this->connection->prepare($query);
