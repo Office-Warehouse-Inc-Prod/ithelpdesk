@@ -1020,7 +1020,7 @@ textarea.form-control:focus {
           <div class="tab-pane fade" id="transferred" role="tabpanel" aria-labelledby="transferred-tab">
             <div class="table-responsive" style="max-height:450px; width:100%; overflow-y:auto;">
               <table id="transferred_data" class="table table-hover">
-               
+                
                 <tbody>
                 </tbody>
               </table>
@@ -1038,7 +1038,7 @@ textarea.form-control:focus {
   <input type="hidden" id="myInput">
 </div>
 
-           
+            
 
           </div><!-- /.container-fluid -->
       </div><!-- /#layoutSidenav_content -->
@@ -1217,8 +1217,8 @@ Start of Add/Edit Modal
                     </select>
                   </div>
 
-                  <div class="form-group col-12 col-md-4 hide_cl">
-                    <label id="dateclabel" class="hidden">DATE CLOSED</label>
+                  <div class="form-group col-12 col-md-4 hide_cl" style="display: none;">
+                    <label id="dateclabel">DATE CLOSED</label>
                     <div class="input-group date" id="datetimepicker2" data-target-input="nearest">
                       <input type="text" name="date_closed" id="date_closed"
                         class="form-control form-control-sm datetimepicker-input" data-target="#datetimepicker2"
@@ -1230,11 +1230,11 @@ Start of Add/Edit Modal
                     </div>
                   </div>
 
-                  <div class="form-group col-12 col-md-4 hide_cl">
-                    <label id="clby_label" class="hidden">CLOSED BY</label>
-                    <input type="hidden" name="close_by" id="close_by" value="<?php echo $_SESSION['tech_id']; ?>">
+                  <div class="form-group col-12 col-md-4 hide_cl" style="display: none;">
+                    <label id="clby_label">CLOSED BY</label>
+                    <input type="hidden" name="close_by" id="close_by" value="<?php echo htmlspecialchars($_SESSION['tech_id'] ?? ''); ?>">
                     <input type="text" class="form-control form-control-sm" name="cl_desc" id="cl_desc" readonly
-                      value="<?php echo $_SESSION['fname'] . '  ' . $_SESSION['lstname']; ?>">
+                      value="<?php echo htmlspecialchars(trim(($_SESSION['fname'] ?? '') . '  ' . ($_SESSION['lstname'] ?? ''))); ?>">
                   </div>
 
                   <div class="form-group col-12">
@@ -1427,9 +1427,15 @@ Start of Create Department Report Modal
 
   <script>
     $(document).ready(function () {
+      
+      // Initialize active dashcard filter variable globally
+      window.currentDashcardFilter = '';
+      
       // KPI Card Click Functionality
       $('.dashcard-clickable').on('click', function () {
         const filterValue = $(this).data('filter') || '';
+        window.currentDashcardFilter = filterValue; // Record clicked dashcard
+        
         const statusRegex = filterValue ? '^' + $.fn.dataTable.util.escapeRegex(filterValue) + '$' : '';
 
         if ($.fn.DataTable.isDataTable('#report_data')) {
@@ -1448,7 +1454,7 @@ Start of Create Department Report Modal
         $('#report_data_free_search').val(filterValue);
         $('#transferred_data_free_search').val(filterValue);
 
-             
+              
         $('#report_data_free_search2').val(filterValue);
         $('#transferred_data_free_search2').val(filterValue);
 
@@ -1667,6 +1673,16 @@ $(document).ready(function() {
         $modal.css('display', 'none');
     });
     loadDepartmentTable();
+    
+    // Handle the status change to show/hide CLOSED BY and DATE CLOSED properly
+    $('#status').on('change', function() {
+        var stat = $(this).val();
+        if (stat === 'CLOSED' || stat === 'SUBJECT FOR CLOSING') {
+            $('.hide_cl').slideDown(200);
+        } else {
+            $('.hide_cl').slideUp(200);
+        }
+    });
 });
 
 function loadDepartmentTable() {

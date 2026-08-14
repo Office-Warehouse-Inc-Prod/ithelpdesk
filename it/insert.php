@@ -869,56 +869,95 @@ if ($_POST["operation"] == "Save and Reply") {
     }
 }
 
- if($_POST["operation"] == "changepass")
- { 
-$qry = $connection->prepare(" SELECT * FROM users WHERE id = $userid");
-$qry->execute();
-$res = $qry->fetch(PDO::FETCH_ASSOC); 
-$oldpass = $res['password'];
-$dcdeold_pass= base64_decode($oldpass);
-$newpass= $_POST['newpass'];
-if ($_POST["curpass"] == $dcdeold_pass && $_POST['newpass'] == $_POST['confrm_nwpass']) {
-$statement = $connection->prepare("UPDATE users
-SET `password` = :password
-WHERE id = $userid");
-  $result = $statement->execute(
-   array(
-    ':password' => base64_encode($newpass)
-  
-   )
-  );
-    echo ("PASSWORD CHANGED");
-    } else {
-     echo ("ERROR");
-     return false;
-        }
- }
+if (isset($_POST["operation"]) && $_POST["operation"] == "changepass") {
+    
+    $curpass  = $_POST['curpass'] ?? '';
+    $newpass  = $_POST['newpass'] ?? '';
+    $confpass = $_POST['confrm_nwpass'] ?? '';
 
- if ($_POST["operation"] == "3") { 
+    if ($newpass !== $confpass) {
+        echo json_encode([
+            'status' => 'error', 
+            'message' => 'New passwords do not match.'
+        ]);
+        exit;
+    }
+
+    $qry = $connection->prepare("SELECT password FROM users WHERE id = :id LIMIT 1");
+    $qry->execute([':id' => $userid]);
+    $res = $qry->fetch(PDO::FETCH_ASSOC);
+
+    if ($res) {
+        $oldpass = $res['password'];
+        $dcdeold_pass = base64_decode($oldpass);
+
+        if ($curpass === $dcdeold_pass) {
+            
+            $statement = $connection->prepare("UPDATE users SET `password` = :password WHERE id = :id");
+            $result = $statement->execute([
+                ':password' => base64_encode($newpass),
+                ':id'       => $userid
+            ]);
+
+            if ($result) {
+                echo json_encode([
+                    'status' => 'success', 
+                    'message' => 'Password successfully changed.'
+                ]);
+            } else {
+                echo json_encode([
+                    'status' => 'error', 
+                    'message' => 'Database error. Could not update password.'
+                ]);
+            }
+
+        } else {
+            echo json_encode([
+                'status' => 'error', 
+                'message' => 'The current password you entered is incorrect.'
+            ]);
+        }
+    } else {
+        echo json_encode([
+            'status' => 'error', 
+            'message' => 'User account not found.'
+        ]);
+    }
+    
+    exit;
+}
+
+if (isset($_POST["operation"]) && $_POST["operation"] == "3") { 
     $defrole = 'user';
     $tmppas = 'owi123456';
     $preset_username = substr($_POST['fname'], 0, 1) . $_POST['lstname'];
     $set_username = str_replace(" ", "", trim($preset_username));
     
-    // Convert array of branches into a string: "201,202,203"
-    $selected_branches = isset($_POST['select_strcd']) ? implode(",", $_POST['select_strcd']) : "";
+    $dept_id = $_POST["select_dept"];
+    
+    if ($dept_id == '10') {
+        $str_num = isset($_POST['select_strcd']) ? implode(",", $_POST['select_strcd']) : "";
+    } else {
+        $str_num = '201';
+    }
 
     $statement = $connection->prepare("
-        INSERT INTO users (fname, lstname, dept_id, email, password, role, str_num, gender_id, img_name, usr_stat) 
-        VALUES (:fname, :lstname, :dept_id, :email, :password, :role, :str_num, :gender_id, :img_name, :usr_stat)
+        INSERT INTO users (fname, lstname, dept_id, email, password, role, str_num, gender_id, img_name, usr_stat, deptsel) 
+        VALUES (:fname, :lstname, :dept_id, :email, :password, :role, :str_num, :gender_id, :img_name, :usr_stat, :deptsel)
     ");
 
     $result = $statement->execute(array(
         ':fname'     => strtoupper($_POST["fname"]),
         ':lstname'   => strtoupper($_POST["lstname"]),
         ':email'     => str_replace(" ", "", trim($set_username)),
-        ':dept_id'   => $_POST["select_dept"],
+        ':dept_id'   => $dept_id,
         ':password'  => base64_encode($tmppas),
         ':role'      => $defrole,
-        ':str_num'   => $selected_branches, // This stores multiple values as "201,202"
+        ':str_num'   => $str_num, 
         ':gender_id' => $_POST["slct_gender"],
         ':img_name'  => ($_POST["slct_gender"] == '1') ? 'default_male.jpg' : 'default_female.jpg',
-        ':usr_stat'  => 'A'
+        ':usr_stat'  => 'A',
+        ':deptsel'   => $dept_id
     )); 
 
     if ($result) {

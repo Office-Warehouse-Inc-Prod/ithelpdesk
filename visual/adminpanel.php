@@ -1446,17 +1446,38 @@ Start of Create Department Report Modal
   </div>
 </div>
 
-
   <script>
     $(document).ready(function () {
+      
+      // Initialize active dashcard filter variable globally
+      window.currentDashcardFilter = '';
+      
       // KPI Card Click Functionality
       $('.dashcard-clickable').on('click', function () {
-        const filterValue = $(this).data('filter');
+        const filterValue = $(this).data('filter') || '';
+        window.currentDashcardFilter = filterValue; // Record clicked dashcard
+        
+        const statusRegex = filterValue ? '^' + $.fn.dataTable.util.escapeRegex(filterValue) + '$' : '';
 
         if ($.fn.DataTable.isDataTable('#report_data')) {
-          const table = $('#report_data').DataTable();
-          table.search(filterValue).draw();
+          const reportTable = $('#report_data').DataTable();
+          reportTable.search('').column(6).search(filterValue ? statusRegex : '', true, false).draw();
         }
+        
+        if ($.fn.DataTable.isDataTable('#transferred_data')) {
+          const transferTable = $('#transferred_data').DataTable();
+          transferTable.search('').column(6).search(filterValue ? statusRegex : '', true, false).draw();
+        }
+
+        $('#report_data_filter_disabled').val(filterValue);
+        $('#transferred_data_filter_disabled').val(filterValue);
+        
+        $('#report_data_free_search').val(filterValue);
+        $('#transferred_data_free_search').val(filterValue);
+
+              
+        $('#report_data_free_search2').val(filterValue);
+        $('#transferred_data_free_search2').val(filterValue);
 
         $('html, body').animate({
           scrollTop: $("#report_data").offset().top - 100
@@ -1465,27 +1486,22 @@ Start of Create Department Report Modal
         $(this).fadeOut(100).fadeIn(100);
       });
 
-      // Handle 'CREATE REPORT' Navbar Link Click
       $(document).on('click', '#navCreateReport', function (e) {
-        // If we are already on adminpanel.php, open the modal directly
         if (window.location.pathname.endsWith('adminpanel.php') || window.location.pathname.endsWith('/it/')) {
           e.preventDefault();
           $('#createReportModal').modal({ backdrop: 'static', keyboard: false });
         }
       });
 
-      // Handle query param create=true on load
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.get('create') === 'true') {
         $('#createReportModal').modal({ backdrop: 'static', keyboard: false });
-        // Clean up url parameters without reloading
         window.history.replaceState({}, document.title, window.location.pathname);
       }
 
-      // Reset Form when Modal Closes or Opens
       $('#createReportModal').on('show.bs.modal', function () {
         $('#create_report_form').trigger('reset');
-        $('#create_store').val('201'); // Auto-select CEN | CENTRAL OFFICE - LIBIS
+        $('#create_store').val('201'); 
         $('#create_subject').val(null).trigger('change');
         $('#create_sub').val(null).trigger('change');
         $('#create_sub_group').hide();
@@ -1493,7 +1509,6 @@ Start of Create Department Report Modal
         $('#create_ticket_no').val('');
       });
 
-      // Populate dynamic categories and fetch ticket numbers when Attention To Department changes
       $("#create_deptsel").on("change", function () {
         $('#create_subject').val(null).trigger('change');
         $('#create_sub').val(null).trigger('change');
@@ -1503,7 +1518,7 @@ Start of Create Department Report Modal
         $("#create_subject").select2({
           dropdownParent: $('#createReportModal'),
           width: '100%',
-          minimumResultsForSearch: Infinity, // Disable search box
+          minimumResultsForSearch: Infinity,
           ajax: {
             url: "../users/select.php",
             type: "get",
@@ -1524,7 +1539,6 @@ Start of Create Department Report Modal
           }
         });
 
-        // Dynamic Ticket Number Generation Fetch
         $.post('../users/fetch.php', { operation: 'search_tkt', iN: val }, function (data) {
           if (data && data[0]) {
             let next_tktno = data[0].ticket_no;
@@ -1554,7 +1568,6 @@ Start of Create Department Report Modal
         });
       });
 
-      // Validate uploaded file size and extensions
       $('#create_file-input').on('change', function () {
         for (var i = 0; i < this.files.length; ++i) {
           var file = this.files[i];
@@ -1581,7 +1594,6 @@ Start of Create Department Report Modal
         }
       });
 
-      // Handle AJAX Submission of Department Ticket
       $('#create_report_form').on('submit', function (e) {
         e.preventDefault();
 
@@ -1682,6 +1694,16 @@ $(document).ready(function() {
         $modal.css('display', 'none');
     });
     loadDepartmentTable();
+    
+    // Handle the status change to show/hide CLOSED BY and DATE CLOSED properly
+    $('#status').on('change', function() {
+        var stat = $(this).val();
+        if (stat === 'CLOSED' || stat === 'SUBJECT FOR CLOSING') {
+            $('.hide_cl').slideDown(200);
+        } else {
+            $('.hide_cl').slideUp(200);
+        }
+    });
 });
 
 function loadDepartmentTable() {
@@ -1702,7 +1724,7 @@ function loadDepartmentTable() {
         
             const monthNames = {
                 1: "JANUARY", 2: "FEBRUARY", 3: "MARCH", 
-                4: "APRIL", 5: "MAY", 6: "JUNE" , 7: "JULY", 8: "AUGUST", 9: "SEPTEMBER", 10: "OCTOBER", 11: "NOVEMBER" , 12: "DECEMBER"
+                4: "APRIL", 5: "MAY", 6: "JUNE" , 7: "JULY" , 8: "AUGUST" , 9: "SEPTEMBER" , 10: "OCTOBER" , 11: "NOVEMBER" , 12: "DECEMBER"
             };
 
             if (response && response.department_stats) {
@@ -1771,7 +1793,7 @@ function loadDepartmentTable() {
                     let globalMetSLABarTheme = globalMetSLAPercent >= 80 ? "bg-success" : (globalMetSLAPercent >= 50 ? "bg-warning" : "bg-danger");
 
                     footerHtml = `
-                        <tr style="background-color: #ecebe584; font-weight: bold; border-top: 2px solid #213456;">
+                        <tr style="background-color: #ecebe584; font-weight: bold; border-top: 2px solid linear-gradient(135deg, #213456, #334c7a);">
                             <td class="text-dark fw-bold text-uppercase" style="font-size:13px;">TOTAL SUMMARY</td>
                             <td class="text-center text-primary fw-bold" style="font-size:14px;">${totalActiveSum}</td>
                             <td>
@@ -1813,8 +1835,6 @@ function loadDepartmentTable() {
         }
     });
 }
-
-
 $(document).ready(function() {
     $('button[data-toggle="tab"]').on('shown.bs.tab', function (e) {
         var targetTab = $(e.target).attr("id"); 
@@ -1834,5 +1854,3 @@ $(document).ready(function() {
     
 });
 </script>
-
-

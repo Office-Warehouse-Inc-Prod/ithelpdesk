@@ -58,7 +58,7 @@ body {
 }
 
 .table tbody tr:hover {
-  background-color: #b6bfce !important;
+  background-color: #213456 !important;
   color: #ffffff !important;
   cursor: pointer;
   transition: all 0.2s ease;

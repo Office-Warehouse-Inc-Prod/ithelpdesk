@@ -876,30 +876,63 @@ if ($_POST["operation"] == "Save and Reply") {
     }
 }
 
- if($_POST["operation"] == "changepass")
- { 
-$qry = $connection->prepare(" SELECT * FROM users WHERE id = $userid");
-$qry->execute();
-$res = $qry->fetch(PDO::FETCH_ASSOC); 
-$oldpass = $res['password'];
-$dcdeold_pass= base64_decode($oldpass);
-$newpass= $_POST['newpass'];
-if ($_POST["curpass"] == $dcdeold_pass && $_POST['newpass'] == $_POST['confrm_nwpass']) {
-$statement = $connection->prepare("UPDATE users
-SET `password` = :password
-WHERE id = $userid");
-  $result = $statement->execute(
-   array(
-    ':password' => base64_encode($newpass)
-  
-   )
-  );
-    echo ("PASSWORD CHANGED");
-    } else {
-     echo ("ERROR");
-     return false;
+if (isset($_POST["operation"]) && $_POST["operation"] == "changepass") {
+    
+    $curpass  = $_POST['curpass'] ?? '';
+    $newpass  = $_POST['newpass'] ?? '';
+    $confpass = $_POST['confrm_nwpass'] ?? '';
+
+    if ($newpass !== $confpass) {
+        echo json_encode([
+            'status' => 'error', 
+            'message' => 'New passwords do not match.'
+        ]);
+        exit;
+    }
+
+    $qry = $connection->prepare("SELECT password FROM users WHERE id = :id LIMIT 1");
+    $qry->execute([':id' => $userid]);
+    $res = $qry->fetch(PDO::FETCH_ASSOC);
+
+    if ($res) {
+        $oldpass = $res['password'];
+        $dcdeold_pass = base64_decode($oldpass);
+
+        if ($curpass === $dcdeold_pass) {
+            
+            $statement = $connection->prepare("UPDATE users SET `password` = :password WHERE id = :id");
+            $result = $statement->execute([
+                ':password' => base64_encode($newpass),
+                ':id'       => $userid
+            ]);
+
+            if ($result) {
+                echo json_encode([
+                    'status' => 'success', 
+                    'message' => 'Password successfully changed.'
+                ]);
+            } else {
+                echo json_encode([
+                    'status' => 'error', 
+                    'message' => 'Database error. Could not update password.'
+                ]);
+            }
+
+        } else {
+            echo json_encode([
+                'status' => 'error', 
+                'message' => 'The current password you entered is incorrect.'
+            ]);
         }
- }
+    } else {
+        echo json_encode([
+            'status' => 'error', 
+            'message' => 'User account not found.'
+        ]);
+    }
+    
+    exit;
+}
 
  if($_POST["operation"] == "3")
  { 

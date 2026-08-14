@@ -55,199 +55,400 @@ width: auto !important;
 overflow-x: hidden !important;
 }
 }
+:root {
+  --primary-color: #E1AD01;
+  --primary-light: #F4F0FF;
+  --bg-body: #F4F5FA;
+  --sidebar-width: 260px;
+  --topbar-height: 70px;
+  --card-shadow: 0 4px 12px 0 rgba(58, 53, 65, 0.1);
+}
 
-.navbar-icon-top .navbar-nav .nav-link > .fa {
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--bg-body);
+  color: #3A3541DE;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+.owi-navbar {
+  background-color: #213456 !important;
+  box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.15);
+  padding: 0.5rem 1.5rem !important;
+  transition: all 0.3s ease;
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.4rem;
+  letter-spacing: 1.5px;
+  font-weight: 600;
+}
+
+.owi-navbar .nav-link,
+.owi-navbar .navbar-brand {
+  color: #ffffff !important;
+  font-weight: 500;
+  letter-spacing: .3px;
+}
+
+.owi-navbar .nav-item,
+.owi-navbar .nav-link,
+.owi-navbar .nav-item.active,
+.owi-navbar .nav-item.active .nav-link,
+.owi-navbar .nav-link.active {
+  border-bottom: 0px solid transparent !important;
+  border-top: 0px solid transparent !important;
+  text-decoration: none !important;
+  box-shadow: none !important;
+}
+
+.owi-navbar .nav-link {
   position: relative;
-  width: 36px;
-  font-size: 24px;
+  padding: 0.8rem 1rem !important;
+  color: rgba(255, 255, 255, 0.85) !important;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.3s ease;
 }
 
-.navbar-icon-top .navbar-nav .nav-link > .fa > .badge {
-  font-size: 0.75rem;
+.owi-navbar .nav-link i {
+  font-size: 1.05rem;
+  color: inherit !important; 
+}
+
+.owi-navbar .badge {
   position: absolute;
-  right: 0;
-  font-family: sans-serif;
+  top: 4px;
+  right: 0px;
+  font-size: 0.65rem;
+  padding: 3px 6px;
+  border-radius: 50rem;
+  font-weight: 700;
+  line-height: 1;
 }
 
-.navbar-icon-top .navbar-nav .nav-link > .fa {
-  top: 3px;
-  line-height: 12px;
+.owi-navbar .badge-danger {
+  background-color: #ff4d4d !important;
+  color: #fff !important;
 }
 
-.navbar-icon-top .navbar-nav .nav-link > .fa > .badge {
-  top: -10px;
+.owi-navbar .badge-info {
+  background-color: #28c7ff !important;
+  color: #002a4a !important;
 }
 
-@media (min-width: 576px) {
-  .navbar-icon-top.navbar-expand-sm .navbar-nav .nav-link {
-    text-align: center;
-    display: table-cell;
-    height: 70px;
-    vertical-align: middle;
-    padding-top: 0;
-    padding-bottom: 0;
-  }
-
-  .navbar-icon-top.navbar-expand-sm .navbar-nav .nav-link > .fa {
-    display: block;
-    width: 48px;
-    margin: 2px auto 4px auto;
-    top: 0;
-    line-height: 24px;
-  }
-
-  .navbar-icon-top.navbar-expand-sm .navbar-nav .nav-link > .fa > .badge {
-    top: -7px;
-  }
+.owi-navbar .nav-item {
+  position: relative;
+  margin: 0 3px;
 }
 
-@media (min-width: 768px) {
-  .navbar-icon-top.navbar-expand-md .navbar-nav .nav-link {
-    text-align: center;
-    display: table-cell;
-    height: 70px;
-    vertical-align: middle;
-    padding-top: 0;
-    padding-bottom: 0;
-  }
-
-  .navbar-icon-top.navbar-expand-md .navbar-nav .nav-link > .fa {
-    display: block;
-    width: 48px;
-    margin: 2px auto 4px auto;
-    top: 0;
-    line-height: 24px;
-  }
-
-  .navbar-icon-top.navbar-expand-md .navbar-nav .nav-link > .fa > .badge {
-    top: -7px;
-  }
+.owi-navbar .nav-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 3px;
+  bottom: 0px; 
+  left: 50%;
+  background-color: var(--primary-color) !important;
+  transition: width 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), left 0.3s ease;
+  transform: translateX(-50%);
+  border-radius: 10px;
 }
 
-@media (min-width: 992px) {
-  .navbar-icon-top.navbar-expand-lg .navbar-nav .nav-link {
-    text-align: center;
-    display: table-cell;
-    height: 70px;
-    vertical-align: middle;
-    padding-top: 0;
-    padding-bottom: 0;
-  }
-
-  .navbar-icon-top.navbar-expand-lg .navbar-nav .nav-link > .fa {
-    display: block;
-    width: 48px;
-    margin: 2px auto 4px auto;
-    top: 0;
-    line-height: 24px;
-  }
-
-  .navbar-icon-top.navbar-expand-lg .navbar-nav .nav-link > .fa > .badge {
-    top: -7px;
-  }
+.owi-navbar .nav-item:hover .nav-link {
+  color: #E1AD01 !important;
+  opacity: 1;
 }
 
-@media (min-width: 1200px) {
-  .navbar-icon-top.navbar-expand-xl .navbar-nav .nav-link {
-    text-align: center;
-    display: table-cell;
-    height: 70px;
-    vertical-align: middle;
-    padding-top: 0;
-    padding-bottom: 0;
-  }
-
-  .navbar-icon-top.navbar-expand-xl .navbar-nav .nav-link > .fa {
-    display: block;
-    width: 48px;
-    margin: 2px auto 4px auto;
-    top: 0;
-    line-height: 24px;
-  }
-
-  .navbar-icon-top.navbar-expand-xl .navbar-nav .nav-link > .fa > .badge {
-    top: -7px;
-  }
+.owi-navbar .nav-item:not(.dropdown):hover .nav-link::after {
+  width: 70%; 
 }
 
-.bolded {
-  font-weight:bold;
- 
-}
-th {
-  color: white;
-}
-tr {
-   color: black; 
+.owi-navbar .nav-item.active .nav-link {
+  color: var(--primary-color) !important;
+  font-weight: 700;
 }
 
+.owi-navbar .nav-item.active:not(.dropdown) .nav-link::after {
+  width: 70% !important; 
+  background-color: var(--primary-color) !important;
+}
+
+.owi-navbar .dropdown-menu {
+  background-color: #ffffff !important;
+  border: none !important;
+  min-width: 240px;
+  padding: 0.5rem !important;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
+  border-radius: 8px !important;
+  border-top: 4px solid var(--primary-color) !important;
+  margin-top: 5px !important;
+}
+
+.owi-navbar .dropdown-item {
+  color: #1f2937 !important;
+  background-color: transparent !important;
+  border-radius: 6px;
+  padding: 0.6rem 0.9rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.2s ease;
+}
+
+.owi-navbar .dropdown-item i {
+  width: 20px;
+  text-align: center;
+  color: #4b5563 !important; 
+  transition: color 0.2s ease;
+}
+
+.owi-navbar .dropdown-item:hover {
+  background-color: #b5c1d7 !important;
+  color: #213456 !important;
+}
+
+.owi-navbar .dropdown-item:hover i {
+  color: #213456 !important; 
+}
+
+.owi-navbar .change-pass {
+  color: #1e40af !important;
+}
+.owi-navbar .change-pass i {
+  color: #1e40af !important;
+}
+.owi-navbar .change-pass:hover {
+  background-color: #eff6ff !important;
+}
+
+.owi-navbar .logout-btn {
+  color: #dc2626 !important;
+  font-weight: 600;
+}
+.owi-navbar .logout-btn i {
+  color: #dc2626 !important;
+}
+.owi-navbar .logout-btn:hover {
+  background-color: #fef2f2 !important;
+}
+
+.owi-navbar .dropdown-divider {
+  border-top: 1px solid #e5e7eb !important;
+  margin: 0.4rem 0;
+}
+
+.notif-dropdown {
+  width: 360px;
+  max-width: 92vw;
+}
+
+.owi-navbar .navbar-toggler {
+  border-color: rgba(255,255,255,0.25);
+  padding: 0.4rem 0.6rem;
+}
+
+.owi-navbar .navbar-toggler-icon {
+  filter: brightness(0) invert(1);
+}
+
+.notification-dropdown-wrapper {
+  position: relative;
+}
+
+.notif-bell-icon {
+  font-size: 1.25rem;
+  color: #ffffff;
+  transition: color 0.2s ease;
+}
+.nav-link:hover .notif-bell-icon {
+  color: #E1AD01;
+}
+
+.notif-badge {
+  position: absolute;
+  top: 4px;
+  right: 2px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.25em 0.5em;
+  border-radius: 50rem;
+  border: 2px solid #fff; 
+  transform: translate(20%, -20%);
+}
+.notif-badge:empty {
+  display: none;
+}
+
+.modern-notif-dropdown {
+  width: 340px;
+  max-width: 90vw;
+  padding: 0;
+  border-radius: 12px !important; 
+  margin-top: 10px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
+}
+
+.notif-scroll-area {
+  max-height: 400px;
+  overflow-y: auto;
+}
+.notif-scroll-area::-webkit-scrollbar {
+  width: 5px;
+}
+.notif-scroll-area::-webkit-scrollbar-track {
+  background: transparent;
+}
+.notif-scroll-area::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+
+.style-clean-table {
+  border-collapse: collapse;
+}
+.style-clean-table tr {
+  border-bottom: 1px solid #f1f5f9;
+  transition: background-color 0.15s ease;
+}
+.style-clean-table tr:last-child {
+  border-bottom: none;
+}
+.style-clean-table tr:hover {
+  background-color: #f8fafc;
+}
+
+.notif-cell {
+  padding: 12px 16px !important;
+  display: block;
+}
+.notif-cell.unread {
+  background-color: #f0f9ff;
+}
+.notif-cell.unread:hover {
+  background-color: #e0f2fe;
+}
+
+.notif-text {
+  font-size: 0.875rem;
+  color: #334155;
+  line-height: 1.4;
+  white-space: normal; 
+}
+.notif-date {
+  font-size: 0.75rem;
+  display: block;
+  margin-top: 4px;
+  color: #94a3b8 !important;
+}
+
+#notif_dataxx thead {
+  display: none;
+}
+
+#notif_dataxx td {
+  padding: 0 !important;
+  border-top: none !important;
+}
     </style>
 </head>
 <body>
-<nav class="navbar navbar-icon-top navbar-expand-lg navbar-dark bg-dark">
-  <a class="navbar-brand" href="#">HELPDESK</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
+ <nav class="navbar navbar-expand-lg navbar-dark owi-navbar sticky-top">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="dashboard.php">
+        <img src="../images/owi.ico" width="35" height="35" class="d-inline-block align-top" alt="OWI Logo">
+        <span>OWI <span style="color: var(--primary-color);">HELPDESK</span></span>
+      </a>
 
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item active">
-        <a class="nav-link" href="dashboard.php">
-          <i class="fa fa-home"></i>
-          Home
-          <span class="sr-only">(current)</span>
-          </a>
-      </li>
-            <li class="nav-item active">
-        <a class="nav-link a_sales_monitoring" id="" href="#">
-          <i class="fa fa-dollar"></i>
-          Sales Monitoring
-          <span class="sr-only">(current)</span>
-          </a>
-      </li>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-    </ul>
-    <ul class="navbar-nav ">
-
-       <!-- <li class="nav-item dropdown">
-        <a class="nav-link" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-           <i class="fa fa-bell">
-            <span class="badge badge-info" id="notif_newmsg"></span>
-          </i>
-          Notification
-          
-        </a>
-        <div class="dropdown-menu"  aria-labelledby="navbarDropdown">
-        <div class="col-md-12 col-xs-12">
-        <table id="notif_data" class="table table-dark table-responsive table-sm" style="width: auto;"></table>
-        </div>
-
-        </div>
-      </li> -->
-      <li class="nav-item">
-    <form class="form-inline my-2 my-lg-0">
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-                <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <!-- <i class="fa fa-envelope-o"> -->
-           <img src="../images/users/<?= $_SESSION['imguser'];?>" alt="User Image" style="width: 35px;"/>
-            <?php echo $_SESSION['fname']. '  ' . $_SESSION['lstname'];?>
-          
-        </a>
-        <div class="dropdown-menu " aria-labelledby="navbarDropdown">
-         <!-- <a class="dropdown-item" href="javascript:void(0)" onclick="pager(this.id)" id="change_password"></a> -->
-          <a class="dropdown-item" href="change_password.php">Change Password</a>
-          <a class="dropdown-item" href="../logout.php">Log Out</a>
+          <li class="nav-item active">
+            <a class="nav-link" href="dashboard.php">
+              <i class="fa fa-home"></i> HOME
+            </a>
+          </li>
 
-        </div>
-      </li>
+
+          <!--<li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="genReportDrop" role="button" data-toggle="dropdown">
+              <i class="fa fa-chart-line"></i> REPORTS
+            </a>
+            <div class="dropdown-menu" aria-labelledby="genReportDrop">
+              <a class="dropdown-item" href="genrep_bycat.php">
+                <i class="fa fa-calendar-day"></i> By Categories
+              </a>
+              <a class="dropdown-item" href="performance.php">
+                <i class="fa-solid fa-arrow-trend-up"></i> IT Performance
+              </a>
+            </div>
+          </li>-->
+          <!--<li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="maintDrop" role="button" data-toggle="dropdown">
+              <i class="fa fa-sliders-h"></i> MAINTENANCE
+            </a>
+            <div class="dropdown-menu" aria-labelledby="maintDrop">
+              <a class="dropdown-item" href="user_maintenance.php"><i class="fas fa-user-cog"></i> User Maintenance</a>
+              <a class="dropdown-item" href="store_maintenance.php"><i class="fas fa-store"></i> Store Maintenance</a>
+            </div>
+          </li>-->
+         <!-- <li class="nav-item">
+            <a class="nav-link" href="admincreateticket.php">
+              <i class="fa fa-plus-circle" style="color: var(--primary-color);"></i> CREATE TICKET
+            </a>
+          </li>-->
         </ul>
-    </form>
-      </li>
-    </ul>
-  </div>
-</nav>
+
+        <ul class="navbar-nav ml-auto">
+         
+          <li class="nav-item dropdown notification-dropdown-wrapper">
+            <a class="nav-link position-relative d-inline-block p-2" href="#" id="notifDrop" role="button" data-toggle="dropdown">
+              <i class="fa fa-bell notif-bell-icon"></i>
+              <span class="badge badge-danger notif-badge" id="notif_newmsg"></span>
+            </a>
+            
+            <div class="dropdown-menu dropdown-menu-right modern-notif-dropdown shadow-lg border-0" aria-labelledby="notifDrop">
+              <div class="dropdown-header text-dark py-3 border-bottom">
+                <h6 class="m-0 font-weight-bold">Recent Notifications</h6>
+              </div>
+
+              <div class="notif-scroll-area">
+                <table id="notif_dataxx" class="table table-sm mb-0 style-clean-table" style="width:100%;">
+                
+                </table>
+              </div>
+            </div>
+          </li>
+
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-toggle="dropdown">
+              <img class="rounded-circle border border-light" src="../images/users/<?= $_SESSION['imguser']; ?>" alt="User" style="width: 30px; height: 30px; object-fit: cover;">
+              <span class="ml-2 d-none d-lg-inline">
+                <?php echo $_SESSION['fname'] . ' ' . $_SESSION['lstname']; ?>
+              </span>
+            </a>
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+              <a class="dropdown-item" href="change_password.php"><i class="fas fa-key mr-2"></i>Change Password</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item text-danger" href="../logout.php"><i class="fas fa-sign-out-alt mr-2"></i>Log Out</a>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
 <!-- <div class="maincontainer" id="container"></div> -->
 </body>
 </html>

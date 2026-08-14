@@ -144,6 +144,8 @@
 
     function admin_datatable(t) {
       const dataset = t.rptdata;
+      window.originalStatusOptions = window.originalStatusOptions || $('#status').html();
+
       table_tickets = $("#report_data").DataTable({
         "dom": 'B<"pull-left"lf><"pull-right">tip',
         "buttons": [
@@ -156,6 +158,12 @@
             },
             action: function (e, dt, node, config) {
               $('#report_form').trigger('reset');
+              
+              var sessionUser = "<?= addslashes(trim(($_SESSION['fname'] ?? '') . ' ' . ($_SESSION['lstname'] ?? ''))) ?>";
+              var sessionTechId = "<?= addslashes($_SESSION['tech_id'] ?? '') ?>";
+              $('#close_by').val(sessionTechId);
+              $('#cl_desc').val(sessionUser);
+
               $('#remarks_view').empty();
               $('.dv_msg').hide();
               $('.container_remarks').hide();
@@ -171,6 +179,9 @@
               $('#img').empty();
               $('#addmsg').removeAttr('required');
               $('#is_transfer').prop('checked', false); 
+              
+              $('#status').html(window.originalStatusOptions);
+              $('#status').prop("disabled", false).val('').trigger('change');
 
               if(typeof admin_hideshowforms === "function") admin_hideshowforms();
               if(typeof unilayout_netshowmodalform === "function") unilayout_netshowmodalform();
@@ -459,19 +470,32 @@
 
     function open_ticket_modal(data) {
       var tid = data['ticket_no'];
-      $('#status').html(window.originalStatusOptions);
-
-      if (data['status'] === 'ON PROCESS') {
-          $('#status').html(
-              '<option value="ON PROCESS" style="color: #333;">ON PROCESS</option>' +
-              '<option value="PENDING" style="color: #333;">PENDING</option>' +
-              '<option value="SUBJECT FOR CLOSING" style="color: #333;">SUBJECT FOR CLOSING</option>'
-          );
-      } else if (data['status'] === 'PENDING') {
-          $('#status').html(
-              '<option value="PENDING" style="color: #333;">PENDING</option>' +
-              '<option value="SUBJECT FOR CLOSING" style="color: #333;">SUBJECT FOR CLOSING</option>'
-          );
+      window.originalStatusOptions = window.originalStatusOptions || $('#status').html();
+      
+      if (window.currentDashcardFilter === '') {
+          // Total Reports active -> display only current status
+          $('#status').html('<option value="' + data['status'] + '" style="color: #333;">' + data['status'] + '</option>');
+      } else {
+          // Specific dashcard filter active -> apply logic
+          if (data['status'] === 'ON PROCESS') {
+              $('#status').html(
+                  '<option value="ON PROCESS" style="color: #333;">ON PROCESS</option>' +
+                  '<option value="PENDING" style="color: #333;">PENDING</option>' +
+                  '<option value="SUBJECT FOR CLOSING" style="color: #333;">SUBJECT FOR CLOSING</option>'
+              );
+          } else if (data['status'] === 'PENDING') {
+              $('#status').html(
+                  '<option value="PENDING" style="color: #333;">PENDING</option>' +
+                  '<option value="SUBJECT FOR CLOSING" style="color: #333;">SUBJECT FOR CLOSING</option>'
+              );
+          } else if (data['status'] === 'SUBJECT FOR CLOSING') {
+              $('#status').html(
+                  '<option value="SUBJECT FOR CLOSING" style="color: #333;">SUBJECT FOR CLOSING</option>' +
+                  '<option value="CLOSED" style="color: #333;">CLOSED</option>'
+              );
+          } else {
+              $('#status').html(window.originalStatusOptions);
+          }
       }
 
       $('#subjct').attr('readonly', true);
@@ -482,7 +506,6 @@
       $('#subjct').val(data['subject']);
       $('#concern').val(data['concern']);
       $('#via').val(data['via']);
-      $('#status').val(data['status']);
       $('#it_num').val(data['itsup']);
       
       console.log("Ticket: " + data['ticket_no'] + " | is_transfer raw value: ", data['is_transfer']);
@@ -500,8 +523,12 @@
       $('#itsup').val(data['itsup']);
 
       $('#cat_num').val(data['cat_id']);
-      $('#close_by').val(data['close_by']);
-      $('#cl_desc').val(data['clusers']);
+      
+      var sessionUser = "<?= addslashes(trim(($_SESSION['fname'] ?? '') . ' ' . ($_SESSION['lstname'] ?? ''))) ?>";
+      var sessionTechId = "<?= addslashes($_SESSION['tech_id'] ?? '') ?>";
+      
+      $('#close_by').val(data['close_by'] && String(data['close_by']).trim() !== '' && String(data['close_by']).trim() !== '0' ? data['close_by'] : sessionTechId);
+      $('#cl_desc').val(data['clusers'] && String(data['clusers']).trim() !== '' ? data['clusers'] : sessionUser);
 
       if (data['cat_id'] && $('#cat option[value="' + data['cat_id'] + '"]').length === 0) {
         $('<option>', {
@@ -541,6 +568,8 @@
       
       if(typeof unilayout_netshowmodalform === "function") unilayout_netshowmodalform();
 
+      $('#status').val(data['status']).trigger('change');
+
       $('#itsup').off('change').on('change', function () {
         var itfrstsup = $('#it_num').val();
         var itchange = this.value;
@@ -560,6 +589,10 @@
         $(':input[type="submit"]').prop('disabled', false);
         $('#date_createdx, #date_refNo, #date_closed, #subjct, #remarks').attr('readonly', false);
         $('#store, #via, #status, #itsup, #cat, #sub, #isp, #is_transfer').prop("disabled", false);
+        
+        if (window.currentDashcardFilter === '') {
+            $('#status').prop("disabled", true);
+        }
       }
 
       if (typeof getinfo === "function") getinfo(tid, 'remarks', user_id);
@@ -645,6 +678,12 @@
 
     $('#add_button').click(function () {
       $('#report_form').trigger('reset');
+      
+      var sessionUser = "<?= addslashes(trim(($_SESSION['fname'] ?? '') . ' ' . ($_SESSION['lstname'] ?? ''))) ?>";
+      var sessionTechId = "<?= addslashes($_SESSION['tech_id'] ?? '') ?>";
+      $('#close_by').val(sessionTechId);
+      $('#cl_desc').val(sessionUser);
+
       $('#msg_thread, .dv_msg, .container_remarks').hide();
       $('#remarks_view').empty();
       $('#userModal').modal({ "show": true, "backdrop": 'static' });
@@ -657,7 +696,8 @@
       $('#date_closed').attr('readonly', false);
       $('#store').prop("disabled", false);
       $('#via').prop("disabled", false);
-      $('#status').prop("disabled", false);
+      $('#status').html(window.originalStatusOptions);
+      $('#status').prop("disabled", false).val('').trigger('change');
       $('#itsup').prop("disabled", false);
       $('#cat').prop("disabled", false);
       $('#sub').prop("disabled", false);
@@ -721,7 +761,9 @@
         var formData = new FormData(this);
         setTimeout(function() {
           if ($('#status').val() !== 'CLOSED') {
-            disabledFields.prop('disabled', true);
+            if (window.currentDashcardFilter === '') {
+                $('#status').prop('disabled', true);
+            }
           } else {
             $(':input[type="submit"]').prop('disabled', true);
             $('#date_createdx').attr('readonly', true);

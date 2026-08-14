@@ -1094,6 +1094,11 @@ public function changepass(){
 				ar.revised_request,
 				ar.is_technical,
 					ar.technical_workoutput,
+						fat.problem_reported,
+				fat.verification_findings,
+				fat.work_done,
+				fat.status_workoutput,
+				fat.recommendation,       
                 it.it_desc,
                 it.itsup,           
                 ar.date_received, 
@@ -1101,6 +1106,7 @@ public function changepass(){
                 itt.it_desc AS noted_by_desc,        
                 ar.status           
             FROM asset_requests ar
+				LEFT JOIN fixed_asset_techoutput fat ON ar.ticket_no = fat.ticket_no
             LEFT JOIN it_tech it ON ar.item_received_by = it.itsup
             LEFT JOIN reports r ON ar.ticket_no = r.ticket_no
             LEFT JOIN users u ON r.userId = u.id
@@ -1127,6 +1133,11 @@ public function changepass(){
 			  'is_technical'   => $row["is_technical"],
             'purpose_of_request' => $row["purpose_of_request"],
 			 'technical_workoutput' => $row["technical_workoutput"],
+			   'problem_reported' => $row["problem_reported"],
+				'verification_findings' => $row["verification_findings"],
+				'work_done' => $row["work_done"],
+				'status_workoutput' => $row["status_workoutput"],
+				'recommendation' => $row["recommendation"],
 			 'revised_request' => $row["revised_request"],
             'it_desc'            => $row["it_desc"],
             'date_received'      => $row["date_received"],    

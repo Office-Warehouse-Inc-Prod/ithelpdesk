@@ -36,11 +36,13 @@ switch ($mode) {
 
      case 'dtb':
          $records['rptdata']= $fn->admin_data_table_res();
-
           break; 
     case 'newrpt_tbl':
          $records['newrptdata']= $fn->newreporthist();
         break;
+
+ 
+
     case 'usermtc_dtable':
          $records['usermtc_data']= $fn->usermtc_table();
         break;    

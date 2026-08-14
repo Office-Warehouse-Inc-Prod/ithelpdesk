@@ -863,9 +863,16 @@ public function fathist() {
                 it.itsup,          
                 ar.date_received, 
                 ar.created_at,
-               itt.it_desc AS noted_by_desc,       
+               itt.it_desc AS noted_by_desc,  
+			    fat.problem_reported,
+				fat.verification_findings,
+				fat.work_done,
+				fat.status_workoutput,
+				fat.recommendation,             
                 ar.status          
             FROM asset_requests ar
+			
+			LEFT JOIN fixed_asset_techoutput fat ON ar.ticket_no = fat.ticket_no
             LEFT JOIN it_tech it ON ar.item_received_by = it.itsup
             LEFT JOIN reports r ON ar.ticket_no = r.ticket_no
             LEFT JOIN users u ON r.userId = u.id
@@ -887,6 +894,11 @@ public function fathist() {
 				'is_technical'=> $row["is_technical"],
                 'asset_tag_number' => $row["asset_tag_number"],
                 'purpose_of_request' => $row["purpose_of_request"],
+					'problem_reported' => $row["problem_reported"],
+				'verification_findings' => $row["verification_findings"],
+				'work_done' => $row["work_done"],
+				'status_workoutput' => $row["status_workoutput"],
+				'recommendation' => $row["recommendation"],
 				'revised_request' => $row["revised_request"],
 						'technical_workoutput' => $row["technical_workoutput"],
                 'it_desc' => $row["it_desc"],
@@ -1081,6 +1093,13 @@ public function changepass(){
                 ar.asset_tag_number, 
                 ar.purpose_of_request, 
 				ar.revised_request,
+				ar.is_technical,
+				ar.technical_workoutput,
+				fat.problem_reported,
+				fat.verification_findings,
+				fat.work_done,
+				fat.status_workoutput,
+				fat.recommendation,       
                 it.it_desc,
                 it.itsup,           
                 ar.date_received, 
@@ -1088,6 +1107,7 @@ public function changepass(){
                 itt.it_desc AS noted_by_desc,        
                 ar.status           
             FROM asset_requests ar
+			LEFT JOIN fixed_asset_techoutput fat ON ar.ticket_no = fat.ticket_no
             LEFT JOIN it_tech it ON ar.item_received_by = it.itsup
             LEFT JOIN reports r ON ar.ticket_no = r.ticket_no
             LEFT JOIN users u ON r.userId = u.id
@@ -1113,6 +1133,12 @@ public function changepass(){
             'asset_tag_number'   => $row["asset_tag_number"],
             'purpose_of_request' => $row["purpose_of_request"],
 			 'revised_request' => $row["revised_request"],
+			   'technical_workoutput' => $row["technical_workoutput"],
+			  'problem_reported' => $row["problem_reported"],
+				'verification_findings' => $row["verification_findings"],
+				'work_done' => $row["work_done"],
+				'status_workoutput' => $row["status_workoutput"],
+				'recommendation' => $row["recommendation"],
             'it_desc'            => $row["it_desc"],
             'date_received'      => $row["date_received"],    
             'noted_by_desc'      => $row["noted_by_desc"],  

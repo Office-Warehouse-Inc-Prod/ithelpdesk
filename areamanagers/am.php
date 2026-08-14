@@ -3,6 +3,94 @@
 
 <script type='text/javascript'>
 $( document ).ready(function() {
+function timeAgo(dateString) {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    const now = new Date();
+    const seconds = Math.round((now - date) / 1000);
+    const minutes = Math.round(seconds / 60);
+    const hours = Math.round(minutes / 60);
+    const days = Math.round(hours / 24);
+
+    if (seconds < 60) return "just now";
+    else if (minutes < 60) return minutes + " minute" + (minutes > 1 ? "s" : "") + " ago";
+    else if (hours < 24) return hours + " hour" + (hours > 1 ? "s" : "") + " ago";
+    else if (days < 30) return days + " day" + (days > 1 ? "s" : "") + " ago";
+    
+    return date.toLocaleDateString(); 
+}
+
+ function loadCommentThread(ticket_no) {
+        const $remarksView = $('#remarks_view');
+        const ticketValue = (ticket_no || '').toString().trim();
+
+        if (!ticketValue) return;
+        
+        $remarksView.fadeOut(150, function() {
+            $remarksView.html('<div class="text-center text-muted mt-4 mb-4"><div class="spinner-border spinner-border-sm me-2 text-primary"></div>Loading conversation...</div>').fadeIn(150);
+        });
+
+        $.ajax({
+            url: 'get_comments.php', 
+            type: 'POST',
+            dataType: 'json',
+            data: { ticket_no: ticketValue },
+            success: function(response) {
+                let html = '';
+                
+                if (Array.isArray(response) && response.length > 0) {
+                    var currentUserIdStr = "<?= $_SESSION['user_id'] ?? '' ?>";
+                    var currentUserNameStr = "<?= $_SESSION['fname'] ?? '' ?>";
+                    let reversedResponse = response.slice().reverse();
+
+                    reversedResponse.forEach(function(comment, index) {
+                        let sender = comment.userId || 'Unknown';
+                        
+                        let isMe = false;
+                        if(currentUserIdStr !== "" && sender === currentUserIdStr) isMe = true;
+                        if(currentUserNameStr !== "" && sender.includes(currentUserNameStr)) isMe = true;
+                        
+                        let bubbleClass = isMe ? 'chat-right' : 'chat-left';
+                        let delay = index * 0.05; 
+                        let relativeTime = timeAgo(comment.comment_date);
+                        let replyTimeColor = isMe ? "color: #e2e8f0;" : "color: #64748b;";
+                        
+                        html += `
+                            <div class="chat-bubble ${bubbleClass}" style="animation-delay: ${delay}s;">
+                                <div class="msg-meta">
+                                    <span class="msg-meta-name">${sender}</span>
+                                    <span class="msg-time">${comment.comment_date}</span> 
+                                </div>
+                                <div style="white-space: pre-wrap;">${comment.comment_details}</div>
+                                
+                                <div class="reply-time" style="font-size: 0.65rem; text-align: right; margin-top: 6px; opacity: 0.85; font-style: italic; ${replyTimeColor}">
+                                    Replied ${relativeTime}
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    html = '<div class="text-center text-muted mt-3" style="font-size:13px;"><i class="fas fa-comments mb-2" style="font-size:24px; opacity:0.5;"></i><br>No comments yet. Start the conversation!</div>';
+                }
+                
+               $remarksView.fadeOut(150, function() {
+                    $remarksView.html(html).fadeIn(300);
+                    $('.dv_msg, .container_remarks').slideDown(300); 
+
+                    setTimeout(() => {
+                        const $container = $('.container_remarks');
+                        if ($container.length) {
+                            $container.animate({ scrollTop: 0 }, 600, 'swing');
+                        }
+                    }, 200);
+                });
+            },
+            error: function(xhr) {
+                $remarksView.html('<div class="text-danger text-center mt-3">Error loading comments.</div>');
+            }
+        });
+    }
+
 if(/Android|webOS|iPhone|iPad|Mac|Macintosh|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) { $("#ovrall").hide(); }
 
 var user_id = <?= $_SESSION['user_id']; ?>
@@ -131,57 +219,29 @@ columns: [
 ],
 
 
-rowCallback: function(row, data, index){
-if(data['status'] == 'OPEN'){
-$(row).find('td:eq(0)').css('color', 'red');
-$(row).find('td:eq(1)').css('color', 'red');
-$(row).find('td:eq(2)').css('color', 'red');
-$(row).find('td:eq(3)').css('color', 'red');
-$(row).find('td:eq(4)').css('color', 'red');
-$(row).find('td:eq(5)').css('color', 'red');
-$(row).find('td:eq(6)').css('color', 'red');
-$(row).find('td:eq(7)').css('color', 'red');
-$(row).find('td:eq(8)').css('color', 'red');
-$(row).find('td:eq(9)').css('color', 'red');
-$(row).find('td:eq(10)').css('color', 'red');
-$(row).find('td:eq(11)').css('color', 'white');
-$(row).find('td:eq(12)').css('color', 'red');
-}
-else if (data['status'] == 'OPEN WITH FIX ASSET'){
-$(row).find('td:eq(0)').css('color', 'red');
-$(row).find('td:eq(1)').css('color', 'red');
-$(row).find('td:eq(2)').css('color', 'red');
-$(row).find('td:eq(3)').css('color', 'red');
-$(row).find('td:eq(4)').css('color', 'red');
-$(row).find('td:eq(5)').css('color', 'red');
-$(row).find('td:eq(6)').css('color', 'red');
-$(row).find('td:eq(7)').css('color', 'red');
-$(row).find('td:eq(8)').css('color', 'red');
-$(row).find('td:eq(9)').css('color', 'red');
-$(row).find('td:eq(10)').css('color', 'red');
-$(row).find('td:eq(11)').css('color', 'red');
-$(row).find('td:eq(12)').css('color', 'red');
-}
-else if (data['status'] == 'CLOSED'){
-$(row).find('td:eq(0)').css('color', 'green');
-$(row).find('td:eq(1)').css('color', 'green');
-$(row).find('td:eq(2)').css('color', 'green');
-$(row).find('td:eq(3)').css('color', 'green');
-$(row).find('td:eq(4)').css('color', 'green');
-$(row).find('td:eq(5)').css('color', 'green');
-$(row).find('td:eq(6)').css('color', 'green');
-$(row).find('td:eq(7)').css('color', 'green');
-$(row).find('td:eq(8)').css('color', 'green');
-$(row).find('td:eq(9)').css('color', 'green');
-$(row).find('td:eq(10)').css('color', 'green');
-$(row).find('td:eq(11)').css('color', 'green');
-$(row).find('td:eq(12)').css('color', 'green');
-$(row).find('td:eq(13)').css('color', 'green');
-}
+  rowCallback: function (row, data, index) {
+          $(row).removeClass('status-open status-open-msg status-closed status-subject-closing status-pending');
+          
+          $(row).find('td').css({'background-color': '', 'color': ''});
 
-},
+          if (data['status'] === "ON PROCESS") {
+            $(row).find('td').css({
+                'color': '#9b7807' 
+            });
 
-});
+            if (data['msg_cnt'] === '1' || data['msg_cnt'] === '0') {
+              $(row).addClass('status-open');
+            }
+          } else if (data['status'] === 'PENDING') {
+            $(row).addClass('status-pending');
+            $(row).find('td:eq(11)').html(' '); 
+          } else if (data['status'] === 'CLOSED') {
+            $(row).addClass('status-closed');
+          } else if (data['status'] === 'SUBJECT FOR CLOSING') {
+            $(row).addClass('status-subject-closing');
+          }
+        }
+      });
 
 $('#report_data tbody').on( 'click', 'button', function () {
 var data = table.row( $(this).parents('tr') ).data();
@@ -278,9 +338,14 @@ sst.add(option);
 // console.log(user_id)
 getinfo(tid, 'remarks', user_id);
 
+$('.dv_msg').show();
+$('#remarks_view').show();
+$('#msg_thread').show();
+loadCommentThread(data['ticket_no']);
+
 gtsub_id();
 
-$('.modal-title').text("Ticker Number: "+tid+"");
+$('.modal-title').text("Ticket Number: "+tid+"");
 $('#action').val("Save");
 $('#operation').val("Edit"); 
 $('#userModal').modal({"show": true, "backdrop": 'static'});
@@ -290,64 +355,44 @@ $('#userModal').modal({"show": true, "backdrop": 'static'});
 } );
 
 $('#card_totalval').on('click', function() {
-    // 1. Clear all existing filters (same as your openval approach)
     table.search('').columns().search('').draw();
-    
-    // 2. Remove any custom filters (like your status filter)
-    // This is the key difference - we remove instead of adding filters
-    $.fn.dataTable.ext.search = []; // Clear ALL custom filters
-    
-    // 3. Redraw the table completely unfiltered
+    $.fn.dataTable.ext.search = []; 
     table.draw();
-    
-    // 4. Your existing UI code
     $('#myInput').slideToggle();
     $('html, body').animate({ scrollTop: 1600 }, 1000);
 });
 
 $('#card_openval').on('click', function() {
-    // Clear existing filters
     table.search('').columns().search('').draw();
     
-    // Apply status filter (column 6)
     $.fn.dataTable.ext.search.push(
         function(settings, data, dataIndex) {
-            var status = data[6]; // Status column
+            var status = data[6]; 
             return status !== "CLOSED" && 
                    status !== "SUBJECT FOR CLOSING";
         }
     );
     table.draw();
-    
-    // Animation code
     $('#myInput').slideToggle();
     $('html, body').animate({ scrollTop: 1600 }, 1000);
 });
 
 $('#card_openwfaval').on('click', function () {
-    // Use DataTables search with a custom function to compare dates
     $.fn.dataTable.ext.search.push(
         function( settings, data, dataIndex ) {
-            var dateColumn = data[10] || ""; // Use data for column 10, default to empty string
-
-            // Extract the number of days using a regular expression
-            var match = dateColumn.match(/(\d+)\s+days?/i); // Matches "1 day", "5 days", etc. (case-insensitive)
-
-            var days = match ? parseInt(match[1]) : NaN; // Extract the number from the match
-
-            // Check if days is a valid number
+            var dateColumn = data[10] || ""; 
+            var match = dateColumn.match(/(\d+)\s+days?/i); 
+            var days = match ? parseInt(match[1]) : NaN; 
             if (isNaN(days)) {
-                // Handle the case where the number of days is invalid (e.g., log an error, skip the row)
                 console.error("Invalid number of days:", dateColumn);
-                return false; // Skip this row
+                return false; 
             }
 
-            // Compare the number of days to 3
             if (days >= 4) {
-                return true; // Include the row if it's r days or more
+                return true; 
             }
 
-            return false; // Exclude the row if it's more than 4 days
+            return false; 
         }
     );
 
@@ -355,10 +400,43 @@ $('#card_openwfaval').on('click', function () {
     $.fn.dataTable.ext.search.pop();
 
     $('#myInput').slideToggle();
-    $('html, body').animate({
-        scrollTop: 1600
-    }, 1000);
+    $('html, body').animate({ 
+    scrollTop: $('#ticketTabsContent').closest('.card2').offset().top - 20 
+}, 200);
 });
+
+
+$('#card_openval').on('click', function () {
+var val =  $(this).attr("value");
+// alert(val);
+table.columns(6).search(val).draw();
+$('#myInput').slideToggle();
+    $('html, body').animate({ 
+    scrollTop: $('#ticketTabsContent').closest('.card2').offset().top - 20 
+}, 200);
+} );
+
+
+$('#card_totalval').on('click', function () {
+var val =  $(this).attr("value");
+// alert(val);
+table.columns(6).search(val).draw();
+$('#myInput').slideToggle();
+    $('html, body').animate({ 
+    scrollTop: $('#ticketTabsContent').closest('.card2').offset().top - 20 
+}, 200);
+} );
+
+
+$('#card_openwfaval').on('click', function () {
+var val =  $(this).attr("value");
+// alert(val);
+table.columns(6).search(val).draw();
+$('#myInput').slideToggle();
+    $('html, body').animate({ 
+    scrollTop: $('#ticketTabsContent').closest('.card2').offset().top - 20 
+}, 200);
+} );
 
 
 $('#card_closedval').on('click', function () {
@@ -366,9 +444,9 @@ var val =  $(this).attr("value");
 // alert(val);
 table.columns(6).search(val).draw();
 $('#myInput').slideToggle();
-    $('html, body').animate({
-        scrollTop: 1600
-    }, 1000);
+    $('html, body').animate({ 
+    scrollTop: $('#ticketTabsContent').closest('.card2').offset().top - 20 
+}, 200);
 } );
 
 } // end of data table
@@ -417,7 +495,132 @@ _areagraph(yr);
 
 });
 
+function open_ticket_modal(data) {
+      var tid = data['ticket_no'];
+      $('#status').html(window.originalStatusOptions);
 
+      if (data['status'] === 'ON PROCESS') {
+          $('#status').html(
+              '<option value="ON PROCESS" style="color: #333;">ON PROCESS</option>' +
+              '<option value="PENDING" style="color: #333;">PENDING</option>' +
+              '<option value="SUBJECT FOR CLOSING" style="color: #333;">SUBJECT FOR CLOSING</option>'
+          );
+      } else if (data['status'] === 'PENDING') {
+          $('#status').html(
+              '<option value="PENDING" style="color: #333;">PENDING</option>' +
+              '<option value="SUBJECT FOR CLOSING" style="color: #333;">SUBJECT FOR CLOSING</option>'
+          );
+      }
+
+      $('#subjct').attr('readonly', true);
+      $('#ticket_no').val(data['ticket_no']);
+      $('#str_num').val(data['store']);
+      $('#store').val(data['store']);
+      $('#date_createdx').val(data['date_created']);
+      $('#subjct').val(data['subject']);
+      $('#concern').val(data['concern']);
+      $('#via').val(data['via']);
+      $('#status').val(data['status']);
+      $('#it_num').val(data['itsup']);
+      
+      console.log("Ticket: " + data['ticket_no'] + " | is_transfer raw value: ", data['is_transfer']);
+      
+      var isTransferValue = parseInt($.trim(data['is_transfer'])) === 1;
+
+      $('#userModal #is_transfer').prop('checked', isTransferValue).trigger('change');
+      if (data['itsup'] && $('#itsup option[value="' + data['itsup'] + '"]').length === 0) {
+        $('<option>', {
+          value: data['itsup'],
+          text: data['it_desc'] ? data['it_desc'] : 'Support ID ' + data['itsup'],
+          class: 'temp-option'
+        }).appendTo('#itsup');
+      }
+      $('#itsup').val(data['itsup']);
+
+      $('#cat_num').val(data['cat_id']);
+      $('#close_by').val(data['close_by']);
+      $('#cl_desc').val(data['clusers']);
+
+      if (data['cat_id'] && $('#cat option[value="' + data['cat_id'] + '"]').length === 0) {
+        $('<option>', {
+          value: data['cat_id'],
+          text: data['category'] ? data['category'] : 'Category ID ' + data['cat_id'],
+          class: 'temp-option'
+        }).appendTo('#cat');
+      }
+      $('#cat').val(data['cat_id']);
+
+      $('#sub_num').val(data['sub_id']);
+      if (data['sub_id'] && $('#sub option[value="' + data['sub_id'] + '"]').length === 0) {
+        $('<option>', {
+          value: data['sub_id'],
+          text: data['sub_category'] ? data['sub_category'] : 'Sub Category ID ' + data['sub_id'],
+          class: 'temp-option'
+        }).appendTo('#sub');
+      }
+      $('#sub').val(data['sub_id']);
+      $('#isp_num').val(data['isp_id']);
+      $('#isp').val(data['isp_id']);
+      $('#refNo').val(data['refNo']);
+      $('#date_refNo').val(data['date_refNo']);
+      $('#file-input').val("");
+      
+      if(typeof admin_hideshowforms === "function") admin_hideshowforms();
+      
+      $('#date_closed').val(data['date_closed']);
+      $('#remarks').val(data['remarks']);
+      
+      $('#remarks_view').show();
+      $('.dv_msg').show();
+      $('.container_remarks').show();
+      $('#msg_thread').slideDown(300);
+      $('#userModal').modal({ "show": true, "backdrop": 'static' });
+      loadCommentThread(data['ticket_no']);
+      
+      if(typeof unilayout_netshowmodalform === "function") unilayout_netshowmodalform();
+
+      $('#itsup').off('change').on('change', function () {
+        var itfrstsup = $('#it_num').val();
+        var itchange = this.value;
+        if (itfrstsup != itchange) {
+          $('#remarks').attr("placeholder", "Reason for re-assign/ Workoutput");
+          $('#remarks').val("");
+        } else {
+          $('#remarks').val(data['remarks']);
+        }
+      });
+
+      if ($('#status').val() == 'CLOSED') {
+        $(':input[type="submit"]').prop('disabled', true);
+        $('#date_createdx, #date_refNo, #date_closed, #remarks').attr('readonly', true);
+        $('#store, #via, #status, #itsup, #cat, #sub, #isp, #is_transfer').prop("disabled", true);
+      } else {
+        $(':input[type="submit"]').prop('disabled', false);
+        $('#date_createdx, #date_refNo, #date_closed, #subjct, #remarks').attr('readonly', false);
+        $('#store, #via, #status, #itsup, #cat, #sub, #isp, #is_transfer').prop("disabled", false);
+      }
+
+      if (typeof getinfo === "function") getinfo(tid, 'remarks', user_id);
+      if (typeof gtsub_id === "function") gtsub_id();
+
+      $('.modal-title').text("Ticket Number: " + tid);
+      $('#action').val("Save and Reply");
+      $('#operation').val("Save and Reply");
+      $('#userModal').modal({ "show": true, "backdrop": 'static' });
+
+      $.ajax({
+        type: 'POST',
+        url: 'sesticket.php',
+        data: { tktval: data['ticket_no'] },
+        success: function (response) {
+          $('#img').html(response);
+        }
+      });
+
+      $('#msgbtn').show();
+      $('#msg_thread').show();
+      $('#addmsg').val("");
+    }
 
 $(function () {
 $('#datetimepicker1, #datetimepicker2, #datetimepicker3').datetimepicker()
@@ -554,7 +757,6 @@ $('#topolDate').val(endDate.toISOString().split('T')[0]);
 _polledraph($('#frompolDate').val(), $('#topolDate').val());
 
 
-// Add event listeners for date changes *(correction: this should be inside the document ready block)*
 $('#frompolDate, #topolDate').change(function() {
     _polledraph($('#frompolDate').val(), $('#topolDate').val());
 
