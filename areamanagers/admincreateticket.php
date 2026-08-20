@@ -145,7 +145,7 @@ try {
   }
 
   table.dataTable tbody tr:hover {
-    background: #6c89ba !important;
+    background: #aab0ba !important;
   }
 
   table.dataTable tbody td {
@@ -496,6 +496,253 @@ try {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
     color-adjust: exact !important;
+  }
+
+  :root {
+    --primary: #E1AD01;
+    --primary-hover: #c99a00;
+    --dark-blue: #1e2d4a;
+    --light-bg: #f8fafc;
+    --border-color: #e2e8f0;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+    --font-sans: 'Inter', sans-serif;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background: linear-gradient(to bottom, #ffffff, #99aac8);
+    background-attachment: fixed;
+    margin: 0;
+    color: var(--text-main);
+    min-height: 100vh;
+  }
+
+  .modern-card {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 16px;
+    box-shadow: var(--card-shadow);
+    padding: 24px;
+    transition: all 0.3s ease;
+  }
+
+  .section-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .form-group label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #213456;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  .modern-input {
+    width: 100%;
+    height: 44px;
+    padding: 10px 14px;
+    background: #ffffff !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 8px !important;
+    color: var(--text-main) !important;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+  }
+
+  .modern-input:focus {
+    outline: none !important;
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 3px rgba(225, 173, 1, 0.15) !important;
+  }
+
+  textarea.modern-input {
+    height: 120px !important;
+    resize: none !important;
+  }
+
+  ::-webkit-scrollbar { 
+    width: 6px; 
+    height: 6px; 
+  }
+  ::-webkit-scrollbar-track { 
+    background: transparent; 
+  }
+  ::-webkit-scrollbar-thumb { 
+    background: #cbd5e1; 
+    border-radius: 10px; 
+  }
+  ::-webkit-scrollbar-thumb:hover { 
+    background: #94a3b8; 
+  }
+
+  .table-responsive-xl, .table-responsive {
+    border-radius: 12px;
+    overflow-x: auto !important; 
+    width: 100% !important;
+  }
+
+  table.dataTable {
+    border-collapse: collapse !important;
+    margin: 0 !important;
+    width: 100% !important;
+  }
+
+  table.dataTable thead th {
+    background: linear-gradient(135deg, #213456, #334c7a);
+    color: white !important;
+    font-weight: 600 !important;
+    font-size: 0.8rem !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 14px 16px !important;
+    border: none !important;
+  }
+
+  table.dataTable tbody tr {
+    background: #ffffff !important;
+    transition: background 0.2s ease;
+  }
+
+  table.dataTable tbody tr:hover {
+    background: #e0e6f1 !important;
+    color: white;
+  }
+
+  table.dataTable tbody td {
+    padding: 14px 16px !important;
+    font-size: 0.85rem !important;
+    border-bottom: 1px solid var(--border-color) !important;
+  }
+
+  .dataTables_wrapper .dataTables_filter input {
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 5px 10px;
+    margin-left: 8px;
+    outline: none;
+  }
+
+  .dataTables_wrapper .dataTables_filter input:focus {
+    border-color: var(--primary);
+  }
+
+  /* Modal Enhancements */
+  .modal-overlay {
+    display: none; 
+    position: fixed; 
+    top: 0; left: 0; 
+    width: 100%; 
+    height: 100%;
+    background: rgba(15, 23, 42, 0.6); 
+    backdrop-filter: blur(4px);
+    justify-content: center; 
+    align-items: center; 
+    z-index: 1050;
+  }
+
+  .modal-overlay .modal-content {
+    background: #ffffff; 
+    padding: 30px; 
+    border-radius: 16px; 
+    width: 90%;
+    max-width: 700px; 
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); 
+    border: none;
+  }
+
+  .container_remarks {
+    display: flex; 
+    flex-direction: column; 
+    max-height: 480px; 
+    overflow-y: auto;
+    background-color: #f0f2f5 !important;
+    border: 1px solid #dee2e6;
+    border-radius: 12px; 
+    padding: 15px; 
+    margin-top: 10px;
+  }
+
+  #userModal .modal-dialog { 
+    max-width: 1100px; 
+    margin: 1.25rem auto; 
+  }
+  #userModal .modal-content { 
+    border-radius: 16px; 
+    border: none; 
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2); 
+    overflow: hidden; 
+  }
+  #userModal .modal-header { 
+    background-color: #213456; 
+    color: #fff;
+    border-bottom: 4px solid #E1AD01; 
+  }
+  
+  /* Chat UI */
+  .chat-bubble {
+    max-width: 85%; 
+    padding: 10px 14px; 
+    border-radius: 18px; 
+    font-size: 0.9rem;
+    line-height: 1.4; 
+    position: relative; 
+    margin-bottom: 12px; 
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1); 
+    word-wrap: break-word;
+  }
+  .chat-left { 
+    align-self: flex-start; 
+    background: #ffffff; 
+    border: 1px solid #e5e7eb; 
+    border-bottom-left-radius: 4px; 
+  }
+  .chat-right { 
+    align-self: flex-end; 
+    background: #1C0770; 
+    color: #ffffff; 
+    border-bottom-right-radius: 4px; 
+  }
+
+  .btn-success { 
+    background-color: #1C0770 !important; 
+    border: none; 
+    padding: 0.6rem 2rem; 
+    font-weight: 600; 
+    border-radius: 8px;
+  }
+  .btn-danger { 
+    background-color: #fff; 
+    border: 1px solid #e2e8f0; 
+    color: #e53e3e; 
+    padding: 0.6rem 1.5rem; 
+    font-weight: 600; 
+    border-radius: 8px;
+   }
+  
+  .admin-table { 
+    width: 100% !important; 
+    table-layout: auto !important; 
+  }
+  .admin-table th {
+     background-color: #213456 !important; 
+     color: #fff !important;
+      font-size: 11px !important;
+     }
+  .admin-table td { 
+    font-size: 11px !important; 
   }
   
 </style>
@@ -860,5 +1107,4 @@ $(document).ready(function() {
 });
 </script>
 
-<!-- JavaScript Dependencies -->
-<script src="am.php"></script>
+

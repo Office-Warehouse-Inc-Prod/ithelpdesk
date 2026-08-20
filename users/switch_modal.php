@@ -510,7 +510,7 @@ if (isset($_POST['mode'])) {
         return "just now";
     }
 
-    function loadCommentThread(ticket_no) {
+    function loadCommentThread(ticket_no,rowData) {
         const $remarksView = $('#remarks_view');
         const ticketValue = (ticket_no || '').toString().trim();
 
@@ -518,12 +518,18 @@ if (isset($_POST['mode'])) {
         
         $remarksView.html('<div class="text-center text-muted mt-4 mb-4"><div class="spinner-border spinner-border-sm me-2 text-primary"></div>Loading conversation...</div>');
 
-        $.ajax({
-            url: 'get_comments.php', 
-            type: 'POST',
-            dataType: 'json',
-            data: { ticket_no: ticketValue },
-            success: function(response) {
+        var target = $('#trackingMap');
+        target.html('<p class="text-muted" style="font-size: 12px; margin-top: 10px;">Loading timeline...</p>');
+
+        var isTechnical = (rowData && rowData.is_technical !== undefined && rowData.is_technical !== null) 
+            ? parseInt(rowData.is_technical) 
+            : 1;
+            $.ajax({
+                url: 'get_comments.php', 
+                type: 'POST',
+                dataType: 'json',
+                data: { ticket_no: ticketValue },
+                success: function(response) {
                 let html = '';
                 
                 if (Array.isArray(response) && response.length > 0) {
@@ -600,44 +606,69 @@ if (isset($_POST['mode'])) {
         $('#col_remarks_thread').show();
 
         const statusLevels = {
-            'submitted': 1, 'noted': 2, 'validated': 3, 
-            'verified': 4, 'printed': 5, 'approved': 6, 'completed': 7
-        };
+                'submitted': 1, 'noted': 2, 'validated': 3, 
+                'verified': 4, 'printed': 5, 'approved': 6, 'rejected': 6, 'completed': 7
+            };
 
         let dbStatus = (response.status || "").toLowerCase().trim();
         let currentLevel = statusLevels[dbStatus] || 0; 
+        
+        // Define isTechnical from the response. Default to 1 if not present.
+        let isTechnical = (response.is_technical !== undefined && response.is_technical !== null) 
+            ? parseInt(response.is_technical) 
+            : 1;
 
-        const trackSteps = [
-            { desc: "Request submitted by store/user", date: response.date_created, reqLevel: 0 },
-            { desc: "Under technical evaluation", date: response.date_created, reqLevel: 0 },
-            { desc: "Submitted to technical head", date: response.date_submitted, reqLevel: 1 },
-            { desc: "Approved and noted by technical head", date: response.date_noted, reqLevel: 2 },
-            { desc: "For admin support validation", date: null, reqLevel: 2 }, 
-            { desc: "Validated by admin support", date: response.date_validated, reqLevel: 3 },
-            { desc: "For administrative verification", date: null, reqLevel: 3 }, 
-            { desc: "Verified by the administrator", date: response.date_verified, reqLevel: 4 },
-            { desc: "For printing request form", date: null, reqLevel: 4 }, 
-            { desc: "Printed", date: response.date_printed, reqLevel: 5 },
-            { desc: "For General Manager Approval", date: null, reqLevel: 5 }, 
-            { desc: "Approved by General Manager", date: response.date_approved, reqLevel: 6 },
-            { desc: "Ready for asset replacement", date: null, reqLevel: 6 }, 
-            { desc: "Asset replaced / Completed", date: response.date_completed, reqLevel: 7 }
+        let trackSteps = [
+                { desc: "Request submitted by store/user", date: response.date_created, reqLevel: 0 },
+                { desc: "Under assigned support evaluation", date: response.date_created, reqLevel: 0 }
         ];
+
+        if (isTechnical === 1) {
+            trackSteps.push(
+                { desc: "Submitted to technical/dept head", date: response.date_submitted, reqLevel: 1 },
+                { desc: "Approved and noted by technical/dept head", date: response.date_noted, reqLevel: 2 }
+            );
+        }
+
+        trackSteps.push(
+            { desc: "For admin support validation", date: null, reqLevel: isTechnical === 1 ? 2 : 1 }, 
+            { desc: "Validated by admin support", date: response.date_validated, reqLevel: isTechnical === 1 ? 3 : 2 },
+            { desc: "For administrative verification", date: null, reqLevel: isTechnical === 1 ? 3 : 2 }, 
+            { desc: "Verified by the administrator", date: response.date_verified, reqLevel: isTechnical === 1 ? 4 : 3 },
+            { desc: "For printing request form", date: null, reqLevel: isTechnical === 1 ? 4 : 3 }, 
+            { desc: "Printed", date: response.date_printed, reqLevel: isTechnical === 1 ? 5 : 4 },
+            { desc: "For General Manager Approval", date: null, reqLevel: isTechnical === 1 ? 5 : 4 }
+        );
+
+        if (dbStatus === 'rejected') {
+            trackSteps.push(
+                { desc: "Rejected by General Manager", date: response.date_rejected || response.date_updated, reqLevel: isTechnical === 1 ? 6 : 5, isRejected: true }
+            );
+        } else {
+            trackSteps.push(
+                { desc: "Approved by General Manager", date: response.date_approved, reqLevel: isTechnical === 1 ? 6 : 5 },
+                { desc:  "Transferred to PD for Procurement", date: null, reqLevel: isTechnical === 1 ? 6 : 5 }, 
+                { desc: "Asset replaced / Completed", date: response.date_completed, reqLevel: isTechnical === 1 ? 7 : 6 }
+            );
+        }
 
         let timelineHtml = '';
         trackSteps.forEach((step) => {
             let statusClass = (currentLevel >= step.reqLevel) ? "completed" : "";
-            let dateDisplay = step.date ? `<div class="timeline-date" style="font-size: 11px; color: #6c757d; font-style: italic;">${step.date}</div>` : '';
+            let dateDisplay = step.date ? `<div class="timeline-date">${step.date}</div>` : '';
+            let iconStyle = step.isRejected ? 'style="background-color: #dc3545; border-color: #dc3545;"' : '';
+            let textStyle = step.isRejected ? 'style="color: #dc3545; font-weight: bold;"' : '';
 
-            timelineHtml += `
-                <li class="timeline-item ${statusClass}" style="position: relative; padding-left: 35px; padding-bottom: 20px;">
-                    <div class="timeline-icon"></div>
-                    <div class="timeline-desc" style="font-size: 12px; font-weight: 700; color: #333; margin-bottom: 2px; text-transform: uppercase;">${step.desc}</div>
-                    ${dateDisplay}
-                </li>
-            `;
+
+           timelineHtml += `
+                    <li class="timeline-item ${statusClass}">
+                        <div class="timeline-icon" ${iconStyle}></div>
+                        <div class="timeline-desc" ${textStyle}>${step.desc}</div>
+                        ${dateDisplay}
+                    </li>
+                `;
         });
-
+        
         $('#trackingMap').html(timelineHtml);
         
         loadRemarks(ticket_no);

@@ -1203,21 +1203,21 @@ body {
                     $('#concern_container').show();
                     $('#concern').prop('required', true);
                     $('#file-input').prop('required', true);
-                    $('#label_attached_file').html('Attached File <span class="text-danger">*</span>');
+                    $('#label_attached_file').html('Attached File (Required)');
                 } else if (isNew) {
                     $('#inline_fa_serial_container').hide();
                     $('#inline_fa_description_container').show();
                     $('#concern_container').show();
                     $('#concern').prop('required', true);
                     $('#file-input').prop('required', false);
-                    $('#label_attached_file').html('Attached File (Optional)');
+                    $('#label_attached_file').html('Attached File (Not Required)');
                 } else if (isTransfer) {
                     $('#inline_fa_serial_container').hide();
-                    $('#inline_fa_description_container').hide(); // Hidden for Transfer
+                    $('#inline_fa_description_container').hide(); 
                     $('#concern_container').show();
                     $('#concern').prop('required', true);
                     $('#file-input').prop('required', false);
-                    $('#label_attached_file').html('Attached File (Optional)');
+                    $('#label_attached_file').html('Attached File (Not Required)');
                 }
 
                 validateSubmitButton();

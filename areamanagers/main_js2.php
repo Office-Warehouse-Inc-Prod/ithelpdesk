@@ -230,37 +230,41 @@ $(document).ready(function () {
   setInterval(get_dept_data, 3000);
 
   function dept_datatable(t) {
-    const dataset = t.deptdata;
-    if ($.fn.DataTable.isDataTable('#create_dept_table')) {
+    if (!t) return;
+    const dataset = Array.isArray(t.deptdata) ? t.deptdata : [];
+
+    if (typeof $.fn.DataTable !== 'undefined' && $.fn.DataTable.isDataTable('#create_dept_table')) {
       var table = $('#create_dept_table').DataTable();
       table.clear().rows.add(dataset).draw(false);
       return;
     }
-    
+
+    if (typeof $.fn.DataTable === 'undefined') return;
+
     reptable = $("#create_dept_table").DataTable({
       "dom": '<"pull-left"lf><"pull-right">tip',
       stateSave: true,
       "responsive": true,
       "lengthChange": false,
       "autoWidth": false,
-      language: { emptyTable: "No unassigned reports", search: "_INPUT_", searchPlaceholder: "Search..." },
+      language: { emptyTable: "No created tickets available", search: "_INPUT_", searchPlaceholder: "Search..." },
       pageLength: 5,
       data: dataset,
-      "order": [[0, "Desc"]],
-      columns: [
-        { title: "Ticket No", data: "ticket_no", "defaultContent": "" },
-        { title: "SUBJECT", data: "subject", "defaultContent": "" },
-        { title: "Concern", data: "concern", "defaultContent": "" },
-        { title: "Date Created", data: "date_created", "defaultContent": "" },
-        { title: "Status", data: "status", "defaultContent": "" },
-        { title: "Update", data: null, "defaultContent": "<Button class='btn btn-danger' name='update'><i class='fas fa-edit'></i></Button>" }
-      ],
-      rowCallback: function (row, data, index) {
-        if (data['msg_cnt'] == '1') {
-          $(row).find('td').css("font-weight", "bold");
-        }
+    "order": [[0, "Desc"]],
+    columns: [
+      { title: "Ticket No", data: "ticket_no", "defaultContent": "" },
+      { title: "SUBJECT", data: "subject", "defaultContent": "" },
+      { title: "Concern", data: "concern", "defaultContent": "" },
+      { title: "Date Created", data: "date_created", "defaultContent": "" },
+      { title: "Status", data: "status", "defaultContent": "" },
+      { title: "Update", data: null, "defaultContent": "<Button class='btn btn-danger' name='update'><i class='fas fa-edit'></i></Button>" }
+    ],
+    rowCallback: function (row, data, index) {
+      if (data['msg_cnt'] == '1') {
+        $(row).find('td').css("font-weight", "bold");
       }
-    });
+    }
+  });
 
     $('#create_dept_table tbody').off('click', 'button').on('click', 'button', function () {
       var data = reptable.row($(this).parents('tr')).data();
@@ -309,13 +313,18 @@ $(document).ready(function () {
   }
 
   function admin_datatable(t) {
-    const dataset = t.rptdata;
-    if ($.fn.DataTable.isDataTable('#report_data')) {
-      table = $('#report_data').DataTable();
-      table.clear().rows.add(dataset).draw(false);
-      return;
-    }
-    table = $("#report_data").DataTable({
+    if (!t || !t.rptdata) return;
+  const dataset = t.rptdata;
+
+  if (typeof $.fn.DataTable !== 'undefined' && $.fn.DataTable.isDataTable('#report_data')) {
+    table = $('#report_data').DataTable();
+    table.clear().rows.add(dataset).draw(false);
+    return;
+  }
+  
+  if (typeof $.fn.DataTable === 'undefined') return;
+
+  table = $("#report_data").DataTable({
       "dom": 'B<"pull-left"lf><"pull-right">tip',
       "buttons": [
         {
@@ -554,7 +563,6 @@ $(document).ready(function () {
 
     var formData = new FormData(this);
     
-    // --- API ROUTING LOGIC ---
     var operation = $('#operation').val();
     var submitUrl = (operation === 'Add') ? 'api_create_dept_report.php' : 'insert.php';
 
@@ -580,11 +588,26 @@ $(document).ready(function () {
       contentType: false,
       processData: false,
       success: function (data) {
-        let res = typeof data === 'string' ? JSON.parse(data) : data;
-        
-        // CRITICAL FIX: Handle BOTH api_create_dept_report (res.Response) AND insert.php (res.status)
-        let isSuccess = (res.Response === true) || (res.status === "success");
-        let finalTicketNo = TicketNumber || res.ticket_no; 
+        let res;
+      try {
+        // Strip out any preceding PHP errors/warnings before parsing JSON
+        if (typeof data === 'string') {
+          let jsonStart = data.search(/[\{\[]/);
+          if (jsonStart > -1) {
+            data = data.substring(jsonStart);
+          }
+          res = JSON.parse(data);
+        } else {
+          res = data;
+        }
+      } catch (e) {
+        console.error("JSON Parse Error. Server returned:", data);
+        Swal.fire({ icon: 'error', title: 'Server Error', text: 'Invalid response from server. Check console.' });
+        return; 
+      }
+
+      let isSuccess = (res.Response === true) || (res.status === "success");
+      let finalTicketNo = TicketNumber || res.ticket_no;
 
         if ($('#file-input').length) {
           var files = $('#file-input')[0].files;

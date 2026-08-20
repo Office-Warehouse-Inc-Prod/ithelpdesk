@@ -668,23 +668,7 @@ function getdata(yr) {
                     }
                 },
                 { title: "Ticket No", data: "ticket_no", defaultContent: "" },
-                { 
-                    title: "Priority Level", 
-                    data: "priority_desc", 
-                    defaultContent: "",
-                    render: function (data, type, row) {
-                        if (type !== 'display') return data;
-                        const s = (data || "").toUpperCase();
-                        let cls = "badge bg-secondary";
-
-                        if (s === "CRITICAL") cls = "badge bg-danger";
-                        else if (s === "HIGH") cls = "badge bg-warning text-dark";
-                        else if (s === "MEDIUM") cls = "badge bg-warning text-dark";
-                        else if (s === "LOW") cls = "badge bg-info text-dark";
-
-                        return `<span class="${cls} px-2 py-1">${data}</span>`;
-                    }
-                },
+               
                 { title: "Store", data: "str_code", defaultContent: "" },
                 {
                     title: "Date Created",
@@ -796,18 +780,6 @@ function getdata(yr) {
         var tid = data['ticket_no'];
         $('#status').html(window.originalStatusOptions);
 
-        if (data['status'] === 'ON PROCESS') {
-            $('#status').html(
-                '<option value="ON PROCESS" style="color: #333;">ON PROCESS</option>' +
-                '<option value="PENDING" style="color: #333;">PENDING</option>' +
-                '<option value="SUBJECT FOR CLOSING" style="color: #333;">SUBJECT FOR CLOSING</option>'
-            );
-        } else if (data['status'] === 'PENDING') {
-            $('#status').html(
-                '<option value="PENDING" style="color: #333;">PENDING</option>' +
-                '<option value="SUBJECT FOR CLOSING" style="color: #333;">SUBJECT FOR CLOSING</option>'
-            );
-        }
 
         $('#subjct').attr('readonly', true);
         $('#ticket_no').val(data['ticket_no']);
@@ -816,9 +788,21 @@ function getdata(yr) {
         $('#date_createdx').val(data['date_created']);
         $('#subjct').val(data['subject']);
         $('#concern').val(data['concern']);
+        $('#priority_desc').val(data['priority_desc']);
+      $('#f_deptsel').val(data['f_deptsel']);
         $('#via').val(data['via']);
         $('#status').val(data['status']);
         $('#it_num').val(data['itsup']);
+
+        if (data['f_deptsel'] && $('#f_deptsel option[value="' + data['f_deptsel'] + '"]').length === 0) {
+            $('<option>', {
+                value: data['f_deptsel'],
+                text: data['dept_desc'] ? data['dept_desc'] : 'Dept ID ' + data['f_deptsel'],
+                class: 'temp-option'
+            }).appendTo('#f_deptsel');
+        }
+
+        $('#f_deptsel').val(data['f_deptsel']);
         
         console.log("Ticket: " + data['ticket_no'] + " | is_transfer raw value: ", data['is_transfer']);
         

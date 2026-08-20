@@ -5,7 +5,8 @@ include 'admin_function.php';
 $fn = new dbconfig();
 // $fn->fetch_cards_result();
 
-$mode= $_POST['mode'];
+$mode = $_POST['mode'];
+$records = array();
 switch ($mode) {
     case 'yearch':
       $records= $fn->fetch_cards_result();
@@ -39,6 +40,10 @@ switch ($mode) {
           break; 
     case 'newrpt_tbl':
          $records['newrptdata']= $fn->newreporthist();
+        break;
+
+    case 'dept_tbl':
+        $records['deptdata'] = $fn->deptthist();
         break;
 
  

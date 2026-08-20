@@ -697,6 +697,7 @@ $query = "
             'date_created' => $date_created,
 
             'subject' => $row['subject'] ?? '',
+			  'dept_desc' => $row['dept_desc'] ?? '',
             'concern' => $row['concern'] ?? '',
             'via' => $row['via'] ?? '',
             'status' => $row['status'] ?? '',
@@ -761,6 +762,7 @@ public function admin_data_table_transfer()
         FROM vw_transfer
         LEFT JOIN users ON vw_transfer.ursID = users.id
         WHERE vw_transfer.f_deptsel IN ({$dept_ids_clean}) 
+        AND vw_transfer.deptsel != vw_transfer.f_deptsel 
         AND vw_transfer.status NOT IN ('ATTENDED WITH FIX ASSET','NEW REPORT', 'Assigned', 'ASSIGNED') 
         AND vw_transfer.sub_id NOT IN ('15', '28', '34', '35') 
         AND YEAR(vw_transfer.date_created) = :yr";

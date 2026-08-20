@@ -243,8 +243,8 @@ columns: [
         }
       });
 
-$('#report_data tbody').on( 'click', 'button', function () {
-var data = table.row( $(this).parents('tr') ).data();
+$('#report_data tbody').on('click', 'button', function () {
+var data = table.row($(this).parents('tr')).data();
 $('#subjct').attr('readonly', true);
 var tid=$(this).parent().siblings(':first').html();
 $('#ticket_no').val(data['ticket_no']);
@@ -272,6 +272,7 @@ $('#close_by').val(data['close_by']);
 $('#cl_desc').val(data['clusers']);
 
 
+
 unilayout_netshowmodalform();
 
 
@@ -287,6 +288,8 @@ if (itfrstsup != itchange ) {
 } else {
   $('#remarks').val(data['remarks']);
 }
+
+open_ticket_modal(data);
 });
 
 
@@ -574,8 +577,6 @@ function open_ticket_modal(data) {
       $('.dv_msg').show();
       $('.container_remarks').show();
       $('#msg_thread').slideDown(300);
-      $('#userModal').modal({ "show": true, "backdrop": 'static' });
-      loadCommentThread(data['ticket_no']);
       
       if(typeof unilayout_netshowmodalform === "function") unilayout_netshowmodalform();
 
@@ -607,6 +608,7 @@ function open_ticket_modal(data) {
       $('#action').val("Save and Reply");
       $('#operation').val("Save and Reply");
       $('#userModal').modal({ "show": true, "backdrop": 'static' });
+      loadCommentThread(data['ticket_no']);
 
       $.ajax({
         type: 'POST',
@@ -617,8 +619,6 @@ function open_ticket_modal(data) {
         }
       });
 
-      $('#msgbtn').show();
-      $('#msg_thread').show();
       $('#addmsg').val("");
     }
 
@@ -634,7 +634,7 @@ $('#datetimepicker1, #datetimepicker2, #datetimepicker3').datetimepicker()
     var TicketNumber = $("#ticket_no").val();
     var Store = $("#store").val();
     var DateCreated = $("#date_created").val();
-    var Concern = $("#concern").val();
+    var Concern = $("#subjct").val();
     var Status = $("#status").val();
     var Via = $("#via").val();
     var ItSupport = $("#itsup").val();
@@ -651,10 +651,10 @@ $('#datetimepicker1, #datetimepicker2, #datetimepicker3').datetimepicker()
       alert("Invalid date");
       return false;
     }
-    else if (DateClosed < DateCreated ){
-      alert("Date closed should be greater than date created!");
-      return false;
-    }
+    // else if (DateClosed < DateCreated ){
+    //   alert("Date closed should be greater than date created!");
+    //   return false;
+    // }
     else if (DateClosed > today ){
       alert("Invalid Closed_Date");
       return false;
@@ -676,21 +676,25 @@ $('#datetimepicker1, #datetimepicker2, #datetimepicker3').datetimepicker()
         data: new FormData(this),
         contentType: false,
         processData: false,
-        success: function (data) {
-          // alert(data);
-          // $("#report_form")[0].reset();
+       success: function (data) {
+          // Check if the backend sent a JSON error
+          try {
+             var response = typeof data === 'string' ? JSON.parse(data) : data;
+             if(response.status === 'error') {
+                 Swal.fire({ icon: 'error', title: 'Database Error', text: response.message });
+                 return; // Stop execution here so the modal stays open!
+             }
+          } catch(e) { } // If not JSON, continue normally
+          
           Swal.fire({
-             icon: 'success',
-             title: 'Your work has been saved',
-             showConfirmButton: false,
-             timer: 1500
+              icon: 'success',
+              title: 'Your work has been saved',
+              showConfirmButton: false,
+              timer: 1500
           });
           $("#userModal").modal("hide");
-                  getdata();
-                  get_card_data(yr);
-      //     setTimeout(function(){// wait for 5 secs(2)
-      //      location.reload(); // then reload the page.(3)
-      // }, 2000); 
+          getdata();
+          get_card_data(yr);
         },
       });
     } else {

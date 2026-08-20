@@ -24,9 +24,13 @@ exit();
   <meta http-equiv='pragma' content='no-cache'>
 <link rel="icon" href="../images/owi.ico" type="image/icon type">
 <link rel="stylesheet" href="../css/4bootstrap.min.css" />
+<link rel="stylesheet" href="../css/jquery.dataTables.min.css" />
 <link rel="stylesheet" href="../vendor/sweetalert/dist/sweetalert2.min.css" />
 <script src="../js/jquery-3.5.1.js"></script>
 <script src="../js/moment.min.js"></script>
+<script src="../js/jquery.dataTables.min.js"></script>
+<script src="../js/dataTables.select.min.js"></script>
+<script src="../js/dataTables.responsive.min.js"></script>
 
 <link rel="stylesheet" href="../css/dashboard.css">
 <link rel="stylesheet" type="text/css" href="../dist/fontawesome/css/fontawesome.min.css" />
@@ -404,11 +408,11 @@ body {
               <a class="dropdown-item" href="store_maintenance.php"><i class="fas fa-store"></i> Store Maintenance</a>
             </div>
           </li>-->
-         <!-- <li class="nav-item">
+         <li class="nav-item">
             <a class="nav-link" href="admincreateticket.php">
               <i class="fa fa-plus-circle" style="color: var(--primary-color);"></i> CREATE TICKET
             </a>
-          </li>-->
+          </li>
         </ul>
 
         <ul class="navbar-nav ml-auto">

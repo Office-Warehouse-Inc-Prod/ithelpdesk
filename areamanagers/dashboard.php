@@ -602,7 +602,7 @@ $datetime->setTimezone($timezone);
                   </div>
 
                   <div class="form-group col-12 col-md-4">
-                    <label>I.T SUPPORT</label>
+                    <label>ASSIGN SUPPORT</label>
                     <input type="hidden" name="it_num" id="it_num" readonly>
                     <select class="form-control form-control-sm" name="itsup" id="itsup" required>
                       <option value="">Assign support...</option>
@@ -783,7 +783,7 @@ $datetime->setTimezone($timezone);
           </div><!-- /.modal-body -->
 
           <div class="modal-footer">
-            <input type="hidden" name="operation" id="operation">
+            <input type="hidden" name="operation" id="operation" value="Add">
             <input type="hidden" name="u_id" id="u_id" value="<?php echo $_SESSION['user_id']; ?>">
           </div>
 

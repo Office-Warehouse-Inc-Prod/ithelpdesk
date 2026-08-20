@@ -1,5 +1,40 @@
 <script type="text/javascript">
 $(document).ready(function () {
+
+$("#deptsel").on("change", function(){
+    $('#subject').val('');
+    $('#subcategory_container').fadeOut();
+    $('#subcategory').val('');
+        let val = $(this).val();
+        
+            $("#subject").select2({
+      width: '100%',
+      minimumResultsForSearch: Infinity,
+      ajax: {
+        url: "select.php",
+        type: "get",
+        dataType: 'json',
+        delay: 250,
+        data: function (params) {
+          return {
+            type: 'category',
+            val : val
+          };
+        },
+        processResults: function (response) {
+          return {
+            results: response
+          };
+        },
+        cache: true
+      }
+    });
+
+        if(val == "4"){ // MERCHANDISING
+        $("#helpdesk_row").fadeOut();
+        $("#merchDrCard").fadeIn();
+        }
+    });
   
   const toggle = document.getElementById('darkModeToggle');
   const body = document.body;
@@ -50,43 +85,246 @@ $(document).ready(function () {
     $('html, body').animate({ scrollTop: 1600 }, 1000);
   });
 
+
+function checkFixAssetCondition() {
+    var dept = $('#create_deptsel').val(); 
+    var subj = ($('#subject option:selected').text() || '').toUpperCase();
+    var subcatText = ($('#subcategory option:selected').text() || '').toUpperCase();
+    
+    var isFixAsset = (dept == '2' && (subj.includes('FIX ASSET') || subj.includes('FIXED ASSET')));
+    var isReplacement = subcatText.includes('REPLACEMENT');
+    var isNew = subcatText.includes('NEW');
+    var isTransfer = subcatText.includes('TRANSFER');
+
+    if (isFixAsset) {
+        $('#is_fix_asset').val('1');
+        $('#inline_fixed_asset_fields').slideDown();
+        $('#concern').prop('required', true);
+        $('#file-input').prop('required', false);
+
+        if (isReplacement) {
+            $('#inline_fa_description_container').show();
+            $('#inline_fa_serial_container').show();
+        } else if (isNew) {
+            $('#inline_fa_description_container').show();
+            $('#inline_fa_serial_container').hide();
+        } else if (isTransfer) {
+            $('#inline_fa_description_container').hide();
+            $('#inline_fa_serial_container').hide();
+        } else {
+            $('#inline_fa_description_container').hide();
+            $('#inline_fa_serial_container').hide();
+        }
+    } else {
+        $('#is_fix_asset').val('0');
+        $('#inline_fixed_asset_fields').hide();
+        $('#concern').prop('required', true);
+        $('#file-input').prop('required', false);
+    }
+
+    validateSubmitButton();
+}
+
+function validateSubmitButton() {
+    var isFixAsset = $('#is_fix_asset').val() == '1';
+    var concernLength = $('#concern').val().trim().length;
+    var isValid = true;
+
+    if (isFixAsset) {
+        if ($('#inline_fa_description_container').is(':visible')) {
+            var descSel = $('#inline_fa_description_sel').val();
+            var descTxt = $('#inline_fa_description_txt').val();
+            if (!descSel || (descSel === 'OTHER' && !descTxt)) {
+                isValid = false; 
+            }
+        }
+    }
+    
+    if (concernLength < 10) {
+        isValid = false;
+    }
+
+    $('#action').prop('disabled', !isValid);
+}
+
+function valtxt() {
+    if($('#subject').val() == null || $('#subject').val().trim() == ""){
+        $('#subject').addClass('border-danger');
+        setTimeout(() => { $('#subject').removeClass('border-danger'); }, 5000);
+        return false;
+    } 
+    
+    let isFixAsset = $('#is_fix_asset').val() == '1';
+    
+    if ($('#concern').val().trim() == ""){
+        $('#concern').addClass('border-danger');
+        setTimeout(() => { $('#concern').removeClass('border-danger'); }, 5000);
+        return false;
+    }
+
+    if (isFixAsset) {
+        if ($('#inline_fa_description_container').is(':visible')) {
+            var descSel = $('#inline_fa_description_sel').val();
+            var descTxt = $('#inline_fa_description_txt').val();
+            if (!descSel || (descSel === 'OTHER' && !descTxt)) {
+                alert("Please complete the Fixed Asset Description.");
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+$('#inline_fa_description_sel').on('change', function() {
+    if($(this).val() === 'OTHER') {
+        $('#inline_fa_description_txt').show();
+    } else {
+        $('#inline_fa_description_txt').hide().val('');
+    }
+    validateSubmitButton();
+});
+$('#create_deptsel, #subject, #subcategory').on('change', function() {
+    checkFixAssetCondition();
+});
+const validationLength = 1000;
+const concern = document.getElementById('concern');
+const action = document.getElementById('action');
+
+concern.addEventListener('input', function() {
+  const inputValue = concern.value;
+  const inputLength = inputValue.length;
+
+  if (inputLength > validationLength) {
+    concern.value = inputValue.substr(0, validationLength);
+  }
+  
+  validateSubmitButton();
+});
+
   function resetCreateTicketForm() {
-    $('#create_report_form').trigger('reset');
+    const $form = $('#create_report_form');
+    
+    $form[0].reset(); 
+    $('#concern').val('');
     $('#create_store').val('201');
-    $('#create_subject').empty().append('<option value="" selected disabled>---Select Category---</option>');
-    $('#create_sub').empty().append('<option value="" selected disabled>---Select Subcategory---</option>');
-    $('#create_sub_group').hide();
+    $('#create_deptsel').val('');
+    $('#subject').html('<option value="" selected disabled>---Select Category---</option>');
+    $('#subcategory').html('<option value="" selected disabled>---Select Subcategory---</option>');
+    $('#subcategory_container, #inline_fixed_asset_fields').hide();
     $('#create_ticket_lbl').text('---');
     $('#create_ticket_no').val('');
+    $form.find('input[type="file"]').val(''); 
+    
+    $('#is_fix_asset').val('0');
+    $('#inline_fa_description_sel').val('');
+    $('#inline_fa_description_txt').hide().val('');
+    $('#inline_fa_serial_number').val('');
   }
+  
   resetCreateTicketForm();
 
-  $("#create_deptsel").on("change", function () {
-    $('#create_subject').empty().append('<option value="" selected disabled>Loading categories...</option>');
-    $('#create_sub').empty().append('<option value="" selected disabled>---Select Subcategory---</option>');
-    $('#create_sub_group').hide();
-    let val = $(this).val();
+  $('#create_report_form').on('submit', function (e) {
+    e.preventDefault();
+    var form = this;
+    var formData = new FormData(form);
+    var $submitBtn = $(form).find('button[type="submit"]');
 
     $.ajax({
-      url: "../users/select.php",
-      type: "GET",
-      dataType: 'json',
-      cache: true,
-      data: { type: 'category_id', val: val },
+      url: "api_create_dept_report.php",
+      method: "POST",
+      data: formData,
+      contentType: false,
+      processData: false,
+      beforeSend: function () {
+        $submitBtn.prop('disabled', true);
+        $.LoadingOverlay("show", { background: "rgba(0, 0, 0, 0.45)" });
+      },
       success: function (response) {
-        $('#create_subject').empty().append('<option value="" selected disabled>---Select Category---</option>');
-        if (Array.isArray(response) && response.length > 0) {
-          response.forEach(function (item) {
-            if (item && item.id !== undefined && item.text !== undefined) {
-              $('#create_subject').append($('<option>', { value: item.id, text: item.text }));
+        $.LoadingOverlay("hide");
+        $submitBtn.prop('disabled', false);
+
+        let res = typeof response === 'string' ? JSON.parse(response) : response;
+
+        if (res.Response || res.status === "success") {
+          
+          var files = $(form).find('input[type="file"]')[0].files;
+          if (files && files.length > 0) {
+            var fileData = new FormData();
+            for (var i = 0; i < files.length; i++) {
+              fileData.append('files[]', files[i]);
             }
+            fileData.append('ticket_no', res.ticket_no);
+            $.ajax({
+              type: "POST",
+              url: "insertimg.php",
+              data: fileData,
+              processData: false,
+              contentType: false
+            });
+          }
+
+          Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: 'Report successfully submitted to OWI HELPDESK.',
+            timer: 2000,
+            showConfirmButton: false
+          }).then(function () {
+            resetCreateTicketForm();
+            if (typeof get_dept_data === 'function') get_dept_data();
+            const currentYr = $("#yearpicker").val() || new Date().getFullYear();
+            if (typeof getdata === 'function') getdata(currentYr);
+            if (typeof get_card_data === 'function') get_card_data(currentYr);
           });
+
         } else {
-          $('#create_subject').append($('<option>', { value: '', text: 'No categories available' }));
+          Swal.fire({ icon: 'error', title: 'Submission Failed', html: res.m || res.message });
         }
       },
       error: function () {
-        $('#create_subject').empty().append('<option value="" selected disabled>Error loading categories</option>');
+        $.LoadingOverlay("hide");
+        $submitBtn.prop('disabled', false);
+        Swal.fire({ icon: 'error', title: 'Error', text: 'An unexpected error occurred while saving the report.' });
+      }
+    });
+  });
+
+
+  $('#create_deptsel').on("change", function () {
+    const deptVal = $(this).val();
+    const $subject = $('#subject');
+    const $subCategory = $('#subcategory');
+    
+    $subject.html('<option value="" selected disabled>Loading categories...</option>');
+    $subCategory.html('<option value="" selected disabled>---Select Subcategory---</option>');
+    $('#subcategory_container').hide();
+    
+    if (typeof checkFixAssetCondition === "function") {
+      checkFixAssetCondition();
+    }
+
+    if (!deptVal) return; 
+
+    $.ajax({
+      url: "select.php",
+      type: "GET",
+      dataType: 'json',
+      cache: true,
+      data: { type: 'category_id', val: deptVal },
+      success: function (response) {
+        $subject.empty().append('<option value="" selected disabled>---Select Category---</option>');
+        if (Array.isArray(response) && response.length > 0) {
+          response.forEach(function (item) {
+            if (item?.id !== undefined && item?.text !== undefined) {
+              $subject.append($('<option>', { value: item.id, text: item.text }));
+            }
+          });
+        } else {
+          $subject.append('<option value="" disabled>No categories available</option>');
+        }
+      },
+      error: function () {
+        $subject.html('<option value="" selected disabled>Error loading categories</option>');
       }
     });
 
@@ -94,12 +332,13 @@ $(document).ready(function () {
       url: '../users/fetch.php',
       method: 'POST',
       dataType: 'json',
-      data: { operation: 'search_tkt', iN: val },
+      data: { operation: 'search_tkt', iN: deptVal },
       success: function (data) {
         if (data && data[0]) {
-          let next_tktno = data[0].ticket_no;
-          let deptabr = data[0].dept;
-          let ticketNo = deptabr + '' + next_tktno;
+          const next_tktno = data[0].ticket_no;
+          const deptabr = data[0].dept;
+          const ticketNo = deptabr + '' + next_tktno;
+          
           $('#create_ticket_no').val(ticketNo);
           $('#create_ticket_lbl').text(ticketNo);
         } else {
@@ -112,29 +351,32 @@ $(document).ready(function () {
     });
   });
 
-  $("#create_subject, #cat").on("change", function () {
-    let isCreate = $(this).attr('id') === 'create_subject';
-    let category_id = $(this).val();
-    let targetSub = isCreate ? '#create_sub' : '#sub';
-    let targetGroup = isCreate ? '#create_sub_group' : null;
+  $("#subject, #cat").on("change", function () {
+    const isCreate = $(this).attr('id') === 'subject';
+    const categoryId = $(this).val();
+    
+    const $targetSub = isCreate ? $('#subcategory') : $('#sub');
+    const $targetGroup = isCreate ? $('#subcategory_container') : null;
 
-    if (!category_id) {
-      if (targetGroup) $(targetGroup).hide();
+    if (!categoryId) {
+      if ($targetGroup) $targetGroup.hide();
       return;
     }
+
+    $targetSub.html('<option value="" selected disabled>Loading...</option>');
 
     $.ajax({
       url: "get_subcat.php",
       type: "POST",
-      data: { category_id: category_id },
+      data: { category_id: categoryId },
       cache: false,
       success: function (dataResult) {
-        $(targetSub).html(dataResult);
-        if (targetGroup) $(targetGroup).show();
+        $targetSub.html(dataResult);
+        if ($targetGroup) $targetGroup.show();
       },
       error: function () {
-        $(targetSub).html('<option value="">Error loading subcategories</option>');
-        if (targetGroup) $(targetGroup).show();
+        $targetSub.html('<option value="">Error loading subcategories</option>');
+        if ($targetGroup) $targetGroup.show();
       }
     });
   });
@@ -155,67 +397,6 @@ $(document).ready(function () {
         return false;
       }
     }
-  });
-
-  $('#create_report_form').on('submit', function (e) {
-    e.preventDefault();
-    var form = this;
-    var formData = new FormData(form);
-
-    $.ajax({
-      url: "api_create_dept_report.php",
-      method: "POST",
-      data: formData,
-      contentType: false,
-      processData: false,
-      beforeSend: function () {
-        $('#create_action').prop('disabled', true);
-        $.LoadingOverlay("show", { background: "rgba(0, 0, 0, 0.45)" });
-      },
-      success: function (response) {
-        $.LoadingOverlay("hide");
-        $('#create_action').prop('disabled', false);
-
-        if (response.Response) {
-          var files = $('#create_file-input')[0].files;
-          if (files.length > 0) {
-            var fileData = new FormData();
-            for (var i = 0; i < files.length; i++) {
-              fileData.append('files[]', files[i]);
-            }
-            fileData.append('ticket_no', response.ticket_no);
-            $.ajax({
-              type: "POST",
-              url: "insertimg.php",
-              data: fileData,
-              processData: false,
-              contentType: false
-            });
-          }
-
-          Swal.fire({
-            icon: 'success',
-            title: 'Success!',
-            text: 'Report successfully submitted to OWI HELPDESK.',
-            timer: 2000,
-            showConfirmButton: false
-          }).then(function () {
-            resetCreateTicketForm();
-            get_dept_data();
-            const currentYr = $("#yearpicker").val() || new Date().getFullYear();
-            if (typeof getdata === 'function') getdata(currentYr);
-            if (typeof get_card_data === 'function') get_card_data(currentYr);
-          });
-        } else {
-          Swal.fire({ icon: 'error', title: 'Submission Failed', html: response.m });
-        }
-      },
-      error: function () {
-        $.LoadingOverlay("hide");
-        $('#create_action').prop('disabled', false);
-        Swal.fire({ icon: 'error', title: 'Error', text: 'An unexpected error occurred while saving the report.' });
-      }
-    });
   });
 
   var reptable;
@@ -294,7 +475,8 @@ $(document).ready(function () {
       $('#userModal_header').text("Ticket Number: " + tid);
       $('#userModal').modal('show');
 
-      displayAttachmentsFromData(data);
+      displayAttachmentsFromData(data, tid);
+      
       if(typeof getinfo === 'function') getinfo(tid, 'remarks', user_id);
       loadCommentThread(tid);
     });
@@ -503,12 +685,8 @@ $(document).ready(function () {
       $('#action').val("Save and Reply");
       $('#operation').val("Save and Reply");
 
-      $.ajax({
-        type: 'POST',
-        url: 'sesticket.php',
-        data: { tktval: $('#ticket_no').val() },
-        success: function (response) { $('#img').html(response); }
-      });
+      // HYBRID RENDER INTEGRATED HERE 
+      displayAttachmentsFromData(data, tid);
 
       $('#msgbtn, #msg_thread').show();
       $('#addmsg').val("");
@@ -536,7 +714,9 @@ $(document).ready(function () {
         }
       }
     }, 600);
-  }$(document).on("submit", "#report_form", function (e) {
+  }
+
+  $(document).on("submit", "#report_form", function (e) {
     e.preventDefault();
 
     var TicketNumber = $("#ticket_no").val();
@@ -554,7 +734,6 @@ $(document).ready(function () {
 
     var formData = new FormData(this);
     
-    // --- API ROUTING LOGIC ---
     var operation = $('#operation').val();
     var submitUrl = (operation === 'Add') ? 'api_create_dept_report.php' : 'insert.php';
 
@@ -582,7 +761,6 @@ $(document).ready(function () {
       success: function (data) {
         let res = typeof data === 'string' ? JSON.parse(data) : data;
         
-        // CRITICAL FIX: Handle BOTH api_create_dept_report (res.Response) AND insert.php (res.status)
         let isSuccess = (res.Response === true) || (res.status === "success");
         let finalTicketNo = TicketNumber || res.ticket_no; 
 
@@ -605,7 +783,6 @@ $(document).ready(function () {
           }
         }
 
-        // Display Success/Error Prompt using the unified boolean
         Swal.fire({
           icon: isSuccess ? 'success' : 'error',
           title: isSuccess ? 'Your work has been saved' : 'Action Failed',
@@ -614,12 +791,10 @@ $(document).ready(function () {
           timer: 1500
         });
 
-        // Ensure comment thread updates and stays open
         if (finalTicketNo && isSuccess) {
           $('#addmsg').val('');
           loadCommentThread(finalTicketNo);
           
-          // Switch operation so next submission counts as an update
           $('#ticket_no').val(finalTicketNo);
           $('#operation').val('Edit'); 
           $('#action').val('Save');
@@ -627,14 +802,13 @@ $(document).ready(function () {
           $("#userModal").modal("hide");
         }
 
-        // Reload Background Data Tables silently
         const yr = $("#yearpicker").val() || new Date().getFullYear();
         if (typeof getdata === 'function') getdata(yr);
         if (typeof get_card_data === 'function') get_card_data(yr);
         if (typeof get_dept_data === 'function') get_dept_data(); 
       }
     });
-});
+  });
 
   var uploadField = document.getElementById("file-input");
   if (uploadField) {
@@ -659,7 +833,8 @@ $(document).ready(function () {
       }
     };
   }
-function loadCommentThread(ticket_no) {
+
+  function loadCommentThread(ticket_no) {
     const $remarksView = $('#remarks_view');
     const ticketValue = (ticket_no || '').toString().trim();
     if (!ticketValue) return;
@@ -732,38 +907,61 @@ function loadCommentThread(ticket_no) {
   });
 
 
-  function displayAttachmentsFromData(data) {
-    const container = document.getElementById('attachments-container');
-    if (!container) return;
-    container.innerHTML = '';
-    const attachmentFiles = data.attachment_files;
+  function displayAttachmentsFromData(data, ticketNo) {
+    const container = $('#img');
+    container.html('<p class="text-muted text-center w-100"><i class="fas fa-spinner fa-spin"></i> Loading attachments...</p>');
 
-    if (!attachmentFiles) {
-      container.innerHTML = '<span class="text-muted">No attachments for this ticket.</span>';
-      return;
+    const fileData = data['attachment_files'] || data['images'];
+
+    if (fileData && fileData.trim() !== '') {
+        const filePaths = fileData.split(/[|,]+/).filter(f => f.trim() !== '');
+        
+        if (filePaths.length === 0) {
+            container.html('<p class="text-muted text-center w-100 mb-0">No attachments for this ticket.</p>');
+            return;
+        }
+
+        let html = '<div class="d-flex flex-wrap gap-2">';
+        filePaths.forEach(imagePath => {
+            let fullPath = imagePath.trim();
+            if (!fullPath.includes('users/image/')) fullPath = '../users/image/' + fullPath;
+
+            html += `
+                <div class="position-relative shadow-sm border" style="width: 100px; height: 100px; border-radius: 8px; overflow: hidden;">
+                    <img src="${fullPath}" 
+                         class="img-fluid"
+                         style="width: 100%; height: 100%; object-fit: cover; cursor: pointer; transition: transform 0.2s ease;"
+                         onmouseover="this.style.transform='scale(1.08)'"
+                         onmouseout="this.style.transform='scale(1.0)'"
+                         onclick="window.open('${fullPath}', '_blank')"
+                         alt="Attachment">
+                </div>
+            `;
+        });
+        html += '</div>';
+        
+        container.html(html);
+    } 
+    else {
+        $.ajax({
+            type: 'POST',
+            url: 'sesticket.php',
+            data: { tktval: ticketNo },
+            success: function(response) {
+                if(!response || response.trim() === '') {
+                    container.html('<p class="text-muted text-center w-100 mb-0">No attachments found.</p>');
+                } else {
+                    container.html(response);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("Failed to load attachments:", error);
+                container.html('<p class="text-danger text-center w-100 mb-0"><i class="fas fa-exclamation-triangle"></i> Error loading attachments.</p>');
+            }
+        });
     }
-    const filePaths = attachmentFiles.split('|').filter(f => f.trim() !== '');
-    if (filePaths.length === 0) {
-      container.innerHTML = '<span class="text-muted">No attachments for this ticket.</span>';
-      return;
-    }
-
-    filePaths.forEach(imagePath => {
-      if (!imagePath.trim()) return;
-      const imgElement = document.createElement('img');
-      let fullPath = imagePath.trim();
-      if (!fullPath.includes('users/image/')) fullPath = 'users/image/' + fullPath;
-
-      imgElement.src = '../' + fullPath;
-      imgElement.alt = "Ticket Attachment";
-      imgElement.className = "img-thumbnail m-1";
-      imgElement.style.cssText = "max-height: 100px; max-width: 100px; object-fit: cover; cursor: pointer; transition: transform 0.2s ease; border: 2px solid #EAAA00;";
-      imgElement.onmouseover = () => imgElement.style.transform = "scale(1.08)";
-      imgElement.onmouseout = () => imgElement.style.transform = "scale(1.0)";
-      imgElement.onclick = () => window.open('../' + fullPath, '_blank');
-      container.appendChild(imgElement);
-    });
   }
+
 
   $('#btnClose').click(function () {
     if ($('#report_form').length) $('#report_form')[0].reset();
@@ -831,6 +1029,7 @@ function loadCommentThread(ticket_no) {
 
   $(document).on('hidden.bs.modal', '#userModal', function () {
     $('.temp-option').remove();
+    $('#img').empty();
   });
 
 
@@ -868,4 +1067,6 @@ function loadCommentThread(ticket_no) {
   if (typeof admin_hideshowforms === "function") admin_hideshowforms();
 
 });
+
+
 </script>

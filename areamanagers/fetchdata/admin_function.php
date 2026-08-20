@@ -65,7 +65,7 @@ FROM
 	ON 
 		reports.store = tbl_branch.str_num
 WHERE
-	`status` IN ('PENDING', 'ON PROCESS', 'NEW REPORT','Assigned') AND
+	`status` IN ('PENDING', 'ON PROCESS', 'NEW REPORT','Assigned', 'ESCALATED') AND
 	YEAR(date_created) IN (".$_POST['yr'] .") AND tbl_branch.AM LIKE '%{$_SESSION['user_id']}%'
 GROUP BY
 	tbl_branch.str_code";
@@ -274,7 +274,7 @@ FROM
 	ON 
 		vwp.deptsel = tbl_deptsel.dept_id
 WHERE
-	vwp.date_created IN (".$_POST['yr'] .") AND vwp.AM LIKE '%{$_SESSION['user_id']}%' AND vwp.`status`IN ('PENDING', 'ON PROCESS', 'NEW REPORT','Assigned')
+	vwp.date_created IN (".$_POST['yr'] .") AND vwp.AM LIKE '%{$_SESSION['user_id']}%' AND vwp.`status`IN ('PENDING', 'ON PROCESS', 'NEW REPORT','Assigned', 'ESCALATED')
 GROUP BY
   Dept
 ORDER BY
