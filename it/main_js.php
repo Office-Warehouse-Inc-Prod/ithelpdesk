@@ -1,5 +1,7 @@
 <script type='text/javascript'>
   $(document).ready(function () {
+       $.fn.dataTable.ext.pager.numbers_length = 10;
+
 
     const toggle = document.getElementById('darkModeToggle');
     const body = document.body;
@@ -144,6 +146,10 @@
 
     function admin_datatable(t) {
       const dataset = t.rptdata;
+      let currentPage = 0;
+        if ($.fn.DataTable.isDataTable("#transferred_data")) {
+            currentPage = $("#transferred_data").DataTable().page();
+        }
       window.originalStatusOptions = window.originalStatusOptions || $('#status').html();
 
       table_tickets = $("#report_data").DataTable({
@@ -311,6 +317,10 @@
         }
       });
 
+        if (currentPage > 0) {
+            table.page(currentPage).draw(false);
+        }
+
       $('#report_data tbody').off('dblclick').on('dblclick', 'tr', function () {
         var data = table_tickets.row($(this)).data();
         if (!data) return;
@@ -335,6 +345,10 @@
 
     function admin_datatable_transfer(t) {
       const dataset = t.transferdata;
+        let currentPage = 0;
+        if ($.fn.DataTable.isDataTable("#report_data")) {
+            currentPage = $("#report_data").DataTable().page();
+        }
       table_transfer = $("#transferred_data").DataTable({
         "dom": 'B<"pull-left"lf><"pull-right">tip',
         "buttons": [
@@ -460,6 +474,10 @@
           }
         }
       });
+
+      if (currentPage > 0) {
+            table_transfer.page(currentPage).draw(false);
+        }
 
       $('#transferred_data tbody').off('dblclick').on('dblclick', 'tr', function () {
         var data = table_transfer.row($(this)).data();

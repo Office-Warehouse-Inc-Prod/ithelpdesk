@@ -266,7 +266,7 @@ $_SESSION['start'] = time();
               <div class="col-md-4 pt-2 pb-2" style="border-radius: 0 8px 8px 0;">
                  <div class="form-group col-md-12" id="technical_workoutput_section">
                     <label>Workoutput (Under Assigned Support Evaluation)</label>
-                    <textarea class="form-control" name="technical_workoutput" id="technical_workoutput" style="height: 350px;"></textarea>
+                    <textarea class="form-control" name="technical_workoutput" id="technical_workoutput" style="height: 350px;" required></textarea>
                   </div>
                   
                   <div id="additional_technical_fields">

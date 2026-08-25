@@ -226,7 +226,12 @@ public function faprintingthist() {
                 ar.purpose_of_request, 
 				ar.revised_request,
 				ar.is_technical,
-					ar.technical_workoutput,
+				ar.technical_workoutput,
+				 fat.problem_reported,
+                    fat.verification_findings,
+                    fat.work_done,
+                    fat.status_workoutput,
+                    fat.recommendation,
                 it.it_desc,
                 it.itsup,          
                 ar.date_received, 
@@ -234,10 +239,11 @@ public function faprintingthist() {
                      itt.it_desc AS noted_by_desc,          
                 ar.status          
             FROM asset_requests ar
+			LEFT JOIN fixed_asset_techoutput fat ON ar.ticket_no = fat.ticket_no
             LEFT JOIN it_tech it ON ar.item_received_by = it.itsup
             LEFT JOIN reports r ON ar.ticket_no = r.ticket_no
             LEFT JOIN users u ON r.userId = u.id
-			  LEFT JOIN it_tech itt ON ar.noted_by = itt.itsup
+			LEFT JOIN it_tech itt ON ar.noted_by = itt.itsup
             LEFT JOIN tbl_branch b ON r.store = b.str_num  WHERE ar.status IN ('VERIFIED')  ORDER BY ar.created_at ASC";
         $statement = $this->connection->prepare($query);
         $statement->execute();
@@ -256,7 +262,13 @@ public function faprintingthist() {
                 'purpose_of_request' => $row["purpose_of_request"],
 				  'is_technical' => $row["is_technical"],
 				 'revised_request' => $row["revised_request"],
-				  'technical_workoutput' => $row["technical_workoutput"],
+				    'technical_workoutput' => $row["technical_workoutput"] ?? '',
+            'revised_request' => $row["revised_request"] ?? '',
+            'problem_reported' => $row["problem_reported"] ?? '',
+            'verification_findings' => $row["verification_findings"] ?? '',
+            'work_done' => $row["work_done"] ?? '',
+            'status_workoutput' => $row["status_workoutput"] ?? '',
+            'recommendation' => $row["recommendation"] ?? '',
                 'it_desc' => $row["it_desc"],
                 'date_received' => $row["date_received"],    
                 'noted_by_desc' => $row["noted_by_desc"],  

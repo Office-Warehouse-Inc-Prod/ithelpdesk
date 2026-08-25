@@ -1,6 +1,6 @@
 <?php
 session_start();
-include('db.php');
+include('db.php'); 
 
 header('Content-Type: application/json');
 
@@ -23,14 +23,13 @@ try {
         echo json_encode(['Response' => false, 'm' => '<div class="alert alert-danger">Error: All fields are required.</div>']);
         exit;
     }
-    
+
     $stmtCat = $connection->prepare("SELECT cat_desc FROM categories WHERE cat_id = :cat_id LIMIT 1");
     $stmtCat->execute([':cat_id' => $cat_id]);
     $catRow = $stmtCat->fetch(PDO::FETCH_ASSOC);
     $subject_desc = $catRow ? strtoupper($catRow['cat_desc']) : '';
 
     $connection->beginTransaction();
-
     $stmt = $connection->prepare("INSERT INTO reports (ticket_no, date_created, deptsel, store, concern, service_desc, status, subject, userId, cat_id, sub_id) 
         VALUES (:ticket_no, :date_created, :deptsel, :store, :concern, :service_desc, :status, :subject, :userId, :cat_id, :sub_id)");
 
@@ -40,7 +39,7 @@ try {
         ':deptsel' => $deptsel,
         ':store' => $store,
         ':concern' => $concern,
-        ':service_desc' => 'GENERAL', 
+        ':service_desc' => 'GENERAL',
         ':status' => $status,
         ':subject' => $subject_desc,
         ':userId' => $userId,
@@ -49,56 +48,19 @@ try {
     ]);
 
     if (!$result) {
-        $error = $stmt->errorInfo();
-        throw new Exception("Failed to insert report header. Error: " . $error[2]);
-    }
-
-    $upload_dir = '../images/'; 
-
-    if (!empty($_FILES['file']['name'][0])) {
-        if (!is_dir($upload_dir)) {
-            mkdir($upload_dir, 0777, true);
-        }
-        $stmtImage = $connection->prepare("INSERT INTO images (files_tmp, files_name, uploaded_on, ticket_no) 
-                                           VALUES (:files_tmp, :files_name, :uploaded_on, :ticket_no)");
-
-        foreach ($_FILES['file']['name'] as $key => $filename) {
-            $tmp_name = $_FILES['file']['tmp_name'][$key];
-            $error = $_FILES['file']['error'][$key];
-            $size = $_FILES['file']['size'][$key];
-
-            if ($error === UPLOAD_ERR_OK) {
-                $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
-                $allowed_exts = ['jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx', 'xls', 'xlsx', 'gif'];
-
-                if (in_array($ext, $allowed_exts) && $size <= 2097152) { 
-                    $generated_name = uniqid('tkt_' . $ticket_no . '_') . '.' . $ext;
-                    $target_file = $upload_dir . $generated_name;
-
-                    if (move_uploaded_file($tmp_name, $target_file)) {
-                        
-                        $stmtImage->execute([
-                            ':files_tmp' => $generated_name, 
-                            ':files_name' => $filename,
-                            ':uploaded_on' => date('Y-m-d H:i:s'),
-                            ':ticket_no' => $ticket_no
-                        ]);
-                    }
-                }
-            }
-        }
+        throw new Exception("Failed to insert report header.");
     }
 
     $counter = 'counter';
     $stmtCounter = $connection->prepare("UPDATE `$counter` SET ticket_no = :ticket_no");
     $stmtCounter->execute([':ticket_no' => $ticket_no]);
-    
+
     $stmtMsgCnt = $connection->prepare("INSERT INTO reports_msgcnt (ticket_no, msg_cnt) VALUES (:ticket_no, :msgcnt)");
     $stmtMsgCnt->execute([':ticket_no' => $ticket_no, ':msgcnt' => '1']);
-    
+
     $stmtNewMsg = $connection->prepare("INSERT INTO reports_newmsg (ticket_no, nmsg_stat) VALUES (:ticket_no, :nmsg_stat)");
     $stmtNewMsg->execute([':ticket_no' => $ticket_no, ':nmsg_stat' => '1']);
-    
+
     $stmtComment = $connection->prepare("INSERT INTO reports_comments (ticket_no, comment_details, comment_date, userId) 
         VALUES (:ticket_no, :comment_details, :comment_date, :userId)");
     $stmtComment->execute([
@@ -108,7 +70,7 @@ try {
         ':userId' => $userId
     ]);
 
-    $stmtTrail = $connection->prepare("INSERT INTO tbl_tickethist (ticket_no, status, date_updated, userID) 
+   $stmtTrail = $connection->prepare("INSERT INTO tbl_tickethist (ticket_no, status, date_updated, userID) 
         VALUES (:ticket_no, :status, :date_updated, :userID)");
     $stmtTrail->execute([
         ':ticket_no' => $ticket_no,
@@ -116,6 +78,46 @@ try {
         ':date_updated' => date('Y-m-d H:i:s'),
         ':userID' => $userId
     ]);
+
+   if (isset($_POST['is_fix_asset']) && $_POST['is_fix_asset'] == '1') {
+        $asset_ticket   = $ticket_no; 
+        $requested_by   = $userId; 
+        $requested_db   = $store; 
+        $item_code      = NULL; 
+        
+        $serial_num     = isset($_POST['inline_fa_serial_number']) ? trim($_POST['inline_fa_serial_number']) : '';
+        $description    = isset($_POST['inline_fa_description_sel']) ? trim($_POST['inline_fa_description_sel']) : '';
+        
+        if ($description === 'OTHER' || empty($description)) {
+            $description = isset($_POST['inline_fa_description_txt']) ? trim($_POST['inline_fa_description_txt']) : $description;
+        }
+        
+        $ticket_created = date('Y-m-d H:i:s');
+        
+        $is_technical   = 0; 
+        
+        $stmt_asset = $connection->prepare("
+            INSERT INTO asset_requests (
+                ticket_no, requested_by, requested_db, item_code, 
+                serial_number, status, description, ticket_created, is_technical
+            ) VALUES (
+                :ticket_no, :requested_by, :requested_db, :item_code, 
+                :serial_num, :status, :description, :ticket_created, :is_technical
+            )
+        ");
+        
+        $stmt_asset->execute([
+            ':ticket_no'      => $asset_ticket,
+            ':requested_by'   => $requested_by,
+            ':requested_db'   => $requested_db,
+            ':item_code'      => $item_code,
+            ':serial_num'     => $serial_num,
+            ':status'         => 'NOTED',
+            ':description'    => $description,
+            ':ticket_created' => $ticket_created,
+            ':is_technical'   => $is_technical
+        ]);
+    }
 
     $connection->commit();
 
@@ -130,4 +132,3 @@ try {
     echo json_encode(['Response' => false, 'm' => '<div class="alert alert-danger">Error: ' . htmlspecialchars($e->getMessage()) . '</div>']);
     exit;
 }
-?>

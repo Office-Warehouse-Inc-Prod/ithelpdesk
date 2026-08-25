@@ -2,6 +2,7 @@
 
 <script type='text/javascript'>
   $(document).ready(function () {
+        $.fn.dataTable.ext.pager.numbers_length = 10;
 
 
 
@@ -109,6 +110,10 @@
      */
     function admin_datatable(t) {
       const dataset = t.rptdata;
+        let currentPage = 0;
+        if ($.fn.DataTable.isDataTable("#report_data")) {
+            currentPage = $("#report_data").DataTable().page();
+        }
       table = $("#report_data").DataTable({
         dom:
           "<'dt-top d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-2'" +
@@ -322,6 +327,10 @@
           else if (s === 'SUBJECT FOR CLOSING') $(row).addClass('status-subject-closing');
         }
       });
+
+          if (currentPage > 0) {
+            table.page(currentPage).draw(false);
+        }
 
 
       $('#report_data tbody').on('dblclick', 'tr', function () {

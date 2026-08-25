@@ -86,6 +86,7 @@ $("#deptsel").on("change", function(){
   });
 
 
+
 function checkFixAssetCondition() {
     var dept = $('#create_deptsel').val(); 
     var subj = ($('#subject option:selected').text() || '').toUpperCase();
@@ -96,11 +97,20 @@ function checkFixAssetCondition() {
     var isNew = subcatText.includes('NEW');
     var isTransfer = subcatText.includes('TRANSFER');
 
+    if (isReplacement) {
+        $('#create_file-input, #file-input').prop('required', true);
+        $('#create_file-input').prev('label').html('<i class="fas fa-paperclip mr-1"></i> Attach Files <span class="text-danger">*</span>');
+        $('#file-input').parent().prev('label').html('Attached File: <span class="text-danger">*</span>');
+    } else {
+        $('#create_file-input, #file-input').prop('required', false);
+        $('#create_file-input').prev('label').html('<i class="fas fa-paperclip mr-1"></i> Attach Files (Optional)');
+        $('#file-input').parent().prev('label').html('Attached File:');
+    }
+
     if (isFixAsset) {
         $('#is_fix_asset').val('1');
         $('#inline_fixed_asset_fields').slideDown();
         $('#concern').prop('required', true);
-        $('#file-input').prop('required', false);
 
         if (isReplacement) {
             $('#inline_fa_description_container').show();
@@ -119,7 +129,6 @@ function checkFixAssetCondition() {
         $('#is_fix_asset').val('0');
         $('#inline_fixed_asset_fields').hide();
         $('#concern').prop('required', true);
-        $('#file-input').prop('required', false);
     }
 
     validateSubmitButton();
@@ -128,6 +137,7 @@ function checkFixAssetCondition() {
 function validateSubmitButton() {
     var isFixAsset = $('#is_fix_asset').val() == '1';
     var concernLength = $('#concern').val().trim().length;
+    var isReplacement = ($('#subcategory option:selected').text() || '').toUpperCase().includes('REPLACEMENT');
     var isValid = true;
 
     if (isFixAsset) {
@@ -142,6 +152,13 @@ function validateSubmitButton() {
     
     if (concernLength < 10) {
         isValid = false;
+    }
+
+    if (isReplacement) {
+        var fileInput = $('#create_file-input')[0];
+        if (fileInput && fileInput.files.length === 0) {
+            isValid = false;
+        }
     }
 
     $('#action').prop('disabled', !isValid);
@@ -214,12 +231,15 @@ concern.addEventListener('input', function() {
     $('#create_ticket_lbl').text('---');
     $('#create_ticket_no').val('');
     $form.find('input[type="file"]').val(''); 
+    $('#create_file-input, #file-input').prop('required', false);
+    $('#create_file-input').prev('label').html('<i class="fas fa-paperclip mr-1"></i> Attach Files (Optional)');
+    $('#file-input').parent().prev('label').html('Attached File:');
     
     $('#is_fix_asset').val('0');
     $('#inline_fa_description_sel').val('');
     $('#inline_fa_description_txt').hide().val('');
     $('#inline_fa_serial_number').val('');
-  }
+}
   
   resetCreateTicketForm();
 
@@ -381,12 +401,13 @@ concern.addEventListener('input', function() {
     });
   });
 
-  $('#create_file-input').on('change', function () {
+$('#create_file-input').on('change', function () {
     for (var i = 0; i < this.files.length; ++i) {
       var file = this.files[i];
       if (file.size > 2097152) { 
         Swal.fire({ icon: 'error', title: 'File Too Large', text: 'File "' + file.name + '" must not exceed 2MB.' });
         this.value = "";
+        validateSubmitButton(); // Re-validate if file is rejected
         return false;
       }
       var ext = file.name.split('.').pop().toLowerCase();
@@ -394,10 +415,13 @@ concern.addEventListener('input', function() {
       if ($.inArray(ext, validExtensions) === -1) {
         Swal.fire({ icon: 'error', title: 'Invalid File Type', text: 'File "' + file.name + '" has an invalid extension.' });
         this.value = "";
+        validateSubmitButton(); // Re-validate if file is rejected
         return false;
       }
     }
-  });
+    
+    validateSubmitButton(); // Validate button when a valid file is successfully attached
+});
 
   var reptable;
   var user_id = "<?= $_SESSION['user_id'] ?? ''; ?>";

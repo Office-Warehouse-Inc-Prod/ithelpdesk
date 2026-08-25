@@ -38,53 +38,74 @@ function _dbline(curyra){
 /**
  *  plotdbline.
  */
-function _plotdbline(grphdata){
+function _plotdbline(grphdata) {
+  am4core.ready(function () {
+    am4core.useTheme(am4themes_animated);
 
-am4core.ready(function() {
+    var chart = am4core.create("chartdiv1", am4charts.XYChart);
+    chart.data = grphdata;
 
-// Themes begin
-am4core.useTheme(am4themes_animated);
-// Themes end
+    // ✅ Light background with subtle gradient
+    chart.background.fill = am4core.color("#f8faff");
+    chart.background.fillOpacity = 1;
 
-var chart = am4core.create("chartdiv1", am4charts.XYChart);
+    // ✅ X Axis
+    var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
+    dateAxis.renderer.minGridDistance = 60;
+    dateAxis.renderer.grid.template.stroke = am4core.color("#e0e6f5");
+    dateAxis.renderer.grid.template.strokeOpacity = 0.6;
+    dateAxis.renderer.labels.template.fill = am4core.color("#4a4a4a");
 
+    // ✅ Y Axis
+    var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+    valueAxis.renderer.grid.template.stroke = am4core.color("#e0e6f5");
+    valueAxis.renderer.grid.template.strokeOpacity = 0.6;
+    valueAxis.renderer.labels.template.fill = am4core.color("#4a4a4a");
 
-chart.data = grphdata
+    // ✅ Line series
+    var series = chart.series.push(new am4charts.LineSeries());
+    series.dataFields.valueY = "value";
+    series.dataFields.dateX = "date";
+    series.strokeWidth = 3;
+    series.tensionX = 0.8; // Smooth curves
+    series.tooltipText = "{value}";
+    series.fillOpacity = 0.15;
 
-// Create axes
-var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
-dateAxis.renderer.minGridDistance = 60;
+    // ✅ Gradient stroke (pastel neon)
+    series.stroke = new am4core.LinearGradient();
+    series.stroke.addColor(am4core.color("#6a5acd")); // pastel purple
+    series.stroke.addColor(am4core.color("#00bcd4")); // pastel cyan
 
-var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+    // ✅ Glow effect (lighter glow)
+    let shadow = series.filters.push(new am4core.DropShadowFilter());
+    shadow.color = am4core.color("#7bcfff");
+    shadow.blur = 10;
+    shadow.opacity = 0.6;
 
-// Create series
-var series = chart.series.push(new am4charts.LineSeries());
-series.dataFields.valueY = "value";
-series.dataFields.dateX = "date";
-series.tooltipText = "{value}"
+    // ✅ Add bullets
+    var bullet = series.bullets.push(new am4charts.CircleBullet());
+    bullet.circle.radius = 5;
+    bullet.circle.fill = am4core.color("#ffffff");
+    bullet.circle.strokeWidth = 2;
+    bullet.circle.stroke = am4core.color("#00bcd4");
 
+    bullet.states.create("hover").properties.scale = 1.4;
 
-series.tooltip.pointerOrientation = "vertical";
-series.strokeWidth = 1.5;
-series.fillOpacity = 0.3;
-chart.cursor = new am4charts.XYCursor();
-chart.cursor.snapToSeries = series;
-chart.cursor.xAxis = dateAxis;
+    // ✅ Cursor and scrollbar
+    chart.cursor = new am4charts.XYCursor();
+    chart.cursor.snapToSeries = series;
+    chart.cursor.xAxis = dateAxis;
 
-chart.colors.list = [
-  am4core.color("#0077F7")
-];
+    chart.scrollbarX = new am4core.Scrollbar();
+    chart.scrollbarX.background.fill = am4core.color("#e6ebf5");
+    chart.scrollbarX.thumb.background.fill = am4core.color("#6a5acd");
+    chart.scrollbarX.thumb.background.fillOpacity = 0.8;
 
-//chart.scrollbarY = new am4core.Scrollbar();
-chart.scrollbarX = new am4core.Scrollbar();
-chart.exporting.menu = new am4core.ExportMenu();
-
-am4core.options.autoDispose = true;
-
-
-}); // end am4core.ready()
-
+    chart.exporting.menu = new am4core.ExportMenu();
+    am4core.options.autoDispose = true;
+  });
 }
+
 
 
 </script>
@@ -130,117 +151,91 @@ var types = $.ajax({
  /**
   * Grhp.
   */
- function grhp(types){
-am4core.ready(function() {
+ function grhp(types) {
+  am4core.ready(function () {
+    am4core.useTheme(am4themes_animated);
 
-// Themes begin
-am4core.useTheme(am4themes_material);
-am4core.useTheme(am4themes_animated);
-// Themes end
+    // ✅ Create chart
+    var chart = am4core.create("chartdiv2", am4charts.PieChart);
+    chart.innerRadius = am4core.percent(35); // Donut style for modern look
+    chart.fontFamily = "Segoe UI, Roboto, sans-serif";
+    chart.background.fill = am4core.color("#f8faff");
 
-// Create chart instance
-var chart = am4core.create("chartdiv2", am4charts.PieChart);
+    var selected;
+    chart.data = generateChartData();
 
-// Set data
-//legend 
-// chart.legend = new am4charts.Legend();
-// chart.legend.scrollable = true;
+    // ✅ Series
+    var pieSeries = chart.series.push(new am4charts.PieSeries());
+    pieSeries.dataFields.value = "percent";
+    pieSeries.dataFields.category = "type";
+    pieSeries.slices.template.propertyFields.fill = "color";
+    pieSeries.slices.template.propertyFields.isActive = "pulled";
+    pieSeries.slices.template.strokeWidth = 0;
 
-var selected;
+    // ✅ Label styling
+    pieSeries.labels.template.maxWidth = 130;
+    pieSeries.labels.template.wrap = true;
+    pieSeries.labels.template.fontSize = 12;
+    pieSeries.labels.template.fill = am4core.color("#444");
+    pieSeries.labels.template.text = "[bold]{type}[/]\n{value.value} ({value.percent.formatNumber('.##')}%)";
 
+    // ✅ Tooltip styling
+    pieSeries.slices.template.tooltipText =
+      "{type}: {value.value} | {value.percent.formatNumber('.##')}%";
 
-// Add data
-chart.data = generateChartData();
+    // ✅ Glow effect
+    let shadow = pieSeries.slices.template.filters.push(new am4core.DropShadowFilter());
+    shadow.blur = 6;
+    shadow.color = am4core.color("#999");
+    shadow.opacity = 0.4;
 
-// Add and configure Series
-var pieSeries = chart.series.push(new am4charts.PieSeries());
-pieSeries.dataFields.value = "percent";
-pieSeries.dataFields.category = "type";
-pieSeries.dataFields.subs = "subs";
-pieSeries.slices.template.propertyFields.fill = "color";
-pieSeries.slices.template.propertyFields.isActive = "pulled";
-pieSeries.slices.template.strokeWidth = 0;
-pieSeries.labels.template.maxWidth = 130;
-pieSeries.labels.template.wrap = true;
-pieSeries.labels.template.paddingTop = 0;
-pieSeries.labels.template.paddingBottom = 0;
-pieSeries.labels.template.fontSize = 10;
-pieSeries.integersOnly = true;
-pieSeries.labels.template.text = "{type}: {value.value} | {value.percent.formatNumber('.##')}%";
-pieSeries.slices.template.tooltipText = "{type}: {value.value} | {value.percent.formatNumber('.##')}%";
-pieSeries.slices.template.tooltipPosition = "pointer";
+    // ✅ Hover animation
+    let hs = pieSeries.slices.template.states.create("hover");
+    hs.properties.scale = 1.08;
+    hs.properties.shiftRadius = 0.03;
 
+    chart.exporting.menu = new am4core.ExportMenu();
 
-
-
-
-chart.exporting.menu = new am4core.ExportMenu();
-
-
-
-
-/**
- * Generate chart data.
- */
-function generateChartData() {
- let d = Array();
-  var chartData = [];
-  for (var i = 0; i < types.length; i++) {
-    if (i == selected) {
-      for (var x = 0; x < types[i].subs.length; x++) {
-         // d= new Array('types'=>types[i].subs[x].type)
-        chartData.push({
-          type: types[i].subs[x].type,
-          percent: types[i].subs[x].percent,
-          color: types[i].color,
-          pulled:true
-        });
-
+    /**
+     * Generate chart data.
+     */
+    function generateChartData() {
+      let chartData = [];
+      for (var i = 0; i < types.length; i++) {
+        if (i == selected) {
+          for (var x = 0; x < types[i].subs.length; x++) {
+            chartData.push({
+              type: types[i].subs[x].type,
+              percent: types[i].subs[x].percent,
+              color: types[i].color,
+              pulled: true,
+            });
+          }
+        } else {
+          chartData.push({
+            type: types[i].type,
+            percent: types[i].percent,
+            color: types[i].color,
+            id: i,
+          });
+        }
       }
-
-      for (var y = 0; y < types[i].subs.length; y++) {
-         // d= new Array('types'=>types[i].subs[x].type)
-        d.push({
-          type: types[i].subs[y].type,
-          percent: types[i].subs[y].percent
-        });
-
-      }
-newgrph(d)
-   
-      // chartData.push({
-      //   type: types[i].type,
-      //   percent: types[i].percent,
-      //   color: types[i].color,
-      //   id: i
-      // });
-
-    } else {
-      chartData.push({
-        type: types[i].type,
-        percent: types[i].percent,
-        color: types[i].color,
-        id: i
-      });
+      return chartData;
     }
-  }
-  return chartData;
+
+    // ✅ Click event to drill down
+    pieSeries.slices.template.events.on("hit", function (event) {
+      selected =
+        event.target.dataItem.dataContext.id !== undefined
+          ? event.target.dataItem.dataContext.id
+          : undefined;
+      chart.data = generateChartData();
+    });
+
+    am4core.options.autoDispose = true;
+  });
 }
 
-pieSeries.slices.template.events.on("hit", function(event) {
-  if (event.target.dataItem.dataContext.id != undefined) {
-    selected = event.target.dataItem.dataContext.id;
-  } else {
-    selected = undefined;
-  }
-  chart.data = generateChartData();
-});
-am4core.options.autoDispose = true;
-
-
-}); // end am4core.ready()
-
-} // end am4core.ready()
 
 
  /**
@@ -420,72 +415,78 @@ order: [[0, 'desc']],
  /**
   *  plotovpie.
   */
- function _plotovpie(grphdata){
+ function _plotovpie(grphdata) {
+  am4core.ready(function () {
+    am4core.useTheme(am4themes_animated);
 
-am4core.ready(function() {
+    // ✅ Create chart
+    var chart = am4core.create("chartdiv5", am4charts.PieChart);
+    chart.innerRadius = am4core.percent(40);
+    chart.fontFamily = "Segoe UI, Roboto, sans-serif";
+    chart.background.fill = am4core.color("#f8faff");
 
-// Themes begin
-am4core.useTheme(am4themes_animated);
-// Themes end
+    // ✅ Legend styling
+    chart.legend = new am4charts.Legend();
+    chart.legend.position = "bottom";
+    chart.legend.valign = "bottom";
+    chart.legend.labels.template.fill = am4core.color("#444");
+    chart.legend.labels.template.fontSize = 12;
+    chart.legend.labels.template.text = "[bold {color}]{name}[/]";
 
-// Create chart instance
-var chart = am4core.create("chartdiv5", am4charts.PieChart);
+    chart.data = grphdata;
 
-// legend
-chart.legend = new am4charts.Legend();
-chart.legend.position = "bottom";
-chart.legend.valign = "bottom";
-chart.innerRadius = am4core.percent(40);
-chart.legend.labels.template.text = "[bold {color}]{name}[/]";
-// chart.legend.labels.template.text =
-// series1.legendSettings.value = "{points}";
-// Add data
-chart.data = grphdata
+    // ✅ Series
+    var pieSeries = chart.series.push(new am4charts.PieSeries());
+    pieSeries.dataFields.value = "points";
+    pieSeries.dataFields.category = "stat_name";
+    pieSeries.labels.template.maxWidth = 140;
+    pieSeries.labels.template.wrap = true;
+    pieSeries.labels.template.fontSize = 12;
+    pieSeries.labels.template.fill = am4core.color("#444");
+    pieSeries.labels.template.text =
+      "[bold]{category}[/]\n{value.value} Reports ({value.percent.formatNumber('.##')}%)";
+    pieSeries.slices.template.tooltipText =
+      "{category}: {value.value} Reports ({value.percent.formatNumber('.##')}%)";
 
-// Add and configure Series
-var pieSeries = chart.series.push(new am4charts.PieSeries());
-pieSeries.dataFields.value = "points";
-pieSeries.dataFields.category = "stat_name";
-pieSeries.slices.template.stroke = am4core.color("#FFF"); //outline
-pieSeries.slices.template.strokeWidth = 2;
-pieSeries.slices.template.strokeOpacity = 1;
-pieSeries.slices.template.tooltipPosition = "pointer";
-pieSeries.labels.template.maxWidth = 130;
-pieSeries.labels.template.wrap = true;
-pieSeries.labels.template.fontSize = 12;
-pieSeries.labels.template.text =  "{type}  {value.value} {category} Reports | {value.percent.formatNumber('.##')}%";
-pieSeries.slices.template.tooltipText = "{type} {value.value} {category} Reports | {value.percent.formatNumber('.##')}%";
+    // ✅ Glow effect
+    let shadow = pieSeries.slices.template.filters.push(new am4core.DropShadowFilter());
+    shadow.blur = 6;
+    shadow.color = am4core.color("#999");
+    shadow.opacity = 0.4;
 
+    // ✅ Hover animation
+    let hs = pieSeries.slices.template.states.create("hover");
+    hs.properties.scale = 1.08;
+    hs.properties.shiftRadius = 0.03;
 
-// This creates initial animation
-pieSeries.hiddenState.properties.opacity = 1;
-pieSeries.hiddenState.properties.endAngle = -90;
-pieSeries.hiddenState.properties.startAngle = -90;
+    // ✅ Custom pastel colors based on category
+    pieSeries.slices.template.adapter.add("fill", function (fill, target) {
+      if (target.dataItem) {
+        switch (target.dataItem.category) {
+          case "PENDING":
+            return am4core.color("#FF7A7A"); // soft red
+          case "ON PROCESS":
+            return am4core.color("#F2A65A"); // soft yellow
+          case "CLOSED":
+            return am4core.color("#578f63"); // soft green
+          case "SUBJECT FOR CLOSING":
+            return am4core.color("#b667eb"); // soft purple
+          default:
+            return am4core.color("#9EC9F7"); // fallback pastel blue
+        }
+      }
+      return fill;
+    });
 
-pieSeries.slices.template.adapter.add("fill", function(fill, target) {
-  if (target.dataItem && (target.dataItem.category == 'OPEN')) {
-    return am4core.color("#D53343");
-  }
-  if (target.dataItem && (target.dataItem.category == 'ATTENDED WITH FIX ASSET')) {
-    return am4core.color("#F7BB07");
-  }
-  if (target.dataItem && (target.dataItem.category == 'CLOSED')) {
-    return am4core.color("#27A243");
-  }
-  if (target.dataItem && (target.dataItem.category == 'SUBJECT FOR CLOSING')) {
-    return am4core.color("#890188");
-  }
-  else {
-    return fill;
-  }
-});
+    // ✅ Animation on load
+    pieSeries.hiddenState.properties.opacity = 1;
+    pieSeries.hiddenState.properties.endAngle = -90;
+    pieSeries.hiddenState.properties.startAngle = -90;
 
-am4core.options.autoDispose = true;
+    am4core.options.autoDispose = true;
+  });
+}
 
-}); // end am4core.ready()
-
-
- }
 
 </script>
 
@@ -643,10 +644,11 @@ var chart = am4core.create("chartdiv8", am4charts.XYChart);
 chart.data = grphdata
 
 chart.colors.list = [
-  am4core.color("#0077F7"),
-  am4core.color("#27A243"),
-  am4core.color("#DC3545"),
-  am4core.color("#FFC107")
+  am4core.color("#6594B1"),
+  am4core.color("#6F8F72"),
+  am4core.color("#F2A65A"),
+  am4core.color("#D25353")
+
 
 ];
 
@@ -727,7 +729,7 @@ series3.dataFields.valueY = "opncase";
 series3.dataFields.categoryX = "it_name";
 series3.clustered = false;
 series3.columns.template.width = am4core.percent(50);
-series3.tooltipText = "OPEN REPORTS: [bold]{valueY}";
+series3.tooltipText = "ON PROCESS: [bold]{valueY}";
 series3.columns.template.events.on("hit", function(ev) {
               
               let itVal= ev.target.dataItem.dataContext["itsup"] ;
@@ -757,7 +759,7 @@ series4.dataFields.valueY = "opnwfxast";
 series4.dataFields.categoryX = "it_name";
 series4.clustered = false;
 series4.columns.template.width = am4core.percent(50);
-series4.tooltipText = "WITH FIX ASSET: [bold]{valueY}";
+series4.tooltipText = "PENDING (OVER SLA): [bold]{valueY}";
 
 chart.cursor = new am4charts.XYCursor();
 chart.cursor.lineX.disabled = true;
@@ -1031,7 +1033,7 @@ var chart = am4core.create("chart_area", am4charts.XYChart);
 chart.data = grphdata
 // Create axes
 chart.colors.list = [
-  am4core.color("#0077F7")
+  am4core.color("#6594B1")
 ];
 
 var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
@@ -1173,18 +1175,95 @@ columnTemplate.strokeOpacity = 1;
 </script>
 
 
+</style>
+
+
+<script>
+  // const curdatez = new Date();
+  let fromPolled = $('#frompolDate').val();
+  let toPolled = $('#topolDate').val();
+
+  // _polledraph();
+
+  function _polledraph(fromPolled,toPolled){
+
+ $.ajax({
+    url:"fetchdata/fetch_data.php",
+    method:'POST',
+     data:{toPolled:toPolled,fromPolled:fromPolled,mode:'polled_store'},
+
+    success:function(data)
+    {
+
+      var objarea = JSON.parse(data);
+      // console.log(objarea);
+       _polledstore(objarea);
+      
+    }
+   });
+
+  }
+
+/**
+ *  polledstore.
+ */
+function _polledstore(grphdata){
+
+am4core.ready(function() {
+
+// Themes begin
+am4core.useTheme(am4themes_animated);
+// Themes end
+
+// Create chart instance
+var chart = am4core.create("chart_polled", am4charts.XYChart);
+
+// Add data
+chart.data = grphdata
+// Create axes
+
+var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+categoryAxis.dataFields.category = "str_code";
+categoryAxis.renderer.grid.template.location = 0;
+categoryAxis.renderer.minGridDistance = 30;
+
+
+var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+// valueAxis.min = 0;
+// valueAxis.max = 300 ;
+
+// Create series
+var series = chart.series.push(new am4charts.ColumnSeries());
+series.dataFields.valueY = "cntstore";
+series.dataFields.categoryX = "str_code";
+series.columns.template.tooltipText = "{categoryX}: [bold]{valueY}[/] NOT POLLED";
+series.columns.template.fillOpacity = .8;
+
+var columnTemplate = series.columns.template;
+columnTemplate.strokeWidth = 2;
+columnTemplate.strokeOpacity = 1;
+
+}); // end am4core.ready()
+
+
+
+
+}
+
+</script>
+
 
 <!-- Styles -->
-<style>
+<!-- <style>
 #chartdivnet {
     margin-top: 12px;
   margin-left: 12px;
   width: 100%;
   height: 300px; 
 }
-</style>
+</style> -->
 
-<script>
+<!-- <script>
   const curdate3 = new Date();
   const curyr3 = g=curdate3.getFullYear();
 
@@ -1460,11 +1539,11 @@ order: [[0, 'desc']],
 }
 
 
-</script>
+</script> -->
 
 
 <!-- Styles -->
-<style>
+<!-- <style>
 #chartdivnet2 {
 /*   margin-top: 2px;
   margin-left: 18px;*/
@@ -1472,10 +1551,10 @@ order: [[0, 'desc']],
   height: 300px;
 }
 
-</style>
+</style> -->
 
 <!-- Chart code -->
-<script>
+<!-- <script>
  const curdates2 = new Date();
   const curyrs2 = g=curdates2.getFullYear();
 
@@ -1571,20 +1650,20 @@ am4core.options.autoDispose = true;
 
  }
 
-</script>
+</script> -->
 
 <!-- Styles -->
-<style>
+<!-- <style>
 #net_area {
   width: 100%;
   height: 350px;
 }
 
-</style>
+</style> -->
 
 
 <!-- Chart code -->
-<script>
+<!-- <script>
   const curdatez1 = new Date();
   const curyrz1 = g=curdatez1.getFullYear();
 
@@ -1703,19 +1782,19 @@ function _storenetgraph(s_area,syr){
 
 }
 
-</script>
+</script> -->
 
 <!-- Styles -->
-<style>
+<!-- <style>
 #storenet_graph {
   width: 100%;
   height: 500px;
 }
 
-</style>
+</style> -->
 
 <!-- Chart code -->
-<script>
+<!-- <script>
 
 /**
  *  plot netstore graph.
@@ -1769,4 +1848,4 @@ columnTemplate.strokeOpacity = 1;
 }
 
 
-</script>
+</script> -->

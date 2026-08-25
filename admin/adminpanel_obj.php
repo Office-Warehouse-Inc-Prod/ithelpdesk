@@ -1,44 +1,40 @@
- 
-<!-- modal addnew button -->
-
 <script type='text/javascript'>
 $( document ).ready(function() {
 
+    $.fn.dataTable.ext.pager.numbers_length = 10;
 
+    /**
+     * Reload dashboard.
+     */
+    function reload_dashboard() {
+        const yr = $("#yearpicker").val();
+        const dept_id = $("#dept_id").val();
 
-/**
- * Reload dashboard.
- */
-function reload_dashboard() {
-    const yr = $("#yearpicker").val();
-    const dept_id = $("#dept_id").val();
+        getdata(yr);
+        get_card_data(yr);
+        _overallpie(yr, dept_id);
+        _areagraph(yr);
 
-    getdata(yr);
-    get_card_data(yr);
-    _overallpie(yr, dept_id);
-    _areagraph(yr);
-
-    // default category chart on load
-    _categorypie_all(yr, dept_id);
-    // Uncomment kapag kailangan mo na rin i-refresh ito
-    // _techgraph(yr);
-    // _dbline(yr);
-    // _catpie(yr);
-    // bargrph_tech_res(yr);
-    // itsupdata(yr);
-    // _storegraph(yr);
-}
+        // default category chart on load
+        _categorypie_all(yr, dept_id);
+        // Uncomment kapag kailangan mo na rin i-refresh ito
+        // _techgraph(yr);
+        // _dbline(yr);
+        // _catpie(yr);
+        // bargrph_tech_res(yr);
+        // itsupdata(yr);
+        // _storegraph(yr);
+    }
  
-$("#yearpicker").on("change", function () {
-    reload_dashboard();
-});
+    $("#yearpicker").on("change", function () {
+        reload_dashboard();
+    });
 
-$("#dept_id").on("change", function () {
-    reload_dashboard();
-}); 
+    $("#dept_id").on("change", function () {
+        reload_dashboard();
+    }); 
 
-
- function timeAgo(dateParam) {
+    function timeAgo(dateParam) {
         if (!dateParam) return "";
         let date = new Date(dateParam.replace(/-/g, "/"));
         let now = new Date();
@@ -56,7 +52,6 @@ $("#dept_id").on("change", function () {
         return "just now";
     }
 
-  
     function loadCommentThread(ticket_no) {
         const $remarksView = $('#remarks_view');
         const ticketValue = (ticket_no || '').toString().trim();
@@ -128,83 +123,27 @@ $("#dept_id").on("change", function () {
         });
     }
 
+    if(/Android|webOS|iPhone|iPad|Mac|Macintosh|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) { $("#ovrall").hide(); }
 
-//for debug purposes enable here
-// console.log($('#date_created').val());
+    var user_id = <?= $_SESSION['user_id']; ?>
 
+    let val = '';
+    $('#card_totalval, #card_assigned, #card_onprocess, #card_pending, #card_nonesca, #card_subforclosing, #card_closed').click(function(e) {
+        e.preventDefault();
+        val =  $(this).attr("value");
+        $('html, body').animate({
+            scrollTop: $('#report_data').offset().top - 80
+        }, 600);
+    });
 
-if(/Android|webOS|iPhone|iPad|Mac|Macintosh|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) { $("#ovrall").hide(); }
+    $('#myInput').on( 'input', function () {
+        table.search( this.value ).draw();
+    } );
 
-var user_id = <?= $_SESSION['user_id']; ?>
-
-let val = '';
-$('#card_totalval').click(function(e) {
-e.preventDefault();
-val =  $(this).attr("value");
-    $('html, body').animate({
-        scrollTop: $('#report_data').offset().top - 80
-    }, 600);
-});
-$('#card_assigned').click(function(e) {
-e.preventDefault();
-val =  $(this).attr("value");
-    $('html, body').animate({
-        scrollTop: $('#report_data').offset().top - 80
-    }, 600);
-});
-$('#card_onprocess').click(function(e) {
-e.preventDefault();
-val =  $(this).attr("value");
-// console.log(val)
-    $('html, body').animate({
-        scrollTop: $('#report_data').offset().top - 80
-    }, 600);
-});
-
-$('#card_pending').click(function(e) {
-e.preventDefault();
-val =  $(this).attr("value");
-// console.log(val)
-    $('html, body').animate({
-        scrollTop: $('#report_data').offset().top - 80
-    }, 600);
-});
-
-$('#card_nonesca').click(function(e) {
-e.preventDefault();
-val =  $(this).attr("value");
-    $('html, body').animate({
-        scrollTop: $('#report_data').offset().top - 80
-    }, 600);
-});
-$('#card_subforclosing').click(function(e) {
-e.preventDefault();
-val =  $(this).attr("value");
-    $('html, body').animate({
-        scrollTop: $('#report_data').offset().top - 80
-    }, 600);
-});
-
-$('#card_closed').click(function(e) {
-e.preventDefault();
-val =  $(this).attr("value");
-    $('html, body').animate({
-        scrollTop: $('#report_data').offset().top - 80
-    }, 600);
-});
-// $('.clcktxt').click(function(e) {
-// e.preventDefault();
-// val =  $(this).attr("value");
-// });
-$('#myInput').on( 'input', function () {
-    table.search( this.value ).draw();
-} );
-
-
-/**
- * Getdata.
- */
-function getdata(yr) {
+    /**
+     * Getdata.
+     */
+    function getdata(yr) {
         $.post(
             'fetchdata/fetch_data.php',
             {
@@ -245,6 +184,11 @@ function getdata(yr) {
      */
     function admin_datatable(t){
         const dataset = t.rptdata;
+        let currentPage = 0;
+        if ($.fn.DataTable.isDataTable("#report_data")) {
+            currentPage = $("#report_data").DataTable().page();
+        }
+
         table = $("#report_data").DataTable({
             dom:
                 "<'dt-top d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-2'"+
@@ -263,7 +207,7 @@ function getdata(yr) {
                     }
                 }
             ],
-            pagingType: "simple_numbers",
+            pagingType: "simple_numbers", 
             bDestroy: true,
             responsive: {
                 details: {
@@ -479,12 +423,14 @@ function getdata(yr) {
             }
         });
 
+        if (currentPage > 0) {
+            table.page(currentPage).draw(false);
+        }
+
         $('#report_data tbody').off('dblclick').on('dblclick', 'tr', function () {
             var data = table.row($(this)).data();
             if (!data) return;
             open_ticket_modal(data);
-            
-            // Retained additional manual bindings for main table
             $('#subjct').attr('readonly', true);
             var tid = $(this).find('td:eq(2)').html(); 
             $('#ticket_no').val(data['ticket_no']);
@@ -543,40 +489,13 @@ function getdata(yr) {
             $('#addmsg').val("");
         });
         
-        // Also bind the edit button to open the modal
         $('#report_data tbody').off('click', '.btn-edit').on('click', '.btn-edit', function (e) {
             e.preventDefault();
             var data = table.row($(this).closest('tr')).data();
             if (!data) return;
             open_ticket_modal(data);
         });
-
-        // Retain dashboard card filtering clicks
-        $('#card_totalval').on('click', function () {
-            var val =  $(this).attr("value");
-            table.columns( 7 ).search(val).draw();
-        });
-        $('#card_assigned').on('click', function () {
-            var val =  $(this).attr("value");
-            table.columns( 7 ).search(val).draw();
-        });
-        $('#card_onprocess').on('click', function () {
-            var val =  $(this).attr("value");
-            table.columns( 7 ).search(val).draw();
-        });
-        $('#card_pending').on('click', function () {
-            var val =  $(this).attr("value");
-            table.columns( 7 ).search(val).draw();
-        });
-        $('#card_nonesca').on('click', function () {
-            var val =  $(this).attr("value");
-            table.columns( 7 ).search(val).draw();
-        });
-        $('#card_subforclosing').on('click', function () {
-            var val =  $(this).attr("value");
-            table.columns( 7 ).search(val).draw();
-        });
-        $('#card_closed').on('click', function () {
+        $('#card_totalval, #card_assigned, #card_onprocess, #card_pending, #card_nonesca, #card_subforclosing, #card_closed').on('click', function () {
             var val =  $(this).attr("value");
             table.columns( 7 ).search(val).draw();
         });
@@ -590,10 +509,15 @@ function getdata(yr) {
     }
 
     /**
-     * Admin datatable for Transferred (Added).
+     * Admin datatable for Transferred 
      */
     function admin_datatable_transfer(t) {
         const dataset = t.transferdata;
+        let currentPage = 0;
+        if ($.fn.DataTable.isDataTable("#transferred_data")) {
+            currentPage = $("#transferred_data").DataTable().page();
+        }
+
         table_transfer = $("#transferred_data").DataTable({
             dom:
                 "<'dt-top d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-2'"+
@@ -762,6 +686,10 @@ function getdata(yr) {
             }
         });
 
+        if (currentPage > 0) {
+            table_transfer.page(currentPage).draw(false);
+        }
+
         $('#transferred_data tbody').off('dblclick').on('dblclick', 'tr', function () {
             var data = table_transfer.row($(this)).data();
             if (!data) return;
@@ -779,7 +707,6 @@ function getdata(yr) {
     function open_ticket_modal(data) {
         var tid = data['ticket_no'];
         $('#status').html(window.originalStatusOptions);
-
 
         $('#subjct').attr('readonly', true);
         $('#ticket_no').val(data['ticket_no']);
@@ -911,339 +838,272 @@ function getdata(yr) {
     getdata(yr);
     getdata_transfer(yr); // Init transfer data
     get_card_data(yr);
-/**
- * Get card data.
- */
-function get_card_data(yr) {
-    $.post(
-        'fetchdata/fetch_data.php',
-        {
-            yr: yr,
-            dept_id: $('#dept_id').val(),
-            mode: 'yearch'
-        },
-        function (data) {
-            let card_data = jQuery.parseJSON(data);
-            const a = card_data;
-            $('#count_total').html(a[0].total_res);
 
-            $('#count_assigned').html(a[0].assigned_res);
-            $('#count_onprocess').html(a[0].onprocess_res);
-            $('#count_pending').html(a[0].pending_res);
-            $('#count_nonesca').html(a[0].nonesca_res);
-            $('#count_subforclosing').html(a[0].subforclosing_res);
-            $('#count_closed').html(a[0].closed_res);
-        }
-    );
-}
+    /**
+     * Get card data.
+     */
+    function get_card_data(yr) {
+        $.post(
+            'fetchdata/fetch_data.php',
+            {
+                yr: yr,
+                dept_id: $('#dept_id').val(),
+                mode: 'yearch'
+            },
+            function (data) {
+                let card_data = jQuery.parseJSON(data);
+                const a = card_data;
+                $('#count_total').html(a[0].total_res);
 
-$(function () {
-$('#datetimepicker1, #datetimepicker2, #datetimepicker3').datetimepicker()
-});
-
-// $("#yearpicker").on("change", function () {
-//     reload_dashboard();
-// });
-
-$('#cat').on('change', function() {
-var category_id = this.value;
-$.ajax({
-url: "get_subcat.php",
-type: "POST",
-data: {
-category_id: category_id
-},
-cache: false,
-success: function(dataResult){
-$("#sub").html(dataResult);
-}
-}); 
-});   
-
-
-$('#add_button').click(function(){
-$('#report_form').trigger('reset');
-$('.modal-title').text("ADD REPORT");
-$('#subjct').attr('readonly', false);
-$('#action').val("Add");
-$('#operation').val("Add");
-$('#date_created').attr('readonly', false);
-$('#date_refNo').attr('readonly', false);
-$('#date_closed').attr('readonly', false);
-$('#store').prop("disabled", false);
-$('#via').prop("disabled", false);
-$('#status').prop("disabled", false);
-$('#itsup').prop("disabled", false);
-$('#cat').prop("disabled", false);
-$('#sub').prop("disabled", false);
-$('#isp').prop("disabled", false);
-$(':input[type="submit"]').prop('disabled', false); 
-$('#remarks').attr('readonly', false);
-$('#msgbtn').hide();
-$("#userModal").on('hidden.bs.modal', function(){
-
-});
-$('#userModal').modal({backdrop: 'static', keyboard: false}) 
-$("#userModal").on('hidden.bs.modal', function(){
-// location.reload();
-return false;
-});
-
-});
-
-
-  $(document).on("submit", "#report_form", function (e) {
-    e.preventDefault();
-    var TicketNumber = $("#ticket_no").val();
-    var Store = $("#store").val();
-    var DateCreated = $("#date_created").val();
-    var Concern = $("#concern").val();
-    var Status = $("#status").val();
-    var Via = $("#via").val();
-    var ItSupport = $("#itsup").val();
-    var cat_id = $("#cat").val();
-    var sub_id = $("#sub").val();
-    var DateClosed = $("#date_closed").val();
-    var CloseBy = $("#close_by").val();
-    var remarks = $("#remarks").val();
-    var addmsgx = $("#addmsg").val();
-    var today = new Date();
-    DateCreated = new Date(DateCreated);
-    DateClosed = new Date(DateClosed);
-    if (DateCreated > today) {
-      alert("Invalid date");
-      return false;
-    }
-    else if (Status == 'ASSIGNED'){
-        if (DateClosed < DateCreated ){
-      alert("Date closed should be greater than date created!");
-      return false;
+                $('#count_assigned').html(a[0].assigned_res);
+                $('#count_onprocess').html(a[0].onprocess_res);
+                $('#count_pending').html(a[0].pending_res);
+                $('#count_nonesca').html(a[0].nonesca_res);
+                $('#count_subforclosing').html(a[0].subforclosing_res);
+                $('#count_closed').html(a[0].closed_res);
+            }
+        );
     }
 
-        }
-    else if (DateClosed > today ){
-      alert("Invalid Closed_Date");
-      return false;
-    }
+    $(function () {
+        $('#datetimepicker1, #datetimepicker2, #datetimepicker3').datetimepicker()
+    });
 
-    if (
-      Store != "" &&
-      DateCreated != "" &&
-      Concern != "" &&
-      Status != "" &&
-      Via != "" &&
-      ItSupport != "" &&
-      cat_id != "" &&
-      sub_id != ""
-    ) {
-      $.ajax({
-        url: "insert.php",
-        method: "POST",
-        data: new FormData(this),
-        contentType: false,
-        processData: false,
-        success: function (data) {
-          // alert(addmsgx);
-          // $("#report_form")[0].reset();
-          Swal.fire({
-             icon: 'success',
-             title: 'Your work has been saved',
-             showConfirmButton: false,
-             timer: 1500
-          });
-          $("#userModal").modal("hide");
-                  getdata(yr);
-                  get_card_data(yr);
-      //     setTimeout(function(){// wait for 5 secs(2)
-      //      location.reload(); // then reload the page.(3)
-      // }, 2000); 
-        },
-      });
-    } else {
-      alert("All Fields are Required");
-    }
-    //  clearconsole();
-  });
-
-// $(document).on('click', '#dtbsecond', function(){
-
-// // // Store clicked page
-// // var currentPage = $(this).attr("#userModal");
-// // // Build filepath
-// // var currentPagePath = "./it/" + currentPage + ".php";
-
-// // // Find the div I want to change the include for and update it
-// // $(".testtkt").load(currentPagePath);
-
-
-
-// // $('#msgbtn').show();
-// // $('msg_thread').show();
-// // $('.dv_msg').show();
-// // $('#remarks_view').show();
-// // $('#addmsg').val("");
-
-// // alert(valtick);
-
-//   // var valtick = $('#ticket_no').val();
-
-
-
-
-// });
-
-
-$(document).on('click', '#msgbtn', function(){
-
-$('.dv_msg').show();
-$('#remarks_view').show();
-
-
-if($('#msgbtn').val() == 'show'){
-$('#action').val("Save and Reply");
-$('#operation').val("Save and Reply");
-$('#msgbtn').val("hide");
-$('#msg_thread').show('slow');
-
-}
-else if($('#msgbtn').val() == 'hide'){
-$('#action').val("Save");
-$('#operation').val("Edit");
-$('#msgbtn').val("show");
-$('#msg_thread').hide('slow');
-}
-
-
-
-});
-
-$('#btnClose').click(function(){
-// alert("working");
-$('report_form')[0].reset();
-$('.dv_msg').hide();
-$('#remarks_view').hide();
-$('#tmpsubid').remove();
-$('#addmsg').val('');
-
-
-});
-
-
-
-
-let activeCall = null; // {call_id, start_ms}
-
-/**
- * Format duration.
- */
-function formatDuration(ms){
-  const totalSec = Math.floor(ms / 1000);
-  const m = String(Math.floor(totalSec / 60)).padStart(2,'0');
-  const s = String(totalSec % 60).padStart(2,'0');
-  return `${m}:${s}`;
-}
-
-/**
- * Show end call swal.
- */
-function showEndCallSwal(){
-  if(!activeCall) return;
-
-  let timerInterval = null;
-
-  Swal.fire({
-    title: 'End Call',
-    html: `
-      <div style="font-size:14px; margin-bottom:8px;">
-        <b>Duration:</b> <span id="callDuration">00:00</span>
-      </div>
-
-      <select id="callStatus" class="swal2-select">
-        <option value="ANSWERED">Answered</option>
-        <option value="NO_ANSWER">No Answer</option>
-        <option value="BUSY">Busy</option>
-        <option value="FAILED">Failed</option>
-        <option value="VOICEMAIL">Voicemail</option>
-      </select>
-    `,
-    showCancelButton: true,
-    confirmButtonText: 'Hang Up & Save',
-    cancelButtonText: 'Not yet',
-    allowOutsideClick: false,
-    didOpen: () => {
-      const durEl = document.getElementById('callDuration');
-      timerInterval = setInterval(() => {
-        durEl.textContent = formatDuration(Date.now() - activeCall.start_ms);
-      }, 500);
-    },
-    willClose: () => {
-      if(timerInterval) clearInterval(timerInterval);
-    },
-    preConfirm: () => {
-      const status = document.getElementById('callStatus').value;
-      return status;
-    }
-  }).then((result) => {
-    if(result.isConfirmed){
-      const status = result.value;
-
-      $.ajax({
-        url: 'fetchdata/update_call.php',
-        type: 'POST',
+    $('#cat').on('change', function() {
+        var category_id = this.value;
+        $.ajax({
+        url: "get_subcat.php",
+        type: "POST",
         data: {
-          call_id: activeCall.call_id,
-          call_status: status
+        category_id: category_id
         },
-        success: function(){
-          Swal.fire('Saved', 'Call log updated.', 'success');
-          activeCall = null;
-        },
-        error: function(xhr){
-          Swal.fire('Error', xhr.responseText || 'Failed to update call log.', 'error');
+        cache: false,
+        success: function(dataResult){
+        $("#sub").html(dataResult);
         }
-      });
+        }); 
+    });   
+
+    $('#add_button').click(function(){
+        $('#report_form').trigger('reset');
+        $('.modal-title').text("ADD REPORT");
+        $('#subjct').attr('readonly', false);
+        $('#action').val("Add");
+        $('#operation').val("Add");
+        $('#date_created').attr('readonly', false);
+        $('#date_refNo').attr('readonly', false);
+        $('#date_closed').attr('readonly', false);
+        $('#store').prop("disabled", false);
+        $('#via').prop("disabled", false);
+        $('#status').prop("disabled", false);
+        $('#itsup').prop("disabled", false);
+        $('#cat').prop("disabled", false);
+        $('#sub').prop("disabled", false);
+        $('#isp').prop("disabled", false);
+        $(':input[type="submit"]').prop('disabled', false); 
+        $('#remarks').attr('readonly', false);
+        $('#msgbtn').hide();
+        $("#userModal").on('hidden.bs.modal', function(){
+
+        });
+        $('#userModal').modal({backdrop: 'static', keyboard: false}) 
+        $("#userModal").on('hidden.bs.modal', function(){
+            return false;
+        });
+
+    });
+
+    $(document).on("submit", "#report_form", function (e) {
+        e.preventDefault();
+        var TicketNumber = $("#ticket_no").val();
+        var Store = $("#store").val();
+        var DateCreated = $("#date_created").val();
+        var Concern = $("#concern").val();
+        var Status = $("#status").val();
+        var Via = $("#via").val();
+        var ItSupport = $("#itsup").val();
+        var cat_id = $("#cat").val();
+        var sub_id = $("#sub").val();
+        var DateClosed = $("#date_closed").val();
+        var CloseBy = $("#close_by").val();
+        var remarks = $("#remarks").val();
+        var addmsgx = $("#addmsg").val();
+        var today = new Date();
+        
+        DateCreated = new Date(DateCreated);
+        DateClosed = new Date(DateClosed);
+        
+        if (DateCreated > today) {
+            alert("Invalid date");
+            return false;
+        }
+        else if (Status == 'ASSIGNED'){
+            if (DateClosed < DateCreated ){
+                alert("Date closed should be greater than date created!");
+                return false;
+            }
+        }
+        else if (DateClosed > today ){
+            alert("Invalid Closed_Date");
+            return false;
+        }
+
+        if (
+            Store != "" &&
+            DateCreated != "" &&
+            Concern != "" &&
+            Status != "" &&
+            Via != "" &&
+            ItSupport != "" &&
+            cat_id != "" &&
+            sub_id != ""
+        ) {
+            $.ajax({
+                url: "insert.php",
+                method: "POST",
+                data: new FormData(this),
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    Swal.fire({
+                         icon: 'success',
+                         title: 'Your work has been saved',
+                         showConfirmButton: false,
+                         timer: 1500
+                    });
+                    $("#userModal").modal("hide");
+                    
+                    getdata(yr);
+                    get_card_data(yr);
+                },
+            });
+        } else {
+            alert("All Fields are Required");
+        }
+    });
+
+    $(document).on('click', '#msgbtn', function(){
+        $('.dv_msg').show();
+        $('#remarks_view').show();
+
+        if($('#msgbtn').val() == 'show'){
+            $('#action').val("Save and Reply");
+            $('#operation').val("Save and Reply");
+            $('#msgbtn').val("hide");
+            $('#msg_thread').show('slow');
+        }
+        else if($('#msgbtn').val() == 'hide'){
+            $('#action').val("Save");
+            $('#operation').val("Edit");
+            $('#msgbtn').val("show");
+            $('#msg_thread').hide('slow');
+        }
+    });
+
+    $('#btnClose').click(function(){
+        $('report_form')[0].reset();
+        $('.dv_msg').hide();
+        $('#remarks_view').hide();
+        $('#tmpsubid').remove();
+        $('#addmsg').val('');
+    });
+
+    let activeCall = null; 
+
+    function formatDuration(ms){
+        const totalSec = Math.floor(ms / 1000);
+        const m = String(Math.floor(totalSec / 60)).padStart(2,'0');
+        const s = String(totalSec % 60).padStart(2,'0');
+        return `${m}:${s}`;
     }
-  });
-}
 
-// 1) log + open viber
-$(document).on('click', '.viber-call', function(e){
-  e.preventDefault();
+    function showEndCallSwal(){
+        if(!activeCall) return;
 
-  const ticket_no = $(this).data('ticket_no');
-  const dept_id   = $(this).data('dept_id');
-  const number    = $(this).data('number');
+        let timerInterval = null;
 
-  $.ajax({
-    url: 'fetchdata/log_call.php',
-    type: 'POST',
-    dataType: 'json',
-    data: { ticket_no, dept_id },
-    success: function(res){
-      // store active call
-      activeCall = {
-        call_id: res.call_id,
-        start_ms: Date.parse(res.call_startdate) || Date.now()
-      };
+        Swal.fire({
+            title: 'End Call',
+            html: `
+              <div style="font-size:14px; margin-bottom:8px;">
+                <b>Duration:</b> <span id="callDuration">00:00</span>
+              </div>
 
-      // open viber
-      window.location.href = `viber://chat?number=%2B${number}`;
+              <select id="callStatus" class="swal2-select">
+                <option value="ANSWERED">Answered</option>
+                <option value="NO_ANSWER">No Answer</option>
+                <option value="BUSY">Busy</option>
+                <option value="FAILED">Failed</option>
+                <option value="VOICEMAIL">Voicemail</option>
+              </select>
+            `,
+            showCancelButton: true,
+            confirmButtonText: 'Hang Up & Save',
+            cancelButtonText: 'Not yet',
+            allowOutsideClick: false,
+            didOpen: () => {
+                const durEl = document.getElementById('callDuration');
+                timerInterval = setInterval(() => {
+                    durEl.textContent = formatDuration(Date.now() - activeCall.start_ms);
+                }, 500);
+            },
+            willClose: () => {
+                if(timerInterval) clearInterval(timerInterval);
+            },
+            preConfirm: () => {
+                const status = document.getElementById('callStatus').value;
+                return status;
+            }
+        }).then((result) => {
+            if(result.isConfirmed){
+                const status = result.value;
+
+                $.ajax({
+                    url: 'fetchdata/update_call.php',
+                    type: 'POST',
+                    data: {
+                        call_id: activeCall.call_id,
+                        call_status: status
+                    },
+                    success: function(){
+                        Swal.fire('Saved', 'Call log updated.', 'success');
+                        activeCall = null;
+                    },
+                    error: function(xhr){
+                        Swal.fire('Error', xhr.responseText || 'Failed to update call log.', 'error');
+                    }
+                });
+            }
+        });
     }
-  });
+
+    $(document).on('click', '.viber-call', function(e){
+        e.preventDefault();
+
+        const ticket_no = $(this).data('ticket_no');
+        const dept_id   = $(this).data('dept_id');
+        const number    = $(this).data('number');
+
+        $.ajax({
+            url: 'fetchdata/log_call.php',
+            type: 'POST',
+            dataType: 'json',
+            data: { ticket_no, dept_id },
+            success: function(res){
+                activeCall = {
+                    call_id: res.call_id,
+                    start_ms: Date.parse(res.call_startdate) || Date.now()
+                };
+                window.location.href = `viber://chat?number=%2B${number}`;
+            }
+        });
+    });
+
+    window.addEventListener('focus', function(){
+        if(activeCall){
+            showEndCallSwal();
+        }
+    });
+
 });
-
-// 2) when user returns to browser tab/window, prompt to end call
-window.addEventListener('focus', function(){
-  // if there is an active call, ask to end it
-  if(activeCall){
-    showEndCallSwal();
-  }
-});
-
-
-
-});//document ready close
-
-
-
 </script>

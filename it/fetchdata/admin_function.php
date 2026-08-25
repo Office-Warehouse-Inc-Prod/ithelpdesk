@@ -424,7 +424,7 @@ public function deptthist() {
 			(users.deptsel = '1' AND vw6.status NOT IN ('NEW REPORT'))
 		)
 		AND vw6.sub_id NOT IN ('15', '28', '34', '35')
-		AND YEAR(vw6.date_created) IN (" . $_POST['yr'] . ") AND vw6.itsup IN ('1','2','5','7','10','11','44','45','47','77')";
+		AND YEAR(vw6.date_created) IN (" . $_POST['yr'] . ") ";
 
 		$statement = $this->connection->prepare($query);
 		$statement->execute();

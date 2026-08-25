@@ -17,7 +17,7 @@ $con1 = new dbconfig();
 
  
       
-      if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mode']) && $_POST['mode'] === 'newrpt_tbl') {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mode']) && $_POST['mode'] === 'newrpt_tbl') {
   
 
     try {

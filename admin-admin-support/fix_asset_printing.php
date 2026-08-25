@@ -171,7 +171,7 @@ $_SESSION['start'] = time();
 
           <div class="modal-body">
             <div class="row">
-               <div class="col-md-6 border-right pt-2 pb-2">
+               <div class="col-md-5 border-right pt-2 pb-2">
             
                 <h6 class="text-uppercase mb-3" style="color:#213456; font-weight: 800;">Request Details</h6> 
                 
@@ -216,16 +216,17 @@ $_SESSION['start'] = time();
                     <label>Asset Tag Number</label>
                     <input type="text" class="form-control" name="asset_tag_number" id="asset_tag_number" >
                   </div>
-                  
+
                   <div class="form-group col-md-12">
-                    <label>Purpose of Request (From Store/Dept User)</label>
+                    <label>Purpose of Request</label>
                     <textarea class="form-control" name="purpose_of_request" id="purpose_of_request" style="height: 150px;" readonly></textarea>
                   </div>
-
-                   <div class="form-group col-md-12">
-                    <label>Workoutput (Under Assigned Support Evaluation)</label>
-                    <textarea class="form-control" name="technical_workoutput" id="technical_workoutput" style="height: 150px;" readonly></textarea>
+                  
+                  <div class="form-group col-md-12">
+                    <label>Purpose of Request (Rephrase for Printing)</label>
+                    <textarea class="form-control" name="revised_request" id="revised_request"  style="height: 150px;" maxlength="90" required></textarea>
                   </div>
+
 
                    <div class="form-group col-md-12">
                     <label>Purpose of Request (Rephrase for Printing)</label>
@@ -234,16 +235,17 @@ $_SESSION['start'] = time();
 
                    
 
-                  <div class="form-group col-md-5">
-                    <label>Item Received By</label>
-                    <input type="text" class="form-control" name="item_received_by" id="it_desc" readonly>
+                   <div class="form-group col-md-5">
+                      <label>Item Inspected/Received By</label>
+                      <input type="text" class="form-control" id="it_desc" readonly>
+                      <input type="hidden" name="item_received_by" id="it_desc">
                   </div>
                     
                   <input type="hidden" class="form-control" name="received_by" value="<?php echo $_SESSION['tech_id'] ?? ''; ?>" readonly>
 
                   <div class="form-group col-md-5">
-                    <label>Date Received</label>
-                    <input type="text" class="form-control" name="date_received" id="date_received" >
+                    <label>Date Inspected/Received</label>
+                    <input type="date" class="form-control" name="date_received" id="date_received" required>
                   </div>
 
                        <div class="form-group col-md-5">
@@ -252,8 +254,38 @@ $_SESSION['start'] = time();
                   </div>
                 </div>
               </div>
+               <div class="col-md-4 pt-2 pb-2" style="border-radius: 0 8px 8px 0;">
+                 <div class="form-group col-md-12" id="technical_workoutput_section">
+                    <label>Workoutput (Under Assigned Support Evaluation)</label>
+                    <textarea class="form-control" name="technical_workoutput" id="technical_workoutput" style="height: 350px;" required></textarea>
+                  </div>
+                  
+                  <div id="additional_technical_fields">
+                      <label>Problem Reported:</label>
+                      <div class="form-group col-md-12">
+                        <textarea class="form-control" name="problem_reported" id="problem_reported" style="height: 120px;" required readonly> </textarea>
+                      </div>
+                       <label>Verification/Findings: </label>
+                      <div class="form-group col-md-12">
+                        <textarea class="form-control" name="verification_findings" id="verification_findings" style="height: 120px;" required readonly></textarea>
+                      </div>
+                       <label>Work Done/Technical Solutions Provided:</label>
+                      <div class="form-group col-md-12">
+                        <textarea class="form-control" name="work_done" id="work_done" style="height: 120px;" required readonly></textarea>
+                      </div>
+                       <label>Status/Work Output:</label>
+                      <div class="form-group col-md-12">
+                        <textarea class="form-control" name="status_workoutput" id="status_workoutput" style="height: 120px;" required readonly></textarea>
+                      </div>
+                       <label>Recommendations/Suggestions:</label>
+                      <div class="form-group col-md-12">
+                        <textarea class="form-control" name="recommendation" id="recommendation" style="height: 120px;" required readonly></textarea>
+                      </div>
+                  </div>
 
-                <div class="col-md-6 border-right pt-2 pb-2" style="background: linear-gradient(to bottom, #ffffff, #f0f3f7);">
+              </div>
+
+                <div class="col-md-3 border-right pt-2 pb-2" style="background: linear-gradient(to bottom, #ffffff, #f0f3f7);">
             <h6 class="text-uppercase mb-3" style="color:#E1AD01; font-weight: 800;">Asset Request Progress</h6>
                             <div class="tracking-container" style="max-height: 500px; overflow-y: auto; padding-right: 10px;">
                                 <ul class="tracking-timeline" id="trackingMap"></ul>
@@ -454,11 +486,27 @@ $(document).ready(function(){
       $('#purpose_of_request').val(data['purpose_of_request']);
        $('#revised_request').val(data['revised_request']);
       $('#it_desc').val(data['it_desc']);
-         $('#noted_by_desc').val(data['noted_by_desc']);
+      $('#noted_by_desc').val(data['noted_by_desc']);
       $('#date_received').val(data['date_received']);
+      $('#problem_reported').val(data['problem_reported']);
+      $('#verification_findings').val(data['verification_findings']);
+      $('#work_done').val(data['work_done']);
+      $('#status_workoutput').val(data['status_workoutput']);
+      $('#recommendation').val(data['recommendation']);
      $('#status').val(data['status']);
 var isTechnical = data['is_technical'] !== undefined && data['is_technical'] !== null ? parseInt(data['is_technical']) : 1;
+ if (isTechnical === 1) {
+        
+          
+          $('#technical_workoutput_section').hide();
+          $('#additional_technical_fields').show();
 
+      } else {
+
+          
+          $('#technical_workoutput_section').show();
+          $('#additional_technical_fields').hide();
+      }
       if (data['it_desc'] && data['it_desc'].trim() !== "") {
           $('#it_desc').val(data['it_desc']);
           $('#item_received_by_hidden').val(""); 
