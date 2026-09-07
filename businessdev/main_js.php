@@ -1,6 +1,7 @@
-<!-- modal addnew button -->
 <script type='text/javascript'>
   $(document).ready(function () {
+
+  
 
     const toggle = document.getElementById('darkModeToggle');
     const body = document.body;
@@ -24,9 +25,6 @@
 
     verQTY();
 
-    /**
-     * Ver q t y.
-     */
     function verQTY() {
       let formxxx = document.getElementById('cof_form');
       if (formxxx) {
@@ -45,9 +43,24 @@
       }
     }
 
-    /**
-     * Load Comment Thread for Chat UI
-     */
+    function timeAgo(dateParam) {
+        if (!dateParam) return "";
+        let date = new Date(dateParam.replace(/-/g, "/"));
+        let now = new Date();
+        let seconds = Math.floor((now - date) / 1000);
+        
+        let interval = Math.floor(seconds / 86400);
+        if (interval >= 1) return interval + " day" + (interval === 1 ? "" : "s") + " ago";
+        
+        interval = Math.floor(seconds / 3600);
+        if (interval >= 1) return interval + " hour" + (interval === 1 ? "" : "s") + " ago";
+        
+        interval = Math.floor(seconds / 60);
+        if (interval >= 1) return interval + " minute" + (interval === 1 ? "" : "s") + " ago";
+        
+        return "just now";
+    }
+  
     function loadCommentThread(ticket_no) {
         const $remarksView = $('#remarks_view');
         const ticketValue = (ticket_no || '').toString().trim();
@@ -69,9 +82,9 @@
                 if (Array.isArray(response) && response.length > 0) {
                     var currentUserIdStr = "<?= $_SESSION['user_id'] ?? '' ?>";
                     var currentUserNameStr = "<?= $_SESSION['fname'] ?? '' ?>";
+                    let reversedResponse = response.slice().reverse();
 
-                    // FIXED: Added 'index' to the function parameters here
-                    response.forEach(function(comment, index) {
+                    reversedResponse.forEach(function(comment, index) {
                         let sender = comment.userId || 'Unknown';
                         
                         let isMe = false;
@@ -80,14 +93,20 @@
                         
                         let bubbleClass = isMe ? 'chat-right' : 'chat-left';
                         let delay = index * 0.05; 
+                        let relativeTime = timeAgo(comment.comment_date);
+                        let replyTimeColor = isMe ? "color: #e2e8f0;" : "color: #64748b;";
                         
                         html += `
                             <div class="chat-bubble ${bubbleClass}" style="animation-delay: ${delay}s;">
                                 <div class="msg-meta">
                                     <span class="msg-meta-name">${sender}</span>
-                                    <span>${comment.comment_date}</span>
+                                    <span class="msg-time">${comment.comment_date}</span> 
                                 </div>
                                 <div style="white-space: pre-wrap;">${comment.comment_details}</div>
+                                
+                                <div class="reply-time" style="font-size: 0.65rem; text-align: right; margin-top: 6px; opacity: 0.85; font-style: italic; ${replyTimeColor}">
+                                    Replied ${relativeTime}
+                                </div>
                             </div>
                         `;
                     });
@@ -99,11 +118,10 @@
                     $remarksView.html(html).fadeIn(300);
                     $('.dv_msg, .container_remarks').slideDown(300); 
 
-                    // jQuery animated smooth scroll to bottom
                     setTimeout(() => {
                         const $container = $('.container_remarks');
                         if ($container.length) {
-                            $container.animate({ scrollTop: $container.prop("scrollHeight") }, 600, 'swing');
+                            $container.animate({ scrollTop: 0 }, 600, 'swing');
                         }
                     }, 200);
                 });
@@ -118,45 +136,34 @@
 
     var user_id = "<?= $_SESSION['user_id'] ?? ''; ?>";
 
-    let val = '';
-    $('#card_totalval').click(function (e) {
-      e.preventDefault();
-      val = $(this).attr("value");
-    });
-    $('#card_openval').click(function (e) {
-      e.preventDefault();
-      val = $(this).attr("value");
-    });
-    $('#card_openwfaval').click(function (e) {
-      e.preventDefault();
-      val = $(this).attr("value");
-    });
-    $('#card_closedval').click(function (e) {
-      e.preventDefault();
-      val = $(this).attr("value");
-    });
-
-    $('#myInput').on('input', function () {
-      table.search(this.value).draw();
-    });
-
-    /**
-     * Getdata.
-     */
     function getdata(yr) {
       $.post('fetchdata/fetch_data.php', { yr: yr, mode: 'dtb' }, function (data) {
         admin_datatable(data);
       }, 'json');
     }
-    getdata();
 
-    var table
-    /**
-     * Admin datatable.
-     */
+    var table_tickets;
+
     function admin_datatable(t) {
       const dataset = t.rptdata;
-      table = $("#report_data").DataTable({
+     window.originalStatusOptions = window.originalStatusOptions || $('#status').html();
+
+
+      let currentPage = 0;
+      let globalSearch = "";
+      let colSearches = [];
+
+      if ($.fn.DataTable.isDataTable("#report_data")) {
+          let dt = $("#report_data").DataTable();
+          currentPage = dt.page();
+          globalSearch = dt.search();
+          let colCount = dt.columns().count();
+          for(let i = 0; i < colCount; i++) {
+              colSearches.push(dt.column(i).search());
+          }
+      }
+
+      table_tickets = $("#report_data").DataTable({
         "dom": 'B<"pull-left"lf><"pull-right">tip',
         "buttons": [
           {
@@ -169,6 +176,11 @@
             action: function (e, dt, node, config) {
               $('#report_form').trigger('reset');
               
+              var sessionUser = "<?= addslashes(trim(($_SESSION['fname'] ?? '') . ' ' . ($_SESSION['lstname'] ?? ''))) ?>";
+              var sessionTechId = "<?= addslashes($_SESSION['tech_id'] ?? '') ?>";
+              $('#close_by').val(sessionTechId);
+              $('#cl_desc').val(sessionUser);
+
               $('#remarks_view').empty();
               $('.dv_msg').hide();
               $('.container_remarks').hide();
@@ -179,21 +191,17 @@
               $('#action').val("Add");
               $('#operation').val("Add");
               $(':input[type="submit"]').prop('disabled', false);
-              $('#date_created').attr('readonly', false);
-              $('#date_refNo').attr('readonly', false);
-              $('#date_closed').attr('readonly', false);
-              $('#store').prop("disabled", false);
-              $('#via').prop("disabled", false);
-              $('#status').prop("disabled", false);
-              $('#itsup').prop("disabled", false);
-              $('#cat').prop("disabled", false);
-              $('#sub').prop("disabled", false);
-              $('#isp').prop("disabled", false);
-              $('#remarks').attr('readonly', false);
+              $('#date_created, #date_refNo, #date_closed, #remarks').attr('readonly', false);
+              $('#store, #via, #status, #itsup, #cat, #sub, #isp').prop("disabled", false);
               $('#img').empty();
+              $('#addmsg').removeAttr('required');
+              $('#is_transfer').prop('checked', false); 
+              
+              $('#status').html(window.originalStatusOptions);
+              $('#status').prop("disabled", false).val('').trigger('change');
+
               if(typeof admin_hideshowforms === "function") admin_hideshowforms();
               if(typeof unilayout_netshowmodalform === "function") unilayout_netshowmodalform();
-              $('#addmsg').removeAttr('required');
             }
           },
           {
@@ -207,49 +215,59 @@
         ],
         "pagingType": "full_numbers",
         "bDestroy": true,
-        "responsive": true, "lengthChange": false, "autoWidth": false,
+        "responsive": true, 
+        "lengthChange": false, 
+        "autoWidth": false,
         "language": {
           "search": "_INPUT_",
           "searchPlaceholder": "Search..."
         },
-       "initComplete": function (settings, json) {
-        var $searchWrapper = $('#report_data_filter');
-        var $nativeSearchInput = $searchWrapper.find('input');
+        "initComplete": function (settings, json) {
+          var api = this.api(); 
+          var $searchWrapper = $('#report_data_filter');
+          
+          var $nativeSearchInput = $searchWrapper.find('input[type="search"]');
+          $nativeSearchInput
+            .attr('id', 'report_data_free_search')
+            .attr('placeholder', 'Type to search freely...')
+            .removeClass()
+            .addClass('form-control form-control-sm')
+            .css({
+              'display': 'inline-block',
+              'width': 'auto',
+              'margin-left': '10px'
+            });
 
-        $nativeSearchInput
-        .attr('id', 'report_data_filter_disabled')
-        .attr('placeholder', 'Auto Fill Status')
-        .prop('disabled', true)
-        .css('margin-right', '10px');
+          var $storeSearchInput = $('<input type="search">')
+            .attr('id', 'report_data_store_search')
+            .attr('placeholder', 'Type to search store...')
+            .addClass('form-control form-control-sm')
+            .css({
+              'display': 'inline-block',
+              'width': 'auto',
+              'margin-left': '10px'
+            });
 
-        var $activeSearch = $('<input type="search" class="form-control form-control-sm">')
-          .attr('id', 'report_data_free_search')
-          .attr('placeholder', 'Type to Search')
-          .css({
-            'display': 'inline-block',
-            'width': 'auto',
-            'margin-left': '10px'
+          $storeSearchInput.on('keyup search input paste cut', function () {
+              api.column(3).search(this.value).draw();
           });
 
-          $searchWrapper.append($activeSearch);
-
-          $.fn.dataTable.ext.search.push(
-            function(settings, searchData, index, rowData, counter){
-              var freeSearchVal = $('#report_data_free_search').val();
-              if(!freeSearchVal) return true;
-              var searchRegex = new RegExp(freeSearchVal, 'i');
-              for(var i=0; i<searchData.length; i++){
-                if(searchRegex.test(searchData[i])){
-                  return true;
-                }
-              }
-              return false;
-            }
-          );
- 
-          $activeSearch.on('input', function () {
-            table.draw();
-          });
+          $searchWrapper.append($storeSearchInput);
+          if ($('#report_data_filter_disabled').length === 0) {
+              var $disabledSearch = $('<input type="text" class="form-control form-control-sm">')
+                .attr('id', 'report_data_filter_disabled')
+                .attr('placeholder', 'Card Filter Applied...')
+                .prop('disabled', true)
+                .css({
+                  'display': 'inline-block',
+                  'width': 'auto',
+                  'margin-right': '10px',
+                  'background-color': '#e9ecef', 
+                  'color': '#495057'
+                });
+                
+              $searchWrapper.prepend($disabledSearch);
+          }
         },
         "pageLength": 10,
         "data": dataset,
@@ -258,7 +276,7 @@
           { title: "Update", data: null, "defaultContent": "<Button class='btn btn-danger' name='update' id='dtbsecond'><i class='fas fa-edit'></i></Button>" },
           { title: ".", data: "msg_cnt", "defaultContent": "" },
           { title: "TicketNo", data: "ticket_no", "defaultContent": "" },
-          { title: "  Store", data: "str_code", "defaultContent": "" },
+          { title: "  Store", data: "str_code", "defaultContent": "" }, // Column 3
           { title: "Date Created", data: "date_created", "defaultContent": "" },
           { title: "Subject", data: "subject", "defaultContent": "" },
           { title: "STATUS", data: "status", "defaultContent": "" },
@@ -267,7 +285,7 @@
           { title: "SUBCATEGORY", data: "sub_category", "defaultContent": "" },
           { title: "DATE CLOSED", data: "date_closed", "defaultContent": "" },
           { title: "DAYS COMPLETION", data: "tdc", "defaultContent": "" },
-          { title: "WORKOUTPUT", data: "remarks", "defaultContent": "", }
+          { title: "WORKOUTPUT", data: "remarks", "defaultContent": "" }
         ],
         "columnDefs": [
           {
@@ -275,24 +293,8 @@
             "width": "2%",
             render: function (data, type, row) {
               if (type === 'display') {
-                if (data == '1 Days Unresolved') {
-                  data = '1 Day Unresolved'
-                }
-                else if (data == '01/01/1970 01:00') {
-                  data = ''
-                }
-                else if (data == '01/01/1970 08:00') {
-                  data = ''
-                }
-                else if (data < 0) {
-                  data = ''
-                }
-                else if (data == 0) {
-                  data = ''
-                }
-                else if (data == '0 Days Unresolved') {
-                  data = ''
-                }
+                if (data == '1 Days Unresolved') data = '1 Day Unresolved';
+                else if (data == '01/01/1970 01:00' || data == '01/01/1970 08:00' || data < 0 || data == 0 || data == '0 Days Unresolved') data = '';
               }
               return data;
             }
@@ -302,27 +304,210 @@
             "width": "2%",
             render: function (data, type, row) {
               if (type === 'display') {
-                if (data == '1') {
-                  data = '<i class="fas fa-envelope fa-lg bg-warning"></i>'
-                }
-                else if (data == '0') {
-                  data = ''
-                }
+                if (data == '1') data = '<i class="fas fa-envelope fa-lg bg-warning"></i>';
+                else if (data == '0') data = '';
               }
               return data;
             }
           }
         ],
-        rowCallback: function (row, data, index) {
+       rowCallback: function (row, data, index) {
           $(row).removeClass('status-open status-open-msg status-closed status-subject-closing status-pending');
 
-          if (data['status'] === "ON PROCESS") {
-            if (data['msg_cnt'] === '1' || data['msg_cnt'] === '0') {
-              $(row).addClass('status-open');
+          const statusValue = String(data['status'] || '').trim().toUpperCase();
+          if (statusValue === 'ON PROCESS') {
+            $(row).addClass('status-open');
+          } else if (statusValue === 'PENDING') {
+            $(row).addClass('status-pending');
+            $(row).find('td:eq(11)').html(' ');
+          } else if (statusValue === 'CLOSED') {
+            $(row).addClass('status-closed');
+          } else if (statusValue === 'SUBJECT FOR CLOSING') {
+            $(row).addClass('status-subject-closing');
+          }
+        }
+      });
+
+          if (globalSearch !== "") {
+          table_tickets.search(globalSearch);
+      }
+      
+      colSearches.forEach((val, i) => {
+          if (val !== "") {
+              if (i === 6 && window.currentDashcardFilter !== '') {
+                  const statusRegex = '^' + $.fn.dataTable.util.escapeRegex(window.currentDashcardFilter) + '$';
+                  table_tickets.column(i).search(statusRegex, true, false);
+              } else if (val.startsWith('^') && val.endsWith('$')) {
+                  table_tickets.column(i).search(val, true, false);
+              } else {
+                  table_tickets.column(i).search(val, false, true); // Strict string search
+              }
+          }
+      });
+
+      if (window.currentDashcardFilter !== '') {
+          const statusRegex = '^' + $.fn.dataTable.util.escapeRegex(window.currentDashcardFilter) + '$';
+          table_tickets.column(6).search(statusRegex, true, false);
+      }
+
+      table_tickets.page(currentPage).draw(false);
+
+
+      $('#report_data tbody').off('dblclick').on('dblclick', 'tr', function () {
+        var data = table_tickets.row($(this)).data();
+        if (!data) return;
+        open_ticket_modal(data);
+      });
+
+      $('.clcktxt').off('click').on('click', function () {
+        var val = $(this).attr("value");
+        table_tickets.columns(7).search(val).draw();
+        $('#network_tb').slideToggle();
+        $('html, body').animate({ scrollTop: 1600 }, 1000);
+      });
+    }
+
+    function getdata_transfer(yr) {
+      $.post('fetchdata/fetch_data.php', { yr: yr, mode: 'dtb_transfer' }, function (data) {
+        admin_datatable_transfer(data);
+      }, 'json');
+    }
+
+    var table_transfer;
+
+    function admin_datatable_transfer(t) {
+      const dataset = t.transferdata;
+      let currentPage = 0;
+      let globalSearch = "";
+      let colSearches = [];
+
+      if ($.fn.DataTable.isDataTable("#transferred_data")) {
+          let dt = $("#transferred_data").DataTable();
+          currentPage = dt.page();
+          globalSearch = dt.search();
+          let colCount = dt.columns().count();
+          for(let i = 0; i < colCount; i++) {
+              colSearches.push(dt.column(i).search());
+          }
+      }
+      table_transfer = $("#transferred_data").DataTable({
+        "dom": 'B<"pull-left"lf><"pull-right">tip',
+        "buttons": [
+          {
+            extend: 'excelHtml5',
+            text: '<i class="fas fa-file-excel"></i>',
+            attr: {
+              title: 'Export Transferred Tickets',
+              class: 'btn btn-success'
             }
+          }
+        ],
+        "pagingType": "full_numbers",
+        "bDestroy": true,
+        "responsive": true, 
+        "lengthChange": false, 
+        "autoWidth": false,
+        "language": {
+          "search": "_INPUT_",
+          "searchPlaceholder": "Search..."
+        },
+        "initComplete": function (settings, json) {
+          var api = this.api(); // Access to the DataTable API
+          var $searchWrapper = $('#transferred_data_filter');
+          
+          var $nativeSearchInput = $searchWrapper.find('input[type="search"]');
+          $nativeSearchInput
+            .attr('id', 'transferred_data_free_search')
+            .attr('placeholder', 'Type to search freely...')
+            .removeClass() 
+            .addClass('form-control form-control-sm')
+            .css({
+              'display': 'inline-block',
+              'width': 'auto',
+              'margin-left': '10px'
+            });
+
+          var $storeSearchInput = $('<input type="search">')
+            .attr('id', 'transferred_data_store_search')
+            .attr('placeholder', 'Type to search store...')
+            .addClass('form-control form-control-sm')
+            .css({
+              'display': 'inline-block',
+              'width': 'auto',
+              'margin-left': '10px'
+            });
+
+          $storeSearchInput.on('keyup search input paste cut', function () {
+              api.column(3).search(this.value).draw();
+          });
+
+          $searchWrapper.append($storeSearchInput);
+
+          if ($('#transferred_data_filter_disabled').length === 0) {
+              var $disabledSearch = $('<input type="text" class="form-control form-control-sm">')
+                .attr('id', 'transferred_data_filter_disabled')
+                .attr('placeholder', 'Card Filter Applied...')
+                .prop('disabled', true)
+                .css({
+                  'display': 'inline-block',
+                  'width': 'auto',
+                  'margin-right': '10px',
+                  'background-color': '#e9ecef',
+                  'color': '#495057'
+                });
+                
+              $searchWrapper.prepend($disabledSearch);
+          }
+        },
+        "pageLength": 10,
+        "data": dataset,
+        "order": [[2, "Desc"]],
+        "columns": [
+          { title: "Update", data: null, "defaultContent": "<Button class='btn btn-danger' name='update' id='dtbsecond_transfer'><i class='fas fa-edit'></i></Button>" },
+          { title: ".", data: "msg_cnt", "defaultContent": "" },
+          { title: "TicketNo", data: "ticket_no", "defaultContent": "" },
+          { title: "  Store", data: "str_code", "defaultContent": "" }, // Column 3
+          { title: "Date Created", data: "date_created", "defaultContent": "" },
+          { title: "Subject", data: "subject", "defaultContent": "" },
+          { title: "STATUS", data: "status", "defaultContent": "" },
+          { title: "Assigned Support", data: "it_desc", "defaultContent": "" },
+          { title: "CATEGORY", data: "category", "defaultContent": "" },
+          { title: "SUBCATEGORY", data: "sub_category", "defaultContent": "" },
+          { title: "DATE CLOSED", data: "date_closed", "defaultContent": "" },
+          { title: "DAYS COMPLETION", data: "tdc", "defaultContent": "" },
+          { title: "WORKOUTPUT", data: "remarks", "defaultContent": "" }
+        ],
+        "columnDefs": [
+          {
+            targets: [7, 11, 12],
+            "width": "2%",
+            render: function (data, type, row) {
+              if (type === 'display') {
+                if (data == '1 Days Unresolved') data = '1 Day Unresolved';
+                else if (data == '01/01/1970 01:00' || data == '01/01/1970 08:00' || data < 0 || data == 0 || data == '0 Days Unresolved') data = '';
+              }
+              return data;
+            }
+          },
+          {
+            targets: [1],
+            "width": "2%",
+            render: function (data, type, row) {
+              if (type === 'display') {
+                if (data == '1') data = '<i class="fas fa-envelope fa-lg bg-warning"></i>';
+                else if (data == '0') data = '';
+              }
+              return data;
+            }
+          }
+        ],
+       rowCallback: function (row, data, index) {
+          $(row).removeClass('status-open status-open-msg status-closed status-subject-closing status-pending');
+          if (data['status'] === "ON PROCESS") {
+            if (data['msg_cnt'] === '1' || data['msg_cnt'] === '0') $(row).addClass('status-open');
           } else if (data['status'] === 'PENDING') {
             $(row).addClass('status-pending');
-            $(row).find('td:eq(11)').html(' '); // Clear cell 11 if needed
+            $(row).find('td:eq(11)').html(' ');
           } else if (data['status'] === 'CLOSED') {
             $(row).addClass('status-closed');
           } else if (data['status'] === 'SUBJECT FOR CLOSING') {
@@ -331,182 +516,208 @@
         }
       });
 
-      $('#report_data tbody').on('dblclick', 'tr', function () {
-        var data = table.row($(this)).data();
+      if (globalSearch !== "") {
+          table_transfer.search(globalSearch);
+      }
+
+      colSearches.forEach((val, i) => {
+          if (val !== "") {
+              if (i === 6 && window.currentDashcardFilter !== '') {
+                  const statusRegex = '^' + $.fn.dataTable.util.escapeRegex(window.currentDashcardFilter) + '$';
+                  table_transfer.column(i).search(statusRegex, true, false);
+              } else if (val.startsWith('^') && val.endsWith('$')) {
+                  table_transfer.column(i).search(val, true, false);
+              } else {
+                  table_transfer.column(i).search(val, false, true);
+              }
+          }
+      });
+
+      if (window.currentDashcardFilter !== '') {
+          const statusRegex = '^' + $.fn.dataTable.util.escapeRegex(window.currentDashcardFilter) + '$';
+          table_transfer.column(6).search(statusRegex, true, false);
+      }
+
+      table_transfer.page(currentPage).draw(false);
+
+      $('#transferred_data tbody').off('dblclick').on('dblclick', 'tr', function () {
+        var data = table_transfer.row($(this)).data();
         if (!data) return;
-        
-        $('#subjct').attr('readonly', true);
-        var tid = $(this).find('td:eq(2)').html();
-        $('#ticket_no').val(data['ticket_no']);
-        $('#str_num').val(data['store']);
-        $('#store').val(data['store']);
-        $('#date_createdx').val(data['date_created']);
-        $('#subjct').val(data['subject']);
-        $('#concern').val(data['concern']);
-        $('#via').val(data['via']);
-        $('#status').val(data['status']);
-        $('#it_num').val(data['itsup']);
-        
-        if (data['itsup'] && $('#itsup option[value="' + data['itsup'] + '"]').length === 0) {
-          $('<option>', {
-            value: data['itsup'],
-            text: data['it_desc'] ? data['it_desc'] : 'Support ID ' + data['itsup'],
-            class: 'temp-option'
-          }).appendTo('#itsup');
-        }
-        $('#itsup').val(data['itsup']);
+        open_ticket_modal(data);
+      });
+    }
 
-        $('#cat_num').val(data['cat_id']);
-        $('#close_by').val(data['close_by']);
-        $('#cl_desc').val(data['clusers']);
-
-        if (data['cat_id'] && $('#cat option[value="' + data['cat_id'] + '"]').length === 0) {
-          $('<option>', {
-            value: data['cat_id'],
-            text: data['category'] ? data['category'] : 'Category ID ' + data['cat_id'],
-            class: 'temp-option'
-          }).appendTo('#cat');
-        }
-        $('#cat').val(data['cat_id']);
-
-        $('#sub_num').val(data['sub_id']);
-        if (data['sub_id'] && $('#sub option[value="' + data['sub_id'] + '"]').length === 0) {
-          $('<option>', {
-            value: data['sub_id'],
-            text: data['sub_category'] ? data['sub_category'] : 'Sub Category ID ' + data['sub_id'],
-            class: 'temp-option'
-          }).appendTo('#sub');
-        }
-        $('#sub').val(data['sub_id']);
-        $('#isp_num').val(data['isp_id']);
-        $('#isp').val(data['isp_id']);
-        $('#refNo').val(data['refNo']);
-        $('#date_refNo').val(data['date_refNo']);
-        $('#file-input').val("");
-        
-        if(typeof admin_hideshowforms === "function") admin_hideshowforms();
-        
-        $('#date_closed').val(data['date_closed']);
-        $('#remarks').val(data['remarks']);
-        
-        $('#remarks_view').show();
-        $('.dv_msg').show();
-        $('.container_remarks').show();
-        $('#msg_thread').slideDown(300);
-        $('#userModal').modal({ "show": true, "backdrop": 'static' });
-        loadCommentThread(data['ticket_no']);
-        
-        if(typeof unilayout_netshowmodalform === "function") unilayout_netshowmodalform();
-
-        $('#itsup').off('change').on('change', function () {
-          var itfrstsup = $('#it_num').val();
-          var itchange = this.value;
-          if (itfrstsup != itchange) {
-            $('#remarks').attr("placeholder", "Reason for re-assign/ Workoutput");
-            $('#remarks').val("");
+    function open_ticket_modal(data) {
+      var tid = data['ticket_no'];
+      window.originalStatusOptions = window.originalStatusOptions || $('#status').html();
+      
+      if (window.currentDashcardFilter === '') {
+          $('#status').html('<option value="' + data['status'] + '" style="color: #333;">' + data['status'] + '</option>');
+      } else {
+          if (data['status'] === 'ON PROCESS') {
+              $('#status').html(
+                  '<option value="ON PROCESS" style="color: #333;">ON PROCESS</option>' +
+                  '<option value="PENDING" style="color: #333;">PENDING</option>' +
+                  '<option value="SUBJECT FOR CLOSING" style="color: #333;">SUBJECT FOR CLOSING</option>'
+              );
+          } else if (data['status'] === 'PENDING') {
+              $('#status').html(
+                  '<option value="PENDING" style="color: #333;">PENDING</option>' +
+                  '<option value="SUBJECT FOR CLOSING" style="color: #333;">SUBJECT FOR CLOSING</option>'
+              );
+          } else if (data['status'] === 'SUBJECT FOR CLOSING') {
+              $('#status').html(
+                  '<option value="SUBJECT FOR CLOSING" style="color: #333;">SUBJECT FOR CLOSING</option>' +
+                  '<option value="CLOSED" style="color: #333;">CLOSED</option>'
+              );
           } else {
-            $('#remarks').val(data['remarks']);
+              $('#status').html(window.originalStatusOptions);
           }
-        });
+      }
 
-        if ($('#status').val() == 'CLOSED') {
-          $(':input[type="submit"]').prop('disabled', true);
-          $('#date_createdx').attr('readonly', true);
-          $('#date_refNo').attr('readonly', true);
-          $('#date_closed').attr('readonly', true);
-          $('#store').prop("disabled", true);
-          $('#via').prop("disabled", true);
-          $('#status').prop("disabled", true);
-          $('#itsup').prop("disabled", true);
-          $('#cat').prop("disabled", true);
-          $('#sub').prop("disabled", true);
-          $('#isp').prop("disabled", true);
-          $('#remarks').attr('readonly', true);
-        } else {
-          $(':input[type="submit"]').prop('disabled', false);
-          $('#date_createdx').attr('readonly', false);
-          $('#date_refNo').attr('readonly', false);
-          $('#date_closed').attr('readonly', false);
-          $('#subjct').attr('readonly', false);
-          $('#store').prop("disabled", false);
-          $('#via').prop("disabled", false);
-          $('#status').prop("disabled", false);
-          $('#itsup').prop("disabled", false);
-          $('#cat').prop("disabled", false);
-          $('#sub').prop("disabled", false);
-          $('#isp').prop("disabled", false);
-          $('#remarks').attr('readonly', false);
-        }
-
-        if (typeof getinfo === "function") getinfo(tid, 'remarks', user_id);
-        if (typeof gtsub_id === "function") gtsub_id();
-
-        $('.modal-title').text("Ticket Number: " + tid);
-        $('#action').val("Save and Reply");
-        $('#operation').val("Save and Reply");
-        $('#userModal').modal({ "show": true, "backdrop": 'static' });
-
-        var valtick = $('#ticket_no').val();
-
-        $.ajax({
-          type: 'POST',
-          url: 'sesticket.php',
-          data: { tktval: valtick },
-          success: function (response) {
-            $('#img').html(response);
-          }
-        });
-
-        $('#msgbtn').show();
-        $('#msg_thread').show();
-        $('#addmsg').val("");
-      });
-
-      $('#card_totalval').on('click', function () {
-        var val = $(this).attr("value");
-        table.columns(7).search(val).draw();
-      });
-
-      $('#card_openval').on('click', function () {
-        var val = $(this).attr("value");
-        table.columns(7).search(val).draw();
-      });
-
-      $('#card_openwfaval').on('click', function () {
-        var val = $(this).attr("value");
-        table.columns(7).search(val).draw();
-      });
-
-      $('#card_closedval').on('click', function () {
-        var val = $(this).attr("value");
-        table.columns(7).search(val).draw();
-      });
-
-      $('.clcktxt').click(function () {
-        var val = $(this).attr("value");
-        table.columns(7).search(val).draw();
-        $('#network_tb').slideToggle();
-        $('html, body').animate({
-          scrollTop: 1600
-        }, 1000);
-      });
-
-    } 
-
-    $('#store_graph_modal').modal('hide');
-
-    if(typeof slct_isp === "function") slct_isp();
-    if(typeof slct_sub === "function") slct_sub();
-    if(typeof gtsub_id === "function") gtsub_id();
-    if(typeof admin_hideshowforms === "function") admin_hideshowforms();
-
-    const yr = $("#yearpicker").val();
-    getdata(yr)
-    get_card_data(yr)
+      $('#subjct').attr('readonly', true);
+      $('#ticket_no').val(data['ticket_no']);
+      $('#str_num').val(data['store']);
+      $('#store').val(data['store']);
+      $('#date_createdx').val(data['date_created']);
+      $('#subjct').val(data['subject']);
+      $('#concern').val(data['concern']);
+      $('#via').val(data['via']);
+         $('#it_num').val(data['itsup']);
     
-    /**
-     * Get card data.
-     */
+    if (data['itsup'] && $('#itsup option[value="' + data['itsup'] + '"]').length === 0) {
+        $('<option>', {
+            value: data['itsup'],
+            text: data['it_desc'] ? data['it_desc'] : 'Assigned Support (ID: ' + data['itsup'] + ')',
+            class: 'temp-option'
+        }).appendTo('#itsup');
+    }
+    
+      
+      console.log("Ticket: " + data['ticket_no'] + " | is_transfer raw value: ", data['is_transfer']);
+      
+      var isTransferValue = parseInt($.trim(data['is_transfer'])) === 1;
+
+      $('#userModal #is_transfer').prop('checked', isTransferValue).trigger('change');
+      if (data['itsup'] && $('#itsup option[value="' + data['itsup'] + '"]').length === 0) {
+        $('<option>', {
+          value: data['itsup'],
+          text: data['it_desc'] ? data['it_desc'] : 'Support ID ' + data['itsup'],
+          class: 'temp-option'
+        }).appendTo('#itsup');
+      }
+      $('#itsup').val(data['itsup']);
+
+      $('#cat_num').val(data['cat_id']);
+      
+      var sessionUser = "<?= addslashes(trim(($_SESSION['fname'] ?? '') . ' ' . ($_SESSION['lstname'] ?? ''))) ?>";
+      var sessionTechId = "<?= addslashes($_SESSION['tech_id'] ?? '') ?>";
+      
+      $('#close_by').val(data['close_by'] && String(data['close_by']).trim() !== '' && String(data['close_by']).trim() !== '0' ? data['close_by'] : sessionTechId);
+      $('#cl_desc').val(data['clusers'] && String(data['clusers']).trim() !== '' ? data['clusers'] : sessionUser);
+
+      if (data['cat_id'] && $('#cat option[value="' + data['cat_id'] + '"]').length === 0) {
+        $('<option>', {
+          value: data['cat_id'],
+          text: data['category'] ? data['category'] : 'Category ID ' + data['cat_id'],
+          class: 'temp-option'
+        }).appendTo('#cat');
+      }
+      $('#cat').val(data['cat_id']);
+
+      $('#sub_num').val(data['sub_id']);
+      if (data['sub_id'] && $('#sub option[value="' + data['sub_id'] + '"]').length === 0) {
+        $('<option>', {
+          value: data['sub_id'],
+          text: data['sub_category'] ? data['sub_category'] : 'Sub Category ID ' + data['sub_id'],
+          class: 'temp-option'
+        }).appendTo('#sub');
+      }
+      $('#sub').val(data['sub_id']);
+      $('#isp_num').val(data['isp_id']);
+      $('#isp').val(data['isp_id']);
+      $('#refNo').val(data['refNo']);
+      $('#date_refNo').val(data['date_refNo']);
+      $('#file-input').val("");
+      
+      if(typeof admin_hideshowforms === "function") admin_hideshowforms();
+      
+      $('#date_closed').val(data['date_closed']);
+      $('#remarks').val(data['remarks']);
+      
+      $('#remarks_view').show();
+      $('.dv_msg').show();
+      $('.container_remarks').show();
+      $('#msg_thread').slideDown(300);
+      $('#userModal').modal({ "show": true, "backdrop": 'static' });
+      loadCommentThread(data['ticket_no']);
+      
+      if(typeof unilayout_netshowmodalform === "function") unilayout_netshowmodalform();
+
+      $('#status').val(data['status']).trigger('change');
+
+      $('#itsup').off('change').on('change', function () {
+        var itfrstsup = $('#it_num').val();
+        var itchange = this.value;
+        if (itfrstsup != itchange) {
+          $('#remarks').attr("placeholder", "Reason for re-assign/ Workoutput");
+          $('#remarks').val("");
+        } else {
+          $('#remarks').val(data['remarks']);
+        }
+      });
+
+      if ($('#status').val() == 'CLOSED') {
+        $(':input[type="submit"]').prop('disabled', true);
+        $('#date_createdx, #date_refNo, #date_closed, #remarks').attr('readonly', true);
+        $('#store, #via, #status, #itsup, #cat, #sub, #isp, #is_transfer').prop("disabled", true);
+      } else {
+        $(':input[type="submit"]').prop('disabled', false);
+        $('#date_createdx, #date_refNo, #date_closed, #subjct, #remarks').attr('readonly', false);
+        $('#store, #via, #status, #itsup, #cat, #sub, #isp, #is_transfer').prop("disabled", false);
+        
+        if (window.currentDashcardFilter === '') {
+            $('#status').prop("disabled", true);
+        }
+      }
+
+      if (typeof getinfo === "function") getinfo(tid, 'remarks', user_id);
+      if (typeof gtsub_id === "function") gtsub_id();
+
+      $('.modal-title').text("Ticket Number: " + tid);
+      $('#action').val("Save and Reply");
+      $('#operation').val("Save and Reply");
+      $('#userModal').modal({ "show": true, "backdrop": 'static' });
+
+      $.ajax({
+        type: 'POST',
+        url: 'sesticket.php',
+        data: { tktval: data['ticket_no'] },
+        success: function (response) {
+          $('#img').html(response);
+        }
+      });
+
+      $('#msgbtn').show();
+      $('#msg_thread').show();
+      $('#addmsg').val("");
+    }
+
+    $(document).ready(function() {
+      $('#store_graph_modal').modal('hide');
+
+      if(typeof slct_isp === "function") slct_isp();
+      if(typeof slct_sub === "function") slct_sub();
+      if(typeof gtsub_id === "function") gtsub_id();
+      if(typeof admin_hideshowforms === "function") admin_hideshowforms();
+
+      const yr = $("#yearpicker").val();
+      
+      getdata(yr);
+      getdata_transfer(yr);
+      if (typeof get_card_data === "function") get_card_data(yr);
+    });
+        
     function get_card_data(y) {
       $.post('fetchdata/fetch_data.php', { yr: y, mode: 'yearch' }, function (data) {
         let card_data = jQuery.parseJSON(data);
@@ -553,6 +764,12 @@
 
     $('#add_button').click(function () {
       $('#report_form').trigger('reset');
+      
+      var sessionUser = "<?= addslashes(trim(($_SESSION['fname'] ?? '') . ' ' . ($_SESSION['lstname'] ?? ''))) ?>";
+      var sessionTechId = "<?= addslashes($_SESSION['tech_id'] ?? '') ?>";
+      $('#close_by').val(sessionTechId);
+      $('#cl_desc').val(sessionUser);
+
       $('#msg_thread, .dv_msg, .container_remarks').hide();
       $('#remarks_view').empty();
       $('#userModal').modal({ "show": true, "backdrop": 'static' });
@@ -565,26 +782,20 @@
       $('#date_closed').attr('readonly', false);
       $('#store').prop("disabled", false);
       $('#via').prop("disabled", false);
-      $('#status').prop("disabled", false);
+      $('#status').html(window.originalStatusOptions);
+      $('#status').prop("disabled", false).val('').trigger('change');
       $('#itsup').prop("disabled", false);
       $('#cat').prop("disabled", false);
       $('#sub').prop("disabled", false);
       $('#isp').prop("disabled", false);
       $(':input[type="submit"]').prop('disabled', false);
       $('#remarks').attr('readonly', false);
-      
-      // Clean up UI for Add
+      $('#is_transfer').prop('checked', false); 
+      $('#is_transfer').prop('disabled', false); 
       $('#msgbtn').hide();
       $('#remarks_view').empty();
       $('.dv_msg').hide();
       $('.container_remarks').hide();
-
-      $("#userModal").on('hidden.bs.modal', function () {
-      });
-      $('#userModal').modal({ backdrop: 'static', keyboard: false })
-      $("#userModal").on('hidden.bs.modal', function () {
-        return false;
-      });
     });
 
     $(document).on("submit", "#report_form", function (e) {
@@ -603,20 +814,21 @@
       var remarks = $("#remarks").val();
       var addmsgx = $("#addmsg").val();
       var today = new Date();
-      DateCreated = new Date(DateCreated);
-      DateClosed = new Date(DateClosed);
       
-      if (DateCreated > today) {
+      var dCreated = new Date(DateCreated);
+      var dClosed = new Date(DateClosed);
+      
+      if (dCreated > today) {
         alert("Invalid date");
         return false;
       }
       else if (Status == "ON PROCESS") {
-        if (DateClosed < DateCreated) {
+        if (dClosed < dCreated) {
           alert("Date closed should be greater than date created!");
           return false;
         }
       }
-      else if (DateClosed > today) {
+      else if (dClosed > today) {
         alert("Invalid Closed_Date");
         return false;
       }
@@ -630,18 +842,20 @@
         cat_id != "" &&
         sub_id != ""
       ) {
-        var disabledFields = $('#store, #via, #status, #itsup, #cat, #sub');
+        var disabledFields = $('#store, #via, #status, #itsup, #cat, #sub, #is_transfer');
         disabledFields.prop('disabled', false);
         var formData = new FormData(this);
         setTimeout(function() {
           if ($('#status').val() !== 'CLOSED') {
-            disabledFields.prop('disabled', true);
+            if (window.currentDashcardFilter === '') {
+                $('#status').prop('disabled', true);
+            }
           } else {
             $(':input[type="submit"]').prop('disabled', true);
             $('#date_createdx').attr('readonly', true);
             $('#date_refNo').attr('readonly', true);
             $('#date_closed').attr('readonly', true);
-            $('#store, #via, #status, #itsup, #cat, #sub, #isp').prop('disabled', true);
+            $('#store, #via, #status, #itsup, #cat, #sub, #isp, #is_transfer').prop('disabled', true);
             $('#remarks').attr('readonly', true);
           }
         }, 50);
@@ -667,6 +881,7 @@
                 $("#userModal").modal("hide");
             }
             
+            const yr = $("#yearpicker").val();
             getdata(yr);
             get_card_data(yr);
           },
@@ -688,14 +903,14 @@
         $('.dv_msg, .container_remarks').slideDown(400);
         setTimeout(() => {
             const $container = $('.container_remarks');
-            $container.animate({ scrollTop: $container.prop("scrollHeight") }, 400);
+            $container.animate({ scrollTop: 0 }, 400); 
+            
         }, 450);
       }
       else if ($('#msgbtn').val() == 'hide') {
         $('#action').val("Save");
         $('#operation').val("Edit");
         $('#msgbtn').val("show");
-        // FIXED: Only single hide logic
         $('#msg_thread').slideUp(400);
       }
     });

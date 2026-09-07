@@ -1,7 +1,7 @@
 <script type='text/javascript'>
   $(document).ready(function () {
-       $.fn.dataTable.ext.pager.numbers_length = 10;
 
+    $.fn.dataTable.ext.pager.numbers_length = 10;
 
     const toggle = document.getElementById('darkModeToggle');
     const body = document.body;
@@ -146,11 +146,21 @@
 
     function admin_datatable(t) {
       const dataset = t.rptdata;
-      let currentPage = 0;
-        if ($.fn.DataTable.isDataTable("#transferred_data")) {
-            currentPage = $("#transferred_data").DataTable().page();
-        }
       window.originalStatusOptions = window.originalStatusOptions || $('#status').html();
+
+      let currentPage = 0;
+      let globalSearch = "";
+      let colSearches = [];
+
+      if ($.fn.DataTable.isDataTable("#report_data")) {
+          let dt = $("#report_data").DataTable();
+          currentPage = dt.page();
+          globalSearch = dt.search();
+          let colCount = dt.columns().count();
+          for(let i = 0; i < colCount; i++) {
+              colSearches.push(dt.column(i).search());
+          }
+      }
 
       table_tickets = $("#report_data").DataTable({
         "dom": 'B<"pull-left"lf><"pull-right">tip',
@@ -170,23 +180,26 @@
               $('#close_by').val(sessionTechId);
               $('#cl_desc').val(sessionUser);
 
+              $('#msg_thread, .dv_msg, .container_remarks').hide();
               $('#remarks_view').empty();
-              $('.dv_msg').hide();
-              $('.container_remarks').hide();
-              $('#msg_thread').hide();
-              
               $('#userModal').modal({ "show": true, "backdrop": 'static' });
               $('.modal-title').text("ADD REPORT");
+              $('#subjct').attr('readonly', false);
               $('#action').val("Add");
               $('#operation').val("Add");
               $(':input[type="submit"]').prop('disabled', false);
               $('#date_created, #date_refNo, #date_closed, #remarks').attr('readonly', false);
-              $('#store, #via, #status, #itsup, #cat, #sub, #isp').prop("disabled", false);
+              $('#store, #via, #itsup, #cat, #sub, #isp').prop("disabled", false);
               $('#img').empty();
               $('#addmsg').removeAttr('required');
               $('#is_transfer').prop('checked', false); 
               
+              // Handle dropdown for new ticket
               $('#status').html(window.originalStatusOptions);
+              $('#status').find('option[value="CLOSED"]').remove();
+              if ($('#status').find('option[value="SUBJECT FOR CLOSING"]').length === 0) {
+                  $('#status').append('<option value="SUBJECT FOR CLOSING" style="color: #333;">SUBJECT FOR CLOSING</option>');
+              }
               $('#status').prop("disabled", false).val('').trigger('change');
 
               if(typeof admin_hideshowforms === "function") admin_hideshowforms();
@@ -265,7 +278,7 @@
           { title: "Update", data: null, "defaultContent": "<Button class='btn btn-danger' name='update' id='dtbsecond'><i class='fas fa-edit'></i></Button>" },
           { title: ".", data: "msg_cnt", "defaultContent": "" },
           { title: "TicketNo", data: "ticket_no", "defaultContent": "" },
-          { title: "  Store", data: "str_code", "defaultContent": "" }, // Column 3
+          { title: "  Store", data: "str_code", "defaultContent": "" }, 
           { title: "Date Created", data: "date_created", "defaultContent": "" },
           { title: "Subject", data: "subject", "defaultContent": "" },
           { title: "STATUS", data: "status", "defaultContent": "" },
@@ -300,7 +313,7 @@
             }
           }
         ],
-        rowCallback: function (row, data, index) {
+       rowCallback: function (row, data, index) {
           $(row).removeClass('status-open status-open-msg status-closed status-subject-closing status-pending');
 
           const statusValue = String(data['status'] || '').trim().toUpperCase();
@@ -317,9 +330,29 @@
         }
       });
 
-        if (currentPage > 0) {
-            table.page(currentPage).draw(false);
-        }
+      if (globalSearch !== "") {
+          table_tickets.search(globalSearch);
+      }
+      
+      colSearches.forEach((val, i) => {
+          if (val !== "") {
+              if (i === 6 && window.currentDashcardFilter !== '') {
+                  const statusRegex = '^' + $.fn.dataTable.util.escapeRegex(window.currentDashcardFilter) + '$';
+                  table_tickets.column(i).search(statusRegex, true, false);
+              } else if (val.startsWith('^') && val.endsWith('$')) {
+                  table_tickets.column(i).search(val, true, false);
+              } else {
+                  table_tickets.column(i).search(val, false, true); 
+              }
+          }
+      });
+
+      if (window.currentDashcardFilter !== '') {
+          const statusRegex = '^' + $.fn.dataTable.util.escapeRegex(window.currentDashcardFilter) + '$';
+          table_tickets.column(6).search(statusRegex, true, false);
+      }
+
+      table_tickets.page(currentPage).draw(false);
 
       $('#report_data tbody').off('dblclick').on('dblclick', 'tr', function () {
         var data = table_tickets.row($(this)).data();
@@ -345,10 +378,19 @@
 
     function admin_datatable_transfer(t) {
       const dataset = t.transferdata;
-        let currentPage = 0;
-        if ($.fn.DataTable.isDataTable("#report_data")) {
-            currentPage = $("#report_data").DataTable().page();
-        }
+      let currentPage = 0;
+      let globalSearch = "";
+      let colSearches = [];
+
+      if ($.fn.DataTable.isDataTable("#transferred_data")) {
+          let dt = $("#transferred_data").DataTable();
+          currentPage = dt.page();
+          globalSearch = dt.search();
+          let colCount = dt.columns().count();
+          for(let i = 0; i < colCount; i++) {
+              colSearches.push(dt.column(i).search());
+          }
+      }
       table_transfer = $("#transferred_data").DataTable({
         "dom": 'B<"pull-left"lf><"pull-right">tip',
         "buttons": [
@@ -371,7 +413,7 @@
           "searchPlaceholder": "Search..."
         },
         "initComplete": function (settings, json) {
-          var api = this.api(); // Access to the DataTable API
+          var api = this.api();
           var $searchWrapper = $('#transferred_data_filter');
           
           var $nativeSearchInput = $searchWrapper.find('input[type="search"]');
@@ -425,7 +467,7 @@
           { title: "Update", data: null, "defaultContent": "<Button class='btn btn-danger' name='update' id='dtbsecond_transfer'><i class='fas fa-edit'></i></Button>" },
           { title: ".", data: "msg_cnt", "defaultContent": "" },
           { title: "TicketNo", data: "ticket_no", "defaultContent": "" },
-          { title: "  Store", data: "str_code", "defaultContent": "" }, // Column 3
+          { title: "  Store", data: "str_code", "defaultContent": "" },
           { title: "Date Created", data: "date_created", "defaultContent": "" },
           { title: "Subject", data: "subject", "defaultContent": "" },
           { title: "STATUS", data: "status", "defaultContent": "" },
@@ -460,7 +502,7 @@
             }
           }
         ],
-        rowCallback: function (row, data, index) {
+       rowCallback: function (row, data, index) {
           $(row).removeClass('status-open status-open-msg status-closed status-subject-closing status-pending');
           if (data['status'] === "ON PROCESS") {
             if (data['msg_cnt'] === '1' || data['msg_cnt'] === '0') $(row).addClass('status-open');
@@ -475,9 +517,29 @@
         }
       });
 
-      if (currentPage > 0) {
-            table_transfer.page(currentPage).draw(false);
-        }
+      if (globalSearch !== "") {
+          table_transfer.search(globalSearch);
+      }
+
+      colSearches.forEach((val, i) => {
+          if (val !== "") {
+              if (i === 6 && window.currentDashcardFilter !== '') {
+                  const statusRegex = '^' + $.fn.dataTable.util.escapeRegex(window.currentDashcardFilter) + '$';
+                  table_transfer.column(i).search(statusRegex, true, false);
+              } else if (val.startsWith('^') && val.endsWith('$')) {
+                  table_transfer.column(i).search(val, true, false);
+              } else {
+                  table_transfer.column(i).search(val, false, true);
+              }
+          }
+      });
+
+      if (window.currentDashcardFilter !== '') {
+          const statusRegex = '^' + $.fn.dataTable.util.escapeRegex(window.currentDashcardFilter) + '$';
+          table_transfer.column(6).search(statusRegex, true, false);
+      }
+
+      table_transfer.page(currentPage).draw(false);
 
       $('#transferred_data tbody').off('dblclick').on('dblclick', 'tr', function () {
         var data = table_transfer.row($(this)).data();
@@ -486,36 +548,35 @@
       });
     }
 
-    function open_ticket_modal(data) {
+   function open_ticket_modal(data) {
       var tid = data['ticket_no'];
       window.originalStatusOptions = window.originalStatusOptions || $('#status').html();
       
-      if (window.currentDashcardFilter === '') {
-          // Total Reports active -> display only current status
-          $('#status').html('<option value="' + data['status'] + '" style="color: #333;">' + data['status'] + '</option>');
-      } else {
-          // Specific dashcard filter active -> apply logic
-          if (data['status'] === 'ON PROCESS') {
-              $('#status').html(
-                  '<option value="ON PROCESS" style="color: #333;">ON PROCESS</option>' +
-                  '<option value="PENDING" style="color: #333;">PENDING</option>' +
-                  '<option value="SUBJECT FOR CLOSING" style="color: #333;">SUBJECT FOR CLOSING</option>'
-              );
-          } else if (data['status'] === 'PENDING') {
-              $('#status').html(
-                  '<option value="PENDING" style="color: #333;">PENDING</option>' +
-                  '<option value="SUBJECT FOR CLOSING" style="color: #333;">SUBJECT FOR CLOSING</option>'
-              );
-          } else if (data['status'] === 'SUBJECT FOR CLOSING') {
-              $('#status').html(
-                  '<option value="SUBJECT FOR CLOSING" style="color: #333;">SUBJECT FOR CLOSING</option>' +
-                  '<option value="CLOSED" style="color: #333;">CLOSED</option>'
-              );
-          } else {
-              $('#status').html(window.originalStatusOptions);
+      var currentStatus = String(data['status']).trim().toUpperCase();
+      var statusOptions = '';
+      
+      if (currentStatus === 'CLOSED') {
+          statusOptions = '<option value="CLOSED" style="color: #333;">CLOSED</option>';
+      } 
+      else if (currentStatus === 'PENDING' || currentStatus === 'ON PROCESS') {
+          statusOptions = '<option value="' + currentStatus + '" style="color: #333;">' + currentStatus + '</option>' +
+                          '<option value="SUBJECT FOR CLOSING" style="color: #333;">SUBJECT FOR CLOSING</option>';
+      } 
+      else if (currentStatus === 'SUBJECT FOR CLOSING') {
+          statusOptions = '<option value="SUBJECT FOR CLOSING" style="color: #333;">SUBJECT FOR CLOSING</option>';
+      } 
+      else {
+          var $tempSelect = $('<select>').html(window.originalStatusOptions);
+          $tempSelect.find('option[value="CLOSED"]').remove();
+          if ($tempSelect.find('option[value="SUBJECT FOR CLOSING"]').length === 0) {
+              $tempSelect.append('<option value="SUBJECT FOR CLOSING" style="color: #333;">SUBJECT FOR CLOSING</option>');
           }
+          if (currentStatus && $tempSelect.find('option[value="' + currentStatus + '"]').length === 0) {
+              $tempSelect.prepend('<option value="' + currentStatus + '" style="color: #333;">' + currentStatus + '</option>');
+          }
+          statusOptions = $tempSelect.html();
       }
-
+      $('#status').html(statusOptions);
       $('#subjct').attr('readonly', true);
       $('#ticket_no').val(data['ticket_no']);
       $('#str_num').val(data['store']);
@@ -525,21 +586,18 @@
       $('#concern').val(data['concern']);
       $('#via').val(data['via']);
       $('#it_num').val(data['itsup']);
-      
-      console.log("Ticket: " + data['ticket_no'] + " | is_transfer raw value: ", data['is_transfer']);
+    
+      if (data['itsup'] && $('#itsup option[value="' + data['itsup'] + '"]').length === 0) {
+          $('<option>', {
+              value: data['itsup'],
+              text: data['it_desc'] ? data['it_desc'] : 'Assigned Support (ID: ' + data['itsup'] + ')',
+              class: 'temp-option'
+          }).appendTo('#itsup');
+      }
       
       var isTransferValue = parseInt($.trim(data['is_transfer'])) === 1;
-
       $('#userModal #is_transfer').prop('checked', isTransferValue).trigger('change');
-      if (data['itsup'] && $('#itsup option[value="' + data['itsup'] + '"]').length === 0) {
-        $('<option>', {
-          value: data['itsup'],
-          text: data['it_desc'] ? data['it_desc'] : 'Support ID ' + data['itsup'],
-          class: 'temp-option'
-        }).appendTo('#itsup');
-      }
       $('#itsup').val(data['itsup']);
-
       $('#cat_num').val(data['cat_id']);
       
       var sessionUser = "<?= addslashes(trim(($_SESSION['fname'] ?? '') . ' ' . ($_SESSION['lstname'] ?? ''))) ?>";
@@ -586,7 +644,26 @@
       
       if(typeof unilayout_netshowmodalform === "function") unilayout_netshowmodalform();
 
-      $('#status').val(data['status']).trigger('change');
+     $('#status').off('change.statusCheck').on('change.statusCheck', function() {
+          var stat = $(this).val();
+          if (stat === 'CLOSED' || stat === 'SUBJECT FOR CLOSING') {
+              $('.hide_cl').slideDown(200);
+              
+              if (!$('#date_closed').val()) {
+                  var now = new Date();
+                  now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+                  $('#date_closed').val(now.toISOString().slice(0, 16).replace('T', ' '));
+              }
+          } else {
+              $('.hide_cl').slideUp(200);
+          }
+          
+          if (stat !== 'CLOSED') {
+              $(':input[type="submit"]').prop('disabled', false);
+          } else {
+              $(':input[type="submit"]').prop('disabled', true);
+          }
+      });
 
       $('#itsup').off('change').on('change', function () {
         var itfrstsup = $('#it_num').val();
@@ -598,8 +675,7 @@
           $('#remarks').val(data['remarks']);
         }
       });
-
-      if ($('#status').val() == 'CLOSED') {
+      if (currentStatus === 'CLOSED') {
         $(':input[type="submit"]').prop('disabled', true);
         $('#date_createdx, #date_refNo, #date_closed, #remarks').attr('readonly', true);
         $('#store, #via, #status, #itsup, #cat, #sub, #isp, #is_transfer').prop("disabled", true);
@@ -607,10 +683,6 @@
         $(':input[type="submit"]').prop('disabled', false);
         $('#date_createdx, #date_refNo, #date_closed, #subjct, #remarks').attr('readonly', false);
         $('#store, #via, #status, #itsup, #cat, #sub, #isp, #is_transfer').prop("disabled", false);
-        
-        if (window.currentDashcardFilter === '') {
-            $('#status').prop("disabled", true);
-        }
       }
 
       if (typeof getinfo === "function") getinfo(tid, 'remarks', user_id);
@@ -694,7 +766,7 @@
       });
     });
 
-    $('#add_button').click(function () {
+  $('#add_button').click(function () {
       $('#report_form').trigger('reset');
       
       var sessionUser = "<?= addslashes(trim(($_SESSION['fname'] ?? '') . ' ' . ($_SESSION['lstname'] ?? ''))) ?>";
@@ -714,7 +786,13 @@
       $('#date_closed').attr('readonly', false);
       $('#store').prop("disabled", false);
       $('#via').prop("disabled", false);
+      
       $('#status').html(window.originalStatusOptions);
+      $('#status').find('option[value="CLOSED"]').remove();
+      if ($('#status').find('option[value="SUBJECT FOR CLOSING"]').length === 0) {
+          $('#status').append('<option value="SUBJECT FOR CLOSING" style="color: #333;">SUBJECT FOR CLOSING</option>');
+      }
+      
       $('#status').prop("disabled", false).val('').trigger('change');
       $('#itsup').prop("disabled", false);
       $('#cat').prop("disabled", false);
@@ -777,11 +855,10 @@
         var disabledFields = $('#store, #via, #status, #itsup, #cat, #sub, #is_transfer');
         disabledFields.prop('disabled', false);
         var formData = new FormData(this);
+
         setTimeout(function() {
           if ($('#status').val() !== 'CLOSED') {
-            if (window.currentDashcardFilter === '') {
-                $('#status').prop('disabled', true);
-            }
+             // Form stays editable
           } else {
             $(':input[type="submit"]').prop('disabled', true);
             $('#date_createdx').attr('readonly', true);

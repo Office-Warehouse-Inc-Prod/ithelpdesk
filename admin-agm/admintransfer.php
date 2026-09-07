@@ -1,1078 +1,753 @@
 <?php
+$inactive = 180;
+if (isset($_SESSION['start']) && (time() - $_SESSION['start'] > $inactive)){
+    session_unset();
+    echo '<script>setTimeout(function(){ window.location.href = "adminpanel.php"; }, 180000);</script>';
+    exit();
+}
+$_SESSION['start'] = time();
+  
 include 'admin.php';
 include '../condb.php';
 $con1 = new dbconfig();
-
 ?>
-
-      <head>
-      <link rel="stylesheet" href="../css/bootstrap-datetimepicker.min.css"/>
-      <script src="../js/bootstrap-datetimepicker.min.js"></script>
-
-      <link rel="stylesheet" href="../css/jquery.dataTables.min.css" />
-      <!-- <link rel="stylesheet" href="styles.css" /> -->
-
-      <script src="../js/jquery.dataTables.min.js"></script>
-      <script src="../js/dataTables.select.min.js"></script>
-      <script src="../js/dataTables.responsive.min.js"></script>
-      <script src="../js/fnReloadAjax.js"></script>
-
-        <!-- <style>
-
-
-/* =========================
-   Modern Helpdesk UI Skin
-   Works with Bootstrap + DataTables
-   ========================= */
-
-:root{
-  --bg0:#0b1220;
-  --bg1:#0f172a;
-  --card:#101a33cc;
-  --card2:#0f1a33;
-  --text:#e5e7eb;
-  --muted:#9ca3af;
-  --line:rgba(255,255,255,.08);
-  --shadow: 0 20px 55px rgba(0,0,0,.45);
-  --radius:18px;
-  --radius-sm:14px;
-  --focus: 0 0 0 .2rem rgba(59,130,246,.25);
-}
-
-html, body{
-  height:100%;
-}
-
-body{
-  background:
-    radial-gradient(900px 600px at 15% 10%, rgba(56,189,248,.16), transparent 55%),
-    radial-gradient(700px 500px at 85% 20%, rgba(168,85,247,.14), transparent 55%),
-    radial-gradient(700px 500px at 50% 90%, rgba(34,197,94,.10), transparent 55%),
-    linear-gradient(180deg, var(--bg0), var(--bg1));
-  color: var(--text);
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
-}
-
-/* container spacing */
-.container.mt-3{
-  padding-top: 10px;
-  padding-bottom: 24px;
-}
-
-/* ===== Card wrapper for table ===== */
-#new_rep_table{
-  width:100% !important;
-}
-
-.table-wrap{
-  background: rgba(16, 26, 51, .55);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 14px;
-  backdrop-filter: blur(10px);
-}
-
-/* If you can't add wrapper div, style DataTables container instead */
-.dataTables_wrapper{
-  background: rgba(16, 26, 51, .55);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 14px;
-  backdrop-filter: blur(10px);
-}
-
-/* DataTables header controls */
-.dataTables_wrapper .dataTables_length label,
-.dataTables_wrapper .dataTables_filter label,
-.dataTables_wrapper .dataTables_info{
-  color: var(--muted) !important;
-  font-weight: 500;
-}
-
-.dataTables_wrapper .dataTables_filter input,
-.dataTables_wrapper .dataTables_length select{
-  background: rgba(255,255,255,.06) !important;
-  border: 1px solid var(--line) !important;
-  border-radius: 12px !important;
-  color: var(--text) !important;
-  padding: 8px 10px !important;
-  outline: none !important;
-}
-
-.dataTables_wrapper .dataTables_filter input:focus,
-.dataTables_wrapper .dataTables_length select:focus{
-  box-shadow: var(--focus) !important;
-  border-color: rgba(59,130,246,.55) !important;
-}
-
-/* Pagination */
-.dataTables_wrapper .dataTables_paginate .paginate_button{
-  border-radius: 12px !important;
-  border: 1px solid transparent !important;
-  color: var(--text) !important;
-  background: transparent !important;
-}
-.dataTables_wrapper .dataTables_paginate .paginate_button:hover{
-  border-color: var(--line) !important;
-  background: rgba(255,255,255,.06) !important;
-}
-.dataTables_wrapper .dataTables_paginate .paginate_button.current{
-  background: rgba(59,130,246,.20) !important;
-  border-color: rgba(59,130,246,.35) !important;
-}
-
-/* ===== Table modern look ===== */
-table.dataTable{
-  border-collapse: separate !important;
-  border-spacing: 0 10px !important; /* row gaps */
-}
-
-table.dataTable thead th{
-  color: rgba(229,231,235,.9) !important;
-  font-weight: 700;
-  letter-spacing: .02em;
-  border: none !important;
-  background: transparent !important;
-  padding: 14px 12px !important;
-}
-
-table.dataTable tbody tr{
-  background: rgba(15, 26, 51, .70) !important;
-  border: 1px solid var(--line);
-  box-shadow: 0 8px 18px rgba(0,0,0,.25);
-  border-radius: 14px;
-  overflow: hidden;
-}
-
-table.dataTable tbody td{
-  border-top: 1px solid transparent !important;
-  border-bottom: 1px solid transparent !important;
-  color: rgba(229,231,235,.92) !important;
-  padding: 14px 12px !important;
-}
-
-table.dataTable tbody tr:hover{
-  transform: translateY(-1px);
-  transition: .15s ease;
-  background: rgba(17, 32, 62, .78) !important;
-}
-
-/* Fix the rounded row corners */
-table.dataTable tbody tr td:first-child{
-  border-top-left-radius: 14px;
-  border-bottom-left-radius: 14px;
-}
-table.dataTable tbody tr td:last-child{
-  border-top-right-radius: 14px;
-  border-bottom-right-radius: 14px;
-}
-
-/* ===== Modal modern glass ===== */
-.modal-content{
-  border: 1px solid var(--line) !important;
-  border-radius: var(--radius) !important;
-  background: rgba(12, 18, 35, .88) !important;
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(12px);
-}
-
-.modal-header{
-  border-bottom: 1px solid var(--line) !important;
-  padding: 16px 18px !important;
-}
-
-.modal-title{
-  font-size: 18px;
-  font-weight: 800;
-  letter-spacing: .02em;
-  color: var(--text);
-}
-
-.modal-body{
-  padding: 18px !important;
-}
-
-.modal-footer{
-  border-top: 1px solid var(--line) !important;
-  padding: 14px 18px !important;
-}
-
-label{
-  font-size: 12px;
-  font-weight: 700;
-  color: rgba(229,231,235,.78);
-  letter-spacing: .04em;
-  text-transform: uppercase;
-  margin-bottom: 6px;
-}
-
-/* Inputs / Select / Textarea */
-.form-control,
-.form-control-sm,
-select.form-control,
-textarea.form-control{
-  background: rgba(255,255,255,.06) !important;
-  border: 1px solid var(--line) !important;
-  color: var(--text) !important;
-  border-radius: 14px !important;
-  padding: 10px 12px !important;
-}
-
-.form-control:focus,
-.form-control-sm:focus,
-select.form-control:focus,
-textarea.form-control:focus{
-  box-shadow: var(--focus) !important;
-  border-color: rgba(59,130,246,.55) !important;
-}
-
-.form-control[readonly],
-textarea[readonly]{
-  opacity: .95;
-}
-
-/* Spacing in grid */
-.form-group{
-  margin-bottom: 14px !important;
-}
-
-/* ===== Buttons ===== */
-.btn{
-  border-radius: 14px !important;
-  padding: 10px 14px !important;
-  font-weight: 700 !important;
-  letter-spacing: .02em;
-  border: 1px solid transparent !important;
-}
-
-.btn-primary{
-  background: rgba(59,130,246,.22) !important;
-  border-color: rgba(59,130,246,.35) !important;
-}
-.btn-primary:hover{
-  background: rgba(59,130,246,.32) !important;
-}
-
-.btn-success{
-  background: rgba(34,197,94,.22) !important;
-  border-color: rgba(34,197,94,.35) !important;
-}
-.btn-success:hover{
-  background: rgba(34,197,94,.32) !important;
-}
-
-.btn-danger{
-  background: rgba(239,68,68,.22) !important;
-  border-color: rgba(239,68,68,.35) !important;
-}
-.btn-danger:hover{
-  background: rgba(239,68,68,.32) !important;
-}
-
-/* Collapse thread card */
-#msg_thread .card.card-body{
-  background: rgba(255,255,255,.04) !important;
-  border: 1px solid var(--line) !important;
-  border-radius: var(--radius-sm) !important;
-}
-
-/* Thread container */
-.container_remarks{
-  background: rgba(255,255,255,.04);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
-  padding: 12px;
-  max-height: 280px;
-  overflow: auto;
-}
-
-#remarks_view ul{
-  list-style: none;
-  padding-left: 0;
-  margin: 0;
-}
-
-#remarks_view li{
-  padding: 10px 12px;
-  border: 1px solid var(--line);
-  background: rgba(15, 26, 51, .65);
-  border-radius: 14px;
-  margin-bottom: 10px;
-}
-
-hr{
-  border-top: 1px solid var(--line) !important;
-}
-
-
-.priority-chip{
-  padding:4px 10px;
-  border-radius:999px;
-  font-weight:700;
-  font-size:11px;
-  letter-spacing:.05em;
-}
-
-.p-critical{
-  background: rgba(239,68,68,.18);
-  color:#f87171;
-  border:1px solid rgba(239,68,68,.35);
-}
-
-.p-high{
-  background: rgba(251,146,60,.18);
-  color:#fb923c;
-  border:1px solid rgba(251,146,60,.35);
-}
-
-.p-medium{
-  background: rgba(250,204,21,.18);
-  color:#facc15;
-  border:1px solid rgba(250,204,21,.35);
-}
-
-.p-low{
-  background: rgba(34,197,94,.18);
-  color:#4ade80;
-  border:1px solid rgba(34,197,94,.35);
-}
-
-
-
-.select2-container--default .select2-selection--single {
-    background-color: #1e293b;
-    border: 1px solid #334155;
-    color: #fff;
-}
-
-.select2-dropdown {
-    background-color: #1e293b;
-    color: #fff;
-}
-
-.select2-results__option {
-    color: #fff;
-}
-
-
-
-
-          </style> -->
-<style>
-
-/* =========================
-   OWI Helpdesk UI Skin (LIGHT)
-   Navy #121C31 + Yellow #EAAA00
-   Works with Bootstrap + DataTables + Select2
-   ========================= */
-:root{
-  --navy:#121C31;
-  --navy2:#1a2a4a;
-  --yellow:#EAAA00;
-
-  --bg:#EEF2F7;
-  --card:#ffffff;
-  --card2:#F8FAFF;
-  --text:#111827;
-  --muted:#6B7280;
-  --line:#E5E7EB;
-
-  --shadow: 0 14px 34px rgba(17,24,39,.10);
-  --radius:18px;
-  --radius-sm:14px;
-  --focus: 0 0 0 .2rem rgba(234,170,0,.18);
-}
-
-html, body{ height:100%; }
-
-body {
-  background: linear-gradient(to bottom, #ffffff, #99aac8);
-  background-attachment: fixed; 
-  margin: 0; 
-  height: 100vh; 
-} 
-
-/* container spacing */
-.container.mt-3{ padding-top: 10px; padding-bottom: 24px; }
-
-/* ===== Top navbar (if applicable) =====  */
-.navbar, header, .topbar, .navbar-default{
-  background-color: #213456 !important;
-  border-color: rgba(255,255,255,.10) !important;
-}
-.navbar a, .navbar-brand, .navbar-nav > li > a,
-.navbar i, .navbar .fa, .navbar .fas{
-  color: #fff !important;
-  font-weight: 600;
-}
-.navbar-nav > li.active > a,
-.navbar-nav > li > a:hover{
-  color: var(--yellow) !important;
-}
-.navbar-nav > li.active > a{
-  border-bottom: 3px solid var(--yellow);
-}
-.table-wrap{
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 14px;
-}
-
-/* If you can't add wrapper div, style DataTables container instead */
-.dataTables_wrapper{
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 14px;
-}
-
-/* DataTables header controls */
-.dataTables_wrapper .dataTables_length label,
-.dataTables_wrapper .dataTables_filter label,
-.dataTables_wrapper .dataTables_info{
-  color: var(--muted) !important;
-  font-weight: 600;
-}
-
-/* Search + length */
-.dataTables_wrapper .dataTables_filter input,
-.dataTables_wrapper .dataTables_length select{
-  background: #fff !important;
-  border: 1px solid var(--line) !important;
-  border-radius: 12px !important;
-  color: var(--text) !important;
-  padding: 8px 10px !important;
-  outline: none !important;
-}
-
-.dataTables_wrapper .dataTables_filter input:focus,
-.dataTables_wrapper .dataTables_length select:focus{
-  box-shadow: var(--focus) !important;
-  border-color: rgba(234,170,0,.45) !important;
-}
-
-/* Pagination */
-.dataTables_wrapper .dataTables_paginate .paginate_button{
-  border-radius: 12px !important;
-  border: 1px solid transparent !important;
-  color: var(--text) !important;
-  background: transparent !important;
-}
-.dataTables_wrapper .dataTables_paginate .paginate_button:hover{
-  border-color: var(--line) !important;
-  background: #F8FAFC !important;
-}
-.dataTables_wrapper .dataTables_paginate .paginate_button.current{
-  background: rgba(234,170,0,.18) !important;
-  border-color: rgba(234,170,0,.35) !important;
-}
-
-/* ===== Table modern look ===== */
-table.dataTable{
-  border-collapse: collapse !important; /* Changed to collapse to allow clean horizontal lines across the table */
-  width: 100% !important;
-}
-
-table.dataTable thead th{
-  color: white !important;
-  font-weight: 900;
-  letter-spacing: .04em;
-  text-transform: uppercase;
-  border: none !important;
-  border-bottom: 2px solid #213456 !important; /* Horizontal line under the header */
-  background: #4667a0 !important;
-  padding: 14px 12px !important;
-}
-
-/* Table rows look */
-table.dataTable tbody tr{
-  background: #ffffff !important;
-  box-shadow: 0 10px 22px rgba(17,24,39,.08);
-}
-
-table.dataTable tbody td{
-  border-top: none !important;
-  border-bottom: 1px solid #213456 !important; /* Custom horizontal line for table body */
-  color: rgba(17,24,39,.85) !important;
-  padding: 14px 12px !important;
-}
-
-table.dataTable tbody tr:hover{
-  transition: .15s ease;
-  background: #F8FAFF !important;
-}
-
-/* ===== Modal (clean light) ===== */
-.modal-content{
-  border: 1px solid var(--line) !important;
-  background: #ffffff !important;
-  box-shadow: 0 22px 60px rgba(17,24,39,.18);
-}
-
-.modal-header{
-  border-bottom: 3px solid var(--yellow) !important;
-  padding: 16px 18px !important;
-  background: #213456 !important;
-}
-
-.modal-title{
-  font-size: 16px;
-  font-weight: 900;
-  letter-spacing: .02em;
-  color: white;
-  text-transform: uppercase;
-}
-
-.modal-body{ padding: 18px !important; }
-.modal-footer{
-  border-top: 1px solid var(--line) !important;
-  padding: 14px 18px !important;
-}
-
-/* ===== Buttons (OWI style) ===== */
-.btn{
-  border-radius: 14px !important;
-  padding: 10px 14px !important;
-  font-weight: 900 !important;
-  letter-spacing: .02em;
-  border: 1px solid transparent !important;
-}
-
-.btn-primary{
-  background: white !important;
-  border-color: var(--navy) !important;
-  color: #213456 !important;
-}
-.btn-primary:hover{ background: #213456; color:white;}
-
-.btn-success{
-  background: rgba(22,163,74,.14) !important;
-  border-color: rgba(22,163,74,.28) !important;
-  color: #166534 !important;
-}
-.btn-success:hover{ background: rgba(22,163,74,.18) !important; }
-
-.btn-danger{
-  background: rgba(239,68,68,.14) !important;
-  border-color: rgba(239,68,68,.28) !important;
-  color: #991b1b !important;
-}
-.btn-danger:hover{ background: rgba(239,68,68,.18) !important; }
-
-/* Collapse thread card */
-#msg_thread .card.card-body{
-  background: #213456 !important;
-  border: 1px solid var(--line) !important;
-  border-radius: var(--radius-sm) !important;
-}
-
-/* Thread container */
-.container_remarks{
-  background: #F8FAFF;
-  border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
-  padding: 12px;
-  max-height: 280px;
-  box-shadow: 0 20px 60px rgba(123, 128, 44, 0.605);
-  overflow: auto;
-}
-
-#remarks_view ul{ list-style: none; padding-left: 0; margin: 0; }
-
-#remarks_view li{
-  padding: 10px 12px;
-  border: 1px solid var(--line);
-  background: #ffffff;
-  border-radius: 14px;
-  margin-bottom: 10px;
-  box-shadow: 0 10px 18px rgba(17,24,39,.06);
-}
-
-hr{ border-top: 1px solid var(--line) !important; }
-
-/* ===== Priority chips (same but readable on light bg) ===== */
-.priority-chip{
-  padding:4px 10px;
-  border-radius:999px;
-  font-weight:900;
-  font-size:11px;
-  letter-spacing:.05em;
-}
-.p-critical{ background: rgba(239,68,68,.14); color:#991b1b; border:1px solid rgba(239,68,68,.25); }
-.p-high{     background: rgba(251,146,60,.14); color:#9a3412; border:1px solid rgba(251,146,60,.25); }
-.p-medium{   background: rgba(234,170,0,.16); color:#7a5200; border:1px solid rgba(234,170,0,.30); }
-.p-low{      background: rgba(34,197,94,.14); color:#166534; border:1px solid rgba(34,197,94,.25); }
-
-/* ===== Select2 (light) ===== */
-.select2-container--default .select2-selection--single{
-  background-color: #ffffff !important;
-  border: 1px solid var(--line) !important;
-  border-radius: 14px !important;
-  height: 42px !important;
-  display: flex !important;
-  align-items: center !important;
-  padding: 4px 10px !important;
-  color: var(--text) !important;
-}
-.select2-container--default .select2-selection--single .select2-selection__rendered{
-  color: var(--text) !important;
-}
-.select2-container--default .select2-selection--single .select2-selection__arrow{
-  height: 42px !important;
-}
-
-.select2-dropdown{
-  background-color: #ffffff !important;
-  color: var(--text) !important;
-  border: 1px solid var(--line) !important;
-  border-radius: 14px !important;
-  box-shadow: 0 18px 40px rgba(17,24,39,.14);
-}
-.select2-results__option{ color: var(--text) !important; }
-.select2-results__option--highlighted{
-  background: rgba(234,170,0,.16) !important;
-  color: var(--text) !important;
-}
-
-/* --- Buttons --- */
-.btn {  
-    background-color: white !important;
-    border: 2px solid #213456;
-    border-color: var(--gold-accent);
-    font-weight: 700;
-    color: #213456;
-}
-
-.btn:hover {
-    background-color: #16243d !important;
-    border-color: var(--gold-accent);
-    color: white;
-}
-
-/* --- Buttons --- */
-.btn-success {  
-    background-color: white !important;
-    border: 2px solid #213456;
-    font-weight: 700;
-    color: #213456;
-}
-
-.btn-success:hover {
-    background-color: #16243d !important;
-    border-color: var(--gold-accent);
-    color:white;
-}
-
-::-webkit-scrollbar {
-  width: 8px;
-}
-::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
-}
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, #837031, #E1AD01);
-  border-radius: 10px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(135deg, #837031, #E1AD01);
-}
-
-.owi-navbar {
-  background-color: #213456 !important;
-  box-shadow: 0 2px 10px 2px #66738e;
-  margin-bottom: 10px;
-}
-
-/* Make links clean + readable */
-.owi-navbar .nav-link,
-.owi-navbar .navbar-brand {
-  color: #fff !important;
-  font-weight: 600;
-  letter-spacing: .3px;
-}
-
-/* Icon spacing */
-.owi-navbar .nav-link i {
-  margin-right: 6px;
-}
-
-/* Hover states */
-.owi-navbar .nav-link:hover,
-.owi-navbar .navbar-brand:hover {
-  opacity: .92;
-}
-
-/* Dropdown */
-.owi-navbar .dropdown-menu {
-  background-color: #ffffff;
-  border: none;
-  min-width: 220px;
-  padding: .35rem;
-  box-shadow: 0 12px 24px rgba(0,0,0,0.25);
-  border-radius: 12px;
-}
-
-/* Dropdown items */
-.owi-navbar .dropdown-item {
-  color: black;
-  border-radius: 10px;
-  padding: .55rem .75rem;
-  white-space: normal; 
-}
-
-.owi-navbar .dropdown-item i {
-  margin-right: 8px;
-}
-
-.owi-navbar .dropdown-item:hover {
-  background-color: #54699e;
-  color: #fff;
-}
-
-.owi-navbar .dropdown-divider {
-  border-top: 1px solid rgba(255,255,255,0.2);
-}
-.notif-dropdown {
-  width: 360px;
-  max-width: 92vw;
-}
-
-@media (max-width: 576px) {
-  .notif-dropdown {
-    width: 92vw;
-  }
-}
-
-/* Badges keep visible on blue */
-.owi-navbar .badge-danger {
-  background-color: #ff4d4d;
-}
-
-.owi-navbar .badge-info {
-  background-color: #28c7ff;
-  color: #002a4a;
-  font-weight: 700;
-}
-
-/* Toggler icon visibility on blue */
-.owi-navbar .navbar-toggler {
-  border-color: rgba(255,255,255,0.35);
-}
-
-.owi-navbar .navbar-toggler-icon {
-  filter: brightness(0) invert(1);
-}
-
-/* Modern Underline Animation Refined */
-.owi-navbar .nav-item {
-  position: relative;
-  margin: 0 5px;
-  display: flex;
-  align-items: center;
-}
-
-.owi-navbar .nav-link {
-  position: relative;
-  padding: 0.8rem 1rem !important;
-  color: rgba(255, 255, 255, 0.8) !important;
-  transition: all 0.3s ease;
-}
-
-/* The Underline - Modernized */
-.owi-navbar .nav-link::after {
-  content: '';
-  position: absolute;
-  width: 0;
-  height: 3px;
-  bottom: 5px; 
-  left: 50%;
-  background-color: var(--primary-color);
-  transition: width 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), left 0.3s ease;
-  transform: translateX(-50%);
-  border-radius: 10px;
-}
-
-/* Hover State */
-.owi-navbar .nav-item:hover .nav-link {
-  color: #fff !important;
-}
-
-.owi-navbar .nav-item:hover .nav-link::after {
-  width: 70%; 
-}
-
-.owi-navbar .nav-item.active .nav-link {
-  color: var(--primary-color) !important;
-  font-weight: 700;
-}
-
-.owi-navbar .nav-item.active .nav-link::after {
-  width: 70%; 
-  background-color: var(--primary-color);
-}
-
-.owi-navbar .dropdown-menu {
-  border-top: 3px solid var(--primary-color) !important;
-  border-radius: 0 0 8px 8px !important;
-  margin-top: 0;
-}
-.navbar-brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-family: 'Orbitron', sans-serif;
-  font-size: 1.4rem;
-  letter-spacing: 1px;
-}
-
-.navbar-brand img {
-  transition: transform 0.3s ease;
-}
-
-.navbar-brand:hover img {
-  transform: rotate(-10deg) scale(1.1);
-}
-
-.owi-navbar .dropdown-menu {
-  border-top: 3px solid var(--primary-color);
-  margin-top: 10px;
-}
-label {
-  font-size: 11px;
-  font-weight: 900;
-  color: #213456;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  margin-bottom: 6px;
-}
-
-input.form-control,
-textarea.form-control {
-  color: #6c757d !important;
-  background-color: transparent !important; 
-  border: none !important; 
-  border-bottom: 1px solid #213456 !important; 
-  border-radius: 0px !important; 
-  resize: none !important; 
-}
-
-select.custom-select-placeholder.placeholder-active,
-textarea.form-control.custom-select-placeholder:placeholder-shown {
-  color: red !important;
-  border: 1px solid #ced4da !important;
-  border-radius: .2rem !important;
-  background-color: #fff !important;
-}
-
-textarea.form-control.custom-select-placeholder::placeholder {
-  color: red !important;
-  opacity: 0.7;
-}
-
-select.custom-select-placeholder.has-value,
-textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
-  color: #212529 !important; 
-  border: none !important; 
-  border-bottom: 1px solid #213456 !important; 
-  border-radius: 0px !important;
-  background-color: transparent !important;
-}
-
-/* Inputs / Select / Textarea */
-.form-control,
-.form-control-sm,
-select.form-control,
-textarea.form-control {
-  background: #fff !important;
-  border: 1px solid var(--line) !important;
-  color: var(--text) !important;
-  border-radius: 14px !important;
-}
-
-.form-control:focus,
-.form-control-sm:focus,
-select.form-control:focus,
-textarea.form-control:focus {
-  box-shadow: var(--focus) !important;
-  border-color: rgba(234,170,0,.45) !important;
-}
-
-.form-control[readonly],
-textarea[readonly] { opacity: .95; }
-
-.form-group { margin-bottom: 14px !important; }
-</style>
-      </head>
-<div class="container mt-3">
-  <button onclick="location.reload();" class="btn btn-primary btn-sm">
-    <i class="fas fa-sync-alt"></i> Reload
-  </button>
-  <table class="table table-responsive table-condensed" id="new_rep_table"></table>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Transfer Reports</title>
+    <link rel="stylesheet" href="../css/bootstrap-datetimepicker.min.css"/>
+    <script src="../js/bootstrap-datetimepicker.min.js"></script>
+    <link rel="stylesheet" href="../css/jquery.dataTables.min.css" />
+    <script src="../js/jquery.dataTables.min.js"></script>
+    <script src="../js/dataTables.select.min.js"></script>
+    <script src="../js/dataTables.responsive.min.js"></script>
+    <script src="../js/fnReloadAjax.js"></script>
+    <style>
+        :root {
+            --navy:#121C31;
+            --navy2:#1a2a4a;
+            --yellow:#EAAA00;
+            --bg:#EEF2F7;
+            --card:#ffffff;
+            --card2:#F8FAFF;
+            --text:#111827;
+            --muted:#6B7280;
+            --line:#E5E7EB;
+            --shadow: 0 14px 34px rgba(17,24,39,.10);
+            --radius:18px;
+            --radius-sm:14px;
+            --focus: 0 0 0 .2rem rgba(234,170,0,.18);
+        }
+
+        body {
+            background: linear-gradient(to bottom, #ffffff, #99aac8);
+            background-attachment: fixed; 
+            margin: 0; 
+            height: 100vh; 
+        } 
+
+        .table-responsive { 
+            border-radius: 8px; 
+            margin-top: 20px; 
+            overflow: visible !important; 
+            width: 100% !important; 
+        }
+
+        .dataTables_wrapper { 
+            background: var(--card); 
+            border: 1px solid var(--line); 
+            border-radius: var(--radius); 
+            box-shadow: var(--shadow); 
+            padding: 14px; 
+        }
+        
+        .dataTables_wrapper .pull-left { 
+            flex-direction: row; 
+            align-items: center; 
+            justify-content: flex-start; 
+            width: 100%; 
+            gap: 40px; 
+            margin-bottom: 20px; 
+        }
+
+        .dataTables_filter { 
+        position: relative; 
+        display: inline-block; 
+        margin: 0 !important; 
+        }
+        .dataTables_filter label { 
+        display: flex; 
+        align-items: center; 
+        margin-bottom: 0; 
+        }
+        .dataTables_filter::before { 
+            content: "\f002"; 
+            font-family: "Font Awesome 5 Free"; 
+            font-weight: 900; 
+            position: absolute; 
+            left: 12px; top: 50%; 
+            transform: translateY(-50%); 
+            color: #213456; 
+            z-index: 1; 
+            opacity: 0.6; 
+        }
+        .dataTables_filter input { 
+            border: 2px solid #e0e0e0 !important; 
+            border-radius: 50px !important; 
+            padding: 8px 15px 8px 35px !important; 
+            width: 300px !important; 
+            background-color: #ffffff !important; 
+            transition: all 0.3s ease; 
+            outline: none !important; 
+            color: #213456; 
+            margin-left: 0 !important; 
+        }
+        .dataTables_filter input:focus { 
+            border-color: #E1AD01 !important; 
+            box-shadow: 0 0 10px rgba(225, 173, 1, 0.2) !important; 
+        }
+
+        #new_rep_table { 
+            width: 100% !important; 
+            background-color: #ffffff;   
+            border-collapse: collapse !important;
+            border: none !important;
+        }
+        
+        #new_rep_table th, #new_rep_table td {
+            border-left: none !important;
+            border-right: none !important;
+            border-top: none !important;
+            border-bottom: 1px solid #e5e7eb !important; 
+            vertical-align: middle;
+        }
+        
+        #new_rep_table thead th { 
+            background-color: #4c6da5; 
+            color: white; 
+            font-weight: 600; 
+            text-transform: uppercase; 
+            font-size: 0.85rem; 
+            letter-spacing: 0.5px; 
+            padding: 15px; 
+            border-bottom: 2px solid #213456 !important; 
+        }
+
+        #new_rep_table tbody tr:hover td { 
+            background-color: #d2d9e6 !important;
+            color: black !important; 
+            cursor: pointer; 
+            transition: background-color 0.2s ease; 
+        }
+
+        label {
+            font-size: 11px;
+            font-weight: 900;
+            color: #213456; 
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        input.form-control, textarea.form-control {
+            color: #6c757d !important;
+            background-color: transparent !important; 
+            border: black !important; 
+            border-bottom: 1px solid #E1AD01 !important; 
+            resize: none !important; 
+            border-radius: 0px !important;
+        }
+
+        select.custom-select-placeholder.placeholder-active,
+        textarea.form-control.custom-select-placeholder:placeholder-shown {
+            color: red !important;
+            border: 1px solid #ced4da !important;
+            background-color: #fff !important;
+            border-radius: 4px !important;
+        }
+
+        textarea.form-control.custom-select-placeholder::placeholder {
+            color: red !important;
+            opacity: 0.7;
+        }
+
+        select.custom-select-placeholder.has-value,
+        textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
+            color: #0a0a0a !important; 
+            border-bottom: 1px solid #E1AD01 !important; 
+            border-left: none !important;
+            border-right: none !important;
+            border-top: none !important;
+            background-color: transparent !important;
+            border-radius: 0px !important;
+        }
+
+        .form-control:focus, select.form-control:focus, textarea.form-control:focus {
+            box-shadow: 0 10px 18px rgba(17,24,39,.06);
+            border-color: rgba(114, 89, 21, 0.94) !important;
+        }
+
+        #msg_thread { 
+            padding: 1.5rem; 
+            height: 100%; 
+            display: flex; 
+            flex-direction: column; 
+        }
+        .container_remarks {
+            display: flex !important;
+            flex-direction: column;
+            max-height: 480px;
+            overflow-y: auto;
+            background-color: #f0f2f5 !important;
+            border: 1px solid #dee2e6;
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 10px;
+            flex-grow: 1;
+        }
+        .chat-bubble { 
+            max-width: 85%; 
+            padding: 10px 14px; 
+            border-radius: 18px; 
+            font-size: 0.9rem; 
+            line-height: 1.4; 
+            position: relative; 
+            margin-bottom: 12px; 
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1); 
+            word-wrap: break-word; 
+        }
+        .chat-left { 
+            align-self: flex-start; 
+            background: #ffffff; 
+            color: #1e293b; 
+            border-bottom-left-radius: 4px; 
+            border: 1px solid #e5e7eb; 
+        }
+        .chat-right { 
+            align-self: flex-end; 
+            background: #1C0770; 
+            color: #ffffff; 
+            border-bottom-right-radius: 4px; 
+        }
+        .msg-meta { 
+            display: flex; 
+            justify-content: space-between;
+             gap: 15px; 
+             font-size: 0.7rem; 
+             margin-bottom: 4px; 
+            }
+        .chat-left .msg-meta { 
+            color: #64748b; 
+        }
+        .chat-right .msg-meta { 
+            color: rgba(255, 255, 255, 0.85); 
+        }
+        .chat-left .msg-meta-name, .chat-right .msg-meta-name { 
+            font-weight: bold; 
+        }
+        .chat-left .msg-meta-name { 
+            color: #213456; 
+        }
+        .chat-right .msg-meta-name { 
+            color: #ffffff; 
+        }
+
+        ::-webkit-scrollbar { 
+            width: 8px; 
+        }
+        ::-webkit-scrollbar-track { 
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 10px; 
+        }
+        ::-webkit-scrollbar-thumb { 
+            background: linear-gradient(135deg, #837031, #E1AD01); 
+            border-radius: 10px; 
+        }
+        
+        .btn-success { 
+            background-color: #1C0770 !important; 
+            border: none; 
+            padding: 0.6rem 2rem; 
+            font-weight: 600; 
+            border-radius: 8px; 
+            color: white; 
+            transition: transform 0.2s ease; 
+        }
+        .btn-success:hover { 
+            transform: translateY(-1px); 
+            box-shadow: 0 4px 12px rgba(28, 7, 112, 0.2); 
+            color: white; 
+        }
+    </style>
+</head>
+<body>
+
+<div class="container mt-4">
+    <div class="mb-3">
+        <button onclick="location.reload();" class="btn btn-primary btn-sm" style="background-color: #213456; color: white; border:none; padding: 8px 16px; border-radius: 8px;">
+            <i class="fas fa-sync-alt"></i> Reload
+        </button>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover" id="new_rep_table"></table>
+    </div>
 </div>
 
 <script src="../js/coms.js"></script> 
 
-<div class="modal fade" id="newrpt_Modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
-  <div class="modal-dialog modal-lg">
-    <form method="post" id="newrpt_form" enctype="multipart/form-data">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title" id="tick_title" value=""></h4>
-        </div>
-        <div class="modal-body">
-          <div class="row">
-            <div class="form-group col-md-4">
-              <label>STORE</label>
-              <input type="hidden" name="store" id="store" readonly value="">
-              <input type="text" class="form-control form-control-sm" name="str_desc" id="str_desc" readonly value="">
-            </div>
-            <div class="form-group col-md-4">
-              <label>Created By:</label>
-              <input type="text" class="form-control form-control-sm" name="crtd_by" id="crtd_by" readonly>
-            </div>
-            <input type="hidden" class="form-control form-control-sm" name="ticket_no" id="ticket_no">
-            <div class="form-group col-md-4">
-              <label>DATE CREATED</label>
-              <input type="text" class="form-control form-control-sm" name="date_createdx" id="date_createdx" readonly value="">
-            </div>
-            
-            <div class="form-group col-md-4">
-              <label>SUBJECT</label>
-              <input type="text" name="subject" id="concern" class="form-control form-control-sm" style="text-transform:uppercase" readonly></input>
-            </div>
-            
-            <div class="form-group col-md-4">
-              <label>Service Requested:</label>
-              <input type="text" class="form-control form-control-sm" name="tos" id="tos" readonly>
-            </div>
-            
-            <div class="form-group col-md-12">
-              <label>CONCERN</label>
-              <textarea name="concern" id="message" class="form-control form-control-sm" style="text-transform:uppercase" readonly></textarea>
-            </div>
+<!-- Split Modal UI -->
+<div class="col-12 col-lg-12 modal fade" id="newrpt_Modal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" style="max-width: 85%; width: 85%;">
+        <form method="post" id="newrpt_form" enctype="multipart/form-data">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="tick_title"></h4>
+                </div>
+                <div class="modal-body p-0">
+                    <div class="row m-0">
+                        <!-- Left Side: Form Inputs -->
+                        <div class="col-md-6 border-right p-4 bg-white">
+                            <div class="row">
+                                <div class="form-group col-md-4">
+                                    <label>STORE</label>
+                                    <input type="hidden" name="store" id="store" readonly>
+                                    <input type="text" class="form-control form-control-sm" name="str_desc" id="str_desc" readonly>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label>Created By:</label>
+                                    <input type="text" class="form-control form-control-sm" name="crtd_by" id="crtd_by" readonly>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label>DATE CREATED</label>
+                                    <input type="hidden" name="ticket_no" id="ticket_no">
+                                    <input type="text" class="form-control form-control-sm" name="date_createdx" id="date_createdx" readonly>
+                                </div>
+                                
+                                <div class="form-group col-md-6">
+                                    <label>SUBJECT</label>
+                                    <input type="text" name="subject" id="concern" class="form-control form-control-sm" style="text-transform:uppercase" readonly>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label>Service Requested:</label>
+                                    <input type="text" class="form-control form-control-sm" name="tos" id="tos" readonly>
+                                </div>
+                                
+                                <div class="form-group col-md-12">
+                                    <label>CONCERN DETAILS</label>
+                                    <textarea name="concern" id="message" class="form-control form-control-sm" rows="2" style="text-transform:uppercase" readonly></textarea>
+                                </div>
+                                
+                                <input type="hidden" class="form-control form-control-sm" name="old_dept" id="old_dept" readonly>
+                                <input type="hidden" class="form-control form-control-sm" name="deptsel" id="deptsel" readonly>
+                                <input type="hidden" name="setStatus" id="setStatus" value="Assigned">
+                                <input type="hidden" name="contactNumber" id="contactNumber">
+                                <input type="hidden" name="dept_email" id="dept_email">
 
-      
-                 <input type="hidden" class="form-control form-control-sm w-25" name="old_dept" id="old_dept" readonly placeholder="ID">
-                 <input type="hidden" class="form-control form-control-sm w-75 ml-2" name="deptsel" id="deptsel" readonly placeholder="Fetching...">
-           
+                                <div class="col-md-12"><hr></div>
 
+                                <div class="form-group col-md-12">
+                                    <label>ASSIGNED DEPARTMENT</label>
+                                    <select class="form-control form-control-sm custom-select-placeholder placeholder-active" name="f_deptsel" id="f_deptsel" required onchange="handleDropdownChange(this)">
+                                        <option value="">Assign department...</option>
+                                        <?php
+                                            $query="SELECT * FROM tbl_dept WHERE dept_id NOT IN ('4','5','7','8','9','10','12','14','17','18')";
+                                            $run=$con1->prepare($query);
+                                            $run->execute();
+                                            $rs=$run->get_result();
+                                            while ($res=$rs->fetch_assoc()) {
+                                                echo "<option value='".$res['dept_id']."' style='color: #333;'>".$res['dept_desc']."</option>";
+                                            } 
+                                        ?>
+                                    </select>
+                                </div>
 
-            <div class="form-group col-md-6">
-              <label>ASSIGNED DEPARTMENT</label>
-             
+                                <div class="form-group col-md-6">
+                                    <label>PRIORITY LEVEL</label>
+                                    <select class="form-control form-control-sm custom-select-placeholder placeholder-active" name="priority_level" id="priority_level" required onchange="handleDropdownChange(this)">
+                                        <option value=""> &larr; PRIORITY &rarr;</option>
+                                        <option value="4" style="color:black;">LOW</option>
+                                        <option value="3" style="color:black;">NORMAL</option>
+                                        <option value="2" style="color:black;">HIGH</option>
+                                        <option value="1" style="color:black;">CRITICAL</option>
+                                    </select>
+                                </div>
 
-              <select class="form-control form-control-sm custom-select-placeholder placeholder-active" name="f_deptsel" id="f_deptsel" required onchange="handleDropdownChange(this)">
-                <option value="">Assign department...</option>
-                <?php
-                  $query="SELECT * FROM tbl_dept WHERE dept_id NOT IN ('4','5','7','8','9','10','12','14','17','18') ";
-                  $run=$con1->prepare($query);
-                  $run->execute();
-                  $rs=$run->get_result();
-                  while ($res=$rs->fetch_assoc()) {
-                    $dept_id = $res['dept_id'];
-                    $dept_desc = $res['dept_desc'];
-                ?>
-                  <option value="<?php echo $dept_id; ?>"style="color: #333;"><?php echo $dept_desc; ?></option>
-                <?php } ?>
-              </select>
-            </div>
+                                <div class="form-group col-md-6">
+                                    <label for="sla_days">Service Level Agreement (SLA)</label>
+                                    <select name="sla_days" id="sla_days" class="form-control form-control-sm custom-select-placeholder placeholder-active" required onchange="handleDropdownChange(this)">
+                                        <option value="">Select SLA</option>
+                                        <option value="2" style="color:black;">24 – 48 hours</option>
+                                        <option value="5" style="color:black;">3 – 5 days</option>
+                                        <option value="7" style="color:black;">5 – 7 days</option>
+                                        <option value="14" style="color:black;">1 – 2 weeks</option>
+                                        <option value="21" style="color:black;">2 – 3 weeks</option>
+                                        <option value="28" style="color:black;">3 – 4 weeks</option>
+                                    </select>
+                                </div>
 
-            <input type="hidden" name="setStatus" id="setStatus" value="Assigned" required>
-            <input type="hidden" name="contactNumber" id="contactNumber">
-            <input type="hidden" name="dept_email" id="dept_email">
+                                <div class="form-group col-md-12 mb-0">
+                                    <label>Work Output:</label>
+                                    <textarea name="remarks" id="remarks" rows="2" class="form-control form-control-sm custom-select-placeholder placeholder-active" placeholder="Your Workoutput" style="text-transform:uppercase" required onchange="handleDropdownChange(this)"></textarea>
+                                </div>
 
-            <div class="form-group col-md-6">
-              <label>PRIORITY LEVEL</label>
-              <select class="form-control form-control-sm custom-select-placeholder placeholder-active" name="priority_level" id="priority_level" required onchange="handleDropdownChange(this)">
-                <option value=""> &larr; PRIORITY &rarr;</option>
-                <option value="4"style="color:black;">LOW</option>
-                <option value="3" style="color:black;">NORMAL</option>
-                <option value="2" style="color:black;">HIGH</option>
-                <option value="1" style="color:black;">CRITICAL</option>
-              </select>
-            </div>
+                                <input type="hidden" name="close_by" id="close_by" value="<?php echo $_SESSION['tech_id'] ?? '';?>">
+                                <input type="hidden" class="form-control form-control-sm" name="cl_desc" id="cl_desc" readonly value="<?php echo ($_SESSION['fname'] ?? '').' '.($_SESSION['lstname'] ?? '');?>">
+                            </div>
+                        </div>
 
-            <div class="form-group col-md-6">
-              <label for="sla_days">Service Level Agreement (SLA)</label>
-              <select name="sla_days" id="sla_days" class="form-control form-control-sm custom-select-placeholder placeholder-active" required onchange="handleDropdownChange(this)">
-                  <option value="">Select SLA</option>
-                  <option value="2" style="color:black;">24 – 48 hours</option>
-                  <option value="5" style="color:black;">3 – 5 days</option>
-                  <option value="7" style="color:black;">5 – 7 days</option>
-                  <option value="14" style="color:black;">1 – 2 weeks</option>
-                  <option value="21" style="color:black;">2 – 3 weeks</option>
-                  <option value="28"style="color:black;">3 – 4 weeks</option>
-              </select>
-            </div>
-
-            <label id="clby_label" class="hidden">CLOSED BY</label>
-            <input type="hidden" name="close_by" id="close_by" value="<?php echo $_SESSION['tech_id'];?>">
-            <input type="hidden" class="form-control form-control-sm" name="cl_desc" id="cl_desc" readonly value="<?php echo $_SESSION['fname'].'  '.$_SESSION['lstname'];?>">
-
-            <div class="form-group col-md-12">
-              <label>Work Output:</label>
-              <textarea name="remarks" id="remarks" class="form-control form-control-sm custom-select-placeholder placeholder-active" placeholder="Your Workoutput" style="text-transform:uppercase" required onchange="handleDropdownChange(this)"></textarea>
-            </div>
-
-            <hr/>
-
-            <div class="form-group col-md-12">
-              <p>
-                <button class="btn btn-primary float-right mr-2" type="button" name="msgbtn" id="msgbtn" value="show">Show Message Thread</button>
-              </p>
-            </div>
-
-            <div class="col-md-12 collapse" id="msg_thread">
-              <div class="card card-body">
-                <div class="row">
-                  <div class="col-md-12 dv_msg">
-                    <label style="font-weight: bold; color:white;">Add Message:</label>
-                    <textarea name="admsg" id="admsg" class="form-control form-control-sm" placeholder="Reply to their message or give updates regarding this ticket..."></textarea>
-                  </div>
-
-                  <div class="col-md-12 mt-4 mb-2 dv_msg">
-                    <label for="remarks_view" style="font-weight: bold;color:white;">Ticket Thread:</label>
-                    <div class="container_remarks">
-                      <div id="remarks_view"><ul></ul></div>
+                        <!-- Right Side: Thread UI -->
+                        <div class="col-md-6 p-4" style="background: linear-gradient(to bottom, #f8f9fa, #d7dce4);">
+                            <div class="d-flex flex-column h-100" id="msg_thread">
+                                <label style="font-weight: bold; color: #213456;">Ticket Thread:</label>
+                                <div class="container_remarks mb-3">
+                                    <div id="remarks_view"></div>
+                                </div>
+                                <div class="mt-auto">
+                                    <label style="font-weight: bold; color: #213456;">Add Message:</label>
+                                    <textarea name="admsg" class="form-control" rows="3" placeholder="Reply to their message or give an update regarding this ticket..."></textarea>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                  </div>
                 </div>
 
-                <div class="col-md-12">
-                  <input type="submit" name="action" id="action" class="btn btn-success" value="Add" />
-                  <button type="button" name="btnClose" id="btnClose" class="btn btn-danger float-right" data-dismiss="modal">Close</button>
+               <div class="modal-footer d-flex justify-content-end">
+                    <input type="hidden" name="operation" id="operation" />
+                    <input type="hidden" name="u_id" value="<?php echo $_SESSION['user_id'] ?? ''; ?>">
+                    <input type="hidden" name="is_transfer" value="1" />
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" id="action" class="btn btn-success">Save & Reply</button>
                 </div>
-              </div>
             </div>
-
-          </div>
-        </div>
-        <div class="modal-footer">
-          <input type="hidden" name="operation" id="operation" />
-          <input type="hidden" name="u_id" id="u_id" value="<?php echo $_SESSION['user_id']; ?>">
-        </div>
-      </div>
-    </form>
-  </div>
+        </form>
+    </div>
 </div>
-<script>
 
-  
+<script type="text/javascript">
+$(document).ready(function(){
+    var reptable;
+    const user_id = "<?= $_SESSION['user_id'] ?? '' ?>";
+    
+    function getdata(){
+        $.post('fetchdata/fetch_data.php', {mode: 'trans_tbl'}, function(data){
+            admin_datatable(data);
+        }, 'json').fail(function(xhr) {
+            console.error("Failed to load table data:", xhr.responseText);
+        });
+    }
+    getdata();
+
+    function admin_datatable(t){
+        const dataset = t.transdata || []; 
+        reptable = $("#new_rep_table").DataTable({
+            "dom": '<"pull-left"lf><"pull-right">tip',
+            "stateSave": false,
+            "bDestroy": true,
+            "responsive": true, 
+            "lengthChange": false, 
+            "autoWidth": false,
+            "language": {
+                "emptyTable": "No transferred reports pending",
+                "search": "_INPUT_",
+                "searchPlaceholder": "Search Tickets..."
+            },
+            "pageLength": 8,
+            "data": dataset,
+            "order": [[ 4, "desc" ]], 
+            "columns": [
+                {title:"TicketNo", data:"ticket_no", defaultContent: ""},
+                {title:"Selected Department", data:"dept_desc", defaultContent: ""},
+                {title:"Department/Store", data:"str_code", defaultContent: ""},
+                {title:"Created By", data:"full_name", defaultContent: ""},
+                {
+                    title:"Date Created", 
+                    data:"date_created", 
+                    defaultContent: "",
+                    render: function(data, type, row) {
+                        if (type === 'sort' || type === 'type') {
+                            if (!data) return '';
+                            let parts = data.split(" ");
+                            if (parts.length > 1) {
+                                let date = parts[0].split("/");
+                                let time = parts[1];
+                                if(date.length === 3) {
+                                    return `${date[2]}-${date[0]}-${date[1]} ${time}`;
+                                }
+                            }
+                        }
+                        return data; 
+                    }
+                },
+                {title:"SUBJECT", data:"concern", defaultContent: ""},
+                {title:"Types of Service", data:"service_desc", defaultContent: ""},
+                {title:"CONCERN", data:"subject", defaultContent: ""},
+                {title:"Action", data:null, defaultContent: "<Button class='btn btn-primary btn-sm' name='update' style='background:#213456; color:white; border:none;'><i class='fas fa-edit'></i> Open</Button>"}
+            ],
+            "rowCallback": function(row, data, index){
+                if(data['msg_cnt'] == '1'){
+                    $(row).find('td').css("font-weight", "bold");
+                }
+            }
+        });
+
+        // Search Binding
+        $('#new_rep_table_filter input').off().on('keyup', function () {
+            let value = $.fn.dataTable.util.escapeRegex($(this).val());
+            reptable.column(2).search('^' + value + '$', true, false).draw();
+        });
+
+        setInterval(function () { getdata(); }, 60000);
+
+        $('#new_rep_table tbody').off('click', 'button').on('click', 'button', function () {
+            var data = reptable.row($(this).parents('tr')).data();
+            if(!data) return;
+
+            $('#ticket_no').val(data['ticket_no']);
+            $('#store').val(data['store']);
+            $('#str_desc').val(data['str_code']);
+            $('#crtd_by').val(data['full_name']);
+            $('#date_createdx').val(data['date_created']);
+            $('#concern').val(data['concern']);
+            $('#tos').val(data['service_desc']);
+            $('#message').val(data['subject']);
+            $('#sub_num').val(data['sub_id'] || '');
+            
+            let currentDept = data['itsup'] || data['f_deptsel'] || '0';
+            $('#old_dept').val(currentDept); 
+            $('#f_deptsel').val(currentDept !== '0' ? currentDept : '').trigger('change');
+
+            $('#newrpt_Modal').modal('show');
+            $('#action').val("Update");
+            $('#operation').val("New_Report");
+
+            var tid = data['ticket_no'];
+            $('#tick_title').text("Ticket Number: " + tid);
+            
+            loadCommentThread(tid);
+            loadDeptsel(currentDept);
+        });
+    }
+
+    $(document).on('change', '#f_deptsel', function () {
+        let dept_id = $(this).val();
+        if (dept_id !== '') {
+            $.ajax({
+                url: 'fetchdata/get_contact.php',
+                method: 'POST',
+                data: { dept_id: dept_id },
+                success: function (response) {
+                    $('#contactNumber').val(response);
+                },
+                error: function () {
+                    $('#contactNumber').val('');
+                }
+            });
+        } else {
+            $('#contactNumber').val('');
+        }
+    });
+
+    $(document).on('submit', '#newrpt_form', function(event) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        var formData = new FormData(this);
+
+        let $btn = $('#action');
+        let originalText = $btn.text();
+        $btn.text('Saving...').prop('disabled', true);
+
+        $.ajax({
+            url: "insert.php", 
+            method: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            cache: false,
+            success: function(response) {
+                $btn.text(originalText).prop('disabled', false);
+
+                let isSuccess = false;
+                if(typeof response === 'object' && (response.status === 'success' || response.status === true)) {
+                    isSuccess = true;
+                } else if(typeof response === 'string' && response.toLowerCase().includes('success')) {
+                    isSuccess = true;
+                }
+
+                if (isSuccess) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Saved successfully',
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(function() {
+                        $('#newrpt_form')[0].reset();
+                        $('#newrpt_Modal').modal('hide');
+                        getdata();
+                    });
+                } else {
+                    Swal.fire({ icon: 'error', title: 'Save failed', text: response.message || response || 'Please try again.' });
+                }
+            },
+            error: function(xhr, status, error) {
+                $btn.text(originalText).prop('disabled', false);
+                if (xhr.status === 200 && xhr.responseText && xhr.responseText.toLowerCase().includes("success")) {
+                     Swal.fire({
+                        icon: 'success',
+                        title: 'Saved successfully',
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(function() {
+                        $('#newrpt_form')[0].reset();
+                        $('#newrpt_Modal').modal('hide');
+                        getdata();
+                    });
+                    return;
+                }
+
+                console.error("Server Error Details:", xhr.responseText);
+                let errorMsg = xhr.responseText ? xhr.responseText : 'Failed to process request.';
+                if (errorMsg.includes('Fatal error') || errorMsg.includes('Uncaught Error')) {
+                    errorMsg = "A PHP Fatal Error occurred. Check your browser console or PHP error logs.";
+                }
+
+                Swal.fire({ icon: 'error', title: 'System Error', text: errorMsg });
+            }
+        });
+    });
+});
+
+function loadDeptsel(itsup_value) {
+    if (itsup_value && itsup_value !== "0") {
+        $('#deptsel').val("Fetching..."); 
+        $.ajax({
+            url: "fetch_deptsel.php", 
+            method: "POST",
+            data: { itsup: itsup_value },
+            success: function(response) {
+                $('#deptsel').val(response.trim()); 
+            },
+            error: function() {
+                $('#deptsel').val("Error fetching data");
+            }
+        });
+    } else {
+        $('#deptsel').val("No Department Assigned");
+    }
+}
+
+function timeAgo(dateString) {
+    if (!dateString) return '';
+    const date = new Date(dateString.replace(/-/g, '/'));
+    const now = new Date();
+    const seconds = Math.floor((now - date) / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+    const months = Math.floor(days / 30);
+    const years = Math.floor(days / 365);
+
+    if (seconds < 60) return 'replied just now';
+    if (minutes < 60) return `replied ${minutes} minute${minutes > 1 ? 's' : ''} ago`;
+    if (hours < 24) return `replied ${hours} hour${hours > 1 ? 's' : ''} ago`;
+    if (days < 30) return `replied ${days} day${days > 1 ? 's' : ''} ago`;
+    if (months < 12) return `replied ${months} month${months > 1 ? 's' : ''} ago`;
+    return `replied ${years} year${years > 1 ? 's' : ''} ago`;
+}
+
+function loadCommentThread(ticket_no) {
+    const $remarksView = $('#remarks_view');
+    const ticketValue = (ticket_no || '').toString().trim();
+
+    if (!ticketValue) return;
+    
+    $remarksView.fadeOut(150, function() {
+        $remarksView.html('<div class="text-center text-muted mt-4 mb-4"><div class="spinner-border spinner-border-sm me-2 text-primary"></div>Loading conversation...</div>').fadeIn(150);
+    });
+
+    $.ajax({
+        url: 'get_comments.php', 
+        type: 'POST',
+        dataType: 'json',
+        data: { ticket_no: ticketValue },
+        success: function(response) {
+            let html = '';
+            if (Array.isArray(response) && response.length > 0) {
+                var currentUserIdStr = "<?= $_SESSION['user_id'] ?? '' ?>";
+                var currentUserNameStr = "<?= $_SESSION['fname'] ?? '' ?>";
+                
+                let sortedResponse = response.slice().sort((a, b) => {
+                    return new Date(b.comment_date.replace(/-/g, '/')) - new Date(a.comment_date.replace(/-/g, '/'));
+                });
+
+                sortedResponse.forEach(function(comment, index) {
+                    let sender = comment.userId || 'Unknown';
+                    let isMe = false;
+                    if(currentUserIdStr !== "" && sender === currentUserIdStr) isMe = true;
+                    if(currentUserNameStr !== "" && sender.includes(currentUserNameStr)) isMe = true;
+                    
+                    let bubbleClass = isMe ? 'chat-right' : 'chat-left';
+                    let delay = index * 0.05; 
+                    let timeAgoStr = timeAgo(comment.comment_date);
+                    
+                    html += `
+                        <div class="chat-bubble ${bubbleClass}" style="animation-delay: ${delay}s;">
+                            <div class="msg-meta">
+                                <span class="msg-meta-name">${sender}</span>
+                                <span class="msg-time">${comment.comment_date}</span> 
+                            </div>
+                            <div style="white-space: pre-wrap; padding-bottom: 5px;">${comment.comment_details}</div>
+                            <div style="font-size: 0.65rem; opacity: 0.7; text-align: ${isMe ? 'right' : 'left'}; margin-top: 4px; border-top: 1px solid rgba(128,128,128,0.2); padding-top: 4px;">
+                                <i class="far fa-clock"></i> ${timeAgoStr}
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                html = '<div class="text-center text-muted mt-3" style="font-size:13px;"><i class="fas fa-comments mb-2" style="font-size:24px; opacity:0.5;"></i><br>No comments yet. Start the conversation!</div>';
+            }
+            
+            $remarksView.fadeOut(150, function() {
+                $remarksView.html(html).fadeIn(300);
+                setTimeout(() => {
+                    const $container = $('.container_remarks');
+                    if ($container.length) {
+                     
+                        $container.animate({ scrollTop: 0 }, 600, 'swing');
+                    }
+                }, 200);
+            });
+        },
+        error: function(xhr) {
+            console.error("Comments Error:", xhr.responseText);
+            $remarksView.html('<div class="text-danger text-center mt-3">Error loading comments.</div>');
+        }
+    });
+}
 
 function handleDropdownChange(selectElement) {
-  if (selectElement.value === "") {
-    selectElement.classList.add("placeholder-active");
-    selectElement.classList.remove("has-value");
-  } else {
-    selectElement.classList.remove("placeholder-active");
-    selectElement.classList.add("has-value");
-  }
+    if (selectElement.value === "") {
+        selectElement.classList.add("placeholder-active");
+        selectElement.classList.remove("has-value");
+    } else {
+        selectElement.classList.remove("placeholder-active");
+        selectElement.classList.add("has-value");
+    }
 }
-  </script>
-<?php include 'admintransfer_obj.php'; ?>
+
+// Activity Watcher
+let inactivityTime = function(){
+    let time;
+    window.onload = resetTimer;
+    document.onmousemove = resetTimer;
+    document.onkeypress = resetTimer;
+    document.onscroll = resetTimer;
+    document.onclick = resetTimer;
+
+    function logout(){ window.location.href = 'adminpanel.php'; }
+    function resetTimer(){ clearTimeout(time); time = setTimeout(logout, 180000); }
+};
+inactivityTime();
+</script>
+</body>
+</html>

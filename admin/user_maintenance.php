@@ -27,15 +27,12 @@ body {
 .swal-btn {
   margin: 10px;
 }
-
 .table {
   background-color: #ffffff;
-  border-collapse: separate;
-  border-spacing: 0;
+  border-collapse: collapse; /* Changed to collapse for solid horizontal lines */
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 10px 8px rgba(108,108,53,0.4);
-  border: 1px solid #e9ecef;
   margin-top: 15px;
 }
 
@@ -47,18 +44,24 @@ body {
   font-size: 0.85rem;
   letter-spacing: 0.5px;
   padding: 15px;
-  border-bottom: 2px solid #dee2e6;
+  /* Top header horizontal line */
+  border-bottom: 2px solid #334c7a !important; 
+  border-left: none !important;
+  border-right: none !important;
 }
 
 .table tbody td {
   padding: 12px 15px;
   vertical-align: middle;
   color: #333;
-  border-bottom: 1px solid #f1f1f1;
+  /* Darker horizontal line between rows */
+  border-bottom: 1px solid #cdd4e0 !important; 
+  border-left: none !important;
+  border-right: none !important;
 }
 
 .table tbody tr:hover {
-  background-color: #213456 !important;
+  background-color: #a4b2ca !important;
   color: #ffffff !important;
   cursor: pointer;
   transition: all 0.2s ease;

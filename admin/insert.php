@@ -315,22 +315,30 @@ else{
   $result = $statement->execute($data);
 $old_dept = trim($_POST['old_dept'] ?? '');
   $new_dept = trim($_POST['f_deptsel'] ?? '');
+  $deptsel1 = trim($_POST['deptsel'] ?? '0');
+    $deptsel2 = is_numeric($deptsel1) ? $deptsel1 : '0';
 
-  if ($old_dept !== '' && $old_dept !== $new_dept) {
-      $reasgn = $connection->prepare("
-          INSERT INTO tbl_reassigned (ticket_no,  itsup, deptsel, f_deptsel, r_remarks, date_rasigned) 
-          VALUES (:ticket_no,  :itsup, :deptsel, :f_deptsel, :r_remarks, :date_rasigned)
-      ");
-      $reasgn->execute(
-        array(
-          ':ticket_no'     => $_POST["ticket_no"],
-          ':itsup'         => $old_dept,
-          ':deptsel'       => $_POST["deptsel"] ?? '0',
-          ':f_deptsel'     => $new_dept,
-          ':r_remarks'     => $_POST["remarks"],
-          ':date_rasigned' => date('Y-m-d H:i:s')
-      ));
-  }
+    if ($old_dept !== '' && $old_dept !== $dept && $is_transfer === '1') {
+        
+        try {
+            $reasgn = $connection->prepare("
+                INSERT INTO tbl_reassigned (ticket_no, itsup, deptsel, f_deptsel, r_remarks, date_rasigned) 
+                VALUES (:ticket_no, :itsup, :deptsel, :f_deptsel, :r_remarks, :date_rasigned)
+            ");
+
+            $reasgn->execute(array(
+                ':ticket_no'     => $ticket_no,
+                ':itsup'         => $old_dept,    
+                ':deptsel'       => $deptsel2,
+                ':f_deptsel'     => $dept,        
+                ':r_remarks'     => $remarks,
+                ':date_rasigned' => date('Y-m-d H:i:s')
+            ));
+        } catch (PDOException $e) {
+            error_log("Failed to insert into tbl_reassigned: " . $e->getMessage());
+        }
+    }
+  
 
   $msgcntres = $connection->prepare("
    UPDATE reports_msgcnt
@@ -760,21 +768,30 @@ if ($_POST["operation"] == "New_Report") {
 
     $statement = $connection->prepare($sql);
     $result = $statement->execute($data);
-   $old_dept = trim($_POST['old_dept'] ?? '');
-    if ($old_dept !== '' && $old_dept !== $dept) {
-        $reasgn = $connection->prepare("
-            INSERT INTO tbl_reassigned (ticket_no,  itsup, deptsel, f_deptsel, r_remarks, date_rasigned) 
-            VALUES (:ticket_no, :itsup, :deptsel, :f_deptsel, :r_remarks, :date_rasigned)
-        ");
+  $old_dept = trim($_POST['old_dept'] ?? '0');
+    $is_transfer = trim($_POST['is_transfer'] ?? '0');
+    $deptsel1 = trim($_POST['deptsel'] ?? '0');
+    $deptsel2 = is_numeric($deptsel1) ? $deptsel1 : '0';
 
-        $reasgn->execute(array(
-            ':ticket_no'     => $ticket_no,
-            ':itsup'         => $old_dept,    
-            ':deptsel'       => $_POST["deptsel"] ?? '0',
-            ':f_deptsel'     => $dept,        
-            ':r_remarks'     => $remarks,
-            ':date_rasigned' => date('Y-m-d H:i:s')
-        ));
+    if ($old_dept !== '' && $old_dept !== $dept && $is_transfer === '1') {
+        
+        try {
+            $reasgn = $connection->prepare("
+                INSERT INTO tbl_reassigned (ticket_no, itsup, deptsel, f_deptsel, r_remarks, date_rasigned) 
+                VALUES (:ticket_no, :itsup, :deptsel, :f_deptsel, :r_remarks, :date_rasigned)
+            ");
+
+            $reasgn->execute(array(
+                ':ticket_no'     => $ticket_no,
+                ':itsup'         => $old_dept,    
+                ':deptsel'       => $deptsel2,
+                ':f_deptsel'     => $dept,        
+                ':r_remarks'     => $remarks,
+                ':date_rasigned' => date('Y-m-d H:i:s')
+            ));
+        } catch (PDOException $e) {
+            error_log("Failed to insert into tbl_reassigned: " . $e->getMessage());
+        }
     }
 
     if ($result) {
@@ -1068,73 +1085,50 @@ if ($_POST["operation"] == "New_Report") {
 }
 
 
-
-if ($_POST["operation"] == "Save and Reply") {
+if ($_POST["operation"] == "Reopen_Report") { 
     header('Content-Type: application/json');
+    
     $ticket_no = trim($_POST["ticket_no"] ?? '');
+    
     if ($ticket_no === '') {
         echo json_encode(['status' => 'error', 'message' => 'Ticket number is required.']);
         exit;
     }
 
-    $store     = $_POST["store"] ?? '0';
-    $close_by  = $_POST["close_by"] ?? '0';
-    $remarks   = $_POST["remarks"] ?? '';
-    $status    = $_POST["setStatus"] ?? ($_POST["status"] ?? ''); // Fixed input mapping
-    $plvl      = $_POST["priority_level"] ?? ($_POST["prioty_level"] ?? '0');
-    $dept      = $_POST["f_deptsel"] ?? ($_POST["dept_desc"] ?? '0');
-    $userid    = $_POST["u_id"] ?? '0';
-    $date_created = !empty($_POST["date_createdx"]) ? date('Y-m-d H:i:s', strtotime($_POST["date_createdx"])) : date('Y-m-d H:i:s');
-    $date_closed  = !empty($_POST["date_closed"]) ? date('Y-m-d H:i:s', strtotime($_POST["date_closed"])) : null;
-    $fields = [];
-    $data   = [':ticket_no' => $ticket_no];
+    $reason      = trim($_POST["remarks"] ?? '');
+    $status      = $_POST["status"] ?? '';
+    $dept        = $_POST["f_deptsel"] ?? $_POST["old_dept"] ?? '0';
+    $store       = $_POST["store"] ?? '0';
+    $reopened_by = $_POST["u_id"] ?? $_SESSION["user_id"] ?? '0'; 
 
-    if ($store !== '0' && $store !== '') {
-        $fields[] = "store = :store";
-        $data[':store'] = $store;
-    }
-    if ($status !== '') {
-        $fields[] = "status = :status";
-        $data[':status'] = $status;
-    }
-    if ($remarks !== '') {
-        $fields[] = "remarks = :remarks";
-        $data[':remarks'] = $remarks;
-    }
-    if ($plvl !== '0' && $plvl !== '') {
-        $fields[] = "priority_level = :priority_level";
-        $data[':priority_level'] = $plvl;
-    }
-    if ($close_by !== '0' && $close_by !== '') {
-        $fields[] = "close_by = :close_by";
-        $data[':close_by'] = $close_by;
-    }
-    if ($dept !== '0' && $dept !== '') {
-        $fields[] = "f_deptsel = :dept";
-        $data[':dept'] = $dept;
-    }
-
-    $fields[] = "date_closed = :date_closed";
-    $data[':date_closed'] = $date_closed;
-
-    if (empty($fields)) {
-        echo json_encode(['status' => 'error', 'message' => 'No fields to update.']);
-        exit;
-    }
     try {
-        $sql = "UPDATE reports SET " . implode(", ", $fields) . " WHERE ticket_no = :ticket_no";
-        $stmt = $connection->prepare($sql);
-        $result = $stmt->execute($data);
+        $sqlReopen = "INSERT INTO reopen_tickets (ticket_no, reopened_by, reason, reopened_date) 
+                      VALUES (:ticket_no, :reopened_by, :reason, NOW())";
+        $stmtReopen = $connection->prepare($sqlReopen);
+        $result = $stmtReopen->execute([
+            ':ticket_no'   => $ticket_no,
+            ':reopened_by' => $reopened_by,
+            ':reason'      => $reason
+        ]);
 
         if ($result) {
-            if (!empty($remarks)) {
+        
+            if ($status !== '') {
+                $updateMain = $connection->prepare("UPDATE reports SET status = :status WHERE ticket_no = :ticket_no");
+                $updateMain->execute([
+                    ':status'    => $status,
+                    ':ticket_no' => $ticket_no
+                ]);
+            }
+
+            if (!empty($reason)) {
                 $restat = $connection->prepare("
                     INSERT INTO reports_remarks (ticket_no, remarks_detail, remarks_date, f_deptsel)
                     VALUES (:ticket_no, :remarks, NOW(), :dept)
                 ");
                 $restat->execute([
                     ':ticket_no' => $ticket_no,
-                    ':remarks'   => $remarks,
+                    ':remarks'   => "REOPEN REASON: " . $reason,
                     ':dept'      => $dept
                 ]);
             }
@@ -1150,8 +1144,8 @@ if ($_POST["operation"] == "Save and Reply") {
                 ':ticket_no'   => $ticket_no,
                 ':store'       => $store,
                 ':dept'        => $dept,
-                ':msg'         => "Ticket $ticket_no has been assigned to a department.",
-                ':assigned_by' => $userid
+                ':msg'         => "Ticket $ticket_no has been re-opened.",
+                ':assigned_by' => $reopened_by
             ]);
 
             if (!empty($_POST["admsg"])) {
@@ -1162,33 +1156,32 @@ if ($_POST["operation"] == "Save and Reply") {
                 $makecom->execute([
                     ':ticket_no' => $ticket_no,
                     ':comment'   => $_POST["admsg"],
-                    ':uid'       => $userid
+                    ':uid'       => $reopened_by
                 ]);
 
-                $connection->prepare("UPDATE reports_newmsg SET nmsg_stat = '2' WHERE ticket_no = :ticket_no")->execute([':ticket_no' => $ticket_no]);
-
-                $connection->prepare("
-                    INSERT INTO tbl_tickethist (ticket_no, date_updated, status, userID)
-                    VALUES (:ticket_no, NOW(), :status, :uid)
-                ")->execute([
-                    ':ticket_no' => $ticket_no,
-                    ':status'    => $status,
-                    ':uid'       => $userid
-                ]);
+                $connection->prepare("UPDATE reports_newmsg SET nmsg_stat = '2' WHERE ticket_no = :ticket_no")
+                           ->execute([':ticket_no' => $ticket_no]);
             }
-            echo json_encode(['status' => 'success', 'message' => 'Ticket successfully updated!']);
+            
+            $connection->prepare("
+                INSERT INTO tbl_tickethist (ticket_no, date_updated, status, userID)
+                VALUES (:ticket_no, NOW(), :status, :uid)
+            ")->execute([
+                ':ticket_no' => $ticket_no,
+                ':status'    => $status !== '' ? $status : 'Re-Opened',
+                ':uid'       => $reopened_by
+            ]);
+
+            echo json_encode(['status' => 'success', 'message' => 'Ticket successfully re-opened!']);
             
         } else {
-            echo json_encode(['status' => 'error', 'message' => 'Update execution failed for an unknown reason.']);
+            echo json_encode(['status' => 'error', 'message' => 'Failed to record ticket reopening.']);
         }
 
     } catch (PDOException $e) {
         echo json_encode(['status' => 'error', 'message' => 'Database Error: ' . $e->getMessage()]);
     }
 }
-
-
-
 
 // if ($_POST["operation"] == "Save and Reply") {
 

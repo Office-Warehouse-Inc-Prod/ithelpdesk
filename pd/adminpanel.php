@@ -598,7 +598,7 @@ textarea.form-control:focus {
     
   }
 
-  
+ 
 
   #admin_report.admin-table th.active.text-center {
     background-color: #2b9827 !important;
@@ -658,16 +658,12 @@ textarea.form-control:focus {
 #transferred_data td {
   border-bottom: 1px solid #0e0e0ea1 !important; 
 }
-
 </style>
         
 <div id="welcomeModal" class="modal-overlay" style="display: none; ">
     <div class="modal-content">
-        <h3>Purchasing Department HelpDesk Efficiency & Performance Report</h3>
+        <h3>Purchasing Department  HelpDesk Efficiency & Performance Report</h3>
         <p>As of the Year -  2026</p>
-
-  
-
          <table id="admin_report" class="table admin-table m-0">
                     <thead>  
                       <tr>
@@ -677,14 +673,14 @@ textarea.form-control:focus {
                         </th>
                       </tr>
                       
-                <tr style="background-color: #213456; color: #ffffff;">
-                    <th style="background-color: #213456; color: #ffffff; font-size: 12px; vertical-align: middle;">MONTH</th>
-                    <th class="text-center" style="background-color: #213456; color: #ffffff; font-size: 12px; vertical-align: middle;">ACTIVE TICKETS</th>
-                    <th class="text-center" style="background-color: #213456; color: #ffffff; font-size: 12px; vertical-align: middle;">COMPLIANCE RATE</th>
-                    <th class="text-center" style="background-color: #213456; color: #ffffff; font-size: 12px; vertical-align: middle;">MET SLA</th>
-                    <th class="text-center" style="background-color: #213456; color: #ffffff; font-size: 12px; vertical-align: middle;">NON-SLA</th>
-                    <th class="text-center" style="background-color: #213456; color: #ffffff; font-size: 12px; vertical-align: middle;">SLA COMPLIANCE</th>
-                </tr>
+                      <tr style="background-color: #213456; color: #ffffff;">
+                         <th style="background-color: #213456; font-size: 12px; vertical-align: middle;">MONTH</th>
+                        <th class="text-center" style="background-color: #213456; font-size: 12px; vertical-align: middle;">ACTIVE TICKETS</th>
+                        <th class="text-center" style="background-color: #213456; font-size: 12px; vertical-align: middle;">COMPLIANCE RATE</th>
+                        <th class="text-center" style="background-color: #213456; font-size: 12px; vertical-align: middle;">MET SLA</th>
+                        <th class="text-center" style="background-color: #213456; font-size: 12px; vertical-align: middle;">NON-SLA</th>
+                        <th class="text-center" style="background-color: #213456; font-size: 12px; vertical-align: middle;">SLA COMPLIANCE</th>
+                      </tr>
                     </thead>
                     
                     <tbody id="dept-table-body">
@@ -818,9 +814,7 @@ textarea.form-control:focus {
           <div class="d-flex align-items-center gap-3">
             <form action="testcalendar.php" method="POST" class="m-0">
               <input type="hidden" name="u_id" value="<?php echo $_SESSION['user_id']; ?>">
-              <button type="submit" id="showCalendarBtn" class="btn">
-                <i class="fas fa-calendar-alt me-2"></i>CALENDAR
-              </button>
+           
             </form>
             <div class="form-check form-switch float-right m-3">
               <input class="form-check-input" style="margin-left:-50px;" type="checkbox" id="darkModeToggle">
@@ -946,7 +940,7 @@ textarea.form-control:focus {
 
               <div class="col-12 col-lg-6 mb-3">
                 <div class="card card2 h-100">
-                  <h5 class="card-header text-black" style="background: linear-gradient(135deg, #213456, #334c7a); color:black;">PD Support Logs
+                  <h5 class="card-header text-black" style="background: linear-gradient(135deg, #213456, #334c7a); color:black;">Admin Support Logs
                   </h5>
                   <div class="card-body">
                     <div id="chartdiv8"></div>
@@ -1009,7 +1003,7 @@ textarea.form-control:focus {
             </div><!-- /#ovrall -->
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" />
 
-           <!-- TABLES -->
+         <!-- TABLES -->
         <div class="row">
           <div class="col-12 mb-3">
             <div class="card card2">
@@ -1061,6 +1055,8 @@ textarea.form-control:focus {
 <div class="col-lg-12 Down" id="Down">
   <input type="hidden" id="myInput">
 </div>
+
+           
 
           </div><!-- /.container-fluid -->
       </div><!-- /#layoutSidenav_content -->
@@ -1449,14 +1445,36 @@ Start of Create Department Report Modal
 
   <script>
     $(document).ready(function () {
+      
+      // Initialize active dashcard filter variable globally
+      window.currentDashcardFilter = '';
+      
       // KPI Card Click Functionality
       $('.dashcard-clickable').on('click', function () {
-        const filterValue = $(this).data('filter');
+        const filterValue = $(this).data('filter') || '';
+        window.currentDashcardFilter = filterValue; // Record clicked dashcard
+        
+        const statusRegex = filterValue ? '^' + $.fn.dataTable.util.escapeRegex(filterValue) + '$' : '';
 
         if ($.fn.DataTable.isDataTable('#report_data')) {
-          const table = $('#report_data').DataTable();
-          table.search(filterValue).draw();
+          const reportTable = $('#report_data').DataTable();
+          reportTable.search('').column(6).search(filterValue ? statusRegex : '', true, false).draw();
         }
+        
+        if ($.fn.DataTable.isDataTable('#transferred_data')) {
+          const transferTable = $('#transferred_data').DataTable();
+          transferTable.search('').column(6).search(filterValue ? statusRegex : '', true, false).draw();
+        }
+
+        $('#report_data_filter_disabled').val(filterValue);
+        $('#transferred_data_filter_disabled').val(filterValue);
+        
+        $('#report_data_free_search').val(filterValue);
+        $('#transferred_data_free_search').val(filterValue);
+
+              
+        $('#report_data_free_search2').val(filterValue);
+        $('#transferred_data_free_search2').val(filterValue);
 
         $('html, body').animate({
           scrollTop: $("#report_data").offset().top - 100
@@ -1465,9 +1483,7 @@ Start of Create Department Report Modal
         $(this).fadeOut(100).fadeIn(100);
       });
 
-      // Handle 'CREATE REPORT' Navbar Link Click
       $(document).on('click', '#navCreateReport', function (e) {
-        // If we are already on adminpanel.php, open the modal directly
         if (window.location.pathname.endsWith('adminpanel.php') || window.location.pathname.endsWith('/it/')) {
           e.preventDefault();
           $('#createReportModal').modal({ backdrop: 'static', keyboard: false });
@@ -1477,14 +1493,12 @@ Start of Create Department Report Modal
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.get('create') === 'true') {
         $('#createReportModal').modal({ backdrop: 'static', keyboard: false });
-        // Clean up url parameters without reloading
         window.history.replaceState({}, document.title, window.location.pathname);
       }
 
-      // Reset Form when Modal Closes or Opens
       $('#createReportModal').on('show.bs.modal', function () {
         $('#create_report_form').trigger('reset');
-        $('#create_store').val('201'); // Auto-select CEN | CENTRAL OFFICE - LIBIS
+        $('#create_store').val('201'); 
         $('#create_subject').val(null).trigger('change');
         $('#create_sub').val(null).trigger('change');
         $('#create_sub_group').hide();
@@ -1492,7 +1506,6 @@ Start of Create Department Report Modal
         $('#create_ticket_no').val('');
       });
 
-      // Populate dynamic categories and fetch ticket numbers when Attention To Department changes
       $("#create_deptsel").on("change", function () {
         $('#create_subject').val(null).trigger('change');
         $('#create_sub').val(null).trigger('change');
@@ -1502,7 +1515,7 @@ Start of Create Department Report Modal
         $("#create_subject").select2({
           dropdownParent: $('#createReportModal'),
           width: '100%',
-          minimumResultsForSearch: Infinity, // Disable search box
+          minimumResultsForSearch: Infinity,
           ajax: {
             url: "../users/select.php",
             type: "get",
@@ -1523,7 +1536,6 @@ Start of Create Department Report Modal
           }
         });
 
-        // Dynamic Ticket Number Generation Fetch
         $.post('../users/fetch.php', { operation: 'search_tkt', iN: val }, function (data) {
           if (data && data[0]) {
             let next_tktno = data[0].ticket_no;
@@ -1553,7 +1565,6 @@ Start of Create Department Report Modal
         });
       });
 
-      // Validate uploaded file size and extensions
       $('#create_file-input').on('change', function () {
         for (var i = 0; i < this.files.length; ++i) {
           var file = this.files[i];
@@ -1580,7 +1591,6 @@ Start of Create Department Report Modal
         }
       });
 
-      // Handle AJAX Submission of Department Ticket
       $('#create_report_form').on('submit', function (e) {
         e.preventDefault();
 
@@ -1681,6 +1691,16 @@ $(document).ready(function() {
         $modal.css('display', 'none');
     });
     loadDepartmentTable();
+    
+    // Handle the status change to show/hide CLOSED BY and DATE CLOSED properly
+    $('#status').on('change', function() {
+        var stat = $(this).val();
+        if (stat === 'CLOSED' || stat === 'SUBJECT FOR CLOSING') {
+            $('.hide_cl').slideDown(200);
+        } else {
+            $('.hide_cl').slideUp(200);
+        }
+    });
 });
 
 function loadDepartmentTable() {
@@ -1712,7 +1732,7 @@ function loadDepartmentTable() {
                     statsByMonth[parseInt(row.MONTH_NUM)] = row;
                 });
 
-                for (let m = 1; m <= 8; m++) {
+                for (let m = 1; m <= 9; m++) {
                     let row = statsByMonth[m];
                     let monthName = monthNames[m];
 
@@ -1812,9 +1832,6 @@ function loadDepartmentTable() {
         }
     });
 }
-
-
-
 $(document).ready(function() {
     $('button[data-toggle="tab"]').on('shown.bs.tab', function (e) {
         var targetTab = $(e.target).attr("id"); 

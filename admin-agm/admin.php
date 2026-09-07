@@ -458,16 +458,16 @@ NEW SUPPLIES REQUEST
               </a>
             </div>
           </li>
-          <li class="nav-item dropdown">
+         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="genReportDrop" role="button" data-toggle="dropdown">
               <i class="fas fa-boxes-stacked"> <span class="badge badge-danger" id="notif_fa"></i> FIXED ASSET
             </a>
             <div class="dropdown-menu" aria-labelledby="genReportDrop">
               <a class="dropdown-item" href="fix_asset.php">
-                <i class="fa fa-calendar-day"> <span class="badge badge-danger" id="notif_verification">  </i>   For Approval
+                <i class="fa-solid fa-circle-check"> <span class="badge badge-danger" id="notif_verification">  </i>   For Verification
               </a>
               <a class="dropdown-item" href="fix_asset_reports.php">
-                <i class="fa-solid fa-arrow-trend-up"></i> Fixed Asset Reports
+                <i class="fas fa-file-lines"></i> Fixed Asset Reports
               </a>
             </div>
           </li>

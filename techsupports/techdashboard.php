@@ -775,6 +775,35 @@ textarea.form-control:focus {
     border-radius: 6px 6px 0 0;
   }
   .nav-tabs .nav-link:focus { outline: none; box-shadow: none; }
+
+  /* Responsive Side-by-Side Action Buttons */
+  .action-btn-container {
+    display: flex;
+    flex-direction: row !important; /* Forces them to stay side-by-side */
+    flex-wrap: nowrap !important; /* Prevents them from dropping to the next line */
+    gap: 4px;
+    width: 100%;
+    min-width: 140px; /* Ensures the column doesn't crush the buttons completely */
+  }
+
+  .action-btn-container .btn {
+    flex: 1 1 50%; /* Makes both buttons take up exactly half the available space */
+    white-space: nowrap; /* Keeps the text on a single line */
+    font-size: clamp(8px, 1.5vw, 11px) !important; /* Shrinks font smoothly on small screens */
+    padding: 4px 6px !important; /* Compact padding */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  @media (max-width: 767px) {
+    .action-btn-container {
+      flex-direction: column; /* Stacks buttons vertically on mobile */
+    }
+    .action-btn-container .btn {
+      width: 100%; /* Makes buttons full width of the cell on mobile */
+    }
+  }
 </style>
 
 
@@ -1160,7 +1189,7 @@ textarea.form-control:focus {
                   </div>
 
                   <div class="form-group col-12 col-md-4">
-                    <label>I.T SUPPORT</label>
+                    <label>ASSIGN SUPPORT</label>
                     <input type="hidden" name="it_num" id="it_num" readonly>
                     <select class="form-control form-control-sm" name="itsup" id="itsup" required>
                       <option value="">Assign support...</option>
@@ -1643,11 +1672,11 @@ function admin_datatable(t){
             { 
                 title: "ACTION", 
                 data: null, 
-                render: function(data, type, row) {
+               render: function(data, type, row) {
                     return `
-                     <div style="display: flex; gap: 5px;">
-                        <button type="button" class='btn btn-danger btn-sm edit-btn' name='update'><i class='fas fa-edit'></i>EDIT</button>
-                        <button type="button" class='btn btn-primary btn-sm print-btn' data-id='${row.ticket_no}'>FIXED ASSET</button>
+                     <div class="action-btn-container">
+                        <button type="button" class='btn btn-danger btn-sm edit-btn' name='update'><i class='fas fa-edit me-1'></i>EDIT</button>
+                        <button type="button" class='btn btn-primary btn-sm print-btn' data-id='${row.ticket_no}'>FIX ASSET</button>
                      </div>
                     `;
                 }
@@ -1812,6 +1841,15 @@ function open_ticket_modal(data) {
     $('#via').val(data['via']);
     $('#status').val(data['status']);
     $('#it_num').val(data['itsup']);
+    
+    if (data['itsup'] && $('#itsup option[value="' + data['itsup'] + '"]').length === 0) {
+        $('<option>', {
+            value: data['itsup'],
+            text: data['it_desc'] ? data['it_desc'] : 'Assigned Support (ID: ' + data['itsup'] + ')',
+            class: 'temp-option'
+        }).appendTo('#itsup');
+    }
+    
     $('#itsup').val(data['itsup']);
     $('#cat_num').val(data['cat_id']);
     

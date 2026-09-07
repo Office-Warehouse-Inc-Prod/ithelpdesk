@@ -7,14 +7,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mode'])) {
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
-    $inactive = 180;
-    if (isset($_SESSION['start']) && (time() - $_SESSION['start'] > $inactive)){
-        session_unset();
-        session_destroy();
-        echo json_encode(["status" => "error", "message" => "Session expired. Please log in again."]);
-        exit();
-    }
-    $_SESSION['start'] = time();
+ 
     if ($_POST['mode'] === 'fa_tbl') {
         try {
             $sql = "SELECT 
@@ -129,13 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mode'])) {
 }
 
 include 'admin.php';
-$inactive = 180;
-if (isset($_SESSION['start']) && (time() - $_SESSION['start'] > $inactive)){
-  // use client-side redirect after 3 minutes to avoid "headers already sent"
-  echo '<script>setTimeout(function(){ window.location.href = "adminpanel.php"; }, 180000);</script>';
-  exit();
-}
-$_SESSION['start'] = time();
+
 ?>
 <head>
     <link rel="stylesheet" href="../css/bootstrap-datetimepicker.min.css"/>
@@ -228,10 +215,7 @@ $_SESSION['start'] = time();
                   </div>
 
 
-                   <div class="form-group col-md-12">
-                    <label>Purpose of Request (Rephrase for Printing)</label>
-                    <textarea class="form-control" name="revised_request" id="revised_request"  style="height: 150px;" maxlength="70"></textarea>
-                  </div>
+                 
 
                    
 
@@ -245,7 +229,7 @@ $_SESSION['start'] = time();
 
                   <div class="form-group col-md-5">
                     <label>Date Inspected/Received</label>
-                    <input type="date" class="form-control" name="date_received" id="date_received" required>
+                    <input type="text" class="form-control" name="date_received" id="date_received" required>
                   </div>
 
                        <div class="form-group col-md-5">
@@ -495,18 +479,18 @@ $(document).ready(function(){
       $('#recommendation').val(data['recommendation']);
      $('#status').val(data['status']);
 var isTechnical = data['is_technical'] !== undefined && data['is_technical'] !== null ? parseInt(data['is_technical']) : 1;
- if (isTechnical === 1) {
-        
-          
-          $('#technical_workoutput_section').hide();
-          $('#additional_technical_fields').show();
 
-      } else {
-
-          
-          $('#technical_workoutput_section').show();
-          $('#additional_technical_fields').hide();
-      }
+if (isTechnical === 1) {
+    $('#technical_workoutput_section').hide();
+    $('#technical_workoutput').prop('required', false);
+    $('#additional_technical_fields').show();
+    $('#additional_technical_fields textarea').prop('required', true);
+} else {
+    $('#technical_workoutput_section').show();
+    $('#technical_workoutput').prop('required', true);
+    $('#additional_technical_fields').hide();
+    $('#additional_technical_fields textarea').prop('required', false);
+}
       if (data['it_desc'] && data['it_desc'].trim() !== "") {
           $('#it_desc').val(data['it_desc']);
           $('#item_received_by_hidden').val(""); 
@@ -539,9 +523,9 @@ var isTechnical = data['is_technical'] !== undefined && data['is_technical'] !==
         dataType: 'json', 
         data: { ticket_no: data['ticket_no'] },
         success: function(response) {
-           const statusLevels = {
+               const statusLevels = {
                 'submitted': 1, 'noted': 2, 'validated': 3, 
-                'verified': 4, 'printed': 5, 'approved': 6,  'rejected': 6, 'completed': 7
+                'verified': 4, 'printed': 5, 'approved': 6,  'rejected': 6, 'purchased': 7, 'completed': 8
             };
 
             let dbStatus = (response.status || "").toLowerCase().trim();
@@ -561,23 +545,25 @@ var isTechnical = data['is_technical'] !== undefined && data['is_technical'] !==
 
               trackSteps.push(
                 { desc: "For admin support validation", date: null, reqLevel: isTechnical === 1 ? 2 : 1 }, 
-                { desc: "Validated by admin support", date: response.date_validated, reqLevel: isTechnical === 1 ? 3 : 2 },
-                { desc: "For administrative verification", date: null, reqLevel: isTechnical === 1 ? 3 : 2 }, 
-                { desc: "Verified by the administrator", date: response.date_verified, reqLevel: isTechnical === 1 ? 4 : 3 },
-                { desc: "For printing request form", date: null, reqLevel: isTechnical === 1 ? 4 : 3 }, 
-                { desc: "Printed", date: response.date_printed, reqLevel: isTechnical === 1 ? 5 : 4 },
-                { desc: "For General Manager Approval", date: null, reqLevel: isTechnical === 1 ? 5 : 4 }
+                { desc: "Validated by admin support", date: response.date_validated, reqLevel: isTechnical === 1 ? 3 : 3 },
+                { desc: "For administrative verification", date: null, reqLevel: isTechnical === 1 ? 3 : 3 }, 
+                { desc: "Verified by the administrator", date: response.date_verified, reqLevel: isTechnical === 1 ? 4 : 4 },
+                { desc: "For printing request form", date: null, reqLevel: isTechnical === 1 ? 4 : 4 }, 
+                { desc: "Printed", date: response.date_printed, reqLevel: isTechnical === 1 ? 5 : 5 },
+                { desc: "For General Manager Approval", date: null, reqLevel: isTechnical === 1 ? 5 : 5 }
             );
 
             if (dbStatus === 'rejected') {
                 trackSteps.push(
-                    { desc: "Rejected by General Manager", date: response.date_rejected || response.date_updated, reqLevel: isTechnical === 1 ? 6 : 5, isRejected: true }
+                    { desc: "Rejected by General Manager", date: response.date_rejected || response.date_updated, reqLevel: isTechnical === 1 ? 6 : 6, isRejected: true }
                 );
             } else {
                 trackSteps.push(
-                    { desc: "Approved by General Manager", date: response.date_approved, reqLevel: isTechnical === 1 ? 6 : 5 },
-                    { desc:  "Transferred to PD for Procurement", date: null, reqLevel: isTechnical === 1 ? 6 : 5 }, 
-                    { desc: "Asset replaced / Completed", date: response.date_completed, reqLevel: isTechnical === 1 ? 7 : 6 }
+                    { desc: "Approved by General Manager", date: response.date_approved, reqLevel: isTechnical === 1 ? 6 : 6 },
+                    { desc:  "Transferred to PD for Procurement", date: null, reqLevel: isTechnical === 1 ? 6 : 6 }, 
+                    { desc:  "Asset Purchased", date: response.date_purchased,  reqLevel: isTechnical === 1 ? 7 : 7 }, 
+                    { desc: "Asset Ready for Release", date: null, reqLevel: isTechnical === 1 ? 7 : 7 }, 
+                    { desc: "Asset replaced / Completed", date: response.date_completed, reqLevel: isTechnical === 1 ? 8 : 8 }
                 );
             }
 
@@ -590,7 +576,7 @@ var isTechnical = data['is_technical'] !== undefined && data['is_technical'] !==
                 let textStyle = step.isRejected ? 'style="color: #dc3545; font-weight: bold;"' : '';
 
 
-                timelineHtml += `
+                  timelineHtml += `
                     <li class="timeline-item ${statusClass}">
                         <div class="timeline-icon" ${iconStyle}></div>
                         <div class="timeline-desc" ${textStyle}>${step.desc}</div>
@@ -667,26 +653,6 @@ var isTechnical = data['is_technical'] !== undefined && data['is_technical'] !==
   });
 });
 
-// Global Utilities
-let inactivityTime = function(){
-  let time;
-
-  window.onload = resetTimer;
-  document.onmousemove = resetTimer;
-  document.onkeypress = resetTimer;
-  document.onscroll = resetTimer;
-  document.onclick = resetTimer;
-
-  function logout(){
-    window.location.href = 'adminpanel.php';
-  }
-
-  function resetTimer(){
-    clearTimeout(time);
-    time = setTimeout(logout, 180000)
-  }
-};
-inactivityTime();
 
 function handleDropdownChange(selectElement) {
   if (selectElement.value === "") {

@@ -407,6 +407,15 @@ NEW REPORTS
 REQUEST TO TRANSFER
 </a>
 </li>
+
+
+<li class="nav-item">
+<a class="nav-link " href="adminreopen.php">
+<i class="fas fa-ticket">
+</i>
+REOPEN TICKET
+</a>
+</li>
 <li class="nav-item">
 
 </li>

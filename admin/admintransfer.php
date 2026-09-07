@@ -2,7 +2,6 @@
 $inactive = 180;
 if (isset($_SESSION['start']) && (time() - $_SESSION['start'] > $inactive)){
     session_unset();
-    // removed session_destroy() to avoid "headers already sent" warnings
     echo '<script>setTimeout(function(){ window.location.href = "adminpanel.php"; }, 180000);</script>';
     exit();
 }
@@ -72,8 +71,16 @@ $con1 = new dbconfig();
             margin-bottom: 20px; 
         }
 
-        .dataTables_filter { position: relative; display: inline-block; margin: 0 !important; }
-        .dataTables_filter label { display: flex; align-items: center; margin-bottom: 0; }
+        .dataTables_filter { 
+        position: relative; 
+        display: inline-block; 
+        margin: 0 !important; 
+        }
+        .dataTables_filter label { 
+        display: flex; 
+        align-items: center; 
+        margin-bottom: 0; 
+        }
         .dataTables_filter::before { 
             content: "\f002"; 
             font-family: "Font Awesome 5 Free"; 
@@ -181,7 +188,12 @@ $con1 = new dbconfig();
             border-color: rgba(114, 89, 21, 0.94) !important;
         }
 
-        #msg_thread { padding: 1.5rem; height: 100%; display: flex; flex-direction: column; }
+        #msg_thread { 
+            padding: 1.5rem; 
+            height: 100%; 
+            display: flex; 
+            flex-direction: column; 
+        }
         .container_remarks {
             display: flex !important;
             flex-direction: column;
@@ -205,18 +217,53 @@ $con1 = new dbconfig();
             box-shadow: 0 1px 2px rgba(0,0,0,0.1); 
             word-wrap: break-word; 
         }
-        .chat-left { align-self: flex-start; background: #ffffff; color: #1e293b; border-bottom-left-radius: 4px; border: 1px solid #e5e7eb; }
-        .chat-right { align-self: flex-end; background: #1C0770; color: #ffffff; border-bottom-right-radius: 4px; }
-        .msg-meta { display: flex; justify-content: space-between; gap: 15px; font-size: 0.7rem; margin-bottom: 4px; }
-        .chat-left .msg-meta { color: #64748b; }
-        .chat-right .msg-meta { color: rgba(255, 255, 255, 0.85); }
-        .chat-left .msg-meta-name, .chat-right .msg-meta-name { font-weight: bold; }
-        .chat-left .msg-meta-name { color: #213456; }
-        .chat-right .msg-meta-name { color: #ffffff; }
+        .chat-left { 
+            align-self: flex-start; 
+            background: #ffffff; 
+            color: #1e293b; 
+            border-bottom-left-radius: 4px; 
+            border: 1px solid #e5e7eb; 
+        }
+        .chat-right { 
+            align-self: flex-end; 
+            background: #1C0770; 
+            color: #ffffff; 
+            border-bottom-right-radius: 4px; 
+        }
+        .msg-meta { 
+            display: flex; 
+            justify-content: space-between;
+             gap: 15px; 
+             font-size: 0.7rem; 
+             margin-bottom: 4px; 
+            }
+        .chat-left .msg-meta { 
+            color: #64748b; 
+        }
+        .chat-right .msg-meta { 
+            color: rgba(255, 255, 255, 0.85); 
+        }
+        .chat-left .msg-meta-name, .chat-right .msg-meta-name { 
+            font-weight: bold; 
+        }
+        .chat-left .msg-meta-name { 
+            color: #213456; 
+        }
+        .chat-right .msg-meta-name { 
+            color: #ffffff; 
+        }
 
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.1); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #837031, #E1AD01); border-radius: 10px; }
+        ::-webkit-scrollbar { 
+            width: 8px; 
+        }
+        ::-webkit-scrollbar-track { 
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 10px; 
+        }
+        ::-webkit-scrollbar-thumb { 
+            background: linear-gradient(135deg, #837031, #E1AD01); 
+            border-radius: 10px; 
+        }
         
         .btn-success { 
             background-color: #1C0770 !important; 
@@ -365,9 +412,10 @@ $con1 = new dbconfig();
                     </div>
                 </div>
 
-                <div class="modal-footer d-flex justify-content-end">
+               <div class="modal-footer d-flex justify-content-end">
                     <input type="hidden" name="operation" id="operation" />
                     <input type="hidden" name="u_id" value="<?php echo $_SESSION['user_id'] ?? ''; ?>">
+                    <input type="hidden" name="is_transfer" value="1" />
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="submit" id="action" class="btn btn-success">Save & Reply</button>
                 </div>
@@ -627,9 +675,12 @@ function loadCommentThread(ticket_no) {
             if (Array.isArray(response) && response.length > 0) {
                 var currentUserIdStr = "<?= $_SESSION['user_id'] ?? '' ?>";
                 var currentUserNameStr = "<?= $_SESSION['fname'] ?? '' ?>";
-                let reversedResponse = response.slice().reverse();
+                
+                let sortedResponse = response.slice().sort((a, b) => {
+                    return new Date(b.comment_date.replace(/-/g, '/')) - new Date(a.comment_date.replace(/-/g, '/'));
+                });
 
-                reversedResponse.forEach(function(comment, index) {
+                sortedResponse.forEach(function(comment, index) {
                     let sender = comment.userId || 'Unknown';
                     let isMe = false;
                     if(currentUserIdStr !== "" && sender === currentUserIdStr) isMe = true;
@@ -661,7 +712,8 @@ function loadCommentThread(ticket_no) {
                 setTimeout(() => {
                     const $container = $('.container_remarks');
                     if ($container.length) {
-                        $container.animate({ scrollTop: $container.prop("scrollHeight") }, 600, 'swing');
+                     
+                        $container.animate({ scrollTop: 0 }, 600, 'swing');
                     }
                 }, 200);
             });

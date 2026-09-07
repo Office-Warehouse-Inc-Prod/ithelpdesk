@@ -688,7 +688,6 @@ textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
   .btn {  
     background-color: white !important;
     border: 2px solid #213456;
-    border-color: var(--gold-accent);
     font-weight: 700;
     color: #213456;
   }

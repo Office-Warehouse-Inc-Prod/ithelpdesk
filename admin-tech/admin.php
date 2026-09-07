@@ -20,7 +20,7 @@ Minor Fixes:
 <?php
 session_start();
 if ($_SESSION['login'] != 'true') {
-  header("Location: index.php");
+  header("Location: adminpanel.php");
   exit();
 }
 ?>
@@ -460,7 +460,7 @@ body {
             </a>
             <div class="dropdown-menu" aria-labelledby="maintDrop">
               <a class="dropdown-item" href="fix_asset.php"><i class="fas fa-circle-check"> <span class="badge badge-info" id="notif_approval"></span></i> For Approval</a>
-              <a class="dropdown-item" href="fix_asset_reports.php"><i class="fas fa-chart-bar"></i> Fix Asset Reports</a>
+              <a class="dropdown-item" href="fix_asset_reports.php"><i class="fas fa-file-lines"></i> Fix Asset Reports</a>
             </div>
           </li>
         </ul>
@@ -811,7 +811,7 @@ body {
     }
 
     var currentUrl = window.location.pathname.split("/").pop();
-    if (currentUrl === "" || currentUrl === "index.php") {
+    if (currentUrl === "" || currentUrl === "adminpanel.php") {
       currentUrl = "adminpanel.php";
     }
 

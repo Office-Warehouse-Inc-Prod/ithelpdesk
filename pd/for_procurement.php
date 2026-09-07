@@ -9,13 +9,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mode'])) {
     }
     $inactive = 180;
     if (isset($_SESSION['start']) && (time() - $_SESSION['start'] > $inactive)){
-        session_unset();
-        session_destroy();
+      
         echo json_encode(["status" => "error", "message" => "Session expired. Please log in again."]);
         exit();
     }
     $_SESSION['start'] = time();
-    if ($_POST['mode'] === 'printing_tbl') {
+    if ($_POST['mode'] === 'procurement_tbl') {
         try {
             $sql = "SELECT 
                         r.ticket_no, r.date_created, r.concern, r.service_desc, r.subject,
@@ -141,7 +140,7 @@ $_SESSION['start'] = time();
     <script src="../js/fnReloadAjax.js"></script>
 </head>
 <style>
-  #fix_asset_printing {
+  #for_procurement {
     background-color: #ffffff;
     border-collapse: separate;
     border-spacing: 0;
@@ -151,7 +150,7 @@ $_SESSION['start'] = time();
     border: 1px solid #e9ecef;
   }
 
-  #fix_asset_printing thead th {
+  #for_procurement thead th {
     background-color: #54699e;
     color: white;
     font-weight: 600;
@@ -161,13 +160,13 @@ $_SESSION['start'] = time();
     padding: 15px;
   }
 
-  #fix_asset_printing tbody td {
+  #for_procurement tbody td {
     padding: 12px 15px;
     vertical-align: middle;
     color: #333;
   }
 
-  #fix_asset_printing tbody tr:hover {
+  #for_procurement tbody tr:hover {
     background-color: #bec5d1 !important;
     color: #ffffff !important;
     cursor: pointer;
@@ -178,13 +177,13 @@ $_SESSION['start'] = time();
     border-radius: 8px;
     margin-top: 20px;
   }
-  #printing_Modal .modal-content {
+  #procurement_Modal .modal-content {
     border: none;
     border-radius: 15px;
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
   }
 
-  #printing_Modal .modal-header {
+  #procurement_Modal .modal-header {
     background-color: #213456;
     color: #fff;
     border-top-left-radius: 15px;
@@ -192,31 +191,31 @@ $_SESSION['start'] = time();
     border-bottom: 4px solid #E1AD01; 
   }
 
-  #printing_Modal .modal-title {
+  #procurement_Modal .modal-title {
     font-weight: 700;
     letter-spacing: 0.5px;
     display: flex;
     align-items: center;
   }
 
-  #printing_Modal .input-group-text {
+  #procurement_Modal .input-group-text {
     background-color: #f8f9fa;
     border-right: none;
     color: #213456;
   }
 
-  #printing_Modal .form-control {
+  #procurement_Modal .form-control {
     border-left: none;
     height: 45px;
     border-radius: 0 8px 8px 0;
   }
 
-  #printing_Modal .form-control:focus {
+  #procurement_Modal .form-control:focus {
     border-color: #ced4da;
     box-shadow: none;
   }
 
-  #printing_Modal .input-group:focus-within {
+  #procurement_Modal .input-group:focus-within {
     box-shadow: 0 0 0 0.2rem rgba(225, 173, 1, 0.25);
     border-radius: 8px;
   }
@@ -314,7 +313,7 @@ body {
   .container.mt-3 { padding-top: 10px; padding-bottom: 24px; }
 
  
-#fix_asset_printing { width:100% !important; }
+#for_procurement { width:100% !important; }
 
 .table-wrap {
   background: var(--card);
@@ -771,14 +770,14 @@ textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
  
 <div class="container" style="max-width:1800px;">
   <div class="table-responsive-xl">
-    <table class="table table-hover" id="fix_asset_printing"></table>
+    <table class="table table-hover" id="for_procurement"></table>
   </div>
 </div>
 
 <script src="../js/coms.js"></script> 
-<div class="modal fade" id="printing_Modal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="procurement_Modal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog" style="max-width: 80%; width: 80%;">
-      <form id="printing_form" action="insert.php" method="POST">
+      <form id="procurement_form" action="insert.php" method="POST">
         <div class="modal-content">
           <div class="modal-header">
               <h5 class="modal-title">Fixed Asset Information</h5>
@@ -789,7 +788,7 @@ textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
 
           <div class="modal-body">
             <div class="row">
-               <div class="col-md-6 border-right pt-2 pb-2">
+               <div class="col-md-5 border-right pt-2 pb-2">
             
                 <h6 class="text-uppercase mb-3" style="color:#213456; font-weight: 800;">Request Details</h6> 
                 
@@ -834,10 +833,7 @@ textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
                     <label>Asset Tag Number</label>
                     <input type="text" class="form-control" name="asset_tag_number" id="asset_tag_number" >
                   </div>
-                      <div class="form-group col-md-12">
-                    <label>Workoutput (Under Technical Evaluation)</label>
-                    <textarea class="form-control" name="technical_workoutput" id="technical_workoutput" style="height: 150px;" readonly></textarea>
-                  </div>
+                 
 
 
                   <div class="form-group col-md-12">
@@ -852,16 +848,18 @@ textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
 
                    
 
-                  <div class="form-group col-md-5">
-                    <label>Item Received By</label>
-                    <input type="text" class="form-control" name="item_received_by" id="it_desc" readonly>
+                 
+                   <div class="form-group col-md-5">
+                      <label>Item Inspected/Received By</label>
+                      <input type="text" class="form-control" id="it_desc" readonly>
+                      <input type="hidden" name="item_received_by" id="it_desc">
                   </div>
                     
                   <input type="hidden" class="form-control" name="received_by" value="<?php echo $_SESSION['tech_id'] ?? ''; ?>" readonly>
 
                   <div class="form-group col-md-5">
-                    <label>Date Received</label>
-                    <input type="text" class="form-control" name="date_received" id="date_received" >
+                    <label>Date Inspected/Received</label>
+                    <input type="text" class="form-control" name="date_received" id="date_received" required>
                   </div>
 
                        <div class="form-group col-md-5">
@@ -871,12 +869,43 @@ textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
                 </div>
               </div>
 
-                <div class="col-md-6 border-right pt-2 pb-2" style="background: linear-gradient(to bottom, #ffffff, #f0f3f7);">
-          <h6 class="text-uppercase mb-3" style="color:#E1AD01; font-weight: 800;">Asset Request Progress</h6>
+                <div class="col-md-4 border-right pt-2 pb-2" style="background: linear-gradient(to bottom, #ffffff, #f0f3f7);">
+           <div class="form-group col-md-12" id="technical_workoutput_section">
+                    <label>Workoutput (Under Assigned Support Evaluation)</label>
+                    <textarea class="form-control" name="technical_workoutput" id="technical_workoutput" style="height: 350px;" required></textarea>
+                  </div>
+                  
+                  <div id="additional_technical_fields">
+                      <label>Problem Reported:</label>
+                      <div class="form-group col-md-12">
+                        <textarea class="form-control" name="problem_reported" id="problem_reported" style="height: 120px;" required readonly> </textarea>
+                      </div>
+                       <label>Verification/Findings: </label>
+                      <div class="form-group col-md-12">
+                        <textarea class="form-control" name="verification_findings" id="verification_findings" style="height: 120px;" required readonly></textarea>
+                      </div>
+                       <label>Work Done/Technical Solutions Provided:</label>
+                      <div class="form-group col-md-12">
+                        <textarea class="form-control" name="work_done" id="work_done" style="height: 120px;" required readonly></textarea>
+                      </div>
+                       <label>Status/Work Output:</label>
+                      <div class="form-group col-md-12">
+                        <textarea class="form-control" name="status_workoutput" id="status_workoutput" style="height: 120px;" required readonly></textarea>
+                      </div>
+                       <label>Recommendations/Suggestions:</label>
+                      <div class="form-group col-md-12">
+                        <textarea class="form-control" name="recommendation" id="recommendation" style="height: 120px;" required readonly></textarea>
+                      </div>
+                  </div>
+          </div>
+
+            <div class="col-md-3 border-right pt-2 pb-2" style="background: linear-gradient(to bottom, #ffffff, #f0f3f7);">
+            <h6 class="text-uppercase mb-3" style="color:#E1AD01; font-weight: 800;">Asset Request Progress</h6>
                             <div class="tracking-container" style="max-height: 500px; overflow-y: auto; padding-right: 10px;">
                                 <ul class="tracking-timeline" id="trackingMap"></ul>
                             </div>
-                            <h6 class="text-uppercase mb-3" style="color:#213456; font-weight: 800;">Remarks Thread</h6>
+
+                              <h6 class="text-uppercase mb-3" style="color:#213456; font-weight: 800;">Remarks Thread</h6>
                 
                 <div id="remarks_thread_container" class="chat-container">
                 
@@ -888,16 +917,18 @@ textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
                         <i class="fas fa-paper-plane"></i> Send Remark
                     </button>
                 </div>
+
+
           </div>
 
-            
+  
             </div>
           </div>
 
           <div class="modal-footer">
-            <input type="hidden" name="operation" id="operation" value="update_printing_request">
+            <input type="hidden" name="operation" id="operation" value="update_procurement">
             <input type="hidden" name="u_id" value="<?php echo $_SESSION['user_id'] ?? ''; ?>">
-            <button type="submit" class="btn"><strong>MARK AS PRINTED</strong></button>
+            <button type="submit" class="btn"><strong> MARK AS ASSET PURCHASED</strong></button>
           </div>
         </div>
       </form>
@@ -948,15 +979,15 @@ $(document).ready(function(){
   $("div.selected select").val("OPEN");
 
   function getdata(){
-    $.post('fetchdata/fetch_data.php', {mode: 'printing_tbl'}, function(data){
+    $.post('fetchdata/fetch_data.php', {mode: 'procurement_tbl'}, function(data){
       admin_datatable(data);
     }, 'json');
   }
   getdata();
 
   function admin_datatable(t){
-    const dataset = t.printingdata;
-    reptable = $("#fix_asset_printing").DataTable({
+    const dataset = t.procurementdata;
+    reptable = $("#for_procurement").DataTable({
       "dom": '<"pull-left"lf><"pull-right">tip',
       stateSave: true,
       "bDestroy": true,
@@ -976,7 +1007,7 @@ $(document).ready(function(){
         {title:"Dept/Branch", data:"str_name","defaultContent": ""},
         {title:"Employee", data:"full_name","defaultContent": ""},
         {title:"Ticket Date", data:"ticket_created","defaultContent": ""},
-        {title:"Item Code", data:"item_code","defaultContent": ""},
+      
         {title:"Description", data:"description","defaultContent": ""},
         {title:"Serial", data:"serial_number","defaultContent": ""},
         
@@ -1006,7 +1037,7 @@ $(document).ready(function(){
       getdata();
     }, 60000);
 
-    $('#fix_asset_printing tbody').off('click', 'button[name="update"]').on('click', 'button[name="update"]', function (e) {
+    $('#for_procurement tbody').off('click', 'button[name="update"]').on('click', 'button[name="update"]', function (e) {
       e.stopPropagation();
       var data = reptable.row($(this).parents('tr')).data();
       if(!data) return;
@@ -1025,8 +1056,41 @@ $(document).ready(function(){
       $('#it_desc').val(data['it_desc']);
          $('#noted_by_desc').val(data['noted_by_desc']);
       $('#date_received').val(data['date_received']);
+      $('#problem_reported').val(data['problem_reported']);
+      $('#verification_findings').val(data['verification_findings']);
+      $('#work_done').val(data['work_done']);
+      $('#status_workoutput').val(data['status_workoutput']);
+      $('#recommendation').val(data['recommendation']);
      $('#status').val(data['status']);
 
+     var isTechnical = data['is_technical'] !== undefined && data['is_technical'] !== null ? parseInt(data['is_technical']) : 1;
+
+if (isTechnical === 1) {
+    $('#technical_workoutput_section').hide();
+    $('#technical_workoutput').prop('required', false);
+    $('#additional_technical_fields').show();
+    $('#additional_technical_fields textarea').prop('required', true);
+} else {
+    $('#technical_workoutput_section').show();
+    $('#technical_workoutput').prop('required', true);
+    $('#additional_technical_fields').hide();
+    $('#additional_technical_fields textarea').prop('required', false);
+}
+      if (data['it_desc'] && data['it_desc'].trim() !== "") {
+          $('#it_desc').val(data['it_desc']);
+          $('#item_received_by_hidden').val(""); 
+      } else {
+          $('#it_desc').val(loggedInName);
+          $('#item_received_by_hidden').val(loggedInId);
+      }
+
+      if (data['noted_by_desc'] && data['noted_by_desc'].trim() !== "") {
+          $('#noted_by_desc').val(data['noted_by_desc']);
+          $('#noted_by_hidden').val("");
+      } else {
+          $('#noted_by_desc').val(loggedInName);
+          $('#noted_by_hidden').val(loggedInId);
+      }
       $('#action').val("Update");
       $('#operation').val("update_printing_request"); 
 
@@ -1044,41 +1108,63 @@ $(document).ready(function(){
         dataType: 'json', 
         data: { ticket_no: data['ticket_no'] },
         success: function(response) {
-           const statusLevels = {
+            const statusLevels = {
                 'submitted': 1, 'noted': 2, 'validated': 3, 
-                'verified': 4, 'printed': 5, 'approved': 6, 'completed': 7
+                'verified': 4, 'printed': 5, 'approved': 6,  'rejected': 6, 'purchased': 7, 'completed': 8
             };
 
             let dbStatus = (response.status || "").toLowerCase().trim();
             let currentLevel = statusLevels[dbStatus] || 0; 
 
-            const trackSteps = [
+              let trackSteps = [
                 { desc: "Request submitted by store/user", date: response.date_created, reqLevel: 0 },
-                { desc: "Under assigned support evaluation", date: response.date_created, reqLevel: 0 },
-                { desc: "Submitted to technical/dept head", date: response.date_submitted, reqLevel: 1 },
-                { desc: "Approved and noted by technical/dept head", date: response.date_noted, reqLevel: 2 },
-                { desc: "For admin support validation", date: null, reqLevel: 2 }, 
-                { desc: "Validated by admin support", date: response.date_validated, reqLevel: 3 },
-                { desc: "For administrative verification", date: null, reqLevel: 3 }, 
-                { desc: "Verified by the administrator", date: response.date_verified, reqLevel: 4 },
-                { desc: "For printing request form", date: null, reqLevel: 4 }, 
-                { desc: "Printed", date: response.date_printed, reqLevel: 5 },
-                { desc: "For General Manager Approval", date: null, reqLevel: 5 }, 
-                { desc: "Approved by General Manager", date: response.date_approved, reqLevel: 6 },
-                { desc: "Ready for asset replacement", date: null, reqLevel: 6 }, 
-                { desc: "Asset replaced / Completed", date: response.date_completed, reqLevel: 7 }
+                { desc: "Under assigned support evaluation", date: response.date_created, reqLevel: 0 }
             ];
+
+            if (isTechnical === 1) {
+                trackSteps.push(
+                    { desc: "Submitted to technical/dept head", date: response.date_submitted, reqLevel: 1 },
+                    { desc: "Approved and noted by technical/dept head", date: response.date_noted, reqLevel: 2 }
+                );
+            }
+
+              trackSteps.push(
+                { desc: "For admin support validation", date: null, reqLevel: isTechnical === 1 ? 2 : 1 }, 
+                { desc: "Validated by admin support", date: response.date_validated, reqLevel: isTechnical === 1 ? 3 : 2 },
+                { desc: "For administrative verification", date: null, reqLevel: isTechnical === 1 ? 3 : 2 }, 
+                { desc: "Verified by the administrator", date: response.date_verified, reqLevel: isTechnical === 1 ? 4 : 3 },
+                { desc: "For printing request form", date: null, reqLevel: isTechnical === 1 ? 4 : 3 }, 
+                { desc: "Printed", date: response.date_printed, reqLevel: isTechnical === 1 ? 5 : 4 },
+                { desc: "For General Manager Approval", date: null, reqLevel: isTechnical === 1 ? 5 : 4 }
+            );
+
+            if (dbStatus === 'rejected') {
+                trackSteps.push(
+                    { desc: "Rejected by General Manager", date: response.date_rejected || response.date_updated, reqLevel: isTechnical === 1 ? 6 : 5, isRejected: true }
+                );
+            } else {
+                trackSteps.push(
+                    { desc: "Approved by General Manager", date: response.date_approved, reqLevel: isTechnical === 1 ? 6 : 5 },
+                    { desc:  "Transferred to PD for Procurement", date: null, reqLevel: isTechnical === 1 ? 6 : 5 }, 
+                    { desc:  "Asset Purchased", date: response.date_purchased,  reqLevel: isTechnical === 1 ? 7 : 6 }, 
+                    { desc: "Asset Ready for Release", date: null, reqLevel: isTechnical === 1 ? 7 : 6 }, 
+                    { desc: "Asset replaced / Completed", date: response.date_completed, reqLevel: isTechnical === 1 ? 8 : 7 }
+                );
+            }
 
             let timelineHtml = '';
             
             trackSteps.forEach((step) => {
                 let statusClass = (currentLevel >= step.reqLevel) ? "completed" : "";
                 let dateDisplay = step.date ? `<div class="timeline-date">${step.date}</div>` : '';
+                let iconStyle = step.isRejected ? 'style="background-color: #dc3545; border-color: #dc3545;"' : '';
+                let textStyle = step.isRejected ? 'style="color: #dc3545; font-weight: bold;"' : '';
 
-                timelineHtml += `
+
+                  timelineHtml += `
                     <li class="timeline-item ${statusClass}">
-                        <div class="timeline-icon"></div>
-                        <div class="timeline-desc">${step.desc}</div>
+                        <div class="timeline-icon" ${iconStyle}></div>
+                        <div class="timeline-desc" ${textStyle}>${step.desc}</div>
                         ${dateDisplay}
                     </li>
                 `;
@@ -1090,13 +1176,13 @@ $(document).ready(function(){
             $('#trackingMap').html('<p class="text-danger">Failed to load progress timeline.</p>');
         },
         complete: function() {
-            $('#printing_Modal').modal('show');
+            $('#procurement_Modal').modal('show');
         }
       });
     });
   }
 
-  $(document).on('submit', '#printing_form', function(event) {
+  $(document).on('submit', '#procurement_form', function(event) {
     event.preventDefault();
     event.stopImmediatePropagation();
     var formData = new FormData(this);
@@ -1122,8 +1208,8 @@ $(document).ready(function(){
             showConfirmButton: false,
             timer: 1500
           }).then(function() {
-            $('#printing_form')[0].reset();
-            $('#printing_Modal').modal('hide');
+            $('#procurement_form')[0].reset();
+            $('#procurement_Modal').modal('hide');
             getdata();
             location.reload();
           });

@@ -1628,35 +1628,7 @@ if ($_POST["operation"] == "Save and Reply") {
                  ':deptsel'     => '2'
             ));
 
-            if ($existingTransfer) {
-                $insertReassigned = $connection->prepare("
-                    INSERT INTO tbl_reassigned 
-                    (ticket_no, date_created, itsup, nw_sup, r_remarks, date_rasigned, deptsel) 
-                    VALUES 
-                    (:ticket_no, :date_created, :itsup, :nw_sup, :r_remarks, :date_rasigned, :deptsel)
-                ");
-
-                $insertReassigned->execute(array(
-                    ':ticket_no'     => $_POST["ticket_no"],
-                    ':date_created'  => date('Y-m-d H:i:s'),
-                    ':itsup'         => $_POST["itsup"],
-                    ':nw_sup'        => $_POST["nw_sup"] ?? '',       
-                    ':r_remarks'     => $_POST["remarks"],      
-                    ':date_rasigned' => date('Y-m-d H:i:s'),  
-                    ':deptsel'       => '2'      
-                ));
-            } else {
-                $insertTransfer2 = $connection->prepare("
-                   INSERT INTO tbl_reassigned
-                    (date_created)
-                    VALUES
-                    (:date_created)
-                ");
-
-                $insertTransfer2->execute(array(
-                      ':date_created' => date('Y-m-d H:i:s')
-                ));
-            }
+       
         }
        
         $connection->commit();

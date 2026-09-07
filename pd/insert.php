@@ -814,35 +814,7 @@ if ($_POST["operation"] == "Save and Reply") {
                  ':deptsel'     => '19'
             ));
 
-            if ($existingTransfer) {
-                $insertReassigned = $connection->prepare("
-                    INSERT INTO tbl_reassigned 
-                    (ticket_no, date_created, itsup, nw_sup, r_remarks, date_rasigned, deptsel) 
-                    VALUES 
-                    (:ticket_no, :date_created, :itsup, :nw_sup, :r_remarks, :date_rasigned, :deptsel)
-                ");
-
-                $insertReassigned->execute(array(
-                    ':ticket_no'     => $_POST["ticket_no"],
-                    ':date_created'  => date('Y-m-d H:i:s'),
-                    ':itsup'         => $_POST["itsup"],
-                    ':nw_sup'        => $_POST["nw_sup"] ?? '',       
-                    ':r_remarks'     => $_POST["remarks"],      
-                    ':date_rasigned' => date('Y-m-d H:i:s'),  
-                    ':deptsel'       => '19'      
-                ));
-            } else {
-                $insertTransfer2 = $connection->prepare("
-                   INSERT INTO tbl_reassigned
-                    (date_created)
-                    VALUES
-                    (:date_created)
-                ");
-
-                $insertTransfer2->execute(array(
-                      ':date_created' => date('Y-m-d H:i:s')
-                ));
-            }
+        
         }
        
         $connection->commit();
@@ -867,6 +839,50 @@ if ($_POST["operation"] == "Save and Reply") {
         ]);
         exit;
     }
+}
+
+
+if (isset($_POST["operation"]) && $_POST["operation"] === "update_printing_request") {
+    
+    if (empty($_POST['ticket_no'])) {
+        echo json_encode(["status" => "error", "message" => "Missing Ticket Number."]);
+        exit();
+    }
+
+    try {
+        
+
+        $statement = $connection->prepare("
+            UPDATE asset_requests
+            SET
+                serial_number = :serial_number,
+                asset_tag_number = :asset_tag_number,
+                revised_request = :revised_request,
+                date_purchased    = :date_purchased,
+                status        = :status
+            WHERE ticket_no   = :ticket_no
+        ");
+
+       $result = $statement->execute([
+           ':serial_number'    => !empty($_POST['serial_number']) ? $_POST['serial_number'] : 'N/A',
+            ':asset_tag_number' => !empty($_POST['asset_tag_number']) ? $_POST['asset_tag_number'] : 'N/A',
+              ':revised_request' => $_POST['revised_request'] ?? '',
+            ':date_purchased'    => date('Y-m-d H:i:s'),
+            ':status'        => 'PURCHASED',
+            ':ticket_no'     => $_POST['ticket_no']
+        ]);
+
+        if ($result) {
+            echo json_encode(["status" => "success", "message" => "Fixed Asset Request Updated successfully."]);
+        } else {
+            echo json_encode(["status" => "error", "message" => "Failed to update the database."]);
+        }
+
+    } catch (PDOException $e) {
+        echo json_encode(["status" => "error", "message" => "SQL Error: " . $e->getMessage()]);
+    }
+    
+    exit(); 
 }
 if (isset($_POST["operation"]) && $_POST["operation"] == "changepass") {
     

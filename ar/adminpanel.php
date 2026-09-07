@@ -661,7 +661,7 @@ textarea.form-control:focus {
 </style>
 <div id="welcomeModal" class="modal-overlay" style="display: none;">
     <div class="modal-content">
-        <h3>AR HelpDesk Efficiency & Performance Report</h3>
+        <h3>Accounts Receivable HelpDesk Efficiency & Performance Report</h3>
         <p>As of the Year -  2026</p>
 
   
@@ -1711,7 +1711,7 @@ function loadDepartmentTable() {
                     statsByMonth[parseInt(row.MONTH_NUM)] = row;
                 });
 
-                for (let m = 1; m <= 8; m++) {
+                for (let m = 1; m <= 9; m++) {
                     let row = statsByMonth[m];
                     let monthName = monthNames[m];
 

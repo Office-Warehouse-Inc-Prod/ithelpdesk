@@ -23,6 +23,7 @@ $response = [
     'date_recorded'        => '',
     'date_verified'        => '',
     'date_approved'        => '',
+      'date_purchased'       => '',
     'date_completed'       => '',
     'technical_workoutput' => '',
     'has_asset_record'     => false 
@@ -93,7 +94,7 @@ if ($row2 = $result2->fetch_assoc()) {
 }
 
 $query3 = "SELECT serial_number, status, date_submitted, date_noted, date_validated, 
-                  date_printed, date_recorded, date_verified, date_approved, date_completed 
+                  date_printed, date_recorded, date_verified, date_approved, date_purchased, date_completed 
            FROM asset_requests 
            WHERE ticket_no = ?";
 
@@ -112,6 +113,7 @@ if ($row3 = $result3->fetch_assoc()) {
     $response['date_recorded']  = $row3['date_recorded'];
     $response['date_verified']  = $row3['date_verified'];
     $response['date_approved']  = $row3['date_approved'];
+        $response['date_purchased']  = $row3['date_purchased'];
     $response['date_completed'] = $row3['date_completed'];
 }
 

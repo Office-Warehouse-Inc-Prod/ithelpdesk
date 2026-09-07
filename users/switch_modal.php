@@ -607,13 +607,12 @@ if (isset($_POST['mode'])) {
 
         const statusLevels = {
                 'submitted': 1, 'noted': 2, 'validated': 3, 
-                'verified': 4, 'printed': 5, 'approved': 6, 'rejected': 6, 'completed': 7
+                'verified': 4, 'printed': 5, 'approved': 6,  'rejected': 6, 'purchased': 7, 'completed': 8
             };
 
         let dbStatus = (response.status || "").toLowerCase().trim();
         let currentLevel = statusLevels[dbStatus] || 0; 
         
-        // Define isTechnical from the response. Default to 1 if not present.
         let isTechnical = (response.is_technical !== undefined && response.is_technical !== null) 
             ? parseInt(response.is_technical) 
             : 1;
@@ -630,27 +629,29 @@ if (isset($_POST['mode'])) {
             );
         }
 
-        trackSteps.push(
-            { desc: "For admin support validation", date: null, reqLevel: isTechnical === 1 ? 2 : 1 }, 
-            { desc: "Validated by admin support", date: response.date_validated, reqLevel: isTechnical === 1 ? 3 : 2 },
-            { desc: "For administrative verification", date: null, reqLevel: isTechnical === 1 ? 3 : 2 }, 
-            { desc: "Verified by the administrator", date: response.date_verified, reqLevel: isTechnical === 1 ? 4 : 3 },
-            { desc: "For printing request form", date: null, reqLevel: isTechnical === 1 ? 4 : 3 }, 
-            { desc: "Printed", date: response.date_printed, reqLevel: isTechnical === 1 ? 5 : 4 },
-            { desc: "For General Manager Approval", date: null, reqLevel: isTechnical === 1 ? 5 : 4 }
-        );
+           trackSteps.push(
+                { desc: "For admin support validation", date: null, reqLevel: isTechnical === 1 ? 2 : 1 }, 
+                { desc: "Validated by admin support", date: response.date_validated, reqLevel: isTechnical === 1 ? 3 : 3 },
+                { desc: "For administrative verification", date: null, reqLevel: isTechnical === 1 ? 3 : 3 }, 
+                { desc: "Verified by the administrator", date: response.date_verified, reqLevel: isTechnical === 1 ? 4 : 4 },
+                { desc: "For printing request form", date: null, reqLevel: isTechnical === 1 ? 4 : 4 }, 
+                { desc: "Printed", date: response.date_printed, reqLevel: isTechnical === 1 ? 5 : 5 },
+                { desc: "For General Manager Approval", date: null, reqLevel: isTechnical === 1 ? 5 : 5 }
+            );
 
-        if (dbStatus === 'rejected') {
-            trackSteps.push(
-                { desc: "Rejected by General Manager", date: response.date_rejected || response.date_updated, reqLevel: isTechnical === 1 ? 6 : 5, isRejected: true }
-            );
-        } else {
-            trackSteps.push(
-                { desc: "Approved by General Manager", date: response.date_approved, reqLevel: isTechnical === 1 ? 6 : 5 },
-                { desc:  "Transferred to PD for Procurement", date: null, reqLevel: isTechnical === 1 ? 6 : 5 }, 
-                { desc: "Asset replaced / Completed", date: response.date_completed, reqLevel: isTechnical === 1 ? 7 : 6 }
-            );
-        }
+            if (dbStatus === 'rejected') {
+                trackSteps.push(
+                    { desc: "Rejected by General Manager", date: response.date_rejected || response.date_updated, reqLevel: isTechnical === 1 ? 6 : 6, isRejected: true }
+                );
+            } else {
+                trackSteps.push(
+                    { desc: "Approved by General Manager", date: response.date_approved, reqLevel: isTechnical === 1 ? 6 : 6 },
+                    { desc:  "Transferred to PD for Procurement", date: null, reqLevel: isTechnical === 1 ? 6 : 6 }, 
+                    { desc:  "Asset Purchased", date: response.date_purchased,  reqLevel: isTechnical === 1 ? 7 : 7 }, 
+                    { desc: "Asset Ready for Release", date: null, reqLevel: isTechnical === 1 ? 7 : 7 }, 
+                    { desc: "Asset replaced / Completed", date: response.date_completed, reqLevel: isTechnical === 1 ? 8 : 8 }
+                );
+            }
 
         let timelineHtml = '';
         trackSteps.forEach((step) => {

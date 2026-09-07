@@ -8,7 +8,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mode'])) {
         session_start();
     }
    
-    $_SESSION['start'] = time();
     if ($_POST['mode'] === 'fa_tbl') {
         try {
             $sql = "SELECT 
@@ -124,14 +123,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mode'])) {
 }
 
 include 'admin.php';
-$inactive = 180;
-if (isset($_SESSION['start']) && (time() - $_SESSION['start'] > $inactive)){
-  session_unset();
-  // removed session_destroy() to avoid "headers already sent" warnings
-  echo '<script>setTimeout(function(){ window.location.href = "adminpanel.php"; }, 180000);</script>';
-  exit();
-}
-$_SESSION['start'] = time();
+
 ?>
 
 <head>
@@ -160,9 +152,10 @@ $_SESSION['start'] = time();
   <div id="remarks_view" style="display:none;"></div>
   <div id="ticket_title" style="display:none;"></div>
   <div id="msg_cnt" style="display:none;"></div>
-<div class="modal fade" id="fa_Modal" tabindex="-1" aria-hidden="true">
+
+  <div class="modal fade" id="fa_Modal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog" style="max-width: 80%; width: 80%;">
-      <form id="fa_form" action="insert.php" method="POST">
+      <form id="fa_form" action="insert.php" method="POST" enctype="multipart/form-data">
         <div class="modal-content">
           <div class="modal-header">
               <h5 class="modal-title">Fixed Asset Information</h5>
@@ -178,10 +171,9 @@ $_SESSION['start'] = time();
                 <h6 class="text-uppercase mb-3" style="color:#213456; font-weight: 800;">Request Details</h6> 
                 
                 <div class="row">
-
                   <div class="form-group col-md-5">
-                     <label>Ticket No</label>
-                      <input type="text" class="form-control" name="ticket_no" id="ticket_no">
+                      <label>Ticket No</label>
+                      <input type="text" class="form-control" name="ticket_no" id="ticket_no" readonly>
                   </div>
 
                   <div class="form-group col-md-5">
@@ -224,16 +216,13 @@ $_SESSION['start'] = time();
                     <textarea class="form-control" name="purpose_of_request" id="purpose_of_request" style="height: 150px;" readonly></textarea>
                   </div>
 
-                   
-
                    <div class="form-group col-md-12">
                     <label>Purpose of Request (Rephrase for Printing)</label>
-                    <textarea class="form-control" name="revised_request"  id="revised_request" style="height: 150px;" maxlength="70" required></textarea>
+                    <textarea class="form-control" name="revised_request" id="revised_request" style="height: 150px;" maxlength="70" required></textarea>
                   </div>
-
                     
                   <div class="form-group col-md-5">
-                      <label>Item Inspected/Recieved By</label>
+                      <label>Item Inspected/Received By</label>
                       <input type="text" class="form-control" id="it_desc" readonly>
                       <input type="hidden" name="item_received_by" id="item_received_by_hidden">
                   </div>
@@ -250,10 +239,6 @@ $_SESSION['start'] = time();
                     <label>Date Inspected/Received</label>
                     <input type="text" class="form-control" name="date_received" id="date_received" required>
                   </div>
-
-
-
-                
                 </div>
               </div>
 
@@ -266,7 +251,7 @@ $_SESSION['start'] = time();
                   <div id="additional_technical_fields">
                       <label>Problem Reported:</label>
                       <div class="form-group col-md-12">
-                        <textarea class="form-control" name="problem_reported" id="problem_reported" style="height: 120px;" required readonly> </textarea>
+                        <textarea class="form-control" name="problem_reported" id="problem_reported" style="height: 120px;" required readonly></textarea>
                       </div>
                        <label>Verification/Findings: </label>
                       <div class="form-group col-md-12">
@@ -285,12 +270,9 @@ $_SESSION['start'] = time();
                         <textarea class="form-control" name="recommendation" id="recommendation" style="height: 120px;" required readonly></textarea>
                       </div>
                   </div>
-
               </div>
 
-              
-
-            <div class="col-md-3 pt-2 pb-2" style=" background: linear-gradient(to bottom, #ffffff, #d7dce4);border-radius: 0 8px 8px 0;">
+            <div class="col-md-3 pt-2 pb-2" style="background: linear-gradient(to bottom, #ffffff, #d7dce4);border-radius: 0 8px 8px 0;">
                   <h6 class="text-uppercase mb-3" style="color:#E1AD01; font-weight: 800;">Asset Request Progress</h6>
                   <div class="tracking-container" style="max-height: 450px; overflow-y: auto; padding-right: 10px;">
                       <ul class="tracking-timeline" id="trackingMap">
@@ -299,7 +281,6 @@ $_SESSION['start'] = time();
                    <h6 class="text-uppercase mb-3" style="color:#213456; font-weight: 800;">Remarks Thread</h6>
                 
                 <div id="remarks_thread_container" class="chat-container">
-                
                 </div>
                 
                 <div class="chat-input-area mt-3">
@@ -308,8 +289,6 @@ $_SESSION['start'] = time();
                         <i class="fas fa-paper-plane"></i> Send Remark
                     </button>
                 </div>
-
-
               </div>
             </div>
           </div>
@@ -329,7 +308,7 @@ $_SESSION['start'] = time();
                </div>
             </div>
            
-            <button type="submit" class="btn"><strong>APPROVE REQUEST</strong></button>
+            <button type="submit" class="btn btn-primary"><strong>APPROVE REQUEST</strong></button>
           </div>
         </div>
       </form>
@@ -493,13 +472,9 @@ $(document).ready(function(){
       var isTechnical = data['is_technical'] !== undefined && data['is_technical'] !== null ? parseInt(data['is_technical']) : 1;
       
       if (isTechnical === 1) {
-         
-          
           $('#technical_workoutput_section').hide();
           $('#additional_technical_fields').show();
       } else {
-      
-          
           $('#technical_workoutput_section').show();
           $('#additional_technical_fields').hide();
       }
@@ -536,15 +511,15 @@ $(document).ready(function(){
         dataType: 'json', 
         data: { ticket_no: data['ticket_no'] },
         success: function(response) {
-            const statusLevels = {
+                const statusLevels = {
                 'submitted': 1, 'noted': 2, 'validated': 3, 
-                'verified': 4, 'printed': 5, 'approved': 6, 'completed': 7
+                'verified': 4, 'printed': 5, 'approved': 6,  'rejected': 6, 'purchased': 7, 'completed': 8
             };
 
             let dbStatus = (response.status || "").toLowerCase().trim();
             let currentLevel = statusLevels[dbStatus] || 0; 
 
-            let trackSteps = [
+              let trackSteps = [
                 { desc: "Request submitted by store/user", date: response.date_created, reqLevel: 0 },
                 { desc: "Under assigned support evaluation", date: response.date_created, reqLevel: 0 }
             ];
@@ -556,29 +531,43 @@ $(document).ready(function(){
                 );
             }
 
-            trackSteps.push(
+              trackSteps.push(
                 { desc: "For admin support validation", date: null, reqLevel: isTechnical === 1 ? 2 : 1 }, 
-                { desc: "Validated by admin support", date: response.date_validated, reqLevel: isTechnical === 1 ? 3 : 2 },
-                { desc: "For administrative verification", date: null, reqLevel: isTechnical === 1 ? 3 : 2 }, 
-                { desc: "Verified by the administrator", date: response.date_verified, reqLevel: isTechnical === 1 ? 4 : 3 },
-                { desc: "For printing request form", date: null, reqLevel: isTechnical === 1 ? 4 : 3 }, 
-                { desc: "Printed", date: response.date_printed, reqLevel: isTechnical === 1 ? 5 : 4 },
-                { desc: "For General Manager Approval", date: null, reqLevel: isTechnical === 1 ? 5 : 4 }, 
-                { desc: "Approved by General Manager", date: response.date_approved, reqLevel: isTechnical === 1 ? 6 : 5 },
-                { desc:  "Transferred to PD for Procurement", date: null, reqLevel: isTechnical === 1 ? 6 : 5 }, 
-                { desc: "Asset replaced / Completed", date: response.date_completed, reqLevel: isTechnical === 1 ? 7 : 6 }
+                { desc: "Validated by admin support", date: response.date_validated, reqLevel: isTechnical === 1 ? 3 : 3 },
+                { desc: "For administrative verification", date: null, reqLevel: isTechnical === 1 ? 3 : 3 }, 
+                { desc: "Verified by the administrator", date: response.date_verified, reqLevel: isTechnical === 1 ? 4 : 4 },
+                { desc: "For printing request form", date: null, reqLevel: isTechnical === 1 ? 4 : 4 }, 
+                { desc: "Printed", date: response.date_printed, reqLevel: isTechnical === 1 ? 5 : 5 },
+                { desc: "For General Manager Approval", date: null, reqLevel: isTechnical === 1 ? 5 : 5 }
             );
+
+            if (dbStatus === 'rejected') {
+                trackSteps.push(
+                    { desc: "Rejected by General Manager", date: response.date_rejected || response.date_updated, reqLevel: isTechnical === 1 ? 6 : 6, isRejected: true }
+                );
+            } else {
+                trackSteps.push(
+                    { desc: "Approved by General Manager", date: response.date_approved, reqLevel: isTechnical === 1 ? 6 : 6 },
+                    { desc:  "Transferred to PD for Procurement", date: null, reqLevel: isTechnical === 1 ? 6 : 6 }, 
+                    { desc:  "Asset Purchased", date: response.date_purchased,  reqLevel: isTechnical === 1 ? 7 : 7 }, 
+                    { desc: "Asset Ready for Release", date: null, reqLevel: isTechnical === 1 ? 7 : 7 }, 
+                    { desc: "Asset replaced / Completed", date: response.date_completed, reqLevel: isTechnical === 1 ? 8 : 8 }
+                );
+            }
 
             let timelineHtml = '';
             
             trackSteps.forEach((step) => {
                 let statusClass = (currentLevel >= step.reqLevel) ? "completed" : "";
                 let dateDisplay = step.date ? `<div class="timeline-date">${step.date}</div>` : '';
+                let iconStyle = step.isRejected ? 'style="background-color: #dc3545; border-color: #dc3545;"' : '';
+                let textStyle = step.isRejected ? 'style="color: #dc3545; font-weight: bold;"' : '';
 
-                timelineHtml += `
+
+                  timelineHtml += `
                     <li class="timeline-item ${statusClass}">
-                        <div class="timeline-icon"></div>
-                        <div class="timeline-desc">${step.desc}</div>
+                        <div class="timeline-icon" ${iconStyle}></div>
+                        <div class="timeline-desc" ${textStyle}>${step.desc}</div>
                         ${dateDisplay}
                     </li>
                 `;
@@ -792,26 +781,6 @@ $(document).ready(function(){
       });
   });
 
-// Global Utilities
-let inactivityTime = function(){
-  let time;
-
-  window.onload = resetTimer;
-  document.onmousemove = resetTimer;
-  document.onkeypress = resetTimer;
-  document.onscroll = resetTimer;
-  document.onclick = resetTimer;
-
-  function logout(){
-    window.location.href = 'adminpanel.php';
-  }
-
-  function resetTimer(){
-    clearTimeout(time);
-    time = setTimeout(logout, 180000)
-  }
-};
-inactivityTime();
 
 function handleDropdownChange(selectElement) {
   if (selectElement.value === "") {

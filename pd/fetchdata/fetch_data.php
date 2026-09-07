@@ -58,11 +58,16 @@ switch ($mode) {
         $records['newrptdata'] = $fn->newreporthist();
         break;
 
+            case 'fa_reports_tbl':
+        $records = $fn->fareportsthist();
+        break;
+
+
             case 'fa_tbl':
         $records['fadata'] = $fn->fathist();
         break;
-            case 'printing_tbl':
-        $records['printingdata'] = $fn->faprintingthist();
+            case 'procurement_tbl':
+        $records['procurementdata'] = $fn->procurementthist();
         break;
         
     case 'dept_tbl':

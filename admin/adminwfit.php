@@ -714,10 +714,26 @@ hr{ border-top: 1px solid var(--line) !important; }
   font-size:11px;
   letter-spacing:.05em;
 }
-.p-critical{ background: rgba(239,68,68,.14); color:#991b1b; border:1px solid rgba(239,68,68,.25); }
-.p-high{     background: rgba(251,146,60,.14); color:#9a3412; border:1px solid rgba(251,146,60,.25); }
-.p-medium{   background: rgba(234,170,0,.16); color:#7a5200; border:1px solid rgba(234,170,0,.30); }
-.p-low{      background: rgba(34,197,94,.14); color:#166534; border:1px solid rgba(34,197,94,.25); }
+.p-critical{ 
+  background: rgba(239,68,68,.14); 
+  color:#991b1b; 
+  border:1px solid rgba(239,68,68,.25); 
+}
+.p-high{     
+  background: rgba(251,146,60,.14); 
+  color:#9a3412; 
+  border:1px solid rgba(251,146,60,.25); 
+}
+.p-medium{   
+  background: rgba(234,170,0,.16); 
+  color:#7a5200; 
+  border:1px solid rgba(234,170,0,.30); 
+}
+.p-low{      
+  background: rgba(34,197,94,.14); 
+  color:#166534; 
+  border:1px solid rgba(34,197,94,.25); 
+}
 
 /* ===== Select2 (light) ===== */
 .select2-container--default .select2-selection--single{
@@ -1154,6 +1170,7 @@ background: linear-gradient(135deg, #837031, #E1AD01);
       <div class="modal-footer">
       <input type="hidden" name="operation" id="operation" />
       <input type="hidden" name="u_id" id="u_id" value="<?php echo $_SESSION['user_id']; ?>">
+      <input type="hidden" name="is_transfer" value="0" /> 
       </div>
 
       </div>

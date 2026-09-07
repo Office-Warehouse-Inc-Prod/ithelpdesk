@@ -1,5 +1,4 @@
 <?php
-
 // ======== db  =========
 include 'admin.php';
 include '../condb.php';
@@ -9,8 +8,8 @@ include 'sub_graph_modal.php';
 // include 'testcalendar.php';
 
 // $conn=new dbconfig();
-
 ?>
+
 <head>
   <link rel="stylesheet" href="adminpanel.css">
 </head>
@@ -42,37 +41,6 @@ body {
   background-repeat: no-repeat;
   min-height: 100vh;
 } 
- .modal-overlay {
-            display: none; 
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-       .modal-overlay .modal-content {
-             background: linear-gradient(to bottom, #ffffff, #99aac8);
-            padding: 25px;
-            border-radius: 8px;
-            width: 70%;
-            max-width: 90%;
-            margin-top:30px;
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-       .modal-overlay .modal-content h3 {
-            margin-top: 0;
-            color: #333;
-        }
-       .modal-overlay .close-btn {
-            background-color: #213456;
-            margin-top: 15px;
-        }
- 
 
         
   .table-responsive {
@@ -84,26 +52,26 @@ body {
     width: 100% !important;
     table-layout: auto !important;
     page-break-inside: avoid;
-    
+     
   }
 
   .admin-table th {
-    background-color: #213456 !important;
-    color: #fff !important;
+    background-color: linear-gradient(135deg, #213456, #334c7a) !important;
+    color: #ffffff!important;
     padding: 6px 4px !important;
     font-size: 11px !important;
   }
 
   #admin_report.admin-table th.active.text-center {
     background-color: #2b9827 !important;
-    color: #fff !important;
+    color: #ffffff !important;
     padding: 6px 4px !important;
     font-size: 11px !important;
   }
 
   #admin_report.admin-table th.compliance.text-center {
     background-color: #a29341 !important;
-    color: #fff !important;
+    color: #ffffff !important;
     padding: 6px 4px !important;
     font-size: 11px !important;
   }
@@ -151,10 +119,10 @@ body {
   padding:10px;
   width: 30%;
   color: white;
-  background-color: #213456;
+  background-color: linear-gradient(135deg, #213456, #334c7a);
 }
  .modal-overlay .month-row[data-month="6"] {
-  background: #213456;
+  background: linear-gradient(135deg, #213456, #334c7a);
   outline: 2px solid red;
   outline-offset: -2px; 
 }
@@ -279,7 +247,7 @@ textarea.form-control:focus {
 #userModal .input-group-text {
     background-color: white;
     border-right: none;
-    color: #213456;
+    color: linear-gradient(135deg, #213456, #334c7a);
 }
 
 #userModal .form-control {
@@ -289,7 +257,7 @@ textarea.form-control:focus {
 }
 
 #userModal .form-control:focus {
-    border-color: #213456;
+    border-color: linear-gradient(135deg, #213456, #334c7a);
     box-shadow: none;
 }
 
@@ -387,7 +355,7 @@ textarea.form-control:focus {
 }
 
 .chat-right .msg-meta {
-    color: rgba(255, 255, 255, 0.85);
+    color: #ffffff; 
 }
 
 .chat-left .msg-meta-name {
@@ -400,79 +368,31 @@ textarea.form-control:focus {
     font-weight: bold;
 }
 
-.btn-success {
-    background-color: #1C0770 !important;
-    border: none;
-    padding: 0.6rem 2rem;
-    font-weight: 600;
-    border-radius: 8px;
-    transition: transform 0.2s ease;
+
+.chat-right .msg-time {
+    color: #ffffff !important; 
 }
 
-.btn-success:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(28, 7, 112, 0.2);
+.chat-left .msg-time {
+    color: #64748b !important;
+}
+.chat-left .msg-meta {
+    color: #64748b;
 }
 
-.btn-danger {
-    background-color: #fff;
-    border: 1px solid #e2e8f0;
-    color: #e53e3e;
-    padding: 0.6rem 1.5rem;
-    font-weight: 600;
-    border-radius: 8px;
+.chat-right .msg-meta {
+    color: rgba(255, 255, 255, 0.85);
 }
 
-.btn-danger:hover {
-    background-color: #fff5f5;
-    color: #c53030;
+.chat-left .msg-meta-name {
+    color: linear-gradient(135deg, #213456, #334c7a);
+    font-weight: bold;
 }
 
-#userModal .modal-footer{
-  border-top: 1px solid rgba(0,0,0,0.08);
-  background: rgba(255,255,255,0.92);
-  position: sticky;
-  bottom: 0;
-  z-index: 5;
-  padding: 12px 14px;
+.chat-right .msg-meta-name {
+    color: #ffffff;
+    font-weight: bold;
 }
-
-@media (max-width: 991px){
-  #userModal .modal-dialog{
-    max-width: 96%;
-    margin: .75rem auto;
-  }
-
-  .container_remarks{
-    max-height: 350px;
-  }
-
-  #action, #btnClose{
-    width: 100%;
-  }
-}
-
-
-.year-picker-group {
-    flex: 1;
-    min-width: 300px; 
-}
-#showCalendarBtn {
-    background-color: #213456;
-    color: white;
-    border-radius: 8px;
-    padding: 8px 20px;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    white-space: nowrap;
-}
-
-#showCalendarBtn:hover {
-    background-color: var(--owi-gold, #E1AD01);
-    color: #213456;
-}
-
-
  .modal-overlay {
             display: none; 
             position: fixed;
@@ -486,7 +406,7 @@ textarea.form-control:focus {
             z-index: 1000;
         }
        .modal-overlay .modal-content {
-             background: linear-gradient(to bottom, #ffffff, #99aac8);
+             background: linear-gradient(to bottom, #ffffff, #b0b9c8);
             padding: 25px;
             border-radius: 8px;
             width: 70%;
@@ -500,7 +420,7 @@ textarea.form-control:focus {
             color: #333;
         }
        .modal-overlay .close-btn {
-            background-color: #28a745;
+            background-color: #213456;
             margin-top: 15px;
         }
  
@@ -590,88 +510,144 @@ textarea.form-control:focus {
   outline-offset: -2px; 
 }
 
-.chat-left .msg-meta {
-    color: #64748b;
+.btn-success {
+    background-color: #1C0770 !important;
+    border: none;
+    padding: 0.6rem 2rem;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: transform 0.2s ease;
 }
 
-.chat-right .msg-meta {
-    color: #ffffff; 
+.btn-success:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(28, 7, 112, 0.2);
 }
 
-.chat-left .msg-meta-name {
-    color: #213456;
-    font-weight: bold;
+.btn-danger {
+    background-color: #fff;
+    border: 1px solid #e2e8f0;
+    color: #e53e3e;
+    padding: 0.6rem 1.5rem;
+    font-weight: 600;
+    border-radius: 8px;
 }
 
-.chat-right .msg-meta-name {
-    color: #ffffff;
-    font-weight: bold;
+.btn-danger:hover {
+    background-color: #fff5f5;
+    color: #c53030;
+}
+
+#userModal .modal-footer{
+  border-top: 1px solid rgba(0,0,0,0.08);
+  background: rgba(255,255,255,0.92);
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  padding: 12px 14px;
+}
+
+@media (max-width: 991px){
+  #userModal .modal-dialog{
+    max-width: 96%;
+    margin: .75rem auto;
+  }
+
+  .container_remarks{
+    max-height: 350px;
+  }
+
+  #action, #btnClose{
+    width: 100%;
+  }
 }
 
 
-.chat-right .msg-time {
-    color: #ffffff !important; 
+.year-picker-group {
+    flex: 1;
+    min-width: 300px; 
+}
+#showCalendarBtn {
+    background-color: #213456;
+    color: white;
+    border-radius: 8px;
+    padding: 8px 20px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    white-space: nowrap;
 }
 
-.chat-left .msg-time {
-    color: #64748b !important;
-}
-.chat-left .msg-meta {
-    color: #64748b;
-}
-
-.chat-right .msg-meta {
-    color: rgba(255, 255, 255, 0.85);
-}
-
-.chat-left .msg-meta-name {
+#showCalendarBtn:hover {
+    background-color: var(--owi-gold, #E1AD01);
     color: linear-gradient(135deg, #213456, #334c7a);
-    font-weight: bold;
 }
 
-.chat-right .msg-meta-name {
-    color: #ffffff;
-    font-weight: bold;
+        
+  .table-responsive {
+    overflow: visible !important;
+    width: 100% !important;
+  }
+
+  .admin-table {
+    width: 100% !important;
+    table-layout: auto !important;
+    page-break-inside: avoid;
+    
+  }
+
+  
+
+  #admin_report.admin-table th.active.text-center {
+    background-color: #2b9827 !important;
+    color: #213456 !important;
+    padding: 6px 4px !important;
+    font-size: 11px !important;
+  }
+
+  #admin_report.admin-table th.compliance.text-center {
+    background-color: #a29341 !important;
+    color: #213456 !important;
+    padding: 6px 4px !important;
+    font-size: 11px !important;
+  }
+
+  .admin-table td {
+    padding: 6px 4px !important;
+    font-size: 11px !important;
+    border-bottom: 1px solid #0e0e0ea1 !important;
+  }
+  .table-responsive{
+    margin-top: -600px;
+  }
+
+  .progress {
+    border: 1px solid #999 !important;
+    background-color: #ddd !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  #dept-table-footer {
+    border: 2px solid #2d3c59;
+    background-color: #f4e9d7 !important; 
 }
 
-* {
+  * {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
     color-adjust: exact !important;
     box-shadow: none !important;
   }
 
-#transferred_data, 
-#transferred_data th, 
-#transferred_data td {
-  border-left: none !important;
-  border-right: none !important;
-  color: #213456;
-}
-
-#transferred_data th {
-  border-top: none !important;
-  border-bottom: 2px solid #213456 !important;
-   color: #213456;
-}
-
-#transferred_data td {
-  border-bottom: 1px solid #0e0e0ea1 !important; 
-}
-
 </style>
-
-<div id="welcomeModal" class="modal-overlay" style="display: none;">
+        
+<div id="welcomeModal" class="modal-overlay" style="display: none; ">
     <div class="modal-content">
         <h3>Accounts Payable HelpDesk Efficiency & Performance Report</h3>
         <p>As of the Year -  2026</p>
-
-  
-
          <table id="admin_report" class="table admin-table m-0">
                     <thead>  
                       <tr>
-                       
+                        
                         <th colspan="6" class="compliance text-center" style="background-color: #a29341; color: #fff; font-weight: 700; text-transform: uppercase; font-size: 13px; padding: 6px;">
                           COMPLIANCE TICKET REPORTS
                         </th>
@@ -797,7 +773,7 @@ textarea.form-control:focus {
             <input type="hidden" name="chcksbjcls" id="chcksbjcls" value="check">
           </div>
         </form>
-        <div class="action-bar-container" style="box-shadow: 0 5px 10px 2px #2d3c597f; margin-bottom: -20px;">
+        <div class="action-bar-container" style="box-shadow: 0 5px 10px 2px #2d3c597f; color: #213456; margin-bottom: -20px;">
           <div class="year-picker-group">
             <div class="input-group">
               <div class="input-group-append">
@@ -805,7 +781,7 @@ textarea.form-control:focus {
                   <i class="fas fa-history me-2"></i>LOGS IN YEAR OF:
                 </span>
               </div>
-              <select class="form-control" name="yearpicker" id="yearpicker"required>
+              <select class="form-control" name="yearpicker" id="yearpicker" required>
                 <option value="2019,2020,2021,2022,2023,2024,2025,2026">OVERALL</option>
                 <option value="2026" selected>2026</OPTION>
                 <option value="2025">2025</option>
@@ -816,186 +792,198 @@ textarea.form-control:focus {
             </div>
           </div>
           <div class="d-flex align-items-center gap-3">
-            <!--<form action="testcalendar.php" method="POST" class="m-0">
-              <input type="hidden" name="u_id" value="<?php echo $_SESSION['user_id'];?>">
-              <button type="submit" id="showCalendarBtn" class="btn">
-                <i class="fas fa-calendar-alt me-2"></i>CALENDAR
-              </button>
-            </form>-->
+            <form action="testcalendar.php" method="POST" class="m-0">
+              <input type="hidden" name="u_id" value="<?php echo $_SESSION['user_id']; ?>">
+            
+            </form>
             <div class="form-check form-switch float-right m-3">
               <input class="form-check-input" style="margin-left:-50px;" type="checkbox" id="darkModeToggle">
               <label class="form-check-label text-dark" for="darkModeToggle">Dark Mode</label>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- KPI CARDS (replaces card-deck properly) -->
-    <div class="main-container">  
-      <main class="p-4">
-        <div class="row g-4">
-          <div class="row g-4 mb-4">
-            <div class="col-xl-3 col-lg-6 col-md-6">
-              <div class="card h-100 dashcard-clickable" data-filter="" style="border-radius: 15px; cursor:pointer;">
-                <div class="card-body p-4">
-                  <div class="d-flex align-items-center justify-content-between mb-3">
-                    <div class=" bg-opacity-10 p-3 rounded-circle " style="color: #576A8F;">
-                      <i class="fas fa-file-alt fa-2x"></i>
-                    </div>
-                    <h2 class="fw-black mb-1" id="count_total" style="font-size:2.2rem; letter-spacing: -1px; ">0</h2>
-                  </div>
-                  <div>
-                    <p class=" fw-bold text-uppercase mb-0" style="font-size: 0.75rem; color: #576A8F;letter-spacing: 1px;">Total Reports</p>
-                    <hr class="mt-2 mb-3" style="border-top: 2px solid #576A8F; opacity: 1; width: 100%;"/>
-                    <div class="d-flex justify-content-between align-items-center">
-                      <a href="#report_data" class="text-decoration-none small text-muted stretched-link">Click here for more info</a>
-                      <i class="fas fa-chevron-right small text-muted"></i>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-xl-3 col-lg-6 col-md-6">
-              <div class="card  h-100 dashcard-clickable" data-filter="ON PROCESS" style="border-radius: 15px; cursor: pointer;">
-                <div class="card-body p-4">
-                  <div class="d-flex align-items-center justify-content-between mb-3">
-                    <div class=" bg-opacity-10 p-3 rounded-circle" style="color: #E5BA41;">
-                      <i class="fas fa-spinner fa-2x"></i>
-                  </div>
-                  <h2 class ="fw-black mb-1" id="count_open" style="font-size: 2.2rem; letter-spacing: -1px;">0</h2>
-                </div>
-                <div>
-                  <p class="text-warning fw-bold text-uppercase mb-0" style="font-size: 0.75rem;color: #E5BA41; letter-spacing: 1px;">On Process</p>
-                  <hr class="mt-2 mb-3" style="border-top: 2px solid #E5BA41;; opacity:1; width:100%;"/>
-                  <div class="d-flex justify-content-between align-items-center">
-                    <a href="#report_data" class="text-decoration-none small text-muted stretched-link">Click here for more info</a>
-                    <i class="fas fa-chevron-right small text-muted"></i>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-xl-3 col-lg-6 col-md-6">
-            <div class="card h-100 dashcard-clickable" data-filter="PENDING" style="border-radius: 15px; cursor:pointer;">
-              <div class="card-body p-4">
-                <div class="d-flex align-items-center justify-content-between mb-3">
-                  <div class="bg-danger bg-opacity-10 p-3 rounded-circle text-danger" style="color: #D25353;">
-                    <i class="fas fa-exclamation-triangle fa-2x"></i>
-                  </div>
-                  <h2 class="fw-black mb-1" id="count_owfa" style="font-size:2.2rem; letter-spacing: -1px;">0</h2>
-                </div>
-                <div>
-                  <p class="text-danger fw-bold text-uppercase mb-0" style="font-size:0.75rem; color: #D25353;letter-spacing:1px;">Over Sla / Pending</p>
-                  <hr class="mt-2 mb-3" style="border-top: 2px solid #D25353; opacity:1; width:100%;"/>
-                  <div class="d-flex justify-content-between align-items-center">
-                    <a href="#report_data" class="text-decoration-none small text-muted stretched-link">Click here for more info</a>
-                    <i class="fas fa-chevron-right small text-muted"></i>
-                  </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-xl-3 col-lg-6 col-md-6">
-          <div class="card h-100 dashcard-clickable" data-filter="CLOSED" style="border-radius: 15px; cursor:pointer;">
-            <div class="card-body p-4">
-              <div class="d-flex align-items-center justify-content-between mb-2">
-                <div class="bg-success bg-opacity-10 p-3 rounded-circle text-success" style="color: #94A378;">
-                  <i class="fas fa-check-double fa-2x"></i>
-                </div>
-                <h2 class="fw-black mb-1" id="count_closed" style="font-size:2.2rem; letter-spacing: -1px;">0</h2>
-              </div>
-              <div class="mb-2">
-
-              </div>
-              <div>
-                <p class="text-success fw-bold text-uppercase mb-0" style="font-size:0.75rem; color: #94A378; letter-spacing: 1px;">Closed Reports</p>
-                <hr class="mt-2 mb-3" style="border-top: 2px solid #94A378; opacity:1; width:100%;"/>
-                <div class="d-flex justify-content-between align-items-center">
-                  <a href="#report_data" class="text-decoration-none small text-muted stretched-link">View History</a>
-                  <i class="fas fa-chevron-right small text-muted"></i>
-                </div>
-              </div>
             </div>
           </div>
         </div>
       </div>
-        <!-- CHARTS -->
-        <div class="row" id="ovrall">
 
-          <div class="col-12 col-lg-6 mb-3">
-            <div class="card card2 h-100">
-              <h5 class="card-header" style="background-color: #95a2b9b4; color:black;">Overall Status</h5>
-              <div class="card-body">
-                <div id="chartdiv5"></div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-12 col-lg-6 mb-3">
-            <div class="card card2 h-100">
-              <h5 class="card-header text-black"  style="background-color: #95a2b9b4; color:black;">Billing Support Logs</h5>
-              <div class="card-body">
-                <div id="chartdiv8"></div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-12 col-lg-6 mb-3">
-            <div class="card card2 h-100">
-              <h5 class="card-header text-black"  style="background-color: #95a2b9b4; color:black;">Recently enrolled reports.</h5>
-              <div class="card-body">
-                <div id="chartdiv1"></div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-12 col-lg-6 mb-3">
-            <div class="card card2 h-100">
-              <h5 class="card-header text-black"  style="background-color: #95a2b9b4; color:black;">CATEGORIES</h5>
-              <div class="card-body">
-                <div id="chartdiv2" name="chartdiv2"></div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-12 mb-3">
-            <div class="card card2">
-              <h5 class="card-header text-black"  style="background-color: #95a2b9b4; color:black;">Number of Escalated Reports Per Area</h5>
-              <div class="card-body">
-                <div id="chart_area"></div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-12 mb-3">
-            <div class="card card2">
-              <h5 class="card-header text-black"  style="background-color: #95a2b9b4; color:black;">Non Compliant Stores on End of Day Process (7:AM CUT OFF)</h5>
-              <div class="card-body">
-
-                <div class="row mb-3">
-                  <div class="col-12 col-md-8 col-lg-6">
-                    <div class="input-group">
-                      <span class="input-group-text">FROM</span>
-                      <input type="date" id="frompolDate" class="form-control">
-                      <span class="input-group-text">TO</span>
-                      <input type="date" id="topolDate" class="form-control">
+      <div class="main-container">
+        <main class="p-4">
+          <div class="row g-4">
+            <div class="row g-4 mb-4">
+              <div class="col-xl-3 col-lg-6 col-md-6">
+                <div class="card h-100 dashcard-clickable" data-filter="" style="border-radius: 15px; cursor:pointer;">
+                  <div class="card-body p-4">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                      <div class=" bg-opacity-10 p-3 rounded-circle " style="color: #576A8F;">
+                        <i class="fas fa-file-alt fa-2x"></i>
+                      </div>
+                      <h2 class="fw-black mb-1" id="count_total" style="font-size:2.2rem; letter-spacing: -1px; ">0</h2>
+                    </div>
+                    <div>
+                      <p class=" fw-bold text-uppercase mb-0"
+                        style="font-size: 0.75rem; color: #576A8F;letter-spacing: 1px;">Total Reports</p>
+                      <hr class="mt-2 mb-3" style="border-top: 2px solid #576A8F; opacity: 1; width: 100%;" />
+                      <div class="d-flex justify-content-between align-items-center">
+                        <a href="#report_data" class="text-decoration-none small text-muted stretched-link">Click here
+                          for more info</a>
+                        <i class="fas fa-chevron-right small text-muted"></i>
+                      </div>
                     </div>
                   </div>
                 </div>
+              </div>
 
-                <div id="chart_polled"></div>
+              <div class="col-xl-3 col-lg-6 col-md-6">
+                <div class="card  h-100 dashcard-clickable" data-filter="ON PROCESS"
+                  style="border-radius: 15px; cursor: pointer;">
+                  <div class="card-body p-4">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                      <div class=" bg-opacity-10 p-3 rounded-circle" style="color: #E5BA41;">
+                        <i class="fas fa-spinner fa-2x"></i>
+                      </div>
+                      <h2 class="fw-black mb-1" id="count_open" style="font-size: 2.2rem; letter-spacing: -1px;">0</h2>
+                    </div>
+                    <div>
+                      <p class="text-warning fw-bold text-uppercase mb-0"
+                        style="font-size: 0.75rem;color: #E5BA41; letter-spacing: 1px;">On Process</p>
+                      <hr class="mt-2 mb-3" style="border-top: 2px solid #E5BA41;; opacity:1; width:100%;" />
+                      <div class="d-flex justify-content-between align-items-center">
+                        <a href="#report_data" class="text-decoration-none small text-muted stretched-link">Click here
+                          for more info</a>
+                        <i class="fas fa-chevron-right small text-muted"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
+              <div class="col-xl-3 col-lg-6 col-md-6">
+                <div class="card h-100 dashcard-clickable" data-filter="PENDING"
+                  style="border-radius: 15px; cursor:pointer;">
+                  <div class="card-body p-4">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                      <div class="bg-danger bg-opacity-10 p-3 rounded-circle text-danger" style="color: #D25353;">
+                        <i class="fas fa-exclamation-triangle fa-2x"></i>
+                      </div>
+                      <h2 class="fw-black mb-1" id="count_owfa" style="font-size:2.2rem; letter-spacing: -1px;">0</h2>
+                    </div>
+                    <div>
+                      <p class="text-danger fw-bold text-uppercase mb-0"
+                        style="font-size:0.75rem; color: #D25353;letter-spacing:1px;">Over Sla / Pending</p>
+                      <hr class="mt-2 mb-3" style="border-top: 2px solid #D25353; opacity:1; width:100%;" />
+                      <div class="d-flex justify-content-between align-items-center">
+                        <a href="#report_data" class="text-decoration-none small text-muted stretched-link">Click here
+                          for more info</a>
+                        <i class="fas fa-chevron-right small text-muted"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-xl-3 col-lg-6 col-md-6">
+                <div class="card h-100 dashcard-clickable" data-filter="CLOSED"
+                  style="border-radius: 15px; cursor:pointer;">
+                  <div class="card-body p-4">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                      <div class="bg-success bg-opacity-10 p-3 rounded-circle text-success" style="color: #94A378;">
+                        <i class="fas fa-check-double fa-2x"></i>
+                      </div>
+                      <h2 class="fw-black mb-1" id="count_closed" style="font-size:2.2rem; letter-spacing: -1px;">0</h2>
+                    </div>
+                    <div class="mb-2">
+
+                    </div>
+                    <div>
+                      <p class="text-success fw-bold text-uppercase mb-0"
+                        style="font-size:0.75rem; color: #94A378; letter-spacing: 1px;">Closed Reports</p>
+                      <hr class="mt-2 mb-3" style="border-top: 2px solid #94A378; opacity:1; width:100%;" />
+                      <div class="d-flex justify-content-between align-items-center">
+                        <a href="#report_data" class="text-decoration-none small text-muted stretched-link">View
+                          History</a>
+                        <i class="fas fa-chevron-right small text-muted"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
+            <!-- CHARTS -->
+            <div class="row" id="ovrall">
 
-        </div><!-- /#ovrall -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" />
+              <div class="col-12 col-lg-6 mb-3">
+                <div class="card card2 h-100">
+                  <h5 class="card-header" style="background: linear-gradient(135deg, #213456, #334c7a); color:black;">Overall Status</h5>
+                  <div class="card-body">
+                    <div id="chartdiv5"></div>
+                  </div>
+                </div>
+              </div>
 
-          <!-- TABLES -->
+              <div class="col-12 col-lg-6 mb-3">
+                <div class="card card2 h-100">
+                  <h5 class="card-header text-black" style="background: linear-gradient(135deg, #213456, #334c7a); color:black;">AP Support Logs
+                  </h5>
+                  <div class="card-body">
+                    <div id="chartdiv8"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-12 col-lg-6 mb-3">
+                <div class="card card2 h-100">
+                  <h5 class="card-header text-black" style="background: linear-gradient(135deg, #213456, #334c7a); color:black;">Recently enrolled
+                    reports.</h5>
+                  <div class="card-body">
+                    <div id="chartdiv1"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-12 col-lg-6 mb-3">
+                <div class="card card2 h-100">
+                  <h5 class="card-header text-black" style="background: linear-gradient(135deg, #213456, #334c7a); color:black;">CATEGORIES</h5>
+                  <div class="card-body">
+                    <div id="chartdiv2" name="chartdiv2"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-12 mb-3">
+                <div class="card card2">
+                  <h5 class="card-header text-black" style="background: linear-gradient(135deg, #213456, #334c7a); color:black;">Number of
+                    Escalated Reports Per Area</h5>
+                  <div class="card-body">
+                    <div id="chart_area"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-12 mb-3">
+                <div class="card card2">
+                  <h5 class="card-header text-black" style="background: linear-gradient(135deg, #213456, #334c7a); color:black;">Non Compliant
+                    Stores on End of Day Process (7:AM CUT OFF)</h5>
+                  <div class="card-body">
+
+                    <div class="row mb-3">
+                      <div class="col-12 col-md-8 col-lg-6">
+                        <div class="input-group">
+                          <span class="input-group-text">FROM</span>
+                          <input type="date" id="frompolDate" class="form-control">
+                          <span class="input-group-text">TO</span>
+                          <input type="date" id="topolDate" class="form-control">
+                        </div>
+                      </div>
+                    </div>
+
+                    <div id="chart_polled"></div>
+
+                  </div>
+                </div>
+              </div>
+
+            </div><!-- /#ovrall -->
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" />
+
+         <!-- TABLES -->
         <div class="row">
           <div class="col-12 mb-3">
             <div class="card card2">
@@ -1030,7 +1018,7 @@ textarea.form-control:focus {
           <div class="tab-pane fade" id="transferred" role="tabpanel" aria-labelledby="transferred-tab">
             <div class="table-responsive" style="max-height:450px; width:100%; overflow-y:auto;">
               <table id="transferred_data" class="table table-hover">
-               
+                
                 <tbody>
                 </tbody>
               </table>
@@ -1047,239 +1035,252 @@ textarea.form-control:focus {
 <div class="col-lg-12 Down" id="Down">
   <input type="hidden" id="myInput">
 </div>
-      </div><!-- /.container-fluid -->
-    </div><!-- /#layoutSidenav_content -->
-  </div><!-- /#wrapper -->
-</div><!-- /.container-fluid -->
+
+            
+
+          </div><!-- /.container-fluid -->
+      </div><!-- /#layoutSidenav_content -->
+    </div><!-- /#wrapper -->
+  </div><!-- /.container-fluid -->
 
 
-<!-- =========================
+  <!-- =========================
 Start of Add/Edit Modal
 ========================= -->
-<div class="col-12 col-lg-12 modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg" style="max-width: 100%;">
-    <form method="post" id="report_form" enctype="multipart/form-data">
-      <div class="modal-content">
+  <div class="col-12 col-lg-12 modal fade" id="userModal" tabindex="-1" role="dialog"
+    aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="max-width: 100%;">
+      <form method="post" id="report_form" enctype="multipart/form-data">
+        <div class="modal-content">
 
-        <div class="modal-header">
-          <h4 class="modal-title" id="userModal_header" value="Add Report"></h4>
-        </div>
+          <div class="modal-header">
+            <h4 class="modal-title" id="userModal_header" value="Add Report"></h4>
+          </div>
 
-        <div class="modal-body">
-          <div class="row">
+          <div class="modal-body">
+            <div class="row">
 
-            <!-- LEFT SIDE -->
-            <div class="m_col col-12 col-lg-6">
+              <!-- LEFT SIDE -->
+              <div class="m_col col-12 col-lg-6">
 
-              <div class="row">
+                <div class="row">
 
-                <div class="form-group col-12 col-md-6">
-                  <label>STORE</label>
-                  <input type="hidden" name="str_num" id="str_num" readonly value="">
-                  <select class="form-control form-control-sm" name="store" id="store" required>
-                    <option value="">Select Store...</option>
-                    <?php
-                      $query="select * from tbl_branch ";
-                      $run=$conn->prepare($query);
+                  <div class="form-group col-12 col-md-6">
+                    <label>STORE</label>
+                    <input type="hidden" name="str_num" id="str_num" readonly value="">
+                    <select class="form-control form-control-sm" name="store" id="store" required>
+                      <option value="">Select Store...</option>
+                      <?php
+                      $query = "select * from tbl_branch ";
+                      $run = $conn->prepare($query);
                       $run->execute();
-                      $rs=$run->get_result();
-                      while ($res=$rs->fetch_assoc()) {
+                      $rs = $run->get_result();
+                      while ($res = $rs->fetch_assoc()) {
                         $brcnhid = $res['str_num'];
-                        $brnchcd = $res['str_code'].' | '.$res['str_name'];
-                    ?>
-                      <option value="<?php echo $brcnhid; ?>"><?= $brnchcd; ?></option>
-                    <?php } ?>
-                  </select>
-                </div>
+                        $brnchcd = $res['str_code'] . ' | ' . $res['str_name'];
+                        ?>
+                        <option value="<?php echo $brcnhid; ?>"><?= $brnchcd; ?></option>
+                      <?php } ?>
+                    </select>
+                  </div>
 
-                <input type="hidden" class="form-control form-control-sm" name="ticket_no" id="ticket_no">
+                  <input type="hidden" class="form-control form-control-sm" name="ticket_no" id="ticket_no">
 
-                <div class="form-group col-4">
-                  <label>SUBJECT/CONCERN</label>
-                  <input type="text" name="subjct" id="subjct" class="form-control form-control-sm"
-                    placeholder="Input Concern" style="text-transform:uppercase"
-                    onkeyup="this.value = this.value;"></input>
-                </div>
 
-                <div class="form-group col-12 col-md-4">
-                  <label>VIA</label>
-                  <select class="form-control form-control-sm" name="via" id="via" required>
-                    <option value=""> &larr; VIA &rarr;</option>
-                    <?php
-                      $query="select * from via_main";
-                      $run=$conn->prepare($query);
+
+
+                  <div class="form-group col-4">
+                    <label>SUBJECT/CONCERN</label>
+                    <input type="text" name="subjct" id="subjct" class="form-control form-control-sm" placeholder="Input Concern"
+                      style="text-transform:uppercase" onkeyup="this.value = this.value;"></input>
+                  </div>
+
+                  <div class="form-group col-12 col-md-4">
+                    <label>VIA</label>
+                    <select class="form-control form-control-sm" name="via" id="via" required>
+                      <option value=""> &larr; VIA &rarr;</option>
+                      <?php
+                      $query = "select * from via_main";
+                      $run = $conn->prepare($query);
                       $run->execute();
-                      $rs=$run->get_result();
-                      while ($res=$rs->fetch_assoc()) {
-                    ?>
-                      <option><?= $res['via_desc'] ?></option>
-                    <?php } ?>
-                  </select>
-                </div>
+                      $rs = $run->get_result();
+                      while ($res = $rs->fetch_assoc()) {
+                        ?>
+                        <option><?= $res['via_desc'] ?></option>
+                      <?php } ?>
+                    </select>
+                  </div>
 
-                <div class="form-group col-12 col-md-8">
-                  <label>BILLING SUPPORT</label>
-                  <input type="hidden" name="it_num" id="it_num" readonly>
-                  <select class="form-control form-control-sm" name="itsup" id="itsup" required>
-                    <option value="">Assign support...</option>
-                    <?php
-                      $query="select * from it_tech WHERE deptsel = '13' AND itsup NOT IN ('4','7','8','12','14')";
-                      $run=$conn->prepare($query);
+                  <div class="form-group col-12 col-md-8">
+                    <label>I.T SUPPORT</label>
+                    <input type="hidden" name="it_num" id="it_num" readonly>
+                    <select class="form-control form-control-sm" name="itsup" id="itsup" required>
+                      <option value="">Assign support...</option>
+                      <?php
+                      $query = "select * from it_tech WHERE deptsel = '13' AND itsup NOT IN ('4','8','12','14')";
+                      $run = $conn->prepare($query);
                       $run->execute();
-                      $rs=$run->get_result();
-                      while ($res=$rs->fetch_assoc()) {
+                      $rs = $run->get_result();
+                      while ($res = $rs->fetch_assoc()) {
                         $tchid = $res['itsup'];
                         $tchdesc = $res['it_desc'];
-                    ?>
-                      <option value="<?php echo $tchid; ?>"><?= $tchdesc; ?></option>
-                    <?php } ?>
-                  </select>
-                </div>
+                        ?>
+                        <option value="<?php echo $tchid; ?>"><?= $tchdesc; ?></option>
+                      <?php } ?>
+                    </select>
+                  </div>
 
-                <div class="form-group col-12 col-md-4">
-                  <label>CATEGORY</label>
-                  <input type="hidden" name="cat_num" id="cat_num" readonly>
-                  <select class="form-control form-control-sm" name="cat" id="cat" required>
-                    <option value=""> &larr; CATEGORY &rarr;</option>
-                    <?php
+                  <div class="form-group col-12 col-md-4">
+                    <label>CATEGORY</label>
+                    <input type="hidden" name="cat_num" id="cat_num" readonly>
+                    <select class="form-control form-control-sm" name="cat" id="cat" required>
+                      <option value=""> &larr; CATEGORY &rarr;</option>
+                      <?php
                       // $query="select * from category WHERE deptsel = '1'";
-                          $query="select * from categories WHERE deptsel = '13'";
-                      $run=$conn->prepare($query);
+                      $query = "select * from categories WHERE deptsel = '13' AND old_tag IS NULL";
+                      $run = $conn->prepare($query);
                       $run->execute();
-                      $rs=$run->get_result();
-                      while ($res=$rs->fetch_assoc()) {
+                      $rs = $run->get_result();
+                      while ($res = $rs->fetch_assoc()) {
                         $supid = $res['cat_id'];
                         $suppdesc = $res['cat_desc'];
-                    ?>
-                      <option value="<?php echo $supid; ?>"><?= $suppdesc; ?></option>
-                    <?php } ?>
-                  </select>
-                </div>
+                        ?>
+                        <option value="<?php echo $supid; ?>"><?= $suppdesc; ?></option>
+                      <?php } ?>
+                    </select>
+                  </div>
 
-                <div class="form-group col-12 col-md-4">
-                  <label>SUB CATEGORY</label>
-                  <input type="hidden" name="sub_num" id="sub_num" readonly>
-                  <select class="form-control form-control-sm" name="sub" id="sub"></select>
-                </div>
-                <div class="form-group col-12 col-md-4">
-  <label style="font-weight: bold;">TRANSFER REQUEST</label>
-  <div>
-    <input type="checkbox" name="is_transfer" id="is_transfer" value="1">
-    <label for="is_transfer"> Mark as Transfer Request</label>
-  </div>
-</div>
-
-                <div class="form-group col-12 col-md-4 hide_isp">
-                  <label for="isp" id="lbl_isp">Service Provider</label>
-                  <input type="hidden" name="isp_num" id="isp_num" readonly>
-                  <select class="form-control form-control-sm" name="isp" id="isp">
-                    <option value="">Select Network Provider</option>
-                    <?php
-                      $query="select * from tbl_isp";
-                      $run=$conn->prepare($query);
+                  <div class="form-group col-12 col-md-4">
+                    <label>SUB CATEGORY</label>
+                    <input type="hidden" name="sub_num" id="sub_num" readonly>
+                    <select class="form-control form-control-sm" name="sub" id="sub"></select>
+                  </div>
+                  <div class="form-group col-12 col-md-4">
+                    <label style="font-weight: bold;">TRANSFER REQUEST</label>
+                    <div>
+                      <input type="checkbox" name="is_transfer" id="is_transfer" value="1">
+                      <label for="is_transfer"> Mark as Transfer Request</label>
+                    </div>
+                  </div>
+                  <div class="form-group col-12 col-md-4 hide_isp">
+                    <label for="isp" id="lbl_isp">Service Provider</label>
+                    <input type="hidden" name="isp_num" id="isp_num" readonly>
+                    <select class="form-control form-control-sm" name="isp" id="isp">
+                      <option value="">Select Network Provider</option>
+                      <?php
+                      $query = "select * from tbl_isp";
+                      $run = $conn->prepare($query);
                       $run->execute();
-                      $rs=$run->get_result();
-                      while ($res=$rs->fetch_assoc()) {
+                      $rs = $run->get_result();
+                      while ($res = $rs->fetch_assoc()) {
                         $ispid = $res['isp_id'];
                         $ispdesc = $res['isp_shortDesc'];
-                    ?>
-                      <option value="<?php echo $ispid; ?>"><?= $ispdesc; ?></option>
-                    <?php } ?>
-                  </select>
-                </div>
+                        ?>
+                        <option value="<?php echo $ispid; ?>"><?= $ispdesc; ?></option>
+                      <?php } ?>
+                    </select>
+                  </div>
 
-                <div class="form-group col-12 col-md-4 hide_isp">
-                  <label id="lbl_refNo" for="refNo">Reference No:</label>
-                  <input type="text" class="form-control form-control-sm" name="refNo" id="refNo">
-                </div>
+                  <div class="form-group col-12 col-md-4 hide_isp">
+                    <label id="lbl_refNo" for="refNo">Reference No:</label>
+                    <input type="text" class="form-control form-control-sm" name="refNo" id="refNo">
+                  </div>
 
-                <div class="form-group col-12 col-md-4 hide_isp">
-                  <label for="date_refNo" class="text" id="lbl_DtRefNo">Date of RefNo</label>
-                  <div class="input-group date" id="datetimepicker3" data-target-input="nearest">
-                    <input type="text" name="date_refNo" id="date_refNo"
-                      class="form-control form-control-sm datetimepicker-input" data-target="#datetimepicker3"/>
-                    <div class="input-group-append" data-target="#date_created" data-toggle="datetimepicker">
-                      <input type="hidden" class="form-control form-control-sm" name="date_createdx" id="date_createdx">
-                      <div class="input-group-text" id="ico_cal3"><i class="fa fa-calendar"></i></div>
+                  <div class="form-group col-12 col-md-4 hide_isp">
+                    <label for="date_refNo" class="text" id="lbl_DtRefNo">Date of RefNo</label>
+                    <div class="input-group date" id="datetimepicker3" data-target-input="nearest">
+                      <input type="text" name="date_refNo" id="date_refNo"
+                        class="form-control form-control-sm datetimepicker-input" data-target="#datetimepicker3" />
+                      <div class="input-group-append" data-target="#date_created" data-toggle="datetimepicker">
+                        <input type="hidden" class="form-control form-control-sm" name="date_createdx"
+                          id="date_createdx">
+                        <div class="input-group-text" id="ico_cal3"><i class="fa fa-calendar"></i></div>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <div class="form-group col-12 col-md-4">
-                  <label>STATUS</label>
-                  <select class="form-control form-control-sm" name="status" id="status" required>
-                    <option value=""> &larr; Status &rarr;</option>
-                    <?php
-                      $query="select * from status  WHERE ap_module_tag = 'Y'";
-                      $run=$conn->prepare($query);
+                  <div class="form-group col-12 col-md-4">
+                    <label>STATUS</label>
+                    <select class="form-control form-control-sm" name="status" id="status" required>
+                      <option value=""> &larr; Status &rarr;</option>
+                      <?php
+                      $query = "select * from status  WHERE it_module_tag = 'Y'";
+                      $run = $conn->prepare($query);
                       $run->execute();
-                      $rs=$run->get_result();
-                      while ($res=$rs->fetch_assoc()) {
-                    ?>
-                      <option><?= $res['stat_desc'] ?></option>
-                    <?php } ?>
-                  </select>
-                </div>
+                      $rs = $run->get_result();
+                      while ($res = $rs->fetch_assoc()) {
+                        ?>
+                                   <option value="<?=$res['stat_desc'] ?>" style="color: #333;"><?=$res['stat_desc'] ?></option>
+                      <?php } ?>
+                    </select>
+                  </div>
 
-                <div class="form-group col-12 col-md-4 hide_cl">
-                  <label id="dateclabel" class="hidden">DATE CLOSED</label>
-                  <div class="input-group date" id="datetimepicker2" data-target-input="nearest">
-                    <input type="text" name="date_closed" id="date_closed"
-                      class="form-control form-control-sm datetimepicker-input"
-                      data-target="#datetimepicker2" autocomplete="off"/>
-                    <div class="input-group-append" data-target="#date_closed" autocomplete="off" data-toggle="datetimepicker">
-                      <div class="input-group-text" id="ico_cal" name="ico_cal"><i class="fa fa-calendar"></i></div>
+                  <div class="form-group col-12 col-md-4 hide_cl" style="display: none;">
+                    <label id="dateclabel">DATE CLOSED</label>
+                    <div class="input-group date" id="datetimepicker2" data-target-input="nearest">
+                      <input type="text" name="date_closed" id="date_closed"
+                        class="form-control form-control-sm datetimepicker-input" data-target="#datetimepicker2"
+                        autocomplete="off" />
+                      <div class="input-group-append" data-target="#date_closed" autocomplete="off"
+                        data-toggle="datetimepicker">
+                        <div class="input-group-text" id="ico_cal" name="ico_cal"><i class="fa fa-calendar"></i></div>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <div class="form-group col-12 col-md-4 hide_cl">
-                  <label id="clby_label" class="hidden">CLOSED BY</label>
-                  <input type="hidden" name="close_by" id="close_by" value="<?php echo $_SESSION['tech_id']; ?>">
-                  <input type="text" class="form-control form-control-sm" name="cl_desc" id="cl_desc" readonly
-                    value="<?php echo $_SESSION['fname']. '  ' . $_SESSION['lstname']; ?>">
-                </div>
+                  <div class="form-group col-12 col-md-4 hide_cl" style="display: none;">
+                    <label id="clby_label">CLOSED BY</label>
+                    <input type="hidden" name="close_by" id="close_by" value="<?php echo htmlspecialchars($_SESSION['tech_id'] ?? ''); ?>">
+                    <input type="text" class="form-control form-control-sm" name="cl_desc" id="cl_desc" readonly
+                      value="<?php echo htmlspecialchars(trim(($_SESSION['fname'] ?? '') . '  ' . ($_SESSION['lstname'] ?? ''))); ?>">
+                  </div>
 
-                <div class="form-group col-12">
-                  <label>Work Output:</label>
-                  <textarea name="remarks" id="remarks" class="form-control form-control-sm" placeholder="Your Workoutput"></textarea>
-                </div>
+                  <div class="form-group col-12">
+                    <label>Work Output:</label>
+                    <textarea name="remarks" id="remarks" class="form-control form-control-sm"
+                      placeholder="Your Workoutput"></textarea>
+                  </div>
 
-                <div class="col-12">
-                  <label style="font-weight: bold;">Attached File:</label>
-                  <p><input id="file-input" type="file" name="file" Multiple></p>
-                </div>
+                  <div class="col-12">
+                    <label style="font-weight: bold;">Attached File:</label>
+                    <p><input id="file-input" type="file" name="file" Multiple></p>
+                  </div>
 
-                <div class="col-12"><hr/></div>
+                  <div class="col-12">
+                    <hr />
+                  </div>
 
-                <div class="col-12 d-flex justify-content-between align-items-center">
-                  <input type="submit" name="action" id="action" class="btn btn-success" value="Add">
-                  <button type="button" name="btnClose" id="btnClose" class="btn btn-danger" data-dismiss="modal">Close</button>
-                </div>
+                  <div class="col-12 d-flex justify-content-between align-items-center">
+                    <input type="submit" name="action" id="action" class="btn btn-success" value="Add">
+                    <button type="button" name="btnClose" id="btnClose" class="btn btn-danger"
+                      data-dismiss="modal">Close</button>
+                  </div>
 
-                <div class="col-12"><hr/></div>
+                  <div class="col-12">
+                    <hr />
+                  </div>
 
-                <div class="card" id="img" name="img"></div>
+                  <div class="card" id="img" name="img"></div>
 
-              </div><!-- /.row -->
+                </div><!-- /.row -->
 
-            </div><!-- /.left -->
+              </div><!-- /.left -->
 
-            <!-- RIGHT SIDE -->
-           <!-- RIGHT SIDE -->
+              <!-- RIGHT SIDE -->
+              <!-- RIGHT SIDE -->
             <div class="col-12 col-lg-6">
 
                 <div id="msg_thread">
 
                   <div class="col-12 mb-3 px-0">
-                    <label style="font-weight: bold; color:#213456;">Add Comment:</label>
+                    <label style="font-weight: bold; color:linear-gradient(135deg, #213456, #334c7a);">Add Comment:</label>
                     <textarea name="admsg" id="addmsg" class="form-control form-control-sm"
                       placeholder="Reply to their message or give updates regarding this ticket..."
                       required></textarea>
                   </div>
 
                   <div class="col-12 mt-4 mb-2 dv_msg px-0">
-                    <label for="remarks_view" style="font-weight: bold; color:#213456;">Comment Thread:</label>
+                    <label for="remarks_view" style="font-weight: bold; color:linear-gradient(135deg, #213456, #334c7a);">Comment Thread:</label>
                     <hr>
                     <div class="container_remarks">
                       <div id="remarks_view"></div>
@@ -1291,147 +1292,169 @@ Start of Add/Edit Modal
               </div><!-- /.right -->
 
 
-          </div><!-- /.row -->
-        </div><!-- /.modal-body -->
+            </div><!-- /.row -->
+          </div><!-- /.modal-body -->
 
-        <div class="modal-footer">
-          <input type="hidden" name="operation" id="operation" value="Add">
-          <input type="hidden" name="u_id" id="u_id" value="<?php echo $_SESSION['user_id']; ?>">
-        </div>
+          <div class="modal-footer">
+            <input type="hidden" name="operation" id="operation" value="Add">
+            <input type="hidden" name="u_id" id="u_id" value="<?php echo $_SESSION['user_id']; ?>">
+          </div>
 
-      </div><!-- /.modal-content -->
-    </form>
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+        </div><!-- /.modal-content -->
+      </form>
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
 
-<!-- =========================
+  <!-- =========================
 Start of Create Department Report Modal
 ========================= -->
-<div class="modal fade" id="createReportModal" tabindex="-1" role="dialog" aria-labelledby="createReportModalLabel"
-  aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <form method="post" id="create_report_form" enctype="multipart/form-data">
-      <div class="modal-content"
-        style="border-radius: 15px; border: none; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);">
-        <div class="modal-header"
-          style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: white; border-top-left-radius: 15px; border-top-right-radius: 15px;">
-          <h5 class="modal-title font-weight-bold" id="createReportModalLabel"><i
-              class="fas fa-plus-circle mr-2 text-warning"></i> Create Department Report</h5>
-          <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close"
-            style="opacity: 0.8; outline: none; background: none; border: none;">
-            <span aria-hidden="true" style="font-size: 28px;">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body" style="padding: 30px; background-color: #fcfcfc;">
-          <div class="row">
-            <!-- Left Side: Dropdowns -->
-            <div class="col-12 col-lg-6">
-              <div class="form-group mb-4">
-                <label class="font-weight-bold text-secondary small"><i class="fas fa-store mr-1 text-primary"></i>
-                  STORE/BRANCH</label>
-                <select class="form-control" name="store" id="create_store" required
-                  style="border-radius: 8px; height: 45px; pointer-events: none; background-color: #e9ecef;">
-                  <?php
-                  $query = "select * from tbl_branch ";
-                  $run = $conn->prepare($query);
-                  $run->execute();
-                  $rs = $run->get_result();
-                  while ($res = $rs->fetch_assoc()) {
-                    $brcnhid = $res['str_num'];
-                    $brnchcd = $res['str_code'] . ' | ' . $res['str_name'];
-                    $selected = ($brcnhid == '201') ? 'selected' : '';
-                    ?>
-                    <option value="<?php echo $brcnhid; ?>" <?= $selected; ?>><?= $brnchcd; ?></option>
-                  <?php } ?>
-                </select>
-              </div>
+  <div class="modal fade" id="createReportModal" tabindex="-1" role="dialog" aria-labelledby="createReportModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <form method="post" id="create_report_form" enctype="multipart/form-data">
+        <div class="modal-content"
+          style="border-radius: 15px; border: none; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);">
+          <div class="modal-header"
+            style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: white; border-top-left-radius: 15px; border-top-right-radius: 15px;">
+            <h5 class="modal-title font-weight-bold" id="createReportModalLabel"><i
+                class="fas fa-plus-circle mr-2 text-warning"></i> Create Department Report</h5>
+            <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close"
+              style="opacity: 0.8; outline: none; background: none; border: none;">
+              <span aria-hidden="true" style="font-size: 28px;">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" style="padding: 30px; background-color: #fcfcfc;">
+            <div class="row">
+              <!-- Left Side: Dropdowns -->
+              <div class="col-12 col-lg-6">
+                <div class="form-group mb-4">
+                  <label class="font-weight-bold text-secondary small"><i class="fas fa-store mr-1 text-primary"></i>
+                    STORE/BRANCH</label>
+                  <select class="form-control" name="store" id="create_store" required
+                    style="border-radius: 8px; height: 45px; pointer-events: none; background-color: #e9ecef;">
+                    <?php
+                    $query = "select * from tbl_branch ";
+                    $run = $conn->prepare($query);
+                    $run->execute();
+                    $rs = $run->get_result();
+                    while ($res = $rs->fetch_assoc()) {
+                      $brcnhid = $res['str_num'];
+                      $brnchcd = $res['str_code'] . ' | ' . $res['str_name'];
+                      $selected = ($brcnhid == '201') ? 'selected' : '';
+                      ?>
+                      <option value="<?php echo $brcnhid; ?>" <?= $selected; ?>><?= $brnchcd; ?></option>
+                    <?php } ?>
+                  </select>
+                </div>
 
-              <div class="form-group mb-4">
-                <label class="font-weight-bold text-secondary small"><i class="fas fa-building mr-1 text-primary"></i>
-                  ATTENTION TO (DEPARTMENT)</label>
-                <select class="form-control" name="deptsel" id="create_deptsel" required
-                  style="border-radius: 8px; height: 45px;">
-                  <option value="" selected disabled>Select Here</option>
-                  <option value="1">IT</option>
-                  <option value="2">ADMIN</option>
-                  <option value="3">MARKETING</option>
-                  <option value="6">VISUAL</option>
-                  <option value="11">H.R</option>
-                  <option value="13">ACCOUNTS PAYABLE</option>
+                <div class="form-group mb-4">
+                  <label class="font-weight-bold text-secondary small"><i class="fas fa-building mr-1 text-primary"></i>
+                    ATTENTION TO (DEPARTMENT)</label>
+                  <select class="form-control" name="deptsel" id="create_deptsel" required
+                    style="border-radius: 8px; height: 45px;">
+                    <option value="" selected disabled>Select Here</option>
+                    <option value="1">IT</option>
+                    <option value="2">ADMIN</option>
+                    <option value="3">MARKETING</option>
+                    <option value="6">VISUAL</option>
+                    <option value="11">H.R</option>
+                    <option value="13">ACCOUNTS PAYABLE</option>
                     <option value="15">TREASURY</option>
-                  <option value="16">ACCOUNT RECEIVABLE</option>
-                </select>
+                    <option value="16">ACCOUNT RECEIVABLE</option>
+                  </select>
+                </div>
+
+                <div class="form-group mb-4">
+                  <label class="font-weight-bold text-secondary small"><i class="fas fa-envelope mr-1 text-primary"></i>
+                    SUBJECT (CATEGORY)</label>
+                  <select class="form-control" id="create_subject" name="subject" required style="width: 100%;">
+                    <option value="" selected disabled>---Select Category---</option>
+                  </select>
+                </div>
+
+                <div class="form-group mb-4" id="create_sub_group" style="display: none;">
+                  <label class="font-weight-bold text-secondary small"><i class="fas fa-tag mr-1 text-primary"></i>
+                    SUBCATEGORY</label>
+                  <select class="form-control" id="create_sub" name="sub" style="width: 100%;">
+                    <option value="" selected disabled>---Select Subcategory---</option>
+                  </select>
+                </div>
               </div>
 
-              <div class="form-group mb-4">
-                <label class="font-weight-bold text-secondary small"><i class="fas fa-envelope mr-1 text-primary"></i>
-                  SUBJECT (CATEGORY)</label>
-                <select class="form-control" id="create_subject" name="subject" required style="width: 100%;">
-                  <option value="" selected disabled>---Select Category---</option>
-                </select>
-              </div>
+              <!-- Right Side: Concern and Upload -->
+              <div class="col-12 col-lg-6">
+                <div class="form-group mb-4">
+                  <label class="font-weight-bold text-secondary small"><i
+                      class="fas fa-comment-alt mr-1 text-primary"></i> CONCERN (MESSAGE)</label>
+                  <textarea class="form-control" id="create_concern" name="concern" minlength="10" maxlength="1000"
+                    rows="5" placeholder="Describe the concern or request in detail..." required
+                    style="border-radius: 8px; resize: none; height: 140px;"></textarea>
+                </div>
 
-              <div class="form-group mb-4" id="create_sub_group" style="display: none;">
-                <label class="font-weight-bold text-secondary small"><i class="fas fa-tag mr-1 text-primary"></i>
-                  SUBCATEGORY</label>
-                <select class="form-control" id="create_sub" name="sub" style="width: 100%;">
-                  <option value="" selected disabled>---Select Subcategory---</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- Right Side: Concern and Upload -->
-            <div class="col-12 col-lg-6">
-              <div class="form-group mb-4">
-                <label class="font-weight-bold text-secondary small"><i
-                    class="fas fa-comment-alt mr-1 text-primary"></i> CONCERN (MESSAGE)</label>
-                <textarea class="form-control" id="create_concern" name="concern" minlength="10" maxlength="1000"
-                  rows="5" placeholder="Describe the concern or request in detail..." required
-                  style="border-radius: 8px; resize: none; height: 140px;"></textarea>
-              </div>
-
-              <div class="form-group mb-4">
-                <label class="font-weight-bold text-secondary small"><i
-                    class="fas fa-paperclip mr-1 text-primary"></i> ATTACH FILES (OPTIONAL)</label>
-                <div class="custom-file">
-                  <input id="create_file-input" type="file" name="file" multiple class="form-control-file">
-                  <small class="form-text text-muted">Max file size: 2MB. Allowed types: Images, PDF, Docs,
-                    Excel.</small>
+                <div class="form-group mb-4">
+                  <label class="font-weight-bold text-secondary small"><i
+                      class="fas fa-paperclip mr-1 text-primary"></i> ATTACH FILES (OPTIONAL)</label>
+                  <div class="custom-file">
+                    <input id="create_file-input" type="file" name="file" multiple class="form-control-file">
+                    <small class="form-text text-muted">Max file size: 2MB. Allowed types: Images, PDF, Docs,
+                      Excel.</small>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-        <div class="modal-footer"
-          style="background-color: #f1f3f6; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; border-top: 1px solid #e3e6ec; padding: 15px 30px;">
-          <div class="mr-auto d-flex align-items-center">
-            <span class="badge badge-info p-2 font-weight-bold text-uppercase"
-              style="font-size: 13px; border-radius: 6px; letter-spacing: 0.5px; background-color: #17a2b8; color: white;">
-              Generated Ticket: <span id="create_ticket_lbl">---</span>
-            </span>
-            <input type="hidden" name="ticket_no" id="create_ticket_no">
+          <div class="modal-footer"
+            style="background-color: #f1f3f6; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; border-top: 1px solid #e3e6ec; padding: 15px 30px;">
+            <div class="mr-auto d-flex align-items-center">
+              <span class="badge badge-info p-2 font-weight-bold text-uppercase"
+                style="font-size: 13px; border-radius: 6px; letter-spacing: 0.5px; background-color: #17a2b8; color: white;">
+                Generated Ticket: <span id="create_ticket_lbl">---</span>
+              </span>
+              <input type="hidden" name="ticket_no" id="create_ticket_no">
+            </div>
+            <button type="button" class="btn btn-light font-weight-bold px-4" data-dismiss="modal"
+              style="border-radius: 8px; height: 40px;">Cancel</button>
+            <button type="submit" name="action" id="create_action" class="btn btn-primary font-weight-bold px-4"
+              style="border-radius: 8px; height: 40px; background-color: #1e3c72; border: none;"><i
+                class="fas fa-save mr-2"></i>Save Ticket</button>
           </div>
-          <button type="button" class="btn btn-light font-weight-bold px-4" data-dismiss="modal"
-            style="border-radius: 8px; height: 40px;">Cancel</button>
-          <button type="submit" name="action" id="create_action" class="btn btn-primary font-weight-bold px-4"
-            style="border-radius: 8px; height: 40px; background-color: #1e3c72; border: none;"><i
-              class="fas fa-save mr-2"></i>Save Ticket</button>
         </div>
-      </div>
-    </form>
+      </form>
+    </div>
   </div>
-</div>
 
   <script>
     $(document).ready(function () {
+      
+      // Initialize active dashcard filter variable globally
+      window.currentDashcardFilter = '';
+      
       // KPI Card Click Functionality
       $('.dashcard-clickable').on('click', function () {
-        const filterValue = $(this).data('filter');
+        const filterValue = $(this).data('filter') || '';
+        window.currentDashcardFilter = filterValue; // Record clicked dashcard
+        
+        const statusRegex = filterValue ? '^' + $.fn.dataTable.util.escapeRegex(filterValue) + '$' : '';
 
         if ($.fn.DataTable.isDataTable('#report_data')) {
-          const table = $('#report_data').DataTable();
-          table.search(filterValue).draw();
+          const reportTable = $('#report_data').DataTable();
+          reportTable.search('').column(6).search(filterValue ? statusRegex : '', true, false).draw();
         }
+        
+        if ($.fn.DataTable.isDataTable('#transferred_data')) {
+          const transferTable = $('#transferred_data').DataTable();
+          transferTable.search('').column(6).search(filterValue ? statusRegex : '', true, false).draw();
+        }
+
+        $('#report_data_filter_disabled').val(filterValue);
+        $('#transferred_data_filter_disabled').val(filterValue);
+        
+        $('#report_data_free_search').val(filterValue);
+        $('#transferred_data_free_search').val(filterValue);
+
+              
+        $('#report_data_free_search2').val(filterValue);
+        $('#transferred_data_free_search2').val(filterValue);
 
         $('html, body').animate({
           scrollTop: $("#report_data").offset().top - 100
@@ -1440,27 +1463,22 @@ Start of Create Department Report Modal
         $(this).fadeOut(100).fadeIn(100);
       });
 
-      // Handle 'CREATE REPORT' Navbar Link Click
       $(document).on('click', '#navCreateReport', function (e) {
-        // If we are already on adminpanel.php, open the modal directly
         if (window.location.pathname.endsWith('adminpanel.php') || window.location.pathname.endsWith('/it/')) {
           e.preventDefault();
           $('#createReportModal').modal({ backdrop: 'static', keyboard: false });
         }
       });
 
-      // Handle query param create=true on load
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.get('create') === 'true') {
         $('#createReportModal').modal({ backdrop: 'static', keyboard: false });
-        // Clean up url parameters without reloading
         window.history.replaceState({}, document.title, window.location.pathname);
       }
 
-      // Reset Form when Modal Closes or Opens
       $('#createReportModal').on('show.bs.modal', function () {
         $('#create_report_form').trigger('reset');
-        $('#create_store').val('201'); // Auto-select CEN | CENTRAL OFFICE - LIBIS
+        $('#create_store').val('201'); 
         $('#create_subject').val(null).trigger('change');
         $('#create_sub').val(null).trigger('change');
         $('#create_sub_group').hide();
@@ -1468,7 +1486,6 @@ Start of Create Department Report Modal
         $('#create_ticket_no').val('');
       });
 
-      // Populate dynamic categories and fetch ticket numbers when Attention To Department changes
       $("#create_deptsel").on("change", function () {
         $('#create_subject').val(null).trigger('change');
         $('#create_sub').val(null).trigger('change');
@@ -1478,7 +1495,7 @@ Start of Create Department Report Modal
         $("#create_subject").select2({
           dropdownParent: $('#createReportModal'),
           width: '100%',
-          minimumResultsForSearch: Infinity, // Disable search box
+          minimumResultsForSearch: Infinity,
           ajax: {
             url: "../users/select.php",
             type: "get",
@@ -1499,7 +1516,6 @@ Start of Create Department Report Modal
           }
         });
 
-        // Dynamic Ticket Number Generation Fetch
         $.post('../users/fetch.php', { operation: 'search_tkt', iN: val }, function (data) {
           if (data && data[0]) {
             let next_tktno = data[0].ticket_no;
@@ -1529,7 +1545,6 @@ Start of Create Department Report Modal
         });
       });
 
-      // Validate uploaded file size and extensions
       $('#create_file-input').on('change', function () {
         for (var i = 0; i < this.files.length; ++i) {
           var file = this.files[i];
@@ -1556,7 +1571,6 @@ Start of Create Department Report Modal
         }
       });
 
-      // Handle AJAX Submission of Department Ticket
       $('#create_report_form').on('submit', function (e) {
         e.preventDefault();
 
@@ -1657,6 +1671,16 @@ $(document).ready(function() {
         $modal.css('display', 'none');
     });
     loadDepartmentTable();
+    
+    // Handle the status change to show/hide CLOSED BY and DATE CLOSED properly
+    $('#status').on('change', function() {
+        var stat = $(this).val();
+        if (stat === 'CLOSED' || stat === 'SUBJECT FOR CLOSING') {
+            $('.hide_cl').slideDown(200);
+        } else {
+            $('.hide_cl').slideUp(200);
+        }
+    });
 });
 
 function loadDepartmentTable() {
@@ -1677,7 +1701,7 @@ function loadDepartmentTable() {
         
             const monthNames = {
                 1: "JANUARY", 2: "FEBRUARY", 3: "MARCH", 
-                       4: "APRIL", 5: "MAY", 6: "JUNE" , 7: "JULY", 8: "AUGUST", 9: "SEPTEMBER", 10: "OCTOBER", 11: "NOVEMBER" , 12: "DECEMBER"
+                4: "APRIL", 5: "MAY", 6: "JUNE" , 7: "JULY" , 8: "AUGUST" , 9: "SEPTEMBER" , 10: "OCTOBER" , 11: "NOVEMBER" , 12: "DECEMBER"
             };
 
             if (response && response.department_stats) {
@@ -1688,7 +1712,7 @@ function loadDepartmentTable() {
                     statsByMonth[parseInt(row.MONTH_NUM)] = row;
                 });
 
-                for (let m = 1; m <= 8; m++) {
+                for (let m = 1; m <= 9; m++) {
                     let row = statsByMonth[m];
                     let monthName = monthNames[m];
 
@@ -1746,7 +1770,7 @@ function loadDepartmentTable() {
                     let globalMetSLABarTheme = globalMetSLAPercent >= 80 ? "bg-success" : (globalMetSLAPercent >= 50 ? "bg-warning" : "bg-danger");
 
                     footerHtml = `
-                        <tr style="background-color: #ecebe584; font-weight: bold; border-top: 2px solid #213456;">
+                        <tr style="background-color: #ecebe584; font-weight: bold; border-top: 2px solid linear-gradient(135deg, #213456, #334c7a);">
                             <td class="text-dark fw-bold text-uppercase" style="font-size:13px;">TOTAL SUMMARY</td>
                             <td class="text-center text-primary fw-bold" style="font-size:14px;">${totalActiveSum}</td>
                             <td>
@@ -1788,8 +1812,6 @@ function loadDepartmentTable() {
         }
     });
 }
-
-
 $(document).ready(function() {
     $('button[data-toggle="tab"]').on('shown.bs.tab', function (e) {
         var targetTab = $(e.target).attr("id"); 

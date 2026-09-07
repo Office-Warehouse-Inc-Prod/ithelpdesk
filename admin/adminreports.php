@@ -16,7 +16,6 @@ $ph_datetime = date('l, F d, Y - h:i A');
   <script src="https://cdn.jsdelivr.net/npm/@linways/table-to-excel@1.0.4/dist/tableToExcel.min.js"></script>
   <!-- jQuery (load this first) -->
 <script src="//ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
 <!-- DataTables CSS -->
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css"/>
 
@@ -341,10 +340,10 @@ select.form-control, .form-control, .form-select {
                   <table id="admin_report" class="table admin-table m-0">
                     <thead>  
                       <tr>
-                        <th colspan="5" class="text-center" style="background-color: var(--theme-color); color: #fff; font-weight: 700; text-transform: uppercase; font-size: 13px; padding: 6px;">ACTIVE/RUNNING TICKET REPORTS</th>
+                        <th colspan="5" class="text-center" style="background-color: #25903f; color: #fff; font-weight: 700; text-transform: uppercase; font-size: 13px; padding: 6px;">ACTIVE/RUNNING TICKET REPORTS</th>
                         <th colspan="4" class="text-center" style="background-color: #a29341; color: #fff; font-weight: 700; text-transform: uppercase; font-size: 13px; padding: 6px;">COMPLIANCE TICKET REPORTS</th>
                       </tr>
-                      <tr style="background-color: var(--theme-color); color: #ffffff;">
+                      <tr style="background: linear-gradient(135deg, #213456, #334c7a); color: #ffffff;">
                         <th style="font-size: 12px; vertical-align: middle;">DEPARTMENT</th>
                         <th class="text-center fw-bold" style="font-size: 12px; vertical-align: middle;">ASSIGNED</th>
                         <th class="text-center fw-bold" style="font-size: 12px; vertical-align: middle;">ON PROCESS</th>
@@ -431,6 +430,7 @@ select.form-control, .form-control, .form-select {
                           <th class="text-center fw-bold" style="font-size: 12px; vertical-align: middle;">NEW TECH</th>
                           <th class="text-center fw-bold" style="font-size: 12px; vertical-align: middle;">REQUESTED DATE</th>
                           <th class="text-center fw-bold" style="font-size: 12px; vertical-align: middle;">APPROVAL DATE</th>
+                             <th class="text-center fw-bold" style="font-size: 12px; vertical-align: middle;">TURNAROUND TIME</th>
                       
                       </tr>
                     </thead>
@@ -730,6 +730,7 @@ $(document).ready(function() {
                         <td class="text-center" style="font-size:13px;">${row.new_support || 'N/A'}</td>
                         <td class="text-center" style="font-size:13px;">${row.request_date || 'N/A'}</td>
                         <td class="text-center" style="font-size:13px;">${row.approval_date || 'N/A'}</td>
+                            <td class="text-center" style="font-size:13px;">${row.turnaround_time || 'N/A'}</td>
                     </tr>`;
             });
         } else {

@@ -105,14 +105,21 @@ switch ($mode) {
     case 'count_sla':
       $records['count_slares'] = $fn->count_sla();
         break;
-        case 'dtbcat':
-            $records['rptcat'] = $fn->tbl_cat();
-              break;
-                  case 'trans_tbl':
-         $records['transdata']= $fn->trans_tbl();
+    case 'dtbcat':
+       $records['rptcat'] = $fn->tbl_cat();
         break;
-case 'dept_ticket_datatable':
-    $records = $fn->dept_ticket_datatable($_POST['dept_id']);
+    case 'trans_tbl':
+        $records['transdata']= $fn->trans_tbl();
+    break;
+      case 'reopen_tbl':
+        $records['reopendata']= $fn->reopen_tbl();
+    break;
+
+    case 'reopen_logs_table':
+        $records['logsdata']= $fn->reopen_logs_table();
+    break;
+    case 'dept_ticket_datatable':
+        $records = $fn->dept_ticket_datatable($_POST['dept_id']);
     break;
 case 'category_status_grph':
     $records = $fn->category_status_grph();

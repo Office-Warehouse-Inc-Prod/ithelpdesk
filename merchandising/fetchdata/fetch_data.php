@@ -48,6 +48,9 @@ switch ($mode) {
     case 'dtb':
         $records['rptdata'] = $fn->admin_data_table_res();
         break;
+     case 'dtb_transfer':
+        $records['transferdata'] = $fn->admin_data_table_transfer();
+        break;
     case 'dtbnet':
         $records['rptdatanet'] = $fn->admin_data_table_resnet();
         break;

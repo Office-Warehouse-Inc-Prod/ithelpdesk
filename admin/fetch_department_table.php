@@ -140,7 +140,10 @@ $query6 = "SELECT
             MAX(res.date_rasigned) AS approval_date, 
             CONCAT(TIMESTAMPDIFF(HOUR, MIN(req.created_at), MAX(res.date_rasigned)), 'h ', MOD(TIMESTAMPDIFF(MINUTE, MIN(req.created_at), MAX(res.date_rasigned)), 60), 'm ', MOD(TIMESTAMPDIFF(SECOND, MIN(req.created_at), MAX(res.date_rasigned)), 60), 's') AS turnaround_time 
         FROM tbl_reassigned res 
-        LEFT JOIN tbl_reports_transfer_logs req ON res.ticket_no = req.ticket_no 
+        LEFT JOIN tbl_reports_transfer_logs req 
+            ON res.ticket_no = req.ticket_no 
+            AND res.itsup = req.itsup 
+            AND res.deptsel = req.deptsel 
         LEFT JOIN tbl_dept dept_from ON res.f_deptsel = dept_from.dept_id 
         LEFT JOIN tbl_dept dept_to ON res.deptsel = dept_to.dept_id 
         LEFT JOIN it_tech orig_tech ON res.itsup = orig_tech.itsup 
@@ -148,6 +151,10 @@ $query6 = "SELECT
         LEFT JOIN tbl_branch store_info ON req.store = store_info.str_num 
         WHERE YEAR(req.created_at) IN ($year_placeholders) 
           AND MONTH(req.created_at) IN ($month_placeholders) 
+          AND res.f_deptsel IS NOT NULL 
+          AND res.f_deptsel != ''
+          AND res.deptsel IS NOT NULL 
+          AND res.deptsel != ''
         GROUP BY 
             res.ticket_no, 
             res.itsup, 

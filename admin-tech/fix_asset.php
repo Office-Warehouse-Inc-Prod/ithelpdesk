@@ -7,13 +7,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mode'])) {
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
-    $inactive = 180;
-    if (isset($_SESSION['start']) && (time() - $_SESSION['start'] > $inactive)){
-        session_unset();
-        session_destroy();
-        echo json_encode(["status" => "error", "message" => "Session expired. Please log in again."]);
-        exit();
-    }
+  
     $_SESSION['start'] = time();
     if ($_POST['mode'] === 'fa_tbl') {
         try {
@@ -130,15 +124,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mode'])) {
 }
 
 include 'admin.php';
-$inactive = 180;
-if (isset($_SESSION['start']) && (time() - $_SESSION['start'] > $inactive)){
-  session_unset();
-  // removed session_destroy() to avoid "headers already sent" warnings
-  // use client-side redirect after 3 minutes (180000 ms)
-  echo '<script>setTimeout(function(){ window.location.href = "adminpanel.php"; }, 180000);</script>';
-  exit();
-}
-$_SESSION['start'] = time();
+
 ?>
   <head>
       <link rel="stylesheet" href="../css/bootstrap-datetimepicker.min.css"/>
@@ -451,55 +437,82 @@ $_SESSION['start'] = time();
           dataType: 'json', 
           data: { ticket_no: data['ticket_no'] },
           success: function(response) {
-            const statusLevels = {
-                  'submitted': 1, 'noted': 2, 'validated': 3, 
-                  'verified': 4, 'printed': 5, 'approved': 6, 'completed': 7
-              };
+             const statusLevels = {
+                'submitted': 1, 
+                'noted': 2, 
+                'validated': 3, 
+                'verified': 4, 
+                'printed': 5, 
+                'approved': 6, 
+                'rejected': 6, 
+                 'purchased': 7, 
+                'completed': 8
+            };
 
-              let dbStatus = (response.status || "").toLowerCase().trim();
-              let currentLevel = statusLevels[dbStatus] || 0; 
+            let dbStatus = (response.status || "").toLowerCase().trim();
+            let currentLevel = statusLevels[dbStatus] || 0; 
+            
+            let trackSteps = [
+                { desc: "Request submitted by store/user", date: response.date_created, reqLevel: 0 },
+                { desc: "Under assigned support evaluation", date: response.date_created, reqLevel: 0 }
+            ];
 
-              const trackSteps = [
-                  { desc: "Request submitted by store/user", date: response.date_created, reqLevel: 0 },
-                  { desc: "Under technical evaluation", date: response.date_created, reqLevel: 0 },
-                  { desc: "Submitted to technical head", date: response.date_submitted, reqLevel: 1 },
-                  { desc: "Approved and noted by technical head", date: response.date_noted, reqLevel: 2 },
-                  { desc: "For admin support validation", date: null, reqLevel: 2 }, 
-                  { desc: "Validated by admin support", date: response.date_validated, reqLevel: 3 },
-                  { desc: "For administrative verification", date: null, reqLevel: 3 }, 
-                  { desc: "Verified by the administrator", date: response.date_verified, reqLevel: 4 },
-                  { desc: "For printing request form", date: null, reqLevel: 4 }, 
-                  { desc: "Printed", date: response.date_printed, reqLevel: 5 },
-                  { desc: "For General Manager Approval", date: null, reqLevel: 5 }, 
-                  { desc: "Approved by General Manager", date: response.date_approved, reqLevel: 6 },
-                  { desc:  "Transferred to PD for Procurement", date: null, reqLevel: 6 }, 
-                  { desc: "Asset replaced / Completed", date: response.date_completed, reqLevel: 7 }
-              ];
+            if (isTechnical === 1) {
+                trackSteps.push(
+                    { desc: "Submitted to technical/dept head", date: response.date_submitted, reqLevel: 1 },
+                    { desc: "Approved and noted by technical/dept head", date: response.date_noted, reqLevel: 2 }
+                );
+            }
 
-              let timelineHtml = '';
-              
-              trackSteps.forEach((step) => {
-                  let statusClass = (currentLevel >= step.reqLevel) ? "completed" : "";
-                  let dateDisplay = step.date ? `<div class="timeline-date">${step.date}</div>` : '';
+            trackSteps.push(
+                { desc: "For admin support validation", date: null, reqLevel: 2 }, 
+                { desc: "Validated by admin support", date: response.date_validated, reqLevel: 3 },
+                { desc: "For administrative verification", date: null, reqLevel: 3 }, 
+                { desc: "Verified by the administrator", date: response.date_verified, reqLevel: 4 },
+                { desc: "For printing request form", date: null, reqLevel: 4 }, 
+                { desc: "Printed", date: response.date_printed, reqLevel: 5 },
+                { desc: "For General Manager Approval", date: null, reqLevel: 5 }
+            );
 
-                  timelineHtml += `
-                      <li class="timeline-item ${statusClass}">
-                          <div class="timeline-icon"></div>
-                          <div class="timeline-desc">${step.desc}</div>
-                          ${dateDisplay}
-                      </li>
-                  `;
-              });
+            if (dbStatus === 'rejected') {
+                trackSteps.push(
+                    { desc: "Rejected by General Manager", date: response.date_rejected || response.date_updated, reqLevel: 6, isRejected: true }
+                );
+            } else {
+                trackSteps.push(
+                    { desc: "Approved by General Manager", date: response.date_approved, reqLevel: 6 },
+                    { desc: "Transferred to PD for Procurement", date: null, reqLevel: 6 }, 
+                    { desc: "Asset Purchased", date: response.date_approved, reqLevel: 7 },
+                    { desc: "Asset Ready for Release", date: null, reqLevel: 7 }, 
+                    { desc: "Asset replaced / Completed", date: response.date_approved, reqLevel: 8 }
+                );
+            }
 
-              $('#trackingMap').html(timelineHtml);
-          },
-          error: function() {
-              $('#trackingMap').html('<p class="text-danger">Failed to load progress timeline.</p>');
-          },
-          complete: function() {
-              $('#fa_Modal').modal('show');
-          }
-        });
+            let timelineHtml = '';
+            trackSteps.forEach((step) => {
+                let statusClass = (currentLevel >= step.reqLevel) ? "completed" : "";
+                let isValidDate = step.date && step.date !== '0000-00-00 00:00:00';
+                let dateDisplay = isValidDate ? `<div class="timeline-date">${step.date}</div>` : '';
+
+                let iconStyle = step.isRejected ? 'style="background-color: #dc3545; border-color: #dc3545;"' : '';
+                let textStyle = step.isRejected ? 'style="color: #dc3545; font-weight: bold;"' : '';
+
+                timelineHtml += `
+                    <li class="timeline-item ${statusClass}">
+                        <div class="timeline-icon" ${iconStyle}></div>
+                        <div class="timeline-desc" ${textStyle}>${step.desc}</div>
+                        ${dateDisplay}
+                    </li>
+                `;
+            });
+
+            $('#trackingMap').html(timelineHtml);
+        },
+        error: function() {
+            $('#trackingMap').html('<li class="text-danger small">Failed to load progress timeline.</li>');
+        }
+    });
+          $('#fa_Modal').modal('show');
       });
     }
     
@@ -647,25 +660,6 @@ $_SESSION['start'] = time();
       }
   });
 
-  let inactivityTime = function(){
-    let time;
-
-    window.onload = resetTimer;
-    document.onmousemove = resetTimer;
-    document.onkeypress = resetTimer;
-    document.onscroll = resetTimer;
-    document.onclick = resetTimer;
-
-    function logout(){
-      window.location.href = 'adminpanel.php';
-    }
-
-    function resetTimer(){
-      clearTimeout(time);
-      time = setTimeout(logout, 180000)
-    }
-  };
-  inactivityTime();
 
   function handleDropdownChange(selectElement) {
     if (selectElement.value === "") {

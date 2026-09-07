@@ -7,13 +7,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mode'])) {
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
-    $inactive = 180;
-    if (isset($_SESSION['start']) && (time() - $_SESSION['start'] > $inactive)){
-        
-        echo json_encode(["status" => "error", "message" => "Session expired. Please log in again."]);
-        exit();
-    }
-    $_SESSION['start'] = time();
+
     if ($_POST['mode'] === 'fa_tbl') {
         try {
             $sql = "SELECT 
@@ -129,13 +123,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mode'])) {
 }
 
 include 'admin.php';
-$inactive = 180;
-if (isset($_SESSION['start']) && (time() - $_SESSION['start'] > $inactive)){
-    // replace server-side redirect with client-side 3-minute redirect
-    echo '<script>setTimeout(function(){ window.location.href = "adminpanel.php"; }, 180000);</script>';
-    exit();
-}
-$_SESSION['start'] = time();
+
 ?>
 
 <head>
@@ -192,6 +180,7 @@ $_SESSION['start'] = time();
             <option value="VERIFIED">VERIFIED</option>
             <option value="APPROVED">APPROVED</option>
             <option value="COMPLETED">COMPLETED</option>
+            <option value="REJECTED">REJECTED</option>
         </select>
     </div>
 </div>
@@ -255,9 +244,6 @@ $_SESSION['start'] = time();
                     <label>Asset Tag Number</label>
                     <input type="text" class="form-control" name="asset_tag_number" id="asset_tag_number" >
                   </div>
-
-               
-
 
                   <div class="form-group col-md-12">
                     <label>Purpose of Request (From Store/Dept User)</label>
@@ -398,8 +384,6 @@ $_SESSION['start'] = time();
                     </button>
                 </div>
 
-           
-
                 <div class="modal-body text-center py-4">
                     <div class="confirmation-text mb-4">
                         <p class="lead mb-1">Do you want to generate a report for this Fixed Asset form?</p>
@@ -474,7 +458,7 @@ $(document).ready(function() {
   }
   var targetTicket = getUrlParam('ticket_no');
 
-  function refreshData() {
+ function refreshData() {
       let month = $('#filter_month').val();
       let year = $('#filter_year').val();
       let status = $('#filter_status').val();
@@ -487,7 +471,6 @@ $(document).ready(function() {
       }, function(response) {
           if ($.fn.DataTable.isDataTable('#fa_reports_table')) {
               reptable.clear().rows.add(response.table_data || []).draw(false);
-              reptable.draw(); 
               applyStatusFilter(); 
           } else {
               admin_datatable(response);
@@ -502,7 +485,7 @@ $(document).ready(function() {
   refreshData();
   setInterval(function () {
       refreshData();
-  }, 60000);
+  }, 15000);
 
   function getFAData(month = '', year = '') {
       $.post('fetchdata/fetch_data.php', {
@@ -651,7 +634,7 @@ $(document).ready(function() {
           }).then(function() {
             $('#fa_form')[0].reset();
             $('#fa_reports_Modal').modal('hide');
-            getFAData($('#filter_month').val(), $('#filter_year').val());
+           refreshData();
           });
         } else {
           Swal.fire({
@@ -679,23 +662,7 @@ $(document).ready(function() {
 
 });
 
-let inactivityTime = function(){
-  let time;
-  window.onload = resetTimer;
-  document.onmousemove = resetTimer;
-  document.onkeypress = resetTimer;
-  document.onscroll = resetTimer;
-  document.onclick = resetTimer;
 
-  function logout(){
-    window.location.href = 'adminpanel.php';
-  }
-  function resetTimer(){
-    clearTimeout(time);
-    time = setTimeout(logout, 180000)
-  }
-};
-inactivityTime();
 
 function handleDropdownChange(selectElement) {
   if (selectElement.value === "") {
@@ -862,15 +829,15 @@ function loadTimeline(ticket_no, rowData) {
         dataType: 'json',
         data: { ticket_no: ticket_no },
         success: function(response) {
-            const statusLevels = {
+               const statusLevels = {
                 'submitted': 1, 'noted': 2, 'validated': 3, 
-                'verified': 4, 'printed': 5, 'approved': 6, 'rejected': 6, 'completed': 7
+                'verified': 4, 'printed': 5, 'approved': 6,  'rejected': 6, 'purchased': 7, 'completed': 8
             };
 
             let dbStatus = (response.status || "").toLowerCase().trim();
             let currentLevel = statusLevels[dbStatus] || 0; 
 
-            let trackSteps = [
+              let trackSteps = [
                 { desc: "Request submitted by store/user", date: response.date_created, reqLevel: 0 },
                 { desc: "Under assigned support evaluation", date: response.date_created, reqLevel: 0 }
             ];
@@ -882,38 +849,40 @@ function loadTimeline(ticket_no, rowData) {
                 );
             }
 
-            trackSteps.push(
+              trackSteps.push(
                 { desc: "For admin support validation", date: null, reqLevel: isTechnical === 1 ? 2 : 1 }, 
-                { desc: "Validated by admin support", date: response.date_validated, reqLevel: isTechnical === 1 ? 3 : 2 },
-                { desc: "For administrative verification", date: null, reqLevel: isTechnical === 1 ? 3 : 2 }, 
-                { desc: "Verified by the administrator", date: response.date_verified, reqLevel: isTechnical === 1 ? 4 : 3 },
-                { desc: "For printing request form", date: null, reqLevel: isTechnical === 1 ? 4 : 3 }, 
-                { desc: "Printed", date: response.date_printed, reqLevel: isTechnical === 1 ? 5 : 4 },
-                { desc: "For General Manager Approval", date: null, reqLevel: isTechnical === 1 ? 5 : 4 }
+                { desc: "Validated by admin support", date: response.date_validated, reqLevel: isTechnical === 1 ? 3 : 3 },
+                { desc: "For administrative verification", date: null, reqLevel: isTechnical === 1 ? 3 : 3 }, 
+                { desc: "Verified by the administrator", date: response.date_verified, reqLevel: isTechnical === 1 ? 4 : 4 },
+                { desc: "For printing request form", date: null, reqLevel: isTechnical === 1 ? 4 : 4 }, 
+                { desc: "Printed", date: response.date_printed, reqLevel: isTechnical === 1 ? 5 : 5 },
+                { desc: "For General Manager Approval", date: null, reqLevel: isTechnical === 1 ? 5 : 5 }
             );
 
             if (dbStatus === 'rejected') {
                 trackSteps.push(
-                    { desc: "Rejected by General Manager", date: response.date_rejected || response.date_updated, reqLevel: isTechnical === 1 ? 6 : 5, isRejected: true }
+                    { desc: "Rejected by General Manager", date: response.date_rejected || response.date_updated, reqLevel: isTechnical === 1 ? 6 : 6, isRejected: true }
                 );
             } else {
                 trackSteps.push(
-                    { desc: "Approved by General Manager", date: response.date_approved, reqLevel: isTechnical === 1 ? 6 : 5 },
-                    { desc:  "Transferred to PD for Procurement", date: null, reqLevel: isTechnical === 1 ? 6 : 5 }, 
-                    { desc: "Asset replaced / Completed", date: response.date_completed, reqLevel: isTechnical === 1 ? 7 : 6 }
+                    { desc: "Approved by General Manager", date: response.date_approved, reqLevel: isTechnical === 1 ? 6 : 6 },
+                    { desc:  "Transferred to PD for Procurement", date: null, reqLevel: isTechnical === 1 ? 6 : 6 }, 
+                    { desc:  "Asset Purchased", date: response.date_purchased,  reqLevel: isTechnical === 1 ? 7 : 7 }, 
+                    { desc: "Asset Ready for Release", date: null, reqLevel: isTechnical === 1 ? 7 : 7 }, 
+                    { desc: "Asset replaced / Completed", date: response.date_completed, reqLevel: isTechnical === 1 ? 8 : 8 }
                 );
             }
 
             let timelineHtml = '';
+            
             trackSteps.forEach((step) => {
                 let statusClass = (currentLevel >= step.reqLevel) ? "completed" : "";
-                
                 let dateDisplay = step.date ? `<div class="timeline-date">${step.date}</div>` : '';
-
                 let iconStyle = step.isRejected ? 'style="background-color: #dc3545; border-color: #dc3545;"' : '';
                 let textStyle = step.isRejected ? 'style="color: #dc3545; font-weight: bold;"' : '';
 
-                timelineHtml += `
+
+                  timelineHtml += `
                     <li class="timeline-item ${statusClass}">
                         <div class="timeline-icon" ${iconStyle}></div>
                         <div class="timeline-desc" ${textStyle}>${step.desc}</div>
@@ -922,7 +891,7 @@ function loadTimeline(ticket_no, rowData) {
                 `;
             });
 
-            target.html(timelineHtml);
+            $('#trackingMap').html(timelineHtml);
         },
         error: function() {
             target.html('<li class="text-danger">Failed to load timeline.</li>');

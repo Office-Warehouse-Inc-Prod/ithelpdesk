@@ -814,9 +814,7 @@ textarea.form-control:focus {
           <div class="d-flex align-items-center gap-3">
             <form action="testcalendar.php" method="POST" class="m-0">
               <input type="hidden" name="u_id" value="<?php echo $_SESSION['user_id']; ?>">
-              <button type="submit" id="showCalendarBtn" class="btn">
-                <i class="fas fa-calendar-alt me-2"></i>CALENDAR
-              </button>
+             
             </form>
             <div class="form-check form-switch float-right m-3">
               <input class="form-check-input" style="margin-left:-50px;" type="checkbox" id="darkModeToggle">
@@ -1734,7 +1732,7 @@ function loadDepartmentTable() {
                     statsByMonth[parseInt(row.MONTH_NUM)] = row;
                 });
 
-                for (let m = 1; m <= 8; m++) {
+                for (let m = 1; m <= 9; m++) {
                     let row = statsByMonth[m];
                     let monthName = monthNames[m];
 

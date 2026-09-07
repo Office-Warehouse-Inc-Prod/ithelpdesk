@@ -184,9 +184,18 @@ $( document ).ready(function() {
      */
     function admin_datatable(t){
         const dataset = t.rptdata;
-        let currentPage = 0;
+       let currentPage = 0;
+        let globalSearch = "";
+        let colSearches = [];
+
         if ($.fn.DataTable.isDataTable("#report_data")) {
-            currentPage = $("#report_data").DataTable().page();
+            let dt = $("#report_data").DataTable();
+            currentPage = dt.page();
+            globalSearch = dt.search();
+            let colCount = dt.columns().count();
+            for(let i = 0; i < colCount; i++) {
+                colSearches.push(dt.column(i).search());
+            }
         }
 
         table = $("#report_data").DataTable({
@@ -412,7 +421,7 @@ $( document ).ready(function() {
                     }
                 }
             ],
-            rowCallback: function (row, data) {
+           rowCallback: function (row, data) {
                 $(row).removeClass('status-open status-closed status-subject-closing status-fixed');
                 const s = (data['status'] || "").toUpperCase();
 
@@ -423,9 +432,15 @@ $( document ).ready(function() {
             }
         });
 
-        if (currentPage > 0) {
-            table.page(currentPage).draw(false);
+       if (globalSearch !== "") {
+            table.search(globalSearch);
         }
+        colSearches.forEach((val, i) => {
+            if (val !== "") {
+                table.column(i).search(val);
+            }
+        });
+        table.page(currentPage).draw(false);
 
         $('#report_data tbody').off('dblclick').on('dblclick', 'tr', function () {
             var data = table.row($(this)).data();
@@ -513,11 +528,19 @@ $( document ).ready(function() {
      */
     function admin_datatable_transfer(t) {
         const dataset = t.transferdata;
-        let currentPage = 0;
-        if ($.fn.DataTable.isDataTable("#transferred_data")) {
-            currentPage = $("#transferred_data").DataTable().page();
-        }
+     let currentPage = 0;
+        let globalSearch = "";
+        let colSearches = [];
 
+        if ($.fn.DataTable.isDataTable("#transferred_data")) {
+            let dt = $("#transferred_data").DataTable();
+            currentPage = dt.page();
+            globalSearch = dt.search();
+            let colCount = dt.columns().count();
+            for(let i = 0; i < colCount; i++) {
+                colSearches.push(dt.column(i).search());
+            }
+        }
         table_transfer = $("#transferred_data").DataTable({
             dom:
                 "<'dt-top d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-2'"+
@@ -675,7 +698,7 @@ $( document ).ready(function() {
                     }
                 }
             ],
-            rowCallback: function (row, data) {
+           rowCallback: function (row, data) {
                 $(row).removeClass('status-open status-closed status-subject-closing status-fixed');
                 const s = (data['status'] || "").toUpperCase();
 
@@ -686,9 +709,15 @@ $( document ).ready(function() {
             }
         });
 
-        if (currentPage > 0) {
-            table_transfer.page(currentPage).draw(false);
+        if (globalSearch !== "") {
+            table_transfer.search(globalSearch);
         }
+        colSearches.forEach((val, i) => {
+            if (val !== "") {
+                table_transfer.column(i).search(val);
+            }
+        });
+        table_transfer.page(currentPage).draw(false);
 
         $('#transferred_data tbody').off('dblclick').on('dblclick', 'tr', function () {
             var data = table_transfer.row($(this)).data();

@@ -439,13 +439,21 @@ body {
             </div>
           </li>
 
-          <li class="nav-item">
-            <a class="nav-link" href="fix_asset_printing.php">
-              <i class="fas fa-boxes-stacked">
-                <span class="badge badge-danger" id="notif_fa"></span>
-              </i>
-              FIXED ASSET
+           <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="genReportDrop" role="button" data-toggle="dropdown">
+              <i class="fas fa-boxes-stacked"> <span class="badge badge-danger" id="notif_procurement"></i> FIXED ASSET
             </a>
+            <div class="dropdown-menu" aria-labelledby="genReportDrop">
+              <a class="dropdown-item d-flex justify-content-between align-items-center" href="for_procurement.php">
+                <span><i class="fas fa-shopping-cart"></i> For Procurement</span>
+                <span class="badge badge-danger" id="notif_procurement2" style="position: static;"></span>
+              </a>
+             
+            
+               <a class="dropdown-item" href="fix_asset_reports.php">
+                <i class="fas fa-file-lines">  </i>   Fixed Asset Reports
+              </a>
+            </div>
           </li>
           
           
@@ -707,6 +715,8 @@ body {
     document.addEventListener("DOMContentLoaded", function () {
       setInterval(getNewReportCount, 5000);
       setInterval(getFixedAssetCount, 5000);
+      setInterval(getProcurementCount, 5000);
+       setInterval(getProcurementCount2, 5000);
     });
 
     async function getNewReportCount() {
@@ -726,6 +736,43 @@ body {
         console.error("Notification count dev error:", error);
       }
     }
+    
+async function getProcurementCount() {
+    try {
+        const response = await fetch("fetchdata/notif_procurement.php?_=" + Date.now());
+        const count = (await response.text()).trim();
+        const badge = document.getElementById("notif_procurement");
+        if (!badge) return;
+
+        if (count === "0" || count === "") {
+            badge.style.display = "none";
+        } else {
+            badge.style.display = "inline-block";
+            badge.innerHTML = count;
+        }
+    } catch (error) {
+        console.error("Verification count error:", error);
+    }
+}
+
+   
+async function getProcurementCount2() {
+    try {
+        const response = await fetch("fetchdata/notif_procurement2.php?_=" + Date.now());
+        const count = (await response.text()).trim();
+        const badge = document.getElementById("notif_procurement2");
+        if (!badge) return;
+
+        if (count === "0" || count === "") {
+            badge.style.display = "none";
+        } else {
+            badge.style.display = "inline-block";
+            badge.innerHTML = count;
+        }
+    } catch (error) {
+        console.error("Verification count error:", error);
+    }
+}
 
     async function getFixedAssetCount() {
       try {

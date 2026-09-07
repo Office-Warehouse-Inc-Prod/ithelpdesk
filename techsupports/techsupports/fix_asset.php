@@ -220,38 +220,61 @@ $_SESSION['start'] = time();
                       <textarea class="form-control" name="purpose" id="purpose_of_request" style="height: 100px;" readonly></textarea>
                   </div>
 
-                   <div class="form-group col-md-12">
-                      <label>Technical Workoutput</label>
-                      <textarea class="form-control" name="technical_workoutput" id="technical_workoutput" style="height: 100px;"></textarea>
-                  </div>
-
                   <div class="form-group col-md-6">
-                      <label>Item Received By</label>
+                      <label>Item Inspected/Received By</label>
                       <input type="text" class="form-control" name="item_received_by" id="it_desc" readonly>
                   </div>
                   
                   <input type="hidden" class="form-control" name="received_by" value="<?php echo $_SESSION['tech_id']; ?>" readonly>
 
                   <div class="form-group col-md-6">
-                      <label>Date Received</label>
+                      <label>Date Inspected/Received</label>
                       <input type="text" class="form-control" name="date_received" id="date_received" required>
                   </div>
               </div>
           </div>
+
+            <div class="col-md-4 pt-2 pb-2" style="border-radius: 0 8px 8px 0;">
+                 <div class="form-group col-md-12" id="technical_workoutput_section">
+                    <label>Workoutput (Under Assigned Support Evaluation)</label>
+                    <textarea class="form-control" name="technical_workoutput" id="technical_workoutput" style="height: 350px;" required></textarea>
+                  </div>
+                  
+                  <div id="additional_technical_fields">
+                      <label>Problem Reported:</label>
+                      <div class="form-group col-md-12">
+                        <textarea class="form-control" name="problem_reported" id="problem_reported" style="height: 120px;" required readonly> </textarea>
+                      </div>
+                       <label>Verification/Findings: </label>
+                      <div class="form-group col-md-12">
+                        <textarea class="form-control" name="verification_findings" id="verification_findings" style="height: 120px;" required readonly></textarea>
+                      </div>
+                       <label>Work Done/Technical Solutions Provided:</label>
+                      <div class="form-group col-md-12">
+                        <textarea class="form-control" name="work_done" id="work_done" style="height: 120px;" required readonly></textarea>
+                      </div>
+                       <label>Status/Work Output:</label>
+                      <div class="form-group col-md-12">
+                        <textarea class="form-control" name="status_workoutput" id="status_workoutput" style="height: 120px;" required readonly></textarea>
+                      </div>
+                       <label>Recommendations/Suggestions:</label>
+                      <div class="form-group col-md-12">
+                        <textarea class="form-control" name="recommendation" id="recommendation" style="height: 120px;" required readonly></textarea>
+                      </div>
+                  </div>
+
+              </div>
           
     
-          <div class="col-md-4 border-right pt-2 pb-2" style="background: linear-gradient(to bottom, #ffffff, #f0f3f7);">
-              <h6 class="text-uppercase mb-3" style="color:#E1AD01; font-weight: 800;">Asset Request Progress</h6>
-              <div class="tracking-container" style="max-height: 850px; overflow-y: auto; padding-right: 10px;">
+      
+
+          <div class="col-md-3 pt-2 pb-2" style="background: #f8f9fa; border-radius: 0 8px 8px 0;">
+              <h6 class="text-uppercase mb-3" style="color:#213456; font-weight: 800;">Remarks Thread</h6>
+                  <div class="tracking-container" style="max-height: 850px; overflow-y: auto; padding-right: 10px;">
                   <ul class="tracking-timeline" id="trackingMap">
             
                   </ul>
               </div>
-          </div>
-
-          <div class="col-md-3 pt-2 pb-2" style="background: #f8f9fa; border-radius: 0 8px 8px 0;">
-              <h6 class="text-uppercase mb-3" style="color:#213456; font-weight: 800;">Remarks Thread</h6>
-              
               <div id="remarks_thread_container" class="chat-container">
                
               </div>
@@ -406,7 +429,7 @@ $_SESSION['start'] = time();
               success: function(response) {
                    const statusLevels = {
                 'submitted': 1, 'noted': 2, 'validated': 3, 
-                'verified': 4, 'printed': 5, 'approved': 6, 'completed': 7
+                'verified': 4, 'printed': 5, 'approved': 6, 'rejected': 6, 'purchased': 7, 'completed': 8
             };
 
             let dbStatus = (response.status || "").toLowerCase().trim();
@@ -423,26 +446,40 @@ $_SESSION['start'] = time();
                 { desc: "Verified by the administrator", date: response.date_verified, reqLevel: 4 },
                 { desc: "For printing request form", date: null, reqLevel: 4 }, 
                 { desc: "Printed", date: response.date_printed, reqLevel: 5 },
-                { desc: "For General Manager Approval", date: null, reqLevel: 5 }, 
-                { desc: "Approved by General Manager", date: response.date_approved, reqLevel: 6 },
-                { desc: "Ready for asset replacement", date: null, reqLevel: 6 }, 
-                { desc: "Asset replaced / Completed", date: response.date_completed, reqLevel: 7 }
+                { desc: "For General Manager Approval", date: null, reqLevel: 5 }
             ];
+            if (dbStatus === 'rejected') {
+                trackSteps.push(
+                    { desc: "Rejected by General Manager", date: response.date_rejected || response.date_updated, reqLevel: 6, isRejected: true }
+                );
+            } else {
+                trackSteps.push(
+                    { desc: "Approved by General Manager", date: response.date_approved,  reqLevel: 6 },
+                    { desc:  "Transferred to PD for Procurement", date: null,  reqLevel: 7 }, 
+                    { desc:  "Asset Purchased", date: response.date_purchased,   reqLevel: 7 }, 
+                    { desc: "Asset Ready for Release", date: null, reqLevel: 8 }, 
+                    { desc: "Asset replaced / Completed", date: response.date_completed,  reqLevel: 8 }
+                );
+            }
+
 
                   let timelineHtml = '';
                   
-                  trackSteps.forEach((step) => {
-                      let statusClass = (currentLevel >= step.reqLevel) ? "completed" : "";
-                      let dateDisplay = step.date ? `<div class="timeline-date" style="font-size: 11px; color: #6B7280;">${step.date}</div>` : '';
+                   trackSteps.forEach((step) => {
+                let statusClass = (currentLevel >= step.reqLevel) ? "completed" : "";
+                let dateDisplay = step.date ? `<div class="timeline-date">${step.date}</div>` : '';
+                let iconStyle = step.isRejected ? 'style="background-color: #dc3545; border-color: #dc3545;"' : '';
+                let textStyle = step.isRejected ? 'style="color: #dc3545; font-weight: bold;"' : '';
 
-                      timelineHtml += `
-                          <li class="timeline-item ${statusClass}">
-                              <div class="timeline-icon"></div>
-                              <div class="timeline-desc" style="font-size: 13px; font-weight: 600; color: #213456;">${step.desc}</div>
-                              ${dateDisplay}
-                          </li>
-                      `;
-                  });
+
+                  timelineHtml += `
+                    <li class="timeline-item ${statusClass}">
+                        <div class="timeline-icon" ${iconStyle}></div>
+                        <div class="timeline-desc" ${textStyle}>${step.desc}</div>
+                        ${dateDisplay}
+                    </li>
+                `;
+            });
 
                   $('#trackingMap').html(timelineHtml);
               },

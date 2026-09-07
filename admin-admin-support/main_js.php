@@ -2,6 +2,7 @@
 <script type='text/javascript'>
   $(document).ready(function () {
 
+    $.fn.dataTable.ext.pager.numbers_length = 10;
     const toggle = document.getElementById('darkModeToggle');
     const body = document.body;
 
@@ -173,9 +174,24 @@ function getdata(yr) {
 }
 
 var table_tickets;
-
 function admin_datatable(t) {
   const dataset = t.rptdata;
+ 
+      let currentPage = 0;
+      let globalSearch = "";
+      let colSearches = [];
+
+      // Safely capture the current pagination index before destroying/rebuilding the table
+      if ($.fn.DataTable.isDataTable("#report_data")) {
+          let dt = $("#report_data").DataTable();
+          currentPage = dt.page(); // <-- This keeps track of your current page (e.g., page 4 or 9)
+          globalSearch = dt.search();
+          let colCount = dt.columns().count();
+          for(let i = 0; i < colCount; i++) {
+              colSearches.push(dt.column(i).search());
+          }
+      }
+
   table_tickets = $("#report_data").DataTable({
     "dom": 'B<"pull-left"lf><"pull-right">tip',
     "buttons": [
@@ -222,6 +238,7 @@ function admin_datatable(t) {
     "responsive": true, 
     "lengthChange": false, 
     "autoWidth": false,
+    "displayStart": currentPage * 10, // <-- THIS LOCKS IT TO THE EXACT CURRENT PAGE UPON REFRESH
     "language": {
       "search": "_INPUT_",
       "searchPlaceholder": "Search..."
@@ -308,23 +325,46 @@ function admin_datatable(t) {
         }
       }
     ],
-    rowCallback: function (row, data, index) {
-      $(row).removeClass('status-open status-open-msg status-closed status-subject-closing status-pending');
+      rowCallback: function (row, data, index) {
+          $(row).removeClass('status-open status-open-msg status-closed status-subject-closing status-pending');
 
-      if (data['status'] === "ON PROCESS") {
-        if (data['msg_cnt'] === '1' || data['msg_cnt'] === '0') {
-          $(row).addClass('status-open');
+          const statusValue = String(data['status'] || '').trim().toUpperCase();
+          if (statusValue === 'ON PROCESS') {
+            $(row).addClass('status-open');
+          } else if (statusValue === 'PENDING') {
+            $(row).addClass('status-pending');
+            $(row).find('td:eq(11)').html(' ');
+          } else if (statusValue === 'CLOSED') {
+            $(row).addClass('status-closed');
+          } else if (statusValue === 'SUBJECT FOR CLOSING') {
+            $(row).addClass('status-subject-closing');
+          }
         }
-      } else if (data['status'] === 'PENDING') {
-        $(row).addClass('status-pending');
-        $(row).find('td:eq(11)').html(' ');
-      } else if (data['status'] === 'CLOSED') {
-        $(row).addClass('status-closed');
-      } else if (data['status'] === 'SUBJECT FOR CLOSING') {
-        $(row).addClass('status-subject-closing');
+      });
+
+          if (globalSearch !== "") {
+          table_tickets.search(globalSearch);
       }
-    }
-  });
+      
+      colSearches.forEach((val, i) => {
+          if (val !== "") {
+              if (i === 6 && window.currentDashcardFilter !== '') {
+                  const statusRegex = '^' + $.fn.dataTable.util.escapeRegex(window.currentDashcardFilter) + '$';
+                  table_tickets.column(i).search(statusRegex, true, false);
+              } else if (val.startsWith('^') && val.endsWith('$')) {
+                  table_tickets.column(i).search(val, true, false);
+              } else {
+                  table_tickets.column(i).search(val, false, true); // Strict string search
+              }
+          }
+      });
+
+      if (window.currentDashcardFilter !== '') {
+          const statusRegex = '^' + $.fn.dataTable.util.escapeRegex(window.currentDashcardFilter) + '$';
+          table_tickets.column(6).search(statusRegex, true, false);
+      }
+
+      table_tickets.page(currentPage).draw(false);
 
   $('#report_data tbody').on('dblclick', 'tr', function () {
     var data = table_tickets.row($(this)).data();
@@ -356,6 +396,19 @@ var table_transfer;
 
 function admin_datatable_transfer(t) {
   const dataset = t.transferdata;
+    let currentPage = 0;
+      let globalSearch = "";
+      let colSearches = [];
+
+      if ($.fn.DataTable.isDataTable("#transferred_data")) {
+          let dt = $("#transferred_data").DataTable();
+          currentPage = dt.page();
+          globalSearch = dt.search();
+          let colCount = dt.columns().count();
+          for(let i = 0; i < colCount; i++) {
+              colSearches.push(dt.column(i).search());
+          }
+      }
   table_transfer = $("#transferred_data").DataTable({
     "dom": 'B<"pull-left"lf><"pull-right">tip',
     "buttons": [
@@ -459,20 +512,44 @@ function admin_datatable_transfer(t) {
         }
       }
     ],
-    rowCallback: function (row, data, index) {
-      $(row).removeClass('status-open status-open-msg status-closed status-subject-closing status-pending');
-      if (data['status'] === "ON PROCESS") {
-        if (data['msg_cnt'] === '1' || data['msg_cnt'] === '0') $(row).addClass('status-open');
-      } else if (data['status'] === 'PENDING') {
-        $(row).addClass('status-pending');
-        $(row).find('td:eq(11)').html(' ');
-      } else if (data['status'] === 'CLOSED') {
-        $(row).addClass('status-closed');
-      } else if (data['status'] === 'SUBJECT FOR CLOSING') {
-        $(row).addClass('status-subject-closing');
+      rowCallback: function (row, data, index) {
+          $(row).removeClass('status-open status-open-msg status-closed status-subject-closing status-pending');
+          if (data['status'] === "ON PROCESS") {
+            if (data['msg_cnt'] === '1' || data['msg_cnt'] === '0') $(row).addClass('status-open');
+          } else if (data['status'] === 'PENDING') {
+            $(row).addClass('status-pending');
+            $(row).find('td:eq(11)').html(' ');
+          } else if (data['status'] === 'CLOSED') {
+            $(row).addClass('status-closed');
+          } else if (data['status'] === 'SUBJECT FOR CLOSING') {
+            $(row).addClass('status-subject-closing');
+          }
+        }
+      });
+
+      if (globalSearch !== "") {
+          table_transfer.search(globalSearch);
       }
-    }
-  });
+
+      colSearches.forEach((val, i) => {
+          if (val !== "") {
+              if (i === 6 && window.currentDashcardFilter !== '') {
+                  const statusRegex = '^' + $.fn.dataTable.util.escapeRegex(window.currentDashcardFilter) + '$';
+                  table_transfer.column(i).search(statusRegex, true, false);
+              } else if (val.startsWith('^') && val.endsWith('$')) {
+                  table_transfer.column(i).search(val, true, false);
+              } else {
+                  table_transfer.column(i).search(val, false, true);
+              }
+          }
+      });
+
+      if (window.currentDashcardFilter !== '') {
+          const statusRegex = '^' + $.fn.dataTable.util.escapeRegex(window.currentDashcardFilter) + '$';
+          table_transfer.column(6).search(statusRegex, true, false);
+      }
+
+      table_transfer.page(currentPage).draw(false);
 
   $('#transferred_data tbody').on('dblclick', 'tr', function () {
     var data = table_transfer.row($(this)).data();
@@ -482,132 +559,164 @@ function admin_datatable_transfer(t) {
 }
 
 
-function open_ticket_modal(data) {
-  var tid = data['ticket_no'];
-    $('#status').html(window.originalStatusOptions);
+   function open_ticket_modal(data) {
+      var tid = data['ticket_no'];
+      window.originalStatusOptions = window.originalStatusOptions || $('#status').html();
+      
+      var currentStatus = String(data['status']).trim().toUpperCase();
+      var statusOptions = '';
+      
+      if (currentStatus === 'CLOSED') {
+          statusOptions = '<option value="CLOSED" style="color: #333;">CLOSED</option>';
+      } 
+      else if (currentStatus === 'PENDING' || currentStatus === 'ON PROCESS') {
+          statusOptions = '<option value="' + currentStatus + '" style="color: #333;">' + currentStatus + '</option>' +
+                          '<option value="SUBJECT FOR CLOSING" style="color: #333;">SUBJECT FOR CLOSING</option>';
+      } 
+      else if (currentStatus === 'SUBJECT FOR CLOSING') {
+          statusOptions = '<option value="SUBJECT FOR CLOSING" style="color: #333;">SUBJECT FOR CLOSING</option>';
+      } 
+      else {
+          var $tempSelect = $('<select>').html(window.originalStatusOptions);
+          $tempSelect.find('option[value="CLOSED"]').remove();
+          if ($tempSelect.find('option[value="SUBJECT FOR CLOSING"]').length === 0) {
+              $tempSelect.append('<option value="SUBJECT FOR CLOSING" style="color: #333;">SUBJECT FOR CLOSING</option>');
+          }
+          if (currentStatus && $tempSelect.find('option[value="' + currentStatus + '"]').length === 0) {
+              $tempSelect.prepend('<option value="' + currentStatus + '" style="color: #333;">' + currentStatus + '</option>');
+          }
+          statusOptions = $tempSelect.html();
+      }
+      $('#status').html(statusOptions);
+      $('#subjct').attr('readonly', true);
+      $('#ticket_no').val(data['ticket_no']);
+      $('#str_num').val(data['store']);
+      $('#store').val(data['store']);
+      $('#date_createdx').val(data['date_created']);
+      $('#subjct').val(data['subject']);
+      $('#concern').val(data['concern']);
+      $('#via').val(data['via']);
+      $('#it_num').val(data['itsup']);
+    
+      if (data['itsup'] && $('#itsup option[value="' + data['itsup'] + '"]').length === 0) {
+          $('<option>', {
+              value: data['itsup'],
+              text: data['it_desc'] ? data['it_desc'] : 'Assigned Support (ID: ' + data['itsup'] + ')',
+              class: 'temp-option'
+          }).appendTo('#itsup');
+      }
+      
+      var isTransferValue = parseInt($.trim(data['is_transfer'])) === 1;
+      $('#userModal #is_transfer').prop('checked', isTransferValue).trigger('change');
+      $('#itsup').val(data['itsup']);
+      $('#cat_num').val(data['cat_id']);
+      
+      var sessionUser = "<?= addslashes(trim(($_SESSION['fname'] ?? '') . ' ' . ($_SESSION['lstname'] ?? ''))) ?>";
+      var sessionTechId = "<?= addslashes($_SESSION['tech_id'] ?? '') ?>";
+      
+      $('#close_by').val(data['close_by'] && String(data['close_by']).trim() !== '' && String(data['close_by']).trim() !== '0' ? data['close_by'] : sessionTechId);
+      $('#cl_desc').val(data['clusers'] && String(data['clusers']).trim() !== '' ? data['clusers'] : sessionUser);
 
-  if (data['status'] === 'ON PROCESS') {
-      $('#status').html(
-          '<option value="ON PROCESS" style="color: #333;">ON PROCESS</option>' +
-          '<option value="PENDING" style="color: #333;">PENDING</option>' +
-          '<option value="SUBJECT FOR CLOSING" style="color: #333;">SUBJECT FOR CLOSING</option>'
-      );
-  } else if (data['status'] === 'PENDING') {
-      $('#status').html(
-          '<option value="PENDING" style="color: #333;">PENDING</option>' +
-          '<option value="SUBJECT FOR CLOSING" style="color: #333;">SUBJECT FOR CLOSING</option>'
-      );
-  }
+      if (data['cat_id'] && $('#cat option[value="' + data['cat_id'] + '"]').length === 0) {
+        $('<option>', {
+          value: data['cat_id'],
+          text: data['category'] ? data['category'] : 'Category ID ' + data['cat_id'],
+          class: 'temp-option'
+        }).appendTo('#cat');
+      }
+      $('#cat').val(data['cat_id']);
 
-  $('#subjct').attr('readonly', true);
-  $('#ticket_no').val(data['ticket_no']);
-  $('#str_num').val(data['store']);
-  $('#store').val(data['store']);
-  $('#date_createdx').val(data['date_created']);
-  $('#subjct').val(data['subject']);
-  $('#concern').val(data['concern']);
-  $('#via').val(data['via']);
-  $('#status').val(data['status']);
-  $('#it_num').val(data['itsup']);
-  
-  console.log("Ticket: " + data['ticket_no'] + " | is_transfer raw value: ", data['is_transfer']);
-  
-  var isTransferValue = parseInt($.trim(data['is_transfer'])) === 1;
-
-  $('#userModal #is_transfer').prop('checked', isTransferValue).trigger('change');
-  if (data['itsup'] && $('#itsup option[value="' + data['itsup'] + '"]').length === 0) {
-    $('<option>', {
-      value: data['itsup'],
-      text: data['it_desc'] ? data['it_desc'] : 'Support ID ' + data['itsup'],
-      class: 'temp-option'
-    }).appendTo('#itsup');
-  }
-  $('#itsup').val(data['itsup']);
-
-  $('#cat_num').val(data['cat_id']);
-  $('#close_by').val(data['close_by']);
-  $('#cl_desc').val(data['clusers']);
-
-  if (data['cat_id'] && $('#cat option[value="' + data['cat_id'] + '"]').length === 0) {
-    $('<option>', {
-      value: data['cat_id'],
-      text: data['category'] ? data['category'] : 'Category ID ' + data['cat_id'],
-      class: 'temp-option'
-    }).appendTo('#cat');
-  }
-  $('#cat').val(data['cat_id']);
-
-  $('#sub_num').val(data['sub_id']);
-  if (data['sub_id'] && $('#sub option[value="' + data['sub_id'] + '"]').length === 0) {
-    $('<option>', {
-      value: data['sub_id'],
-      text: data['sub_category'] ? data['sub_category'] : 'Sub Category ID ' + data['sub_id'],
-      class: 'temp-option'
-    }).appendTo('#sub');
-  }
-  $('#sub').val(data['sub_id']);
-  $('#isp_num').val(data['isp_id']);
-  $('#isp').val(data['isp_id']);
-  $('#refNo').val(data['refNo']);
-  $('#date_refNo').val(data['date_refNo']);
-  $('#file-input').val("");
-  
-  if(typeof admin_hideshowforms === "function") admin_hideshowforms();
-  
-  $('#date_closed').val(data['date_closed']);
-  $('#remarks').val(data['remarks']);
-  
-  $('#remarks_view').show();
-  $('.dv_msg').show();
-  $('.container_remarks').show();
-  $('#msg_thread').slideDown(300);
-  $('#userModal').modal({ "show": true, "backdrop": 'static' });
-  loadCommentThread(data['ticket_no']);
-  
-  if(typeof unilayout_netshowmodalform === "function") unilayout_netshowmodalform();
-
-  $('#itsup').off('change').on('change', function () {
-    var itfrstsup = $('#it_num').val();
-    var itchange = this.value;
-    if (itfrstsup != itchange) {
-      $('#remarks').attr("placeholder", "Reason for re-assign/ Workoutput");
-      $('#remarks').val("");
-    } else {
+      $('#sub_num').val(data['sub_id']);
+      if (data['sub_id'] && $('#sub option[value="' + data['sub_id'] + '"]').length === 0) {
+        $('<option>', {
+          value: data['sub_id'],
+          text: data['sub_category'] ? data['sub_category'] : 'Sub Category ID ' + data['sub_id'],
+          class: 'temp-option'
+        }).appendTo('#sub');
+      }
+      $('#sub').val(data['sub_id']);
+      $('#isp_num').val(data['isp_id']);
+      $('#isp').val(data['isp_id']);
+      $('#refNo').val(data['refNo']);
+      $('#date_refNo').val(data['date_refNo']);
+      $('#file-input').val("");
+      
+      if(typeof admin_hideshowforms === "function") admin_hideshowforms();
+      
+      $('#date_closed').val(data['date_closed']);
       $('#remarks').val(data['remarks']);
+      
+      $('#remarks_view').show();
+      $('.dv_msg').show();
+      $('.container_remarks').show();
+      $('#msg_thread').slideDown(300);
+      $('#userModal').modal({ "show": true, "backdrop": 'static' });
+      loadCommentThread(data['ticket_no']);
+      
+      if(typeof unilayout_netshowmodalform === "function") unilayout_netshowmodalform();
+
+     $('#status').off('change.statusCheck').on('change.statusCheck', function() {
+          var stat = $(this).val();
+          if (stat === 'CLOSED' || stat === 'SUBJECT FOR CLOSING') {
+              $('.hide_cl').slideDown(200);
+              
+              if (!$('#date_closed').val()) {
+                  var now = new Date();
+                  now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+                  $('#date_closed').val(now.toISOString().slice(0, 16).replace('T', ' '));
+              }
+          } else {
+              $('.hide_cl').slideUp(200);
+          }
+          
+          if (stat !== 'CLOSED') {
+              $(':input[type="submit"]').prop('disabled', false);
+          } else {
+              $(':input[type="submit"]').prop('disabled', true);
+          }
+      });
+
+      $('#itsup').off('change').on('change', function () {
+        var itfrstsup = $('#it_num').val();
+        var itchange = this.value;
+        if (itfrstsup != itchange) {
+          $('#remarks').attr("placeholder", "Reason for re-assign/ Workoutput");
+          $('#remarks').val("");
+        } else {
+          $('#remarks').val(data['remarks']);
+        }
+      });
+      if (currentStatus === 'CLOSED') {
+        $(':input[type="submit"]').prop('disabled', true);
+        $('#date_createdx, #date_refNo, #date_closed, #remarks').attr('readonly', true);
+        $('#store, #via, #status, #itsup, #cat, #sub, #isp, #is_transfer').prop("disabled", true);
+      } else {
+        $(':input[type="submit"]').prop('disabled', false);
+        $('#date_createdx, #date_refNo, #date_closed, #subjct, #remarks').attr('readonly', false);
+        $('#store, #via, #status, #itsup, #cat, #sub, #isp, #is_transfer').prop("disabled", false);
+      }
+
+      if (typeof getinfo === "function") getinfo(tid, 'remarks', user_id);
+      if (typeof gtsub_id === "function") gtsub_id();
+
+      $('.modal-title').text("Ticket Number: " + tid);
+      $('#action').val("Save and Reply");
+      $('#operation').val("Save and Reply");
+      $('#userModal').modal({ "show": true, "backdrop": 'static' });
+
+      $.ajax({
+        type: 'POST',
+        url: 'sesticket.php',
+        data: { tktval: data['ticket_no'] },
+        success: function (response) {
+          $('#img').html(response);
+        }
+      });
+
+      $('#msgbtn').show();
+      $('#msg_thread').show();
+      $('#addmsg').val("");
     }
-  });
-
-  if ($('#status').val() == 'CLOSED') {
-    $(':input[type="submit"]').prop('disabled', true);
-    $('#date_createdx, #date_refNo, #date_closed, #remarks').attr('readonly', true);
-    $('#store, #via, #status, #itsup, #cat, #sub, #isp, #is_transfer').prop("disabled", true);
-  } else {
-    $(':input[type="submit"]').prop('disabled', false);
-    $('#date_createdx, #date_refNo, #date_closed, #subjct, #remarks').attr('readonly', false);
-    $('#store, #via, #status, #itsup, #cat, #sub, #isp, #is_transfer').prop("disabled", false);
-  }
-
-  if (typeof getinfo === "function") getinfo(tid, 'remarks', user_id);
-  if (typeof gtsub_id === "function") gtsub_id();
-
-  $('.modal-title').text("Ticket Number: " + tid);
-  $('#action').val("Save and Reply");
-  $('#operation').val("Save and Reply");
-  $('#userModal').modal({ "show": true, "backdrop": 'static' });
-
-  $.ajax({
-    type: 'POST',
-    url: 'sesticket.php',
-    data: { tktval: data['ticket_no'] },
-    success: function (response) {
-      $('#img').html(response);
-    }
-  });
-
-  $('#msgbtn').show();
-  $('#msg_thread').show();
-  $('#addmsg').val("");
-}
 
 
 $(document).ready(function() {
@@ -691,7 +800,15 @@ $(document).ready(function() {
       $('#date_closed').attr('readonly', false);
       $('#store').prop("disabled", false);
       $('#via').prop("disabled", false);
-      $('#status').prop("disabled", false);
+
+        
+      $('#status').html(window.originalStatusOptions);
+      $('#status').find('option[value="CLOSED"]').remove();
+      if ($('#status').find('option[value="SUBJECT FOR CLOSING"]').length === 0) {
+          $('#status').append('<option value="SUBJECT FOR CLOSING" style="color: #333;">SUBJECT FOR CLOSING</option>');
+      }
+      
+      $('#status').prop("disabled", false).val('').trigger('change');
       $('#itsup').prop("disabled", false);
       $('#cat').prop("disabled", false);
       $('#sub').prop("disabled", false);

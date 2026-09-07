@@ -1712,7 +1712,7 @@ function loadDepartmentTable() {
                     statsByMonth[parseInt(row.MONTH_NUM)] = row;
                 });
 
-                for (let m = 1; m <= 8; m++) {
+                for (let m = 1; m <= 9; m++) {
                     let row = statsByMonth[m];
                     let monthName = monthNames[m];
 

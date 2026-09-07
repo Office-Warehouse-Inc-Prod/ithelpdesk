@@ -1,6 +1,4 @@
 <?php
-
-
 // ======== db  =========
 include 'admin.php';
 include '../condb.php';
@@ -10,7 +8,6 @@ include 'sub_graph_modal.php';
 // include 'testcalendar.php';
 
 // $conn=new dbconfig();
-
 ?>
 
 <head>
@@ -44,37 +41,6 @@ body {
   background-repeat: no-repeat;
   min-height: 100vh;
 } 
- .modal-overlay {
-            display: none; 
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-       .modal-overlay .modal-content {
-             background: linear-gradient(to bottom, #ffffff, #99aac8);
-            padding: 25px;
-            border-radius: 8px;
-            width: 70%;
-            max-width: 90%;
-            margin-top:30px;
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-       .modal-overlay .modal-content h3 {
-            margin-top: 0;
-            color: #333;
-        }
-       .modal-overlay .close-btn {
-            background-color: #213456;
-            margin-top: 15px;
-        }
- 
 
         
   .table-responsive {
@@ -86,26 +52,26 @@ body {
     width: 100% !important;
     table-layout: auto !important;
     page-break-inside: avoid;
-    
+     
   }
 
   .admin-table th {
-    background-color: #213456 !important;
-    color: #fff !important;
+    background-color: linear-gradient(135deg, #213456, #334c7a) !important;
+    color: #ffffff!important;
     padding: 6px 4px !important;
     font-size: 11px !important;
   }
 
   #admin_report.admin-table th.active.text-center {
     background-color: #2b9827 !important;
-    color: #fff !important;
+    color: #ffffff !important;
     padding: 6px 4px !important;
     font-size: 11px !important;
   }
 
   #admin_report.admin-table th.compliance.text-center {
     background-color: #a29341 !important;
-    color: #fff !important;
+    color: #ffffff !important;
     padding: 6px 4px !important;
     font-size: 11px !important;
   }
@@ -153,10 +119,10 @@ body {
   padding:10px;
   width: 30%;
   color: white;
-  background-color: #213456;
+  background-color: linear-gradient(135deg, #213456, #334c7a);
 }
  .modal-overlay .month-row[data-month="6"] {
-  background: #213456;
+  background: linear-gradient(135deg, #213456, #334c7a);
   outline: 2px solid red;
   outline-offset: -2px; 
 }
@@ -281,7 +247,7 @@ textarea.form-control:focus {
 #userModal .input-group-text {
     background-color: white;
     border-right: none;
-    color: #213456;
+    color: linear-gradient(135deg, #213456, #334c7a);
 }
 
 #userModal .form-control {
@@ -291,7 +257,7 @@ textarea.form-control:focus {
 }
 
 #userModal .form-control:focus {
-    border-color: #213456;
+    border-color: linear-gradient(135deg, #213456, #334c7a);
     box-shadow: none;
 }
 
@@ -389,7 +355,7 @@ textarea.form-control:focus {
 }
 
 .chat-right .msg-meta {
-    color: rgba(255, 255, 255, 0.85);
+    color: #ffffff; 
 }
 
 .chat-left .msg-meta-name {
@@ -402,79 +368,31 @@ textarea.form-control:focus {
     font-weight: bold;
 }
 
-.btn-success {
-    background-color: #1C0770 !important;
-    border: none;
-    padding: 0.6rem 2rem;
-    font-weight: 600;
-    border-radius: 8px;
-    transition: transform 0.2s ease;
+
+.chat-right .msg-time {
+    color: #ffffff !important; 
 }
 
-.btn-success:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(28, 7, 112, 0.2);
+.chat-left .msg-time {
+    color: #64748b !important;
+}
+.chat-left .msg-meta {
+    color: #64748b;
 }
 
-.btn-danger {
-    background-color: #fff;
-    border: 1px solid #e2e8f0;
-    color: #e53e3e;
-    padding: 0.6rem 1.5rem;
-    font-weight: 600;
-    border-radius: 8px;
+.chat-right .msg-meta {
+    color: rgba(255, 255, 255, 0.85);
 }
 
-.btn-danger:hover {
-    background-color: #fff5f5;
-    color: #c53030;
+.chat-left .msg-meta-name {
+    color: linear-gradient(135deg, #213456, #334c7a);
+    font-weight: bold;
 }
 
-#userModal .modal-footer{
-  border-top: 1px solid rgba(0,0,0,0.08);
-  background: rgba(255,255,255,0.92);
-  position: sticky;
-  bottom: 0;
-  z-index: 5;
-  padding: 12px 14px;
+.chat-right .msg-meta-name {
+    color: #ffffff;
+    font-weight: bold;
 }
-
-@media (max-width: 991px){
-  #userModal .modal-dialog{
-    max-width: 96%;
-    margin: .75rem auto;
-  }
-
-  .container_remarks{
-    max-height: 350px;
-  }
-
-  #action, #btnClose{
-    width: 100%;
-  }
-}
-
-
-.year-picker-group {
-    flex: 1;
-    min-width: 300px; 
-}
-#showCalendarBtn {
-    background-color: #213456;
-    color: white;
-    border-radius: 8px;
-    padding: 8px 20px;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    white-space: nowrap;
-}
-
-#showCalendarBtn:hover {
-    background-color: var(--owi-gold, #E1AD01);
-    color: #213456;
-}
-
-
  .modal-overlay {
             display: none; 
             position: fixed;
@@ -488,7 +406,7 @@ textarea.form-control:focus {
             z-index: 1000;
         }
        .modal-overlay .modal-content {
-             background: linear-gradient(to bottom, #ffffff, #99aac8);
+             background: linear-gradient(to bottom, #ffffff, #b0b9c8);
             padding: 25px;
             border-radius: 8px;
             width: 70%;
@@ -502,7 +420,7 @@ textarea.form-control:focus {
             color: #333;
         }
        .modal-overlay .close-btn {
-            background-color: #28a745;
+            background-color: #213456;
             margin-top: 15px;
         }
  
@@ -592,19 +510,144 @@ textarea.form-control:focus {
   outline-offset: -2px; 
 }
 
-</style>
+.btn-success {
+    background-color: #1C0770 !important;
+    border: none;
+    padding: 0.6rem 2rem;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: transform 0.2s ease;
+}
+
+.btn-success:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(28, 7, 112, 0.2);
+}
+
+.btn-danger {
+    background-color: #fff;
+    border: 1px solid #e2e8f0;
+    color: #e53e3e;
+    padding: 0.6rem 1.5rem;
+    font-weight: 600;
+    border-radius: 8px;
+}
+
+.btn-danger:hover {
+    background-color: #fff5f5;
+    color: #c53030;
+}
+
+#userModal .modal-footer{
+  border-top: 1px solid rgba(0,0,0,0.08);
+  background: rgba(255,255,255,0.92);
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  padding: 12px 14px;
+}
+
+@media (max-width: 991px){
+  #userModal .modal-dialog{
+    max-width: 96%;
+    margin: .75rem auto;
+  }
+
+  .container_remarks{
+    max-height: 350px;
+  }
+
+  #action, #btnClose{
+    width: 100%;
+  }
+}
+
+
+.year-picker-group {
+    flex: 1;
+    min-width: 300px; 
+}
+#showCalendarBtn {
+    background-color: #213456;
+    color: white;
+    border-radius: 8px;
+    padding: 8px 20px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+#showCalendarBtn:hover {
+    background-color: var(--owi-gold, #E1AD01);
+    color: linear-gradient(135deg, #213456, #334c7a);
+}
+
         
-<div id="welcomeModal" class="modal-overlay" style="display: none;">
-    <div class="modal-content">
-        <h3>Merchandising HelpDesk Efficiency & Performance Report</h3>
-        <p>As of the Year -  2026</p>
+  .table-responsive {
+    overflow: visible !important;
+    width: 100% !important;
+  }
+
+  .admin-table {
+    width: 100% !important;
+    table-layout: auto !important;
+    page-break-inside: avoid;
+    
+  }
 
   
 
+  #admin_report.admin-table th.active.text-center {
+    background-color: #2b9827 !important;
+    color: #213456 !important;
+    padding: 6px 4px !important;
+    font-size: 11px !important;
+  }
+
+  #admin_report.admin-table th.compliance.text-center {
+    background-color: #a29341 !important;
+    color: #213456 !important;
+    padding: 6px 4px !important;
+    font-size: 11px !important;
+  }
+
+  .admin-table td {
+    padding: 6px 4px !important;
+    font-size: 11px !important;
+    border-bottom: 1px solid #0e0e0ea1 !important;
+  }
+  .table-responsive{
+    margin-top: -600px;
+  }
+
+  .progress {
+    border: 1px solid #999 !important;
+    background-color: #ddd !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  #dept-table-footer {
+    border: 2px solid #2d3c59;
+    background-color: #f4e9d7 !important; 
+}
+
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+    box-shadow: none !important;
+  }
+
+</style>
+        
+<div id="welcomeModal" class="modal-overlay" style="display: none; ">
+    <div class="modal-content">
+        <h3>Merchandising HelpDesk Efficiency & Performance Report</h3>
+        <p>As of the Year -  2026</p>
          <table id="admin_report" class="table admin-table m-0">
                     <thead>  
                       <tr>
-                       
+                        
                         <th colspan="6" class="compliance text-center" style="background-color: #a29341; color: #fff; font-weight: 700; text-transform: uppercase; font-size: 13px; padding: 6px;">
                           COMPLIANCE TICKET REPORTS
                         </th>
@@ -730,7 +773,7 @@ textarea.form-control:focus {
             <input type="hidden" name="chcksbjcls" id="chcksbjcls" value="check">
           </div>
         </form>
-        <div class="action-bar-container" style="box-shadow: 0 5px 10px 2px #2d3c597f; margin-bottom: -20px;">
+        <div class="action-bar-container" style="box-shadow: 0 5px 10px 2px #2d3c597f; color: #213456; margin-bottom: -20px;">
           <div class="year-picker-group">
             <div class="input-group">
               <div class="input-group-append">
@@ -749,12 +792,10 @@ textarea.form-control:focus {
             </div>
           </div>
           <div class="d-flex align-items-center gap-3">
-            <!--<form action="testcalendar.php" method="POST" class="m-0">
+            <form action="testcalendar.php" method="POST" class="m-0">
               <input type="hidden" name="u_id" value="<?php echo $_SESSION['user_id']; ?>">
-              <button type="submit" id="showCalendarBtn" class="btn">
-                <i class="fas fa-calendar-alt me-2"></i>CALENDAR
-              </button>
-            </form>-->
+              
+            </form>
             <div class="form-check form-switch float-right m-3">
               <input class="form-check-input" style="margin-left:-50px;" type="checkbox" id="darkModeToggle">
               <label class="form-check-label text-dark" for="darkModeToggle">Dark Mode</label>
@@ -870,7 +911,7 @@ textarea.form-control:focus {
 
               <div class="col-12 col-lg-6 mb-3">
                 <div class="card card2 h-100">
-                  <h5 class="card-header" style="background-color: #95a2b9b4; color:black;">Overall Status</h5>
+                  <h5 class="card-header" style="background: linear-gradient(135deg, #213456, #334c7a); color:black;">Overall Status</h5>
                   <div class="card-body">
                     <div id="chartdiv5"></div>
                   </div>
@@ -879,7 +920,7 @@ textarea.form-control:focus {
 
               <div class="col-12 col-lg-6 mb-3">
                 <div class="card card2 h-100">
-                  <h5 class="card-header text-black" style="background-color: #95a2b9b4; color:black;">Merchandising Support Logs
+                  <h5 class="card-header text-black" style="background: linear-gradient(135deg, #213456, #334c7a); color:black;">Merchandising Support Logs
                   </h5>
                   <div class="card-body">
                     <div id="chartdiv8"></div>
@@ -889,7 +930,7 @@ textarea.form-control:focus {
 
               <div class="col-12 col-lg-6 mb-3">
                 <div class="card card2 h-100">
-                  <h5 class="card-header text-black" style="background-color: #95a2b9b4; color:black;">Recently enrolled
+                  <h5 class="card-header text-black" style="background: linear-gradient(135deg, #213456, #334c7a); color:black;">Recently enrolled
                     reports.</h5>
                   <div class="card-body">
                     <div id="chartdiv1"></div>
@@ -899,7 +940,7 @@ textarea.form-control:focus {
 
               <div class="col-12 col-lg-6 mb-3">
                 <div class="card card2 h-100">
-                  <h5 class="card-header text-black" style="background-color: #95a2b9b4; color:black;">CATEGORIES</h5>
+                  <h5 class="card-header text-black" style="background: linear-gradient(135deg, #213456, #334c7a); color:black;">CATEGORIES</h5>
                   <div class="card-body">
                     <div id="chartdiv2" name="chartdiv2"></div>
                   </div>
@@ -908,7 +949,7 @@ textarea.form-control:focus {
 
               <div class="col-12 mb-3">
                 <div class="card card2">
-                  <h5 class="card-header text-black" style="background-color: #95a2b9b4; color:black;">Number of
+                  <h5 class="card-header text-black" style="background: linear-gradient(135deg, #213456, #334c7a); color:black;">Number of
                     Escalated Reports Per Area</h5>
                   <div class="card-body">
                     <div id="chart_area"></div>
@@ -918,7 +959,7 @@ textarea.form-control:focus {
 
               <div class="col-12 mb-3">
                 <div class="card card2">
-                  <h5 class="card-header text-black" style="background-color: #95a2b9b4; color:black;">Non Compliant
+                  <h5 class="card-header text-black" style="background: linear-gradient(135deg, #213456, #334c7a); color:black;">Non Compliant
                     Stores on End of Day Process (7:AM CUT OFF)</h5>
                   <div class="card-body">
 
@@ -942,48 +983,60 @@ textarea.form-control:focus {
             </div><!-- /#ovrall -->
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" />
 
-            <!-- TABLES -->
-            <div class="row">
+         <!-- TABLES -->
+        <div class="row">
+          <div class="col-12 mb-3">
+            <div class="card card2">
+              
+        <div class="card-header" style="background: linear-gradient(135deg, #213456, #334c7a); border-bottom: none; padding-bottom: 0;">
+          <ul class="nav nav-tabs card-header-tabs" id="ticketTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="tickets-tab" data-toggle="tab" data-target="#tickets" type="button" role="tab" aria-controls="tickets" aria-selected="true" style="font-weight: bold; border: 1px solid #ffffff;">
+                TICKETS
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="transferred-tab" data-toggle="tab" data-target="#transferred" type="button" role="tab" aria-controls="transferred" aria-selected="false" style="color: white; font-weight: bold; border: 1px solid #ffffff;">
+                TRANSFERRED TICKETS
+              </button>
+            </li>
+          </ul>
+        </div>
 
-              <div class="col-12 mb-3">
-                <div class="card card2">
-                  <h5 class="card-header text-black" style="background-color: #95a2b9b4; color:black;">TICKETS</h5>
-                  <div class="card-body">
-
-                    <div class="row">
-                      <!-- old code with overflow -->
-                      <!-- <div class="col-12 mb-3">  
-                     <div class="table-responsive" id="proTeamScroll" style="max-height:450px; width:100%;overflow-y:auto;">
-                    <table id="report_data" class="table table-hover">
-
-                    </div>
-                  </div> -->
-
-                      <div class="col-12 mb-3">
-                        <div class="table-responsive" id="proTeamScroll" style="">
-                          <table id="report_data" class="table table-hover">
-
-                        </div>
-                      </div>
-
-                      <div class="col-12">
-                        <div class="table-responsive" id="proTeamScroll"
-                          style="max-height:450px; width:100%;overflow-y:auto;">
-                          <table id="network_tb" class="table table-hover">
-
-                        </div>
-                      </div>
-                    </div>
-
-                  </div>
-                </div>
-              </div>
-
-            </div><!-- /.row -->
-
-            <div class="col-lg-12 Down" id="Down">
-              <input type="hidden" id="myInput">
+      <div class="card-body">
+        <div class="tab-content" id="ticketTabsContent">
+          <div class="tab-pane fade show active" id="tickets" role="tabpanel" aria-labelledby="tickets-tab">
+            <div class="table-responsive" style="max-height:450px; width:100%; overflow-y:auto;">
+              <table id="report_data" class="table table-hover">
+                
+                <tbody>
+                </tbody>
+              </table>
             </div>
+          </div>
+
+          <div class="tab-pane fade" id="transferred" role="tabpanel" aria-labelledby="transferred-tab">
+            <div class="table-responsive" style="max-height:450px; width:100%; overflow-y:auto;">
+              <table id="transferred_data" class="table table-hover">
+                
+                <tbody>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+<div class="col-lg-12 Down" id="Down">
+  <input type="hidden" id="myInput">
+</div>
+
+            
 
           </div><!-- /.container-fluid -->
       </div><!-- /#layoutSidenav_content -->
@@ -1059,7 +1112,7 @@ Start of Add/Edit Modal
                   </div>
 
                   <div class="form-group col-12 col-md-8">
-                    <label>MERCHANDISING SUPPORT</label>
+                    <label>ASSIGN SUPPORT</label>
                     <input type="hidden" name="it_num" id="it_num" readonly>
                     <select class="form-control form-control-sm" name="itsup" id="itsup" required>
                       <option value="">Assign support...</option>
@@ -1151,7 +1204,7 @@ Start of Add/Edit Modal
                     <select class="form-control form-control-sm" name="status" id="status" required>
                       <option value=""> &larr; Status &rarr;</option>
                       <?php
-                      $query = "select * from status  WHERE merchandising_module_tag = 'Y'";
+                      $query = "select * from status  WHERE it_module_tag = 'Y'";
                       $run = $conn->prepare($query);
                       $run->execute();
                       $rs = $run->get_result();
@@ -1162,8 +1215,8 @@ Start of Add/Edit Modal
                     </select>
                   </div>
 
-                  <div class="form-group col-12 col-md-4 hide_cl">
-                    <label id="dateclabel" class="hidden">DATE CLOSED</label>
+                  <div class="form-group col-12 col-md-4 hide_cl" style="display: none;">
+                    <label id="dateclabel">DATE CLOSED</label>
                     <div class="input-group date" id="datetimepicker2" data-target-input="nearest">
                       <input type="text" name="date_closed" id="date_closed"
                         class="form-control form-control-sm datetimepicker-input" data-target="#datetimepicker2"
@@ -1175,11 +1228,11 @@ Start of Add/Edit Modal
                     </div>
                   </div>
 
-                  <div class="form-group col-12 col-md-4 hide_cl">
-                    <label id="clby_label" class="hidden">CLOSED BY</label>
-                    <input type="hidden" name="close_by" id="close_by" value="<?php echo $_SESSION['tech_id']; ?>">
+                  <div class="form-group col-12 col-md-4 hide_cl" style="display: none;">
+                    <label id="clby_label">CLOSED BY</label>
+                    <input type="hidden" name="close_by" id="close_by" value="<?php echo htmlspecialchars($_SESSION['tech_id'] ?? ''); ?>">
                     <input type="text" class="form-control form-control-sm" name="cl_desc" id="cl_desc" readonly
-                      value="<?php echo $_SESSION['fname'] . '  ' . $_SESSION['lstname']; ?>">
+                      value="<?php echo htmlspecialchars(trim(($_SESSION['fname'] ?? '') . '  ' . ($_SESSION['lstname'] ?? ''))); ?>">
                   </div>
 
                   <div class="form-group col-12">
@@ -1213,20 +1266,21 @@ Start of Add/Edit Modal
 
               </div><!-- /.left -->
 
-             <!-- RIGHT SIDE -->
+              <!-- RIGHT SIDE -->
+              <!-- RIGHT SIDE -->
             <div class="col-12 col-lg-6">
 
                 <div id="msg_thread">
 
                   <div class="col-12 mb-3 px-0">
-                    <label style="font-weight: bold; color:#213456;">Add Comment:</label>
+                    <label style="font-weight: bold; color:linear-gradient(135deg, #213456, #334c7a);">Add Comment:</label>
                     <textarea name="admsg" id="addmsg" class="form-control form-control-sm"
                       placeholder="Reply to their message or give updates regarding this ticket..."
                       required></textarea>
                   </div>
 
                   <div class="col-12 mt-4 mb-2 dv_msg px-0">
-                    <label for="remarks_view" style="font-weight: bold; color:#213456;">Comment Thread:</label>
+                    <label for="remarks_view" style="font-weight: bold; color:linear-gradient(135deg, #213456, #334c7a);">Comment Thread:</label>
                     <hr>
                     <div class="container_remarks">
                       <div id="remarks_view"></div>
@@ -1305,7 +1359,7 @@ Start of Create Department Report Modal
                     <option value="6">VISUAL</option>
                     <option value="11">H.R</option>
                     <option value="13">ACCOUNTS PAYABLE</option>
-                      <option value="15">TREASURY</option>
+                    <option value="15">TREASURY</option>
                     <option value="16">ACCOUNT RECEIVABLE</option>
                   </select>
                 </div>
@@ -1371,14 +1425,36 @@ Start of Create Department Report Modal
 
   <script>
     $(document).ready(function () {
+      
+      // Initialize active dashcard filter variable globally
+      window.currentDashcardFilter = '';
+      
       // KPI Card Click Functionality
       $('.dashcard-clickable').on('click', function () {
-        const filterValue = $(this).data('filter');
+        const filterValue = $(this).data('filter') || '';
+        window.currentDashcardFilter = filterValue; // Record clicked dashcard
+        
+        const statusRegex = filterValue ? '^' + $.fn.dataTable.util.escapeRegex(filterValue) + '$' : '';
 
         if ($.fn.DataTable.isDataTable('#report_data')) {
-          const table = $('#report_data').DataTable();
-          table.search(filterValue).draw();
+          const reportTable = $('#report_data').DataTable();
+          reportTable.search('').column(6).search(filterValue ? statusRegex : '', true, false).draw();
         }
+        
+        if ($.fn.DataTable.isDataTable('#transferred_data')) {
+          const transferTable = $('#transferred_data').DataTable();
+          transferTable.search('').column(6).search(filterValue ? statusRegex : '', true, false).draw();
+        }
+
+        $('#report_data_filter_disabled').val(filterValue);
+        $('#transferred_data_filter_disabled').val(filterValue);
+        
+        $('#report_data_free_search').val(filterValue);
+        $('#transferred_data_free_search').val(filterValue);
+
+              
+        $('#report_data_free_search2').val(filterValue);
+        $('#transferred_data_free_search2').val(filterValue);
 
         $('html, body').animate({
           scrollTop: $("#report_data").offset().top - 100
@@ -1387,27 +1463,22 @@ Start of Create Department Report Modal
         $(this).fadeOut(100).fadeIn(100);
       });
 
-      // Handle 'CREATE REPORT' Navbar Link Click
       $(document).on('click', '#navCreateReport', function (e) {
-        // If we are already on adminpanel.php, open the modal directly
         if (window.location.pathname.endsWith('adminpanel.php') || window.location.pathname.endsWith('/it/')) {
           e.preventDefault();
           $('#createReportModal').modal({ backdrop: 'static', keyboard: false });
         }
       });
 
-      // Handle query param create=true on load
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.get('create') === 'true') {
         $('#createReportModal').modal({ backdrop: 'static', keyboard: false });
-        // Clean up url parameters without reloading
         window.history.replaceState({}, document.title, window.location.pathname);
       }
 
-      // Reset Form when Modal Closes or Opens
       $('#createReportModal').on('show.bs.modal', function () {
         $('#create_report_form').trigger('reset');
-        $('#create_store').val('201'); // Auto-select CEN | CENTRAL OFFICE - LIBIS
+        $('#create_store').val('201'); 
         $('#create_subject').val(null).trigger('change');
         $('#create_sub').val(null).trigger('change');
         $('#create_sub_group').hide();
@@ -1415,7 +1486,6 @@ Start of Create Department Report Modal
         $('#create_ticket_no').val('');
       });
 
-      // Populate dynamic categories and fetch ticket numbers when Attention To Department changes
       $("#create_deptsel").on("change", function () {
         $('#create_subject').val(null).trigger('change');
         $('#create_sub').val(null).trigger('change');
@@ -1425,7 +1495,7 @@ Start of Create Department Report Modal
         $("#create_subject").select2({
           dropdownParent: $('#createReportModal'),
           width: '100%',
-          minimumResultsForSearch: Infinity, // Disable search box
+          minimumResultsForSearch: Infinity,
           ajax: {
             url: "../users/select.php",
             type: "get",
@@ -1446,7 +1516,6 @@ Start of Create Department Report Modal
           }
         });
 
-        // Dynamic Ticket Number Generation Fetch
         $.post('../users/fetch.php', { operation: 'search_tkt', iN: val }, function (data) {
           if (data && data[0]) {
             let next_tktno = data[0].ticket_no;
@@ -1476,7 +1545,6 @@ Start of Create Department Report Modal
         });
       });
 
-      // Validate uploaded file size and extensions
       $('#create_file-input').on('change', function () {
         for (var i = 0; i < this.files.length; ++i) {
           var file = this.files[i];
@@ -1503,7 +1571,6 @@ Start of Create Department Report Modal
         }
       });
 
-      // Handle AJAX Submission of Department Ticket
       $('#create_report_form').on('submit', function (e) {
         e.preventDefault();
 
@@ -1604,6 +1671,16 @@ $(document).ready(function() {
         $modal.css('display', 'none');
     });
     loadDepartmentTable();
+    
+    // Handle the status change to show/hide CLOSED BY and DATE CLOSED properly
+    $('#status').on('change', function() {
+        var stat = $(this).val();
+        if (stat === 'CLOSED' || stat === 'SUBJECT FOR CLOSING') {
+            $('.hide_cl').slideDown(200);
+        } else {
+            $('.hide_cl').slideUp(200);
+        }
+    });
 });
 
 function loadDepartmentTable() {
@@ -1624,7 +1701,7 @@ function loadDepartmentTable() {
         
             const monthNames = {
                 1: "JANUARY", 2: "FEBRUARY", 3: "MARCH", 
-                       4: "APRIL", 5: "MAY", 6: "JUNE" , 7: "JULY", 8: "AUGUST", 9: "SEPTEMBER", 10: "OCTOBER", 11: "NOVEMBER" , 12: "DECEMBER"
+                4: "APRIL", 5: "MAY", 6: "JUNE" , 7: "JULY" , 8: "AUGUST" , 9: "SEPTEMBER" , 10: "OCTOBER" , 11: "NOVEMBER" , 12: "DECEMBER"
             };
 
             if (response && response.department_stats) {
@@ -1635,7 +1712,7 @@ function loadDepartmentTable() {
                     statsByMonth[parseInt(row.MONTH_NUM)] = row;
                 });
 
-                for (let m = 1; m <= 8; m++) {
+                for (let m = 1; m <= 9; m++) {
                     let row = statsByMonth[m];
                     let monthName = monthNames[m];
 
@@ -1693,7 +1770,7 @@ function loadDepartmentTable() {
                     let globalMetSLABarTheme = globalMetSLAPercent >= 80 ? "bg-success" : (globalMetSLAPercent >= 50 ? "bg-warning" : "bg-danger");
 
                     footerHtml = `
-                        <tr style="background-color: #ecebe584; font-weight: bold; border-top: 2px solid #213456;">
+                        <tr style="background-color: #ecebe584; font-weight: bold; border-top: 2px solid linear-gradient(135deg, #213456, #334c7a);">
                             <td class="text-dark fw-bold text-uppercase" style="font-size:13px;">TOTAL SUMMARY</td>
                             <td class="text-center text-primary fw-bold" style="font-size:14px;">${totalActiveSum}</td>
                             <td>
@@ -1735,4 +1812,22 @@ function loadDepartmentTable() {
         }
     });
 }
+$(document).ready(function() {
+    $('button[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+        var targetTab = $(e.target).attr("id"); 
+
+        if (targetTab === 'transferred-tab') {
+            if ($.fn.DataTable.isDataTable('#transferred_data')) {
+                $('#transferred_data').DataTable().columns.adjust().draw();
+            }
+        } else if (targetTab === 'tickets-tab') {
+            if ($.fn.DataTable.isDataTable('#report_data')) {
+                $('#report_data').DataTable().columns.adjust().draw();
+            }
+        }
+        $('#ticketTabs .nav-link').css('color', 'white');
+        $('#ticketTabs .nav-link.active').css('color', '#495057'); 
+    });
+    
+});
 </script>

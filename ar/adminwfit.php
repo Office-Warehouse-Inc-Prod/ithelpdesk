@@ -17,7 +17,7 @@ $con1 = new dbconfig();
 
  
       
-      if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mode']) && $_POST['mode'] === 'newrpt_tbl') {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mode']) && $_POST['mode'] === 'newrpt_tbl') {
   
 
     try {
@@ -62,18 +62,6 @@ $con1 = new dbconfig();
     <script src="../js/fnReloadAjax.js"></script>
 </head>
 <style>
-  body {
-  background: linear-gradient(to bottom, #ffffff, #99aac8);
-  background-attachment: fixed; 
-  margin: 0; 
-   overflow-x: hidden;
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  background-repeat: no-repeat;
-  min-height: 100vh;
-} 
-
   #new_rep_table {
     background-color: #ffffff;
     border-collapse: separate;
@@ -241,12 +229,18 @@ $con1 = new dbconfig();
     --radius-sm:14px;
     --focus: 0 0 0 .2rem rgba(234,170,0,.18);
   }
+  
+body {
+  background: linear-gradient(to bottom, #ffffff, #99aac8);
+  background-attachment: fixed; 
+  margin: 0; 
+  height: 100vh; 
+} 
 
   /* container spacing */
   .container.mt-3 { padding-top: 10px; padding-bottom: 24px; }
 
-  
-#new_rep_table { width:100% !important; }
+ #new_rep_table { width:100% !important; }
 
 .table-wrap {
   background: var(--card);
@@ -256,7 +250,7 @@ $con1 = new dbconfig();
   padding: 14px;
 }
 
-
+/* If you can't add wrapper div, style DataTables container instead */
 .dataTables_wrapper {
   background: var(--card);
   border: 1px solid var(--line);
@@ -265,6 +259,7 @@ $con1 = new dbconfig();
   padding: 14px;
 }
 
+/* DataTables header controls */
 .dataTables_wrapper .dataTables_length label,
 .dataTables_wrapper .dataTables_filter label,
 .dataTables_wrapper .dataTables_info {
@@ -309,7 +304,6 @@ table.dataTable thead th {
   padding: 14px 12px !important;
 }
 
-
 table.dataTable tbody tr {
   background: #ffffff !important;
   box-shadow: 0 10px 22px rgba(17,24,39,.08);
@@ -317,7 +311,7 @@ table.dataTable tbody tr {
 
 table.dataTable tbody td {
   border-top: none !important;
-  border-bottom: 1px solid #213456 !important;
+  border-bottom: 1px solid #213456 !important; 
   color: rgba(17,24,39,.85) !important;
   padding: 14px 12px !important;
 }
@@ -328,7 +322,6 @@ table.dataTable tbody tr:hover {
 }
 
 
-  /* ===== Modal (clean light) ===== */
   .modal-content {
     border: 1px solid var(--line) !important;
     border-radius: var(--radius) !important;
@@ -397,7 +390,6 @@ textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
   background-color: transparent !important;
 }
 
-  /* Inputs / Select / Textarea */
   .form-control,
   .form-control-sm,
   select.form-control,
@@ -420,10 +412,8 @@ textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
   .form-control[readonly],
   textarea[readonly] { opacity: .95; }
 
-  /* Spacing in grid */
   .form-group { margin-bottom: 14px !important; }
 
-  /* ===== Buttons (OWI style) ===== */
   .btn-danger {
     background: rgba(239,68,68,.14) !important;
     border-color: rgba(239,68,68,.28) !important;
@@ -431,14 +421,12 @@ textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
   }
   .btn-danger:hover { background: rgba(239,68,68,.18) !important; }
 
-  /* Collapse thread card */
   #msg_thread .card.card-body {
     background: #213456 !important;
     border: 1px solid var(--line) !important;
     border-radius: var(--radius-sm) !important;
   }
 
-  /* Thread container */
   .container_remarks {
     background: #F8FAFF;
     border: 1px solid var(--line);
@@ -462,7 +450,6 @@ textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
 
   hr { border-top: 1px solid var(--line) !important; }
 
-  /* ===== Priority chips (same but readable on light bg) ===== */
   .priority-chip {
     padding:4px 10px;
     border-radius:999px;
@@ -505,7 +492,6 @@ textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
     background: rgba(234,170,0,.16) !important;
     color: var(--text) !important;
   }
-  /* --- Buttons --- */
   .btn {  
     background-color: white !important;
     border: 2px solid #213456;
@@ -520,7 +506,6 @@ textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
     color: white;
   }
 
-  /* --- Buttons --- */
   .btn-success {  
     background-color: #7a5200 !important;
     border: 2px solid #213456;
@@ -624,13 +609,13 @@ textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
               </select>
             </div>
 
-            <div class="form-group col-md-8">
+            <div class="form-group col-md-12">
               <label>ASSIGNED SUPPORT</label>
               <input type="hidden" name="it_num" id="it_num" readonly>
               <select class="form-control form-control-sm custom-select-placeholder placeholder-active" name="itsup" id="itsup"required onchange="handleDropdownChange(this)">
                 <option value=""style="color:red;"> &larr;ASSIGN SUPPORT&larr;</option>  
                 <?php
-                  $query="select * from it_tech WHERE itsup NOT IN ('4','7','8','12','14') AND deptsel = '16'";
+                  $query="select * from it_tech WHERE itsup NOT IN ('4','8','12','14') AND deptsel = '16'";
                   $run=$con1->prepare($query);
                   $run->execute();
                   $rs=$run->get_result();
@@ -649,7 +634,7 @@ textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
               <select class="form-control form-control-sm custom-select-placeholder placeholder-active" name="cat" id="cat" required onchange="handleDropdownChange(this)">
                 <option value=""style="color:red;"> &larr; CATEGORY &rarr;</option>  
                 <?php
-                  $query="select * from categories WHERE deptsel = '16' AND (old_tag IS NULL OR old_tag <> 'Y') ORDER BY order_id ASC";
+                  $query="select * from categories WHERE deptsel = '1' AND (old_tag IS NULL OR old_tag <> 'Y') ORDER BY order_id ASC";
                   $run=$con1->prepare($query);
                   $run->execute();
                   $rs=$run->get_result();
@@ -707,7 +692,7 @@ textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
               <select class="form-control form-control-sm custom-select-placeholder placeholder-active" name="status" id="status" required onchange="handleDropdownChange(this)">
                 <option value=""style="color:red;"> &larr; STATUS &rarr;</option>
                 <?php
-                  $query="select * from status WHERE ar_module_tag = 'Y' AND stat_id <> '29'";
+                  $query="select * from status WHERE it_module_tag = 'Y' AND stat_id <> '29'";
                   $run=$con1->prepare($query);
                   $run->execute();
                   $rs=$run->get_result();

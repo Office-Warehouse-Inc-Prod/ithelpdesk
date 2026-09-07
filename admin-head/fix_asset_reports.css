@@ -1,11 +1,15 @@
-  #fix_asset_table {
+#fix_asset_table {
         background-color: #ffffff;
-        border-collapse: separate;
+        border-collapse: collapse; /* Changed to collapse for clean horizontal lines */
         border-spacing: 0;
         border-radius: 8px;
         overflow: hidden;
         box-shadow: 0 10px 8px rgba(108, 108, 53, 0.4);
-        border: 1px solid #e9ecef;
+        /* Replaced full border with only top and bottom */
+        border-top: 1px solid #e9ecef;
+        border-bottom: 1px solid #e9ecef;
+        border-left: none;
+        border-right: none;
       }
       #fix_asset_table thead th {
         background-color: #54699e;
@@ -15,11 +19,15 @@
         font-size: 0.85rem;
         letter-spacing: 0.5px;
         padding: 15px;
+        border-left: none !important; 
+        border-right: none !important; 
       }
       #fix_asset_table tbody td {
         padding: 12px 15px;
         vertical-align: middle;
         color: #333;
+        border-left: none !important; 
+        border-right: none !important; 
       }
       #fix_asset_table tbody tr:hover {
         background-color: #bec5d1 !important;
@@ -148,7 +156,7 @@
         height: 100vh; 
       } 
       .container.mt-3 { padding-top: 10px; padding-bottom: 24px; }
-     
+      
 #fix_asset_table { width:100% !important; }
 
 .table-wrap {
@@ -210,6 +218,8 @@ table.dataTable thead th {
   border-bottom: 2px solid #213456 !important; 
   background: #5273ad !important;
   padding: 14px 12px !important;
+  border-left: none !important; 
+  border-right: none !important; 
 }
 
 
@@ -221,6 +231,8 @@ table.dataTable tbody tr {
 table.dataTable tbody td {
   border-top: none !important;
   border-bottom: 1px solid #213456 !important;
+  border-left: none !important; 
+  border-right: none !important; 
   color: rgba(17,24,39,.85) !important;
   padding: 14px 12px !important;
 }
