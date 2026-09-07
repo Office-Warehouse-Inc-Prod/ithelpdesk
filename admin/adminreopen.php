@@ -853,7 +853,7 @@ const logColumns = [
         $('#tos').val(data['service_desc']);
         $('#message').val(data['subject']); 
         
-        $('#operation').val("reopen_ticket"); 
+        $('#operation').val("Reopen_Report"); 
         loadCommentThread(data['ticket_no']);
         $('#reopen_Modal').modal('show');
     }
