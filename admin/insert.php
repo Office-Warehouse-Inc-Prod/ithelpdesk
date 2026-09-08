@@ -1085,57 +1085,87 @@ if ($_POST["operation"] == "New_Report") {
 }
 
 
-if ($_POST["operation"] == "Reopen_Report") { 
-    header('Content-Type: application/json');
-    
+if (isset($_POST["operation"]) && $_POST["operation"] == "Save and Reply") {
+
+    // REQUIRED
     $ticket_no = trim($_POST["ticket_no"] ?? '');
-    
+
     if ($ticket_no === '') {
-        echo json_encode(['status' => 'error', 'message' => 'Ticket number is required.']);
-        exit;
+        exit("Ticket number is required.");
     }
 
-    $reason      = trim($_POST["remarks"] ?? '');
-    $status      = $_POST["status"] ?? '';
-    $dept        = $_POST["f_deptsel"] ?? $_POST["old_dept"] ?? '0';
-    $store       = $_POST["store"] ?? '0';
-    $reopened_by = $_POST["u_id"] ?? $_SESSION["user_id"] ?? '0'; 
+    // FIELDS
+    $store     = $_POST["store"] ?? '0';
+    $close_by  = $_POST["close_by"] ?? '0';
+    $remarks   = $_POST["remarks"] ?? '';
+    $status    = $_POST["status"] ?? '';
+    $plvl      = $_POST["priority_level"] ?? ($_POST["prioty_level"] ?? '0');
+    $dept      = $_POST["f_deptsel"] ?? '0';
+    $userid    = $_SESSION['user_id'] ?? '0';
 
-    try {
-        $sqlReopen = "INSERT INTO reopen_tickets (ticket_no, reopened_by, reason, reopened_date) 
-                      VALUES (:ticket_no, :reopened_by, :reason, NOW())";
-        $stmtReopen = $connection->prepare($sqlReopen);
-        $result = $stmtReopen->execute([
-            ':ticket_no'   => $ticket_no,
-            ':reopened_by' => $reopened_by,
-            ':reason'      => $reason
-        ]);
+    // SAFE DATES
+    $date_created = !empty($_POST["date_createdx"])
+        ? date('Y-m-d H:i:s', strtotime($_POST["date_createdx"]))
+        : date('Y-m-d H:i:s');
+
+    $date_closed = !empty($_POST["date_closed"])
+        ? date('Y-m-d H:i:s', strtotime($_POST["date_closed"]))
+        : null;
+
+    // BUILD UPDATE QUERY
+    $fields = [];
+    $data   = [':ticket_no' => $ticket_no];
+
+    if ($store !== '0' && $store !== '') {
+        $fields[] = "store = :store";
+        $data[':store'] = $store;
+    }
+
+    if ($status !== '') {
+        $fields[] = "status = :status";
+        $data[':status'] = $status;
+    }
+
+    if ($remarks !== '') {
+        $fields[] = "remarks = :remarks";
+        $data[':remarks'] = $remarks;
+    }
+
+    if ($plvl !== '0' && $plvl !== '') {
+        $fields[] = "priority_level = :priority_level";
+        $data[':priority_level'] = $plvl;
+    }
+
+    if ($close_by !== '0' && $close_by !== '') {
+        $fields[] = "close_by = :close_by";
+        $data[':close_by'] = $close_by;
+    }
+
+    $fields[] = "date_closed = :date_closed";
+    $data[':date_closed'] = $date_closed;
+
+    if (!empty($fields)) {
+        $sql = "UPDATE reports SET " . implode(", ", $fields) . " WHERE ticket_no = :ticket_no";
+        $stmt = $connection->prepare($sql);
+        $result = $stmt->execute($data);
 
         if ($result) {
-        
-            if ($status !== '') {
-                $updateMain = $connection->prepare("UPDATE reports SET status = :status WHERE ticket_no = :ticket_no");
-                $updateMain->execute([
-                    ':status'    => $status,
-                    ':ticket_no' => $ticket_no
-                ]);
-            }
+            // Insert Remarks
+            $restat = $connection->prepare("
+                INSERT INTO reports_remarks (ticket_no, remarks_detail, remarks_date, deptsel)
+                VALUES (:ticket_no, :remarks, NOW(), :dept)
+            ");
+            $restat->execute([
+                ':ticket_no' => $ticket_no,
+                ':remarks'   => $remarks,
+                ':dept'      => $dept
+            ]);
 
-            if (!empty($reason)) {
-                $restat = $connection->prepare("
-                    INSERT INTO reports_remarks (ticket_no, remarks_detail, remarks_date, f_deptsel)
-                    VALUES (:ticket_no, :remarks, NOW(), :dept)
-                ");
-                $restat->execute([
-                    ':ticket_no' => $ticket_no,
-                    ':remarks'   => "REOPEN REASON: " . $reason,
-                    ':dept'      => $dept
-                ]);
-            }
+            // Reset Msg Count
+            $connection->prepare("UPDATE reports_msgcnt SET msg_cnt = 0 WHERE ticket_no = :ticket_no")
+                       ->execute([':ticket_no' => $ticket_no]);
 
-            $msgcntres = $connection->prepare("UPDATE reports_msgcnt SET msg_cnt = 0 WHERE ticket_no = :ticket_no");
-            $msgcntres->execute([':ticket_no' => $ticket_no]);
-
+            // Notification
             $notif = $connection->prepare("
                 INSERT INTO tbl_notif (ticket_no, store, f_deptsel, notif_data, notif_val, notif_date, assigned_by)
                 VALUES (:ticket_no, :store, :dept, :msg, '1', NOW(), :assigned_by)
@@ -1144,258 +1174,41 @@ if ($_POST["operation"] == "Reopen_Report") {
                 ':ticket_no'   => $ticket_no,
                 ':store'       => $store,
                 ':dept'        => $dept,
-                ':msg'         => "Ticket $ticket_no has been re-opened.",
-                ':assigned_by' => $reopened_by
+                ':msg'         => "Ticket $ticket_no has been updated.",
+                ':assigned_by' => $userid
             ]);
-
-            if (!empty($_POST["admsg"])) {
-                $makecom = $connection->prepare("
-                    INSERT INTO reports_comments (ticket_no, comment_details, comment_date, userId)
-                    VALUES (:ticket_no, :comment, NOW(), :uid)
-                ");
-                $makecom->execute([
-                    ':ticket_no' => $ticket_no,
-                    ':comment'   => $_POST["admsg"],
-                    ':uid'       => $reopened_by
-                ]);
-
-                $connection->prepare("UPDATE reports_newmsg SET nmsg_stat = '2' WHERE ticket_no = :ticket_no")
-                           ->execute([':ticket_no' => $ticket_no]);
-            }
-            
-            $connection->prepare("
-                INSERT INTO tbl_tickethist (ticket_no, date_updated, status, userID)
-                VALUES (:ticket_no, NOW(), :status, :uid)
-            ")->execute([
-                ':ticket_no' => $ticket_no,
-                ':status'    => $status !== '' ? $status : 'Re-Opened',
-                ':uid'       => $reopened_by
-            ]);
-
-            echo json_encode(['status' => 'success', 'message' => 'Ticket successfully re-opened!']);
-            
-        } else {
-            echo json_encode(['status' => 'error', 'message' => 'Failed to record ticket reopening.']);
         }
-
-    } catch (PDOException $e) {
-        echo json_encode(['status' => 'error', 'message' => 'Database Error: ' . $e->getMessage()]);
     }
+
+    // ADDITIONAL COMMENT / REPLY
+    if (!empty($_POST["admsg"])) {
+        $makecom = $connection->prepare("
+            INSERT INTO reports_comments (ticket_no, comment_details, comment_date, userId)
+            VALUES (:ticket_no, :comment, NOW(), :uid)
+        ");
+        $makecom->execute([
+            ':ticket_no' => $ticket_no,
+            ':comment'   => $_POST["admsg"],
+            ':uid'       => $_POST["u_id"]
+        ]);
+
+        $connection->prepare("UPDATE reports_newmsg SET nmsg_stat = '2' WHERE ticket_no = :ticket_no")
+                   ->execute([':ticket_no' => $ticket_no]);
+
+        // Ticket trail
+        $connection->prepare("
+            INSERT INTO tbl_tickethist (ticket_no, date_updated, status, userID)
+            VALUES (:ticket_no, NOW(), :status, :uid)
+        ")->execute([
+            ':ticket_no' => $ticket_no,
+            ':status'    => $status,
+            ':uid'       => $_POST["u_id"]
+        ]);
+    }
+    
+    echo "Ticket updated successfully.";
+    exit;
 }
-
-// if ($_POST["operation"] == "Save and Reply") {
-
-//     // SAFE POST (avoid undefined errors)
-//     $ticket_no   = $_POST["ticket_no"];
-//     $store       = $_POST["store"] ?? '0';
-//     $close_by    = $_POST["close_by"] ?? '0';
-//     $remarks     = $_POST["remarks"] ?? '';
-//     $status      = $_POST["status"] ?? '';
-//     $plvl        = $_POST["priority_level"] ?? '0'; // ✅ PRIORITY
-
-//     // safer date parsing (avoid 1970-01-01 when empty)
-//     $date_created = !empty($_POST["date_createdx"])
-//         ? date('Y-m-d H:i:s', strtotime($_POST["date_createdx"]))
-//         : date('Y-m-d H:i:s');
-
-//     $date_closed  = !empty($_POST["date_closed"])
-//         ? date('Y-m-d H:i:s', strtotime($_POST["date_closed"]))
-//         : null;
-//     /* ---------------------------------
-//        BUILD UPDATE QUERY DYNAMICALLY
-//        --------------------------------- */
-
-// // REQUIRED
-// $ticket_no = trim($_POST["ticket_no"] ?? '');
-
-// if ($ticket_no === '') {
-//     exit("Ticket number is required.");
-// }
-
-// // FIELDS
-// $store     = $_POST["store"] ?? '0';
-// $close_by  = $_POST["close_by"] ?? '0';
-// $remarks   = $_POST["remarks"] ?? '';
-// $status    = $_POST["status"] ?? '';
-// $plvl      = $_POST["priority_level"] ?? ($_POST["prioty_level"] ?? '0'); // fallback fix
-
-// // SAFE DATES
-// $date_created = !empty($_POST["date_createdx"])
-//     ? date('Y-m-d H:i:s', strtotime($_POST["date_createdx"]))
-//     : date('Y-m-d H:i:s');
-
-// $date_closed = !empty($_POST["date_closed"])
-//     ? date('Y-m-d H:i:s', strtotime($_POST["date_closed"]))
-//     : null;
-
-
-// // -----------------------------
-// // BUILD UPDATE QUERY
-// // -----------------------------
-
-// $fields = [];
-// $data   = [':ticket_no' => $ticket_no];
-
-
-// // Always update date_created (optional — remove if you don't want it touched)
-// // $fields[] = "date_created = :date_created";
-// // $data[':date_created'] = $date_created;
-
-
-// // OPTIONAL FIELDS
-
-// if ($store !== '0' && $store !== '') {
-//     $fields[] = "store = :store";
-//     $data[':store'] = $store;
-// }
-
-// if ($status !== '') {
-//     $fields[] = "status = :status";
-//     $data[':status'] = $status;
-// }
-
-// if ($remarks !== '') {
-//     $fields[] = "remarks = :remarks";
-//     $data[':remarks'] = $remarks;
-// }
-
-// if ($plvl !== '0' && $plvl !== '') {
-//     $fields[] = "priority_level = :priority_level";
-//     $data[':priority_level'] = $plvl;
-// }
-
-// if ($close_by !== '0' && $close_by !== '') {
-//     $fields[] = "close_by = :close_by";
-//     $data[':close_by'] = $close_by;
-// }
-
-
-// // VERY IMPORTANT:
-// // Always explicitly set date_closed so reopening works too.
-
-// $fields[] = "date_closed = :date_closed";
-// $data[':date_closed'] = $date_closed;
-
-
-// // Prevent empty UPDATE
-// if (empty($fields)) {
-//     exit("No fields to update.");
-// }
-
-
-// // FINAL SQL
-// $sql = "UPDATE reports 
-//         SET " . implode(", ", $fields) . "
-//         WHERE ticket_no = :ticket_no";
-
-// $stmt = $connection->prepare($sql);
-
-// if ($stmt->execute($data)) {
-
-//     // Optional but VERY useful for debugging
-//     if ($stmt->rowCount() > 0) {
-//         echo "Ticket updated successfully.";
-//     } else {
-//         echo "No changes detected.";
-//     }
-
-// } else {
-//     echo "Update failed.";
-// }
-
-
-
-//     /* ---------------------------------
-//        REMARKS
-//        --------------------------------- */
-
-//     if($result){
-
-//         $restat = $connection->prepare("
-//             INSERT INTO reports_remarks
-//             (ticket_no, remarks_detail, remarks_date, deptsel)
-//             VALUES (:ticket_no, :remarks, NOW(), :dept)
-//         ");
-
-//         $restat->execute([
-//             ':ticket_no' => $ticket_no,
-//             ':remarks'   => $remarks,
-//             ':dept'      => $dept
-//         ]);
-//     }
-
-//     /* ---------------------------------
-//        RESET MSG COUNT
-//        --------------------------------- */
-
-//     $msgcntres = $connection->prepare("
-//         UPDATE reports_msgcnt
-//         SET msg_cnt = 0
-//         WHERE ticket_no = :ticket_no
-//     ");
-
-//     $msgcntres->execute([':ticket_no'=>$ticket_no]);
-
-//     /* ---------------------------------
-//        NOTIFICATION
-//        --------------------------------- */
-
-//     if($result){
-
-//         $notif = $connection->prepare("
-//             INSERT INTO tbl_notif
-//             (ticket_no, store, f_deptsel, notif_data, notif_val, notif_date, assigned_by)
-//             VALUES (:ticket_no, :store, :dept, :msg, '1', NOW(), :assigned_by)
-//         ");
-
-//         $notif->execute([
-//             ':ticket_no'    => $ticket_no,
-//             ':store'        => $store,
-//             ':dept'         => $dept,
-//             ':msg'          => "Ticket $ticket_no has been assigned to a department.",
-//             ':assigned_by'  => $userid
-//         ]);
-//     }
-
-//     /* ---------------------------------
-//        ADDITIONAL COMMENT
-//        --------------------------------- */
-
-//     if(!empty($_POST["admsg"])){
-
-//         $makecom = $connection->prepare("
-//             INSERT INTO reports_comments
-//             (ticket_no, comment_details, comment_date, userId)
-//             VALUES (:ticket_no, :comment, NOW(), :uid)
-//         ");
-
-//         $makecom->execute([
-//             ':ticket_no' => $ticket_no,
-//             ':comment'   => $_POST["admsg"],
-//             ':uid'       => $_POST["u_id"]
-//         ]);
-
-//         $connection->prepare("
-//             UPDATE reports_newmsg
-//             SET nmsg_stat = '2'
-//             WHERE ticket_no = :ticket_no
-//         ")->execute([':ticket_no'=>$ticket_no]);
-
-//         // Ticket trail
-//         $connection->prepare("
-//             INSERT INTO tbl_tickethist
-//             (ticket_no, date_updated, status, userID)
-//             VALUES (:ticket_no, NOW(), :status, :uid)
-//         ")->execute([
-//             ':ticket_no' => $ticket_no,
-//             ':status'    => $status,
-//             ':uid'       => $_POST["u_id"]
-//         ]);
-//     }
-// }
-
-
-
 
 if (isset($_POST["operation"]) && $_POST["operation"] == "changepass") {
     
