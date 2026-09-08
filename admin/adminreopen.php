@@ -479,7 +479,6 @@ $con1 = new dbconfig();
                             </div>
                         </div>
 
-                        <!-- Right Side: Thread UI -->
                         <div class="col-md-6 p-4" style="background: linear-gradient(to bottom, #f8f9fa, #d7dce4);">
                             <div class="d-flex flex-column h-100" id="msg_thread">
                                 <label style="font-weight: bold; color: #213456;">Ticket Thread:</label>
@@ -716,9 +715,8 @@ const logColumns = [
             }
         });
 
-        $('#re_open_table_filter input').off('keyup').on('keyup', function () {
-            let value = $.fn.dataTable.util.escapeRegex($(this).val());
-            reptable.column(2).search('^' + value + '$', true, false).draw();
+     $('#re_open_table_filter input').off('keyup').on('keyup', function () {
+            reptable.search($(this).val()).draw();
         });
 
         $('#re_open_table tbody').off('click', 'button').on('click', 'button', function () {
