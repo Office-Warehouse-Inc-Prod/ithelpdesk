@@ -2,9 +2,20 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+if (!isset($_SESSION['login']) || $_SESSION['login'] != 'true') {
+    if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+        header('Content-Type: application/json');
+        echo json_encode(["status" => "error", "message" => "Session expired. Please log in again."]);
+        exit();
+    }
+    header("Location: index.php");
+    exit();
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mode'])) {
     include('db.php');
     header('Content-Type: application/json');
+    
     if ($_POST['mode'] === 'fetch_remarks') {
         try {
             $ticket_no = $_POST['ticket_no'] ?? '';
@@ -64,14 +75,62 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mode'])) {
         }
         exit(); 
     }
+    
+    if ($_POST['mode'] === 'ticket_progress') {
+        $ticket_no = trim($_POST['ticket_no'] ?? ''); 
+        try {
+            $stmt = $connection->prepare("SELECT r.status,
+                                           r.deptsel, d.dept_desc AS assigned_dept, 
+                                           r.itsup, t.it_desc AS assigned_tech, 
+                                           r.close_by, r.date_closed 
+                                    FROM reports r 
+                                    LEFT JOIN tbl_dept d ON r.deptsel = d.dept_id 
+                                    LEFT JOIN it_tech t ON r.itsup = t.itsup 
+                                    WHERE r.ticket_no = ?");
+            $stmt->execute([$ticket_no]);
+            $main_info = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if (!$main_info) {
+                echo json_encode(['error' => "Could not find ticket exact match for: '" . $ticket_no . "'"]);
+                exit();
+            }
+            
+            $stmt2 = $connection->prepare("SELECT tr.nw_sup, t.it_desc AS nw_tech_desc, 
+                                            tr.f_deptsel, d.dept_desc AS nw_dept_desc, 
+                                            tr.date_rasigned 
+                                     FROM tbl_reassigned tr 
+                                     LEFT JOIN it_tech t ON tr.nw_sup = t.itsup 
+                                     LEFT JOIN tbl_dept d ON tr.f_deptsel = d.dept_id 
+                                     WHERE tr.ticket_no = ? 
+                                       AND tr.itsup IS NOT NULL AND tr.itsup != '' 
+                                       AND tr.nw_sup IS NOT NULL AND tr.nw_sup != '' 
+                                       AND tr.date_rasigned IS NOT NULL AND tr.date_rasigned != '' 
+                                       AND tr.deptsel IS NOT NULL AND tr.deptsel != '' 
+                                       AND tr.f_deptsel IS NOT NULL AND tr.f_deptsel != ''
+                                     ORDER BY tr.date_rasigned ASC");
+            $stmt2->execute([$ticket_no]);
+            $transfers = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+            
+            echo json_encode([
+                'status' => $main_info['status'], 
+                'assigned_dept' => $main_info['assigned_dept'] ?? '',
+                'assigned_tech' => $main_info['assigned_tech'] ?? '',
+                'close_by' => $main_info['close_by'] ?? '',
+                'date_closed' => $main_info['date_closed'] ?? '',
+                'transfers' => $transfers
+            ]);
+        } catch (Exception $e) {
+            echo json_encode(['error' => $e->getMessage()]);
+        }
+        exit();
+    }
+    
+    echo json_encode(["status" => "error", "message" => "Invalid POST mode specified."]);
+    exit();
 }
+
 include 'userheader.php';
 include 'switch_modal.php';
-
-if (!isset($_SESSION['login']) || $_SESSION['login'] != 'true') {
-  header("Location: index.php");
-  exit();
-}
 
 require_once '../condb.php';
 $con1 = new dbconfig();

@@ -111,12 +111,12 @@ if (isset($_POST['mode'])) {
         header('Content-Type: application/json');
         try {
             $stmt = $conn->prepare("SELECT far.remarks_note, 
-                                                 CONCAT(u.fname, ' ', u.lstname) AS user_fullname, 
-                                                 far.date_remarks 
-                                          FROM fixed_asset_remarks far 
-                                          LEFT JOIN users u ON far.remarks_by = u.id 
-                                           WHERE far.ticket_no = ?
-                                          ORDER BY far.date_remarks ASC");
+                                         CONCAT(u.fname, ' ', u.lstname) AS user_fullname, 
+                                         far.date_remarks 
+                                  FROM fixed_asset_remarks far 
+                                  LEFT JOIN users u ON far.remarks_by = u.id 
+                                   WHERE far.ticket_no = ?
+                                  ORDER BY far.date_remarks ASC");
             $stmt->bind_param("s", $_POST['ticket_no']);
             $stmt->execute();
             $result = $stmt->get_result();
@@ -126,12 +126,67 @@ if (isset($_POST['mode'])) {
         }
         exit();
     }
+
+    if ($_POST['mode'] === 'ticket_progress') {
+        header('Content-Type: application/json');
+        $ticket_no = trim($_POST['ticket_no'] ?? ''); 
+        
+        try {
+            $stmt = $conn->prepare("SELECT r.status,
+                                           r.deptsel, d.dept_desc AS assigned_dept, 
+                                           r.itsup, t.it_desc AS assigned_tech, 
+                                           r.close_by, r.date_closed 
+                                    FROM reports r 
+                                    LEFT JOIN tbl_dept d ON r.deptsel = d.dept_id 
+                                    LEFT JOIN it_tech t ON r.itsup = t.itsup 
+                                    WHERE r.ticket_no = ?");
+            $stmt->bind_param("s", $ticket_no);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $main_info = $result->fetch_assoc();
+            
+            if (!$main_info) {
+                echo json_encode(['error' => "Could not find ticket exact match for: '" . $ticket_no . "'"]);
+                exit();
+            }
+            
+            $stmt2 = $conn->prepare("SELECT tr.nw_sup, t.it_desc AS nw_tech_desc, 
+                                            tr.f_deptsel, d.dept_desc AS nw_dept_desc, 
+                                            tr.date_rasigned 
+                                     FROM tbl_reassigned tr 
+                                     LEFT JOIN it_tech t ON tr.nw_sup = t.itsup 
+                                     LEFT JOIN tbl_dept d ON tr.f_deptsel = d.dept_id 
+                                     WHERE tr.ticket_no = ? 
+                                       AND tr.itsup IS NOT NULL AND tr.itsup != '' 
+                                       AND tr.nw_sup IS NOT NULL AND tr.nw_sup != '' 
+                                       AND tr.date_rasigned IS NOT NULL AND tr.date_rasigned != '' 
+                                       AND tr.deptsel IS NOT NULL AND tr.deptsel != '' 
+                                       AND tr.f_deptsel IS NOT NULL AND tr.f_deptsel != ''
+                                     ORDER BY tr.date_rasigned ASC");
+            $stmt2->bind_param("s", $ticket_no);
+            $stmt2->execute();
+            $transfers = $stmt2->get_result()->fetch_all(MYSQLI_ASSOC);
+            
+            echo json_encode([
+                'status' => $main_info['status'], 
+                'assigned_dept' => $main_info['assigned_dept'] ?? '',
+                'assigned_tech' => $main_info['assigned_tech'] ?? '',
+                'close_by' => $main_info['close_by'] ?? '',
+                'date_closed' => $main_info['date_closed'] ?? '',
+                'transfers' => $transfers
+            ]);
+        } catch (Exception $e) {
+            echo json_encode(['error' => $e->getMessage()]);
+        }
+        exit();
+    }
 }
 ?>
 <head>
   <link rel="stylesheet" href="adminpanel.css">
 </head>
 <style>
+/* Custom Scrollbars */
 ::-webkit-scrollbar {
     width: 8px; 
 }
@@ -147,50 +202,198 @@ if (isset($_POST['mode'])) {
     background: linear-gradient(135deg, #837031, #E1AD01); 
 }
 
-#ticket_modal .modal-dialog{ 
+/* Modal Layout & Headers */
+#ticket_modal .modal-dialog { 
     max-width: 1200px; 
     margin: 1.25rem auto; 
 }
-#ticket_modal .modal-content{ 
+#ticket_modal .modal-content { 
     border-radius: 16px; 
     border: none; 
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2); 
     overflow: hidden; 
 }
-#ticket_modal .modal-header{ 
+#ticket_modal .modal-header { 
     background: linear-gradient(135deg, #213456, #334c7a); 
     color: #fff; 
     padding: 16px 18px; 
     border-bottom: 4px solid #E1AD01; 
 }
-#ticket_modal_header{ 
+#ticket_modal_header { 
     font-weight: 700; 
     font-size: 18px; 
     margin: 0; 
 }
-#ticket_modal .modal-body{ 
+#ticket_modal .modal-body { 
     padding: 20px; 
     background-color: #f8fafc; 
+}
+
+:root {
+    --hz-complete: #16A34A;    
+    --hz-active: #0084ff;       
+    --hz-pending: #dc3545;    
+    --hz-muted: #e2e8f0;
+    --hz-muted-border: #cbd5e1;
+}
+
+.hz-timeline-container { 
+    position: relative; 
+    padding: 25px 10px; 
+    margin-bottom: 20px; 
+    background: #ffffff; 
+    border-radius: 12px; 
+    border: 1px solid #e2e8f0; 
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.hz-progress-bar-bg { 
+    position: absolute; 
+    top: 45px; 
+    left: 5%; 
+    right: 5%; 
+    height: 4px; 
+    background: #e2e8f0; 
+    z-index: 1; 
+}
+
+.hz-progress-bar-fill { 
+    position: absolute; 
+    top: 45px; 
+    left: 5%; 
+    height: 4px; 
+    background: var(--hz-complete);
+    z-index: 2; 
+    transition: width 0.4s ease, background 0.4s ease; 
+}
+
+.hz-progress-bar-fill.active-fill { 
+    background: var(--hz-active);
+}
+.hz-progress-bar-fill.pending { 
+    background: var(--hz-pending);
+}
+
+.hz-steps { 
+    display: flex; 
+    justify-content: space-between; 
+    position: relative; 
+    z-index: 3; 
+}
+
+.hz-step { 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    text-align: center;
+}
+
+.hz-icon { 
+    width: 24px; 
+    height: 24px; 
+    border-radius: 50%; 
+    background: var(--hz-muted); 
+    border: 4px solid #ffffff; 
+    box-shadow: 0 0 0 2px var(--hz-muted-border); 
+    margin-bottom: 12px; 
+    transition: background 0.4s ease, box-shadow 0.4s ease, transform 0.2s ease;
+}
+
+.hz-step.completed .hz-icon { 
+    background: var(--hz-complete); 
+    box-shadow: 0 0 0 2px var(--hz-complete); 
+}
+.hz-step.completed .hz-label { 
+    color: var(--hz-complete); 
+}
+.hz-step.completed .hz-sub,
+.hz-step.completed .hz-sub strong { 
+    color: var(--hz-complete); 
+}
+
+.hz-step.current .hz-icon { 
+    background: var(--hz-active); 
+    box-shadow: 0 0 0 3px rgba(0, 132, 255, 0.25);
+    border-color: #ffffff;
+    animation: hzPulse 2s infinite;
+}
+.hz-step.current .hz-label { 
+    color: var(--hz-active); 
+    font-weight: 900;
+}
+.hz-step.current .hz-sub,
+.hz-step.current .hz-sub strong { 
+    color: var(--hz-active); 
+}
+
+@keyframes hzPulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(0, 132, 255, 0.5);
+    }
+    70% {
+        box-shadow: 0 0 0 8px rgba(0, 132, 255, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(0, 132, 255, 0);
+    }
+}
+
+.hz-step.pending .hz-icon {
+    background: var(--hz-pending);
+    box-shadow: 0 0 0 2px var(--hz-pending);
+}
+.hz-step.pending .hz-label { 
+    color: var(--hz-pending); 
+}
+.hz-step.pending .hz-sub,
+.hz-step.pending .hz-sub strong { 
+    color: var(--hz-pending); 
+}
+
+.hz-label { 
+    font-size: 11px; 
+    font-weight: 800; 
+    color: #334155; 
+    text-transform: uppercase; 
+    line-height: 1.2; 
+    transition: color 0.4s ease;
+}
+
+.hz-sub { 
+    font-size: 10px; 
+    color: #64748b; 
+    margin-top: 6px; 
+    line-height: 1.3; 
+    word-wrap: break-word; 
+    max-width: 140px; 
+    transition: color 0.4s ease;
+}
+
+.hz-sub strong {
+    color: #213456;
+    transition: color 0.4s ease;
 }
 
 .container_remarks { 
     display: flex; 
     flex-direction: column-reverse; 
-    height: 380px;
+    height: 380px; 
     overflow-y: auto; 
     background-color: #ffffff; 
     border: 1px solid #e2e8f0; 
     border-radius: 12px; 
     padding: 15px; 
     margin-top: 10px; 
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); 
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02); 
 }
+
 #remarks_view { 
     display: flex; 
     flex-direction: column; 
     width: 100%; 
     gap: 10px; 
 }
+
 .chat-bubble { 
     max-width: 80%; 
     padding: 10px 14px; 
@@ -199,20 +402,23 @@ if (isset($_POST['mode'])) {
     line-height: 1.4; 
     position: relative; 
     word-wrap: break-word; 
-    box-shadow: 0 1px 2px rgba(0,0,0,0.08); 
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08); 
 }
+
 .chat-left { 
     align-self: flex-start; 
     background: #f1f0f0; 
     color: #1e293b; 
     border-bottom-left-radius: 4px; 
 }
+
 .chat-right { 
     align-self: flex-end; 
     background: #0084ff; 
     color: #ffffff; 
     border-bottom-right-radius: 4px; 
 }
+
 .msg-meta { 
     display: flex; 
     justify-content: space-between; 
@@ -221,20 +427,12 @@ if (isset($_POST['mode'])) {
     margin-bottom: 4px; 
     opacity: 0.85; 
 }
-.chat-left .msg-meta-name { 
-    color: #213456; 
-    font-weight: 700; 
-}
-.chat-right .msg-meta-name { 
-    color: #ffffff; 
-    font-weight: 700; 
-}
-.chat-left .msg-time { 
-    color: #64748b; 
-}
-.chat-right .msg-time { 
-    color: rgba(255, 255, 255, 0.85); 
-}
+
+.chat-left .msg-meta-name { color: #213456; font-weight: 700; }
+.chat-right .msg-meta-name { color: #ffffff; font-weight: 700; }
+.chat-left .msg-time { color: #64748b; }
+.chat-right .msg-time { color: rgba(255, 255, 255, 0.85); }
+
 #ticket_modal label { 
     font-size: 11px; 
     font-weight: 900; 
@@ -244,6 +442,7 @@ if (isset($_POST['mode'])) {
     margin-bottom: 6px; 
     display: block; 
 }
+
 #ticket_modal .form-control { 
     background: #fff !important; 
     color: #333 !important; 
@@ -251,17 +450,20 @@ if (isset($_POST['mode'])) {
     border-radius: 8px; 
     font-size: 13px; 
 }
+
 #ticket_modal .form-control:focus { 
     box-shadow: 0 0 0 3px rgba(33, 52, 86, 0.1); 
     border-color: #213456 !important; 
 }
 
+/* Vertical Asset Tracking Timeline */
 .tracking-timeline { 
     list-style: none; 
     padding: 0; 
     margin: 0; 
     position: relative; 
 }
+
 .tracking-timeline::before { 
     content: ''; 
     position: absolute; 
@@ -272,11 +474,13 @@ if (isset($_POST['mode'])) {
     border-left: 2px dotted #a3a3a3; 
     z-index: 1; 
 }
+
 .timeline-item { 
     position: relative; 
     padding-left: 35px; 
     padding-bottom: 20px; 
 }
+
 .timeline-icon { 
     position: absolute; 
     left: 4px; 
@@ -289,30 +493,61 @@ if (isset($_POST['mode'])) {
     z-index: 2; 
     box-shadow: 0 0 0 1px #ccc; 
 }
+
 .timeline-item.completed .timeline-icon { 
     background-color: #16A34A; 
     box-shadow: 0 0 0 2px #16A34A; 
 }
+
 .timeline-item.pending .timeline-icon { 
     background-color: #E1AD01; 
     box-shadow: 0 0 0 2px #E1AD01; 
 }
+
 .timeline-desc { 
     font-size: 12px; 
-    font-weight: 700;
+    font-weight: 700; 
     color: #333; 
     margin-bottom: 2px; 
     text-transform: uppercase; 
 }
+
 .timeline-date { 
     font-size: 11px; 
     color: #6c757d; 
     font-style: italic; 
 }
 
-@media (max-width: 991px){
-  #ticket_modal .modal-dialog{ max-width: 96%; margin: .75rem auto; }
-  .container_remarks{ max-height: 300px; }
+@media (max-width: 991px) {
+    #ticket_modal .modal-dialog { 
+        max-width: 96%; 
+        margin: .75rem auto; 
+    }
+    .container_remarks { 
+        max-height: 300px; 
+    }
+    .hz-steps { 
+        flex-direction: column; 
+        align-items: flex-start; 
+        padding-left: 10px; 
+    }
+    .hz-step { 
+        width: 100% !important; 
+        flex-direction: row; 
+        text-align: left; 
+        margin-bottom: 15px; 
+    }
+    .hz-icon { 
+        margin-bottom: 0; 
+        margin-right: 15px; 
+    }
+    .hz-progress-bar-bg, .hz-progress-bar-fill { 
+        display: none; 
+    }
+    .hz-sub { 
+        margin-top: 2px; 
+        margin-left: 0; 
+    }
 }
 </style>
 
@@ -330,8 +565,20 @@ if (isset($_POST['mode'])) {
       
        <div class="modal-body">
          <form method="post" id="modal_form" enctype="multipart/form-data">
+             
+             <div class="row mb-2" id="hz_timeline_row">
+                 <div class="col-12">
+                     <h6 class="text-uppercase mb-2" style="color:#213456; font-weight: 800; font-size: 13px;">Standard Ticket Progress</h6>
+                     <div class="hz-timeline-container">
+                         <div class="hz-progress-bar-bg"></div>
+                         <div class="hz-progress-bar-fill" id="hz_progress_fill"></div>
+                         <div class="hz-steps" id="hz_steps_container">
+                         </div>
+                     </div>
+                 </div>
+             </div>
+
              <div class="row" id="modal_columns_row">
-                 
                  <!-- Ticket Info Column -->
                  <div class="col-md-6 border-right pt-2 pb-2" id="col_ticket_info">
                      <div class="form-row">
@@ -413,14 +660,163 @@ if (isset($_POST['mode'])) {
 </div>
 
 <script type="text/javascript">
-    $('#ticket_modal').on('show.bs.modal', function () {
+   $('#ticket_modal').on('show.bs.modal', function () {
         let currentTicket = $('#ModalTicket_no').val();
         if (currentTicket) {
+            currentTicket = currentTicket.trim(); 
+            loadHzTicketProgress(currentTicket); 
             loadCommentThread(currentTicket);
             checkAssetRequestProgress(currentTicket);
             loadAttachments(currentTicket);
         }
     });
+
+   function loadHzTicketProgress(ticket_no) {
+        $('#hz_steps_container').html('<div class="w-100 text-center"><div class="spinner-border spinner-border-sm text-primary"></div></div>');
+        
+        $.ajax({
+            url: window.location.href, 
+            type: 'POST',
+            data: { mode: 'ticket_progress', ticket_no: ticket_no },
+            dataType: 'json',
+            success: function(res) {
+                if(res.error) {
+                    console.error("Database Error:", res.error);
+                    $('#hz_steps_container').html('<div class="text-danger text-center font-weight-bold" style="font-size: 12px;">Error: ' + res.error + '</div>');
+                } else {
+                    renderHzTimeline(res);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("AJAX Error:", xhr.responseText);
+                $('#hz_steps_container').html('<div class="text-danger text-center font-weight-bold" style="font-size: 12px;">Failed to fetch data. Please check the browser console (F12).</div>');
+            }
+        });
+    }
+
+ function renderHzTimeline(data) {
+    console.log("Server Response:", data); 
+    const dbStatus = (data.status || '').toLowerCase().trim();
+    const fallbackStatus = $('#ModalStatus').val().toLowerCase().trim();
+    const checkStatus = dbStatus || fallbackStatus;
+    console.log("Parsed Status for Timeline:", checkStatus);
+
+    let steps = [];
+    let currentLevel = 1;
+
+    steps.push({ label: 'NEW REPORT', sub: '', level: currentLevel });
+    currentLevel++;
+    steps.push({ 
+        label: 'ASSIGNED', 
+        sub: data.assigned_dept ? `<strong>${data.assigned_dept}</strong>` : '', 
+        level: currentLevel 
+    });
+
+    if (data.transfers && data.transfers.length > 0) {
+        data.transfers.forEach(t => {
+            currentLevel++;
+            steps.push({ 
+                label: 'TRANSFERRED', 
+                sub: `<strong>${t.nw_dept_desc}</strong><br>${t.nw_tech_desc}<br><small>${t.date_rasigned}</small>`, 
+                level: currentLevel 
+            });
+        });
+    }
+
+    currentLevel++;
+    const onProcessLvl = currentLevel; 
+    steps.push({ 
+        label: 'ON PROCESS', 
+        sub: data.assigned_tech ? `<strong>${data.assigned_tech}</strong>` : '', 
+        level: onProcessLvl 
+    });
+
+    const isPending = checkStatus.includes('pending');
+    if (isPending) {
+        currentLevel++;
+        steps.push({ label: 'PENDING', sub: '', level: currentLevel, isPendingNode: true });
+    }
+
+    currentLevel++;
+    const subClosingLvl = currentLevel;
+    steps.push({ label: 'SUBJECT FOR CLOSING', sub: '', level: subClosingLvl });
+
+    currentLevel++;
+    const closedLvl = currentLevel;
+    steps.push({ 
+        label: 'CLOSED', 
+        sub: data.close_by_name ? `<strong>${data.close_by_name}</strong><br><small>${data.date_closed}</small>` : (data.close_by ? `<strong>${data.close_by}</strong>` : ''), 
+        level: closedLvl 
+    });
+
+    let activeLevel = 1;
+
+    if (checkStatus.includes('sub') || checkStatus.includes('subject') || checkStatus.includes('for closing') || checkStatus.includes('validate')) {
+        activeLevel = subClosingLvl; 
+    } 
+    else if (checkStatus.includes('close') || checkStatus.includes('resolve') || checkStatus === 'completed' || checkStatus.includes('done')) {
+        activeLevel = closedLvl; 
+    } 
+    else if (isPending) {
+        let pendingNode = steps.find(s => s.isPendingNode);
+        activeLevel = pendingNode ? pendingNode.level : onProcessLvl; 
+    } 
+    else if (checkStatus === 'on process' || checkStatus === 'on-process' || checkStatus.includes('process') || checkStatus.includes('going') || checkStatus.includes('prog') || checkStatus.includes('work')) {
+        activeLevel = onProcessLvl; // This correctly triggers for ON PROCESS
+    } 
+    else if (checkStatus.includes('transfer')) {
+        activeLevel = onProcessLvl - 1; 
+    }
+    else if (checkStatus.includes('assign') || checkStatus.includes('acknowledged') || checkStatus.includes('accept')) {
+        activeLevel = 2; 
+    } 
+    else if (checkStatus.includes('new') || checkStatus.includes('open')) {
+        activeLevel = 1; 
+    }
+
+    console.log("Calculated Active Level:", activeLevel);
+
+    let html = '';
+    let stepCount = steps.length;
+    
+    steps.forEach((step) => {
+        let statusClass = '';
+        
+        if (step.level < activeLevel) {
+            statusClass = 'completed'; 
+        } else if (step.level === activeLevel) {
+            if (isPending) {
+                statusClass = 'pending';
+            } else if (activeLevel === closedLvl) {
+                statusClass = 'completed'; 
+            } else {
+                statusClass = 'current';
+            }
+        }
+        
+        html += `
+            <div class="hz-step ${statusClass}" style="width: ${100/stepCount}%">
+                <div class="hz-icon"></div>
+                <div class="hz-label">${step.label}</div>
+                <div class="hz-sub">${step.sub}</div>
+            </div>
+        `;
+    });
+    
+    $('#hz_steps_container').html(html);
+    let fillWidth = 0;
+    if (stepCount > 1) {
+        fillWidth = ((Math.min(activeLevel, stepCount) - 1) / (stepCount - 1)) * 100;
+    }
+    $('#hz_progress_fill').css('width', fillWidth + '%');
+    if (isPending) {
+        $('#hz_progress_fill').addClass('pending').removeClass('active-fill').css('background', 'var(--hz-pending)'); 
+    } else if (activeLevel < closedLvl) {
+        $('#hz_progress_fill').addClass('active-fill').removeClass('pending').css('background', 'var(--hz-active)');
+    } else {
+        $('#hz_progress_fill').removeClass('pending active-fill').css('background', 'var(--hz-complete)'); 
+    }
+}
 
     $('#modal_form').on('submit', function(e) {
         e.preventDefault();
@@ -443,7 +839,6 @@ if (isset($_POST['mode'])) {
         });
     });
 
-    // Handle Fixed Asset Remarks submission
     $('#btn_send_remark').off('click').on('click', function() {
         var remarks = $('#new_remark_input').val();
         var ticket_no = $('#ModalTicket_no').val();
