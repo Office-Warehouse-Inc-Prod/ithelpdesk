@@ -395,8 +395,7 @@ if ($is_technical === 1) {
         $dynamicImagePath = '../users/image/' . $extractedFileName;
 
         if (file_exists($dynamicImagePath)) {
-            
-            // Define fixed maximum dimensions for the image so it is standard across all reports
+           
             $maxWidth = 150;
             $maxHeight = 80;
             
@@ -404,7 +403,6 @@ if ($is_technical === 1) {
             $finalWidth = $maxWidth;
             $finalHeight = $maxHeight;
 
-            // Maintain aspect ratio while fitting into our strict maximum boundaries
             if ($imgInfo && $imgInfo[0] > 0 && $imgInfo[1] > 0) {
                 $ratio = $imgInfo[0] / $imgInfo[1];
                 if (($maxWidth / $ratio) <= $maxHeight) {
@@ -416,8 +414,7 @@ if ($is_technical === 1) {
                 }
             }
 
-            // Calculate total space needed for (Label 7) + (Image) + (Gap 20) + (Signature 20)
-            // If it won't fit on this page, bump the whole block to a new page together
+        
             if (($pdf->GetY() + 7 + $finalHeight + 40) > 270) {
                 $pdf->AddPage();
             }
@@ -428,10 +425,9 @@ if ($is_technical === 1) {
             
             $imgY = $pdf->GetY();
             
-            // Print the image with fixed constraints
+         
             $pdf->Image($dynamicImagePath, 10, $imgY, $finalWidth, $finalHeight); 
             
-            // Set the exact Y position below the image, plus a 20mm uniform gap
             $pdf->SetY($imgY + $finalHeight + 20); 
 
         } else {
@@ -441,12 +437,11 @@ if ($is_technical === 1) {
         }
     }
 
-    // Ensure space for the signature if the image block didn't run
     if ($pdf->GetY() > 250) {
         $pdf->AddPage();
     }
     
-    $sigY = $pdf->GetY(); // Position for the signature block
+    $sigY = $pdf->GetY(); 
     
     $adminSupImagePath = !empty($ticket['approve_method_head']) ? '../admin-head/' . ltrim(trim($ticket['approve_method_head']), '/') : '';
     if (!empty($adminSupImagePath) && file_exists($adminSupImagePath)) {

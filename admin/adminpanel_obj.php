@@ -458,7 +458,8 @@ $( document ).ready(function() {
             $('#status').val(data['status']);
             $('#non_escalated_tag').val(data['non_escalated_tag']);
             $('#priority_desc').val(data['priority_desc']);
-            $('#close_by').val(data['close_by']);
+           $('#close_by').val(data['close_by']);
+$('#cl_desc').val(data['close_by_desc'] ? data['close_by_desc'] : data['close_by']);
 
             admin_hideshowforms();
             $('#date_closed').val(data['date_closed']);
@@ -775,7 +776,8 @@ $( document ).ready(function() {
         $('#itsup').val(data['itsup']);
 
         $('#cat_num').val(data['cat_id']);
-        $('#close_by').val(data['close_by']);
+     $('#close_by').val(data['close_by']);
+$('#cl_desc').val(data['close_by_desc'] ? data['close_by_desc'] : data['close_by']);
         $('#cl_desc').val(data['clusers']);
 
         if (data['cat_id'] && $('#cat option[value="' + data['cat_id'] + '"]').length === 0) {

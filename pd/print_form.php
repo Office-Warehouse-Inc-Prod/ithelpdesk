@@ -298,24 +298,19 @@ if ($is_technical === 1) {
     if (!empty($techImagePath) && file_exists($techImagePath)) {
         $pdf->Image($techImagePath, 20, $sigY - 5, 47, 10);
     }
-    
- 
 
     $pdf->SetDrawColor(0, 0, 0); 
     
     $pdf->SetXY(25, $sigY);
     $pdf->Cell(36, 5, '', 'B', 0, 'C'); 
- $date_noted_display = !empty($ticket['date_noted']) ? date('m-d-Y', strtotime($ticket['date_noted'])) : 'N/A';
+    $date_noted_display = !empty($ticket['date_noted']) ? date('m-d-Y', strtotime($ticket['date_noted'])) : 'N/A';
     $pdf->SetFont('Arial', '', 9);
     $pdf->Cell(25, 5, '' . $date_noted_display, 0, 0, 'L');
     
-
-
     $pdf->SetFont('Arial', 'B', 10);
     $pdf->SetTextColor(31, 41, 55);
     $pdf->SetXY(15, $sigY + 5);
     $pdf->Cell(60, 5, strtoupper($ticket['noted_by_name'] ?? 'N/A'), 0, 0, 'C');
-
     
     // Roles
     $pdf->SetFont('Arial', '', 9);
@@ -400,18 +395,41 @@ if ($is_technical === 1) {
         $dynamicImagePath = '../users/image/' . $extractedFileName;
 
         if (file_exists($dynamicImagePath)) {
+           
+            $maxWidth = 150;
+            $maxHeight = 80;
+            
+            $imgInfo = @getimagesize($dynamicImagePath);
+            $finalWidth = $maxWidth;
+            $finalHeight = $maxHeight;
+
+            if ($imgInfo && $imgInfo[0] > 0 && $imgInfo[1] > 0) {
+                $ratio = $imgInfo[0] / $imgInfo[1];
+                if (($maxWidth / $ratio) <= $maxHeight) {
+                    $finalWidth = $maxWidth;
+                    $finalHeight = $maxWidth / $ratio;
+                } else {
+                    $finalHeight = $maxHeight;
+                    $finalWidth = $maxHeight * $ratio;
+                }
+            }
+
+        
+            if (($pdf->GetY() + 7 + $finalHeight + 40) > 270) {
+                $pdf->AddPage();
+            }
+
             $pdf->SetFont('Arial', 'B', 10);
             $pdf->SetTextColor(30, 60, 90); 
             $pdf->Cell(0, 7, 'IMAGE ATTACHED VIA HELPDESK:', 0, 1, 'L');
             
             $imgY = $pdf->GetY();
-            if ($imgY > 150) {
-                $pdf->AddPage();
-                $imgY = $pdf->GetY();
-            }
+            
+         
+            $pdf->Image($dynamicImagePath, 10, $imgY, $finalWidth, $finalHeight); 
+            
+            $pdf->SetY($imgY + $finalHeight + 20); 
 
-            $pdf->Image($dynamicImagePath, 10, $imgY, 150, 0); 
-            $pdf->SetY($pdf->GetY() + 60); 
         } else {
             $pdf->SetFont('Arial', 'I', 9);
             $pdf->SetTextColor(150, 150, 150); 
@@ -419,12 +437,11 @@ if ($is_technical === 1) {
         }
     }
 
-    $pdf->Ln(20);
-    if ($pdf->GetY() > 240) {
+    if ($pdf->GetY() > 250) {
         $pdf->AddPage();
     }
     
-    $sigY = $pdf->GetY() + 40;
+    $sigY = $pdf->GetY(); 
     
     $adminSupImagePath = !empty($ticket['approve_method_head']) ? '../admin-head/' . ltrim(trim($ticket['approve_method_head']), '/') : '';
     if (!empty($adminSupImagePath) && file_exists($adminSupImagePath)) {
@@ -433,13 +450,12 @@ if ($is_technical === 1) {
 
     $pdf->SetDrawColor(0, 0, 0);
     
-
     $date_validated_display = !empty($ticket['date_validated']) ? date('m-d-Y', strtotime($ticket['date_validated'])) : 'N/A';
-
     
     $pdf->SetFont('Arial', '', 9);
     $pdf->SetTextColor(31, 41, 55);
-    $pdf->Cell(70, 85, '' . $date_validated_display, 0, 1, 'R');
+    $pdf->SetXY(85, $sigY + 5); 
+    $pdf->Cell(50, 5, $date_validated_display, 0, 1, 'L');
     
     $pdf->SetFont('Arial', 'B', 10);
     $pdf->SetXY(15, $sigY + 5);

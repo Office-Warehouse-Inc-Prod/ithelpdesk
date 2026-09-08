@@ -79,13 +79,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mode'])) {
     if ($_POST['mode'] === 'ticket_progress') {
         $ticket_no = trim($_POST['ticket_no'] ?? ''); 
         try {
+            // Added LEFT JOIN for it_tech as 'tc' to fetch close_by_name
             $stmt = $connection->prepare("SELECT r.status,
                                            r.deptsel, d.dept_desc AS assigned_dept, 
                                            r.itsup, t.it_desc AS assigned_tech, 
-                                           r.close_by, r.date_closed 
+                                           r.close_by, tc.it_desc AS close_by_name,
+                                           r.date_closed 
                                     FROM reports r 
                                     LEFT JOIN tbl_dept d ON r.deptsel = d.dept_id 
                                     LEFT JOIN it_tech t ON r.itsup = t.itsup 
+                                    LEFT JOIN it_tech tc ON r.close_by = tc.itsup 
                                     WHERE r.ticket_no = ?");
             $stmt->execute([$ticket_no]);
             $main_info = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -95,27 +98,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mode'])) {
                 exit();
             }
             
-            $stmt2 = $connection->prepare("SELECT tr.nw_sup, t.it_desc AS nw_tech_desc, 
-                                            tr.f_deptsel, d.dept_desc AS nw_dept_desc, 
+            $stmt2 = $connection->prepare("SELECT tr.nw_sup, t_nw.it_desc AS nw_tech_desc, 
+                                            tr.f_deptsel, d_nw.dept_desc AS nw_dept_desc, 
+                                            tr.itsup AS prev_sup, t_prev.it_desc AS prev_tech_desc,
+                                            tr.deptsel AS prev_deptsel, d_prev.dept_desc AS prev_dept_desc,
                                             tr.date_rasigned 
                                      FROM tbl_reassigned tr 
-                                     LEFT JOIN it_tech t ON tr.nw_sup = t.itsup 
-                                     LEFT JOIN tbl_dept d ON tr.f_deptsel = d.dept_id 
+                                     LEFT JOIN it_tech t_nw ON tr.nw_sup = t_nw.itsup 
+                                     LEFT JOIN tbl_dept d_nw ON tr.f_deptsel = d_nw.dept_id 
+                                     LEFT JOIN it_tech t_prev ON tr.itsup = t_prev.itsup 
+                                     LEFT JOIN tbl_dept d_prev ON tr.deptsel = d_prev.dept_id
                                      WHERE tr.ticket_no = ? 
                                        AND tr.itsup IS NOT NULL AND tr.itsup != '' 
                                        AND tr.nw_sup IS NOT NULL AND tr.nw_sup != '' 
                                        AND tr.date_rasigned IS NOT NULL AND tr.date_rasigned != '' 
-                                       AND tr.deptsel IS NOT NULL AND tr.deptsel != '' 
-                                       AND tr.f_deptsel IS NOT NULL AND tr.f_deptsel != ''
                                      ORDER BY tr.date_rasigned ASC");
             $stmt2->execute([$ticket_no]);
             $transfers = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+            
+            if (!empty($transfers)) {
+                $latest_transfer = end($transfers);
+                
+                if (strtolower($main_info['status']) === 'assigned' || empty($main_info['status'])) {
+                     $main_info['status'] = 'On Process';
+                }
+              
+                $main_info['assigned_dept'] = $latest_transfer['nw_dept_desc'];
+                $main_info['assigned_tech'] = $latest_transfer['nw_tech_desc'];
+            }
             
             echo json_encode([
                 'status' => $main_info['status'], 
                 'assigned_dept' => $main_info['assigned_dept'] ?? '',
                 'assigned_tech' => $main_info['assigned_tech'] ?? '',
                 'close_by' => $main_info['close_by'] ?? '',
+                'close_by_name' => $main_info['close_by_name'] ?? '',
                 'date_closed' => $main_info['date_closed'] ?? '',
                 'transfers' => $transfers
             ]);
@@ -756,7 +773,6 @@ body {
 <div class="container-fluid mt-4" id="helpdesk_row">
   <div class="row">
 
-    <!-- LEFT: CREATE TICKET -->
     <div class="col-12 col-lg-4 col-xl-3 p-2 sticky-form">
       <div class="card w-100">
         <div class="card-header">
@@ -793,12 +809,9 @@ body {
                       <option value="1">IT</option>
                       <option value="2">ADMIN</option>
                       <option value="3">MARKETING</option>
-                      <!-- <option value="4">MERCHANDISING</option> -->
                       <option value="6">VISUAL</option>
                       <option value="11">H.R</option>
-                      <!-- <option value="12">ICG</option> -->
                       <option value="13">ACCOUNTS PAYABLE</option>
-                      <!-- <option value="14">SALES ACCOUNTING</option> -->
                       <option value="15">TREASURY</option>
                       <option value="16">ACCOUNT RECEIVABLE</option>
                 </select>
@@ -853,7 +866,6 @@ body {
 
                 <div class="soft-divider"></div>
 
-                <!-- ITEMS -->
                 <label name="Qitem" id="Qitem">Quantity of Items</label>
                 <select class="form-control selectpicker" name="QItems" id="QItems" style="font-size:12px;">
                   <option selected disabled>Select Here</option>
@@ -939,10 +951,8 @@ body {
       </div>
     </div>
 
-    <!-- RIGHT: TICKETS + ITEMS TABLES -->
     <div class="col-12 col-lg-8 col-xl-9 p-2">
 
-      <!-- CREATED TICKETS -->
       <div class="card" id="dvtables" style="width:auto;">
         <div class="card-header">
           <div class="section-title">
@@ -983,7 +993,6 @@ body {
       </div>
 
 
-      <!-- ITEMS TABLE -->
       <div class="card mt-3" id="itmcard" style="width:100%;">
         <div class="card-header">
           <div class="section-title">
@@ -1018,7 +1027,6 @@ body {
 
 <div class="col-md-12">
 
-  <!-- MERCH DR CARD (shows only when deptsel == 4) -->
   <div id="merchDrCard" class="card shadow-sm mt-3" style="display:none;border:1px solid #e5e7eb;border-radius:10px;">
 
     <form id="merch_ticket_form" method="post">
@@ -1048,7 +1056,6 @@ body {
 
           <hr>
 
-          <!-- Item inputs -->
           <div class="row">
             <div class="col-md-3 mb-2">
               <label class="mb-1">ALU</label>
@@ -1356,6 +1363,15 @@ body {
         
         $('#file-input').on('change', function() {
              validateSubmitButton();
+        });
+
+        // Added click event for View Attachments to redirect properly
+        $('#vwfile').click(function(e) {
+            e.preventDefault();
+            var val = $('#ModalTicket_no').val();
+            if(val) {
+                window.location.href = 'switch_attach_modal.php?ticket=' + encodeURIComponent(val);
+            }
         });
     });
 

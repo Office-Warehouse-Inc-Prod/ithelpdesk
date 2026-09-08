@@ -6,16 +6,30 @@ if (!isset($_SESSION['login']) || $_SESSION['login'] != 'true') {
 }
 
 if (isset($_POST['mode'])) {
-    if ($_POST['mode'] === 'fa_tbl') {
+   if ($_POST['mode'] === 'fa_tbl') {
         header('Content-Type: application/json');
         try {
             $sql = "SELECT 
                         r.ticket_no, r.date_created, r.concern, r.service_desc, r.subject,
                         GROUP_CONCAT(i.files_name SEPARATOR '|') AS attachment_files,
-                        r.sub_id, r.f_deptsel, r.itsup, r.store
+                        r.sub_id, r.store,
+                        COALESCE(d_nw.dept_desc, r.f_deptsel) AS f_deptsel, 
+                        COALESCE(t_nw.it_desc, r.itsup) AS itsup,
+                        IF(tr.ticket_no IS NOT NULL, 'On Process', r.status) AS status
                     FROM reports r
                     LEFT JOIN images i ON r.ticket_no = i.ticket_no
-                    WHERE r.status = 'Assigned' 
+                    LEFT JOIN (
+                        SELECT t1.ticket_no, t1.f_deptsel, t1.nw_sup
+                        FROM tbl_reassigned t1
+                        INNER JOIN (
+                            SELECT ticket_no, MAX(date_rasigned) as max_date 
+                            FROM tbl_reassigned 
+                            GROUP BY ticket_no
+                        ) t2 ON t1.ticket_no = t2.ticket_no AND t1.date_rasigned = t2.max_date
+                    ) tr ON r.ticket_no = tr.ticket_no
+                    LEFT JOIN tbl_dept d_nw ON tr.f_deptsel = d_nw.dept_id
+                    LEFT JOIN it_tech t_nw ON tr.nw_sup = t_nw.itsup
+                    WHERE r.status = 'Assigned'
                     GROUP BY r.ticket_no
                     ORDER BY r.date_created DESC";
                     
@@ -88,13 +102,29 @@ if (isset($_POST['mode'])) {
         exit();
     }
 
-    if ($_POST['mode'] === 'newrpt_tbl') {
+  if ($_POST['mode'] === 'newrpt_tbl') {
         header('Content-Type: application/json');
-        $sql = "SELECT r.ticket_no, r.date_created, r.concern, r.service_desc, r.subject, 
-                GROUP_CONCAT(i.files_name SEPARATOR '|') AS attachment_files, r.sub_id, r.f_deptsel, r.itsup, r.store 
+        $sql = "SELECT 
+                    r.ticket_no, r.date_created, r.concern, r.service_desc, r.subject, 
+                    GROUP_CONCAT(i.files_name SEPARATOR '|') AS attachment_files, 
+                    r.sub_id, r.store,
+                    COALESCE(d_nw.dept_desc, r.f_deptsel) AS f_deptsel, 
+                    COALESCE(t_nw.it_desc, r.itsup) AS itsup,
+                    IF(tr.ticket_no IS NOT NULL, 'On Process', r.status) AS status
                 FROM reports r 
                 LEFT JOIN images i ON r.ticket_no = i.ticket_no 
-                WHERE r.status = 'Assigned' 
+                LEFT JOIN (
+                    SELECT t1.ticket_no, t1.f_deptsel, t1.nw_sup
+                    FROM tbl_reassigned t1
+                    INNER JOIN (
+                        SELECT ticket_no, MAX(date_rasigned) as max_date 
+                        FROM tbl_reassigned 
+                        GROUP BY ticket_no
+                    ) t2 ON t1.ticket_no = t2.ticket_no AND t1.date_rasigned = t2.max_date
+                ) tr ON r.ticket_no = tr.ticket_no
+                LEFT JOIN tbl_dept d_nw ON tr.f_deptsel = d_nw.dept_id
+                LEFT JOIN it_tech t_nw ON tr.nw_sup = t_nw.itsup
+                WHERE r.status = 'Assigned'
                 GROUP BY r.ticket_no 
                 ORDER BY r.date_created DESC";
         
@@ -132,13 +162,16 @@ if (isset($_POST['mode'])) {
         $ticket_no = trim($_POST['ticket_no'] ?? ''); 
         
         try {
+            // Modified to LEFT JOIN it_tech based on close_by to get it_desc
             $stmt = $conn->prepare("SELECT r.status,
                                            r.deptsel, d.dept_desc AS assigned_dept, 
                                            r.itsup, t.it_desc AS assigned_tech, 
-                                           r.close_by, r.date_closed 
+                                           r.close_by, tc.it_desc AS close_by_name,
+                                           r.date_closed 
                                     FROM reports r 
                                     LEFT JOIN tbl_dept d ON r.deptsel = d.dept_id 
                                     LEFT JOIN it_tech t ON r.itsup = t.itsup 
+                                    LEFT JOIN it_tech tc ON r.close_by = tc.itsup 
                                     WHERE r.ticket_no = ?");
             $stmt->bind_param("s", $ticket_no);
             $stmt->execute();
@@ -150,28 +183,46 @@ if (isset($_POST['mode'])) {
                 exit();
             }
             
-            $stmt2 = $conn->prepare("SELECT tr.nw_sup, t.it_desc AS nw_tech_desc, 
-                                            tr.f_deptsel, d.dept_desc AS nw_dept_desc, 
+            // Transfer logic correctly fetching from and to data
+            $stmt2 = $conn->prepare("SELECT tr.nw_sup, t_nw.it_desc AS nw_tech_desc, 
+                                            tr.f_deptsel, d_nw.dept_desc AS nw_dept_desc, 
+                                            tr.itsup AS prev_sup, t_prev.it_desc AS prev_tech_desc,
+                                            tr.deptsel AS prev_deptsel, d_prev.dept_desc AS prev_dept_desc,
                                             tr.date_rasigned 
                                      FROM tbl_reassigned tr 
-                                     LEFT JOIN it_tech t ON tr.nw_sup = t.itsup 
-                                     LEFT JOIN tbl_dept d ON tr.f_deptsel = d.dept_id 
+                                     LEFT JOIN it_tech t_nw ON tr.nw_sup = t_nw.itsup 
+                                     LEFT JOIN tbl_dept d_nw ON tr.f_deptsel = d_nw.dept_id 
+                                     LEFT JOIN it_tech t_prev ON tr.itsup = t_prev.itsup 
+                                     LEFT JOIN tbl_dept d_prev ON tr.deptsel = d_prev.dept_id
                                      WHERE tr.ticket_no = ? 
                                        AND tr.itsup IS NOT NULL AND tr.itsup != '' 
                                        AND tr.nw_sup IS NOT NULL AND tr.nw_sup != '' 
                                        AND tr.date_rasigned IS NOT NULL AND tr.date_rasigned != '' 
-                                       AND tr.deptsel IS NOT NULL AND tr.deptsel != '' 
-                                       AND tr.f_deptsel IS NOT NULL AND tr.f_deptsel != ''
                                      ORDER BY tr.date_rasigned ASC");
             $stmt2->bind_param("s", $ticket_no);
-            $stmt2->execute();
+           $stmt2->execute();
             $transfers = $stmt2->get_result()->fetch_all(MYSQLI_ASSOC);
             
-            echo json_encode([
+            // If the ticket has a transfer history, override the current assignment 
+            // to display the latest support, latest dept, and set status to 'On Process'
+            if (!empty($transfers)) {
+                $latest_transfer = end($transfers);
+                
+                if (strtolower($main_info['status']) === 'assigned' || empty($main_info['status'])) {
+                     $main_info['status'] = 'On Process';
+                }
+                
+                // Replace the handler info with the reassigned personnel
+                $main_info['assigned_dept'] = $latest_transfer['nw_dept_desc'];
+                $main_info['assigned_tech'] = $latest_transfer['nw_tech_desc'];
+            }
+            
+           echo json_encode([
                 'status' => $main_info['status'], 
                 'assigned_dept' => $main_info['assigned_dept'] ?? '',
                 'assigned_tech' => $main_info['assigned_tech'] ?? '',
                 'close_by' => $main_info['close_by'] ?? '',
+                'close_by_name' => $main_info['close_by_name'] ?? '',
                 'date_closed' => $main_info['date_closed'] ?? '',
                 'transfers' => $transfers
             ]);
@@ -704,51 +755,91 @@ if (isset($_POST['mode'])) {
     let steps = [];
     let currentLevel = 1;
 
+    // 1. New Report
     steps.push({ label: 'NEW REPORT', sub: '', level: currentLevel });
     currentLevel++;
+
+    // 2. Original Assignment
+    let origDept = data.assigned_dept;
+    let origTech = data.assigned_tech;
+    
+    // If there are transfers, the original assignment was the source of the VERY FIRST transfer
+    if (data.transfers && data.transfers.length > 0) {
+        origDept = data.transfers[0].prev_dept_desc || origDept;
+        origTech = data.transfers[0].prev_tech_desc || origTech;
+    }
+
     steps.push({ 
         label: 'ASSIGNED', 
-        sub: data.assigned_dept ? `<strong>${data.assigned_dept}</strong>` : '', 
+        sub: origDept ? `<strong>${origDept}</strong><br>${origTech}` : '', 
         level: currentLevel 
     });
 
+    // 3. Dynamic Transfer Steps (Transfer 1, Transfer 2, etc.)
     if (data.transfers && data.transfers.length > 0) {
-        data.transfers.forEach(t => {
+        data.transfers.forEach((t, index) => {
             currentLevel++;
+            
+            let transferSub = '';
+            
+            // Output "From:" ONLY for Transfer 1 (index 0)
+            if (index === 0) {
+                let fromDept = t.prev_dept_desc || origDept || '';
+                let fromTech = t.prev_tech_desc || origTech || '';
+                transferSub += `From: <strong>${fromDept}</strong><br>${fromTech}<br>`;
+            }
+            
+            // "To:" is output for all transfers
+            transferSub += `To: <strong>${t.nw_dept_desc || ''}</strong><br>${t.nw_tech_desc || ''}<br><small>${t.date_rasigned}</small>`;
+
             steps.push({ 
-                label: 'TRANSFERRED', 
-                sub: `<strong>${t.nw_dept_desc}</strong><br>${t.nw_tech_desc}<br><small>${t.date_rasigned}</small>`, 
+                label: `TRANSFER ${index + 1}`, 
+                sub: transferSub, 
                 level: currentLevel 
             });
         });
     }
 
+    // 4. On Process (Current handler)
     currentLevel++;
     const onProcessLvl = currentLevel; 
     steps.push({ 
         label: 'ON PROCESS', 
-        sub: data.assigned_tech ? `<strong>${data.assigned_tech}</strong>` : '', 
+        sub: data.assigned_dept ? `<strong>${data.assigned_dept}</strong><br>${data.assigned_tech}` : (data.assigned_tech ? `<strong>${data.assigned_tech}</strong>` : ''), 
         level: onProcessLvl 
     });
 
+    // 5. Pending (Optional)
     const isPending = checkStatus.includes('pending');
     if (isPending) {
         currentLevel++;
         steps.push({ label: 'PENDING', sub: '', level: currentLevel, isPendingNode: true });
     }
 
+    // 6. Closing & Closed
     currentLevel++;
     const subClosingLvl = currentLevel;
     steps.push({ label: 'SUBJECT FOR CLOSING', sub: '', level: subClosingLvl });
 
     currentLevel++;
     const closedLvl = currentLevel;
+    
+    // NEW LOGIC: Only display closed details if status actually matches a closed state
+    let closedSubText = '';
+    if (checkStatus.includes('close') || checkStatus === 'completed' || checkStatus.includes('resolve') || checkStatus.includes('done')) {
+        let closerName = data.close_by_name ? data.close_by_name : (data.close_by ? data.close_by : '');
+        if(closerName) {
+            closedSubText = `<strong>${closerName}</strong><br><small>${data.date_closed || ''}</small>`;
+        }
+    }
+
     steps.push({ 
         label: 'CLOSED', 
-        sub: data.close_by_name ? `<strong>${data.close_by_name}</strong><br><small>${data.date_closed}</small>` : (data.close_by ? `<strong>${data.close_by}</strong>` : ''), 
+        sub: closedSubText, 
         level: closedLvl 
     });
 
+    // Determine Active Level indicator
     let activeLevel = 1;
 
     if (checkStatus.includes('sub') || checkStatus.includes('subject') || checkStatus.includes('for closing') || checkStatus.includes('validate')) {
@@ -762,10 +853,10 @@ if (isset($_POST['mode'])) {
         activeLevel = pendingNode ? pendingNode.level : onProcessLvl; 
     } 
     else if (checkStatus === 'on process' || checkStatus === 'on-process' || checkStatus.includes('process') || checkStatus.includes('going') || checkStatus.includes('prog') || checkStatus.includes('work')) {
-        activeLevel = onProcessLvl; // This correctly triggers for ON PROCESS
+        activeLevel = onProcessLvl; 
     } 
     else if (checkStatus.includes('transfer')) {
-        activeLevel = onProcessLvl - 1; 
+        activeLevel = onProcessLvl - 1; // Highlights the most recent transfer step
     }
     else if (checkStatus.includes('assign') || checkStatus.includes('acknowledged') || checkStatus.includes('accept')) {
         activeLevel = 2; 
@@ -774,11 +865,10 @@ if (isset($_POST['mode'])) {
         activeLevel = 1; 
     }
 
-    console.log("Calculated Active Level:", activeLevel);
-
     let html = '';
     let stepCount = steps.length;
     
+    // UI Rendering
     steps.forEach((step) => {
         let statusClass = '';
         
@@ -809,6 +899,8 @@ if (isset($_POST['mode'])) {
         fillWidth = ((Math.min(activeLevel, stepCount) - 1) / (stepCount - 1)) * 100;
     }
     $('#hz_progress_fill').css('width', fillWidth + '%');
+    
+    // Style active bar colors based on status
     if (isPending) {
         $('#hz_progress_fill').addClass('pending').removeClass('active-fill').css('background', 'var(--hz-pending)'); 
     } else if (activeLevel < closedLvl) {

@@ -634,39 +634,42 @@ public function str_grphnew()
 
 /**
  * Admin data table res.
- */
-public function admin_data_table_res(){
+ */public function admin_data_table_res() {
 
+    $yr = isset($_POST['yr']) ? intval($_POST['yr']) : date('Y');
 
-$yr = isset($_POST['yr']) ? intval($_POST['yr']) : date('Y');
+    $dept_ids = isset($_POST['dept_id']) 
+        ? $_POST['dept_id'] 
+        : '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19';
 
-$dept_ids = isset($_POST['dept_id']) 
-    ? $_POST['dept_id'] 
-    : '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19';
+    // Clean department IDs
+    $dept_ids_array = array_filter(array_map('intval', explode(',', $dept_ids)));
 
-// Clean department IDs
-$dept_ids_array = array_filter(array_map('intval', explode(',', $dept_ids)));
+    if (empty($dept_ids_array)) {
+        $dept_ids_array = range(1, 17);
+    }
 
-if (empty($dept_ids_array)) {
-    $dept_ids_array = range(1, 17);
-}
+    $dept_ids_clean = implode(',', $dept_ids_array);
 
-$dept_ids_clean = implode(',', $dept_ids_array);
-
-$query = "
-    SELECT *
-    FROM vw6foradmin
-    WHERE sub_id NOT IN ('15','28','34','35')
-      AND status <> 'NEW REPORT'
-      AND YEAR(date_created) = {$yr}
-      AND f_deptsel IN ({$dept_ids_clean})
-      AND (is_transfer = '0' OR is_transfer IS NULL)
-";
-
-
-
+    // Added LEFT JOIN to 'it_tech' to get the descriptive name of 'close_by'
+    // Replaced {$yr} with the safe PDO placeholder :yr
+    $query = "
+        SELECT 
+            vw6foradmin.*,
+            it_tech_close.it_desc AS close_by_desc
+        FROM vw6foradmin
+        LEFT JOIN it_tech AS it_tech_close 
+            ON it_tech_close.itsup = vw6foradmin.close_by
+        WHERE vw6foradmin.sub_id NOT IN ('15','28','34','35')
+          AND vw6foradmin.status <> 'NEW REPORT'
+          AND YEAR(vw6foradmin.date_created) = :yr
+          AND vw6foradmin.f_deptsel IN ({$dept_ids_clean})
+          AND (vw6foradmin.is_transfer = '0' OR vw6foradmin.is_transfer IS NULL)
+    ";
 
     $statement = $this->connection->prepare($query);
+    
+    // Now the execute binding will work perfectly with :yr
     $statement->execute([
         ':yr' => $yr
     ]);
@@ -679,6 +682,7 @@ $query = "
         $assigned_id   = $row['f_deptsel'] ?? ($row['itsup'] ?? '');
         $assigned_desc = $row['dept_desc'] ?? ($row['it_desc'] ?? '');
         $assigned_sel  = $row['dept_sel'] ?? ($row['it_sel'] ?? '');
+        
         $date_created = !empty($row["date_created"]) ? date('m/d/Y H:i', strtotime($row["date_created"])) : "";
         $date_closed  = (!empty($row["date_closed"]) && strtoupper($row['status']) !== 'OPEN')
                         ? date('m/d/Y H:i', strtotime($row["date_closed"]))
@@ -693,15 +697,14 @@ $query = "
             'date_created' => $date_created,
 
             'subject' => $row['subject'] ?? '',
-			  'dept_desc' => $row['dept_desc'] ?? '',
             'concern' => $row['concern'] ?? '',
             'via' => $row['via'] ?? '',
             'status' => $row['status'] ?? '',
-			'contactNumber' => $row['contactNumber'] ?? '',
-			'dept_email' => $row['dept_email'] ?? '',
+            'contactNumber' => $row['contactNumber'] ?? '',
+            'dept_email' => $row['dept_email'] ?? '',
             'f_deptsel' => $assigned_id,
             'dept_desc' => $assigned_desc,
-            'dept_sel'  => $row['dept_sel'],
+            'dept_sel'  => $assigned_sel,
 
             'cat_id' => $row['cat_id'] ?? '',
             'category' => $row['category'] ?? '',
@@ -719,6 +722,10 @@ $query = "
             'years' => $row['years'] ?? '',
 
             'close_by' => $row['close_by'] ?? '',
+            
+        
+            'close_by_desc' => $row['close_by_desc'] ?? '', 
+            
             'clusers' => $row['clusers'] ?? '',
             'remarks' => $row['remarks'] ?? '',
 
@@ -729,8 +736,7 @@ $query = "
             'date_refNo' => $date_refNo,
 
             'msg_cnt' => $row['msg_cnt'] ?? '0',
-            'priority_desc' => $row['priority_desc'] ?? '0',
-			'contactNumber' => $row['contactNumber'] ?? ''
+            'priority_desc' => $row['priority_desc'] ?? '0'
         );
     }
 
