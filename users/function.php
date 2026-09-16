@@ -625,7 +625,11 @@ class dbconfig extends dbconn
         $sbs_no = isset($_POST['sbs_no']) ? $_POST['sbs_no'] : '';
         $price_lvl = isset($_POST['price_lvl']) ? $_POST['price_lvl'] : '';
 
-        $query = "SELECT SBS_NO, ALU, LOCAL_UPC, DESCRIPTION1, Price, PRICE_LVL FROM item_masterfile_refine WHERE (ALU = :kprvr OR Local_UPC = :kprvr) AND SBS_NO = :sbs_no AND PRICE_LVL = :price_lvl";
+        $query = "SELECT SBS_NO, ALU, LOCAL_UPC, multi_alu, multi_UPC, DESCRIPTION1, Price, PRICE_LVL
+                  FROM item_masterfile_refine
+                  WHERE (ALU = :kprvr OR LOCAL_UPC = :kprvr OR multi_alu = :kprvr OR multi_UPC = :kprvr)
+                    AND SBS_NO = :sbs_no
+                    AND PRICE_LVL = :price_lvl";
         
         $statement = $this->connection->prepare($query);
         $statement->execute(array(
@@ -639,12 +643,22 @@ class dbconfig extends dbconn
         if ($statement->rowCount() > 0) {
             foreach ($result as $row) {
                 $fetchdata[] = array(
-                    'FDetails' => (trim($row['DESCRIPTION1']) == "") ? "No Data Found" : strtoupper($row["ALU"] . '    ' . $row["LOCAL_UPC"] . '  ' . $row["DESCRIPTION1"]),
-                    'Price_WT' => (trim($row['Price']) == "") ? "No Data Found" : strtoupper($row["Price"])
+                    'ALU' => trim((string) $row['ALU']),
+                    'LOCAL_UPC' => trim((string) $row['LOCAL_UPC']),
+                    'MULTI_ALU' => trim((string) $row['multi_alu']),
+                    'MULTI_UPC' => trim((string) $row['multi_UPC']),
+                    'DESCRIPTION' => (trim((string) $row['DESCRIPTION1']) === "") ? "No Data Found" : strtoupper($row['DESCRIPTION1']),
+                    'FDetails' => (trim((string) $row['DESCRIPTION1']) === "") ? "No Data Found" : strtoupper($row['DESCRIPTION1']),
+                    'Price_WT' => (trim((string) $row['Price']) === "") ? "No Data Found" : strtoupper($row['Price'])
                 );
             }
         } else {
             $fetchdata[] = array(
+                "ALU" => "",
+                "LOCAL_UPC" => "",
+                "MULTI_ALU" => "",
+                "MULTI_UPC" => "",
+                "DESCRIPTION" => "NO ITEM FOUND",
                 "FDetails" => "NO ITEM FOUND",
                 "Price_WT" => "   "
             );

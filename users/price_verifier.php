@@ -175,6 +175,16 @@ if (empty($_SESSION['price_verifier_user_id'])) {
             background-color: rgba(255,255,255,0.06);
         }
 
+        #pr_vr_codes {
+            color: #ffc107;
+            text-align: center;
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 1.5;
+            margin: 0 0 14px 0;
+            word-break: break-word;
+        }
+
         #pr_vr_dtls {
             color: #ffffff;
             text-align: center;
@@ -344,6 +354,8 @@ if (empty($_SESSION['price_verifier_user_id'])) {
 
         <div class="result-box">
 
+            <p id="pr_vr_codes"></p>
+
             <p id="pr_vr_dtls"></p>
 
             <p id="pr_vr_price"></p>
@@ -408,6 +420,7 @@ $(document).ready(function () {
         $('#pr_vr').val(kprvr);
 
         $('#pr_vr_dtls').html('Checking item...');
+        $('#pr_vr_codes').html('');
         $('#pr_vr_price').html('');
 
         $.post('fetch.php', {
@@ -424,18 +437,32 @@ $(document).ready(function () {
             } catch (e) {
                 console.log(data);
                 $('#pr_vr_dtls').html('Invalid server response.');
+                $('#pr_vr_codes').html('');
                 $('#pr_vr_price').html('');
                 return;
             }
 
             if (!pr_data || pr_data.length === 0) {
                 $('#pr_vr_dtls').html('Item not found.');
+                $('#pr_vr_codes').html('');
                 $('#pr_vr_price').html('');
                 return;
             }
 
-            $('#pr_vr_dtls').html(pr_data[0].FDetails);
-            $('#pr_vr_price').html(pr_data[0].Price_WT);
+            let item = pr_data[0];
+            let codeFields = [
+                ['ALU', item.ALU],
+                ['UPC', item.LOCAL_UPC],
+                ['Multi ALU', item.MULTI_ALU],
+                ['Multi UPC', item.MULTI_UPC]
+            ];
+            let visibleCodes = codeFields
+                .filter(function(field) { return field[1] && String(field[1]).trim() !== ''; })
+                .map(function(field) { return field[0] + ': ' + field[1]; });
+
+            $('#pr_vr_codes').text(visibleCodes.join(' | '));
+            $('#pr_vr_dtls').text(item.DESCRIPTION || item.FDetails);
+            $('#pr_vr_price').text(item.Price_WT);
 
             $('#pr_vr').select();
         });
