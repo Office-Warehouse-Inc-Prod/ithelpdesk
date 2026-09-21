@@ -509,15 +509,13 @@ body {
   background: rgba(234,170,0,.18) !important;
   border-color: rgba(234,170,0,.35) !important;
 }
-
-/* Base table configurations */
 table.dataTable {
   border-collapse: collapse !important; 
   width: 100% !important;
-  border: none !important; /* Strips external table wrapper border */
+  border: none !important; 
+  background-color: #ffffff !important; 
 }
 
-/* Header line config */
 table.dataTable thead th {
   color: white !important;
   font-weight: 900;
@@ -525,11 +523,14 @@ table.dataTable thead th {
   text-transform: uppercase;
   background: #5273ad !important;
   padding: 14px 12px !important;
-  /* Strip all borders except bottom horizontal line */
   border-top: none !important;
   border-left: none !important;
   border-right: none !important;
   border-bottom: 2px solid #213456 !important; 
+}
+
+table.dataTable tbody {
+  background-color: #ffffff !important; 
 }
 
 table.dataTable tbody tr {
@@ -537,22 +538,40 @@ table.dataTable tbody tr {
   box-shadow: 0 10px 22px rgba(17,24,39,.08);
 }
 
-/* Body column line config */
+table.dataTable tbody tr.odd,
+table.dataTable tbody tr.even,
+table.dataTable tbody tr .dataTables_empty {
+  background-color: #ffffff !important;
+}
+
 table.dataTable tbody td {
   color: rgba(17,24,39,.85) !important;
   padding: 14px 12px !important;
-  /* Strip all vertical lines and keep cleanly isolated navy horizontal lines */
   border-top: none !important;
   border-left: none !important;
   border-right: none !important;
   border-bottom: 1px solid #213456 !important;
+  background-color: #ffffff !important; 
 }
 
-table.dataTable tbody tr:hover {
+table.dataTable tbody tr:hover,
+table.dataTable tbody tr:hover td {
   transition: .15s ease;
-  background: #F8FAFF !important;
+  background-color: #F8FAFF !important; 
 }
 
+div.dataTables_scrollBody table.dataTable thead th,
+div.dataTables_scrollBody table.dataTable thead td {
+    padding: 0 !important;
+    height: 0 !important;
+    border: none !important;
+    background-color: transparent !important;
+    color: transparent !important;
+}
+
+div.dataTables_scrollBody table.dataTable thead tr {
+    height: 0 !important;
+}
 /* ===== Modal (clean light) ===== */
 .modal-content{
   border: 1px solid var(--line) !important;

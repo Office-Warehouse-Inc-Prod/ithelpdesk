@@ -152,7 +152,7 @@ if (isset($_POST['mode'])) {
             $result = $stmt->get_result();
             echo json_encode($result->fetch_all(MYSQLI_ASSOC));
         } catch (Exception $e) {
-            echo json_encode([["remarks_note" => "Error loading remarks.", "it_desc" => "System", "date_remarks" => ""]]);
+            echo json_encode([["remarks_note" => "Error loading remarks.", "user_fullname" => "System", "date_remarks" => ""]]);
         }
         exit();
     }
@@ -162,7 +162,6 @@ if (isset($_POST['mode'])) {
         $ticket_no = trim($_POST['ticket_no'] ?? ''); 
         
         try {
-            // Modified to LEFT JOIN it_tech based on close_by to get it_desc
             $stmt = $conn->prepare("SELECT r.status,
                                            r.deptsel, d.dept_desc AS assigned_dept, 
                                            r.itsup, t.it_desc AS assigned_tech, 
@@ -183,7 +182,6 @@ if (isset($_POST['mode'])) {
                 exit();
             }
             
-            // Transfer logic correctly fetching from and to data
             $stmt2 = $conn->prepare("SELECT tr.nw_sup, t_nw.it_desc AS nw_tech_desc, 
                                             tr.f_deptsel, d_nw.dept_desc AS nw_dept_desc, 
                                             tr.itsup AS prev_sup, t_prev.it_desc AS prev_tech_desc,
@@ -203,8 +201,6 @@ if (isset($_POST['mode'])) {
            $stmt2->execute();
             $transfers = $stmt2->get_result()->fetch_all(MYSQLI_ASSOC);
             
-            // If the ticket has a transfer history, override the current assignment 
-            // to display the latest support, latest dept, and set status to 'On Process'
             if (!empty($transfers)) {
                 $latest_transfer = end($transfers);
                 
@@ -212,7 +208,6 @@ if (isset($_POST['mode'])) {
                      $main_info['status'] = 'On Process';
                 }
                 
-                // Replace the handler info with the reassigned personnel
                 $main_info['assigned_dept'] = $latest_transfer['nw_dept_desc'];
                 $main_info['assigned_tech'] = $latest_transfer['nw_tech_desc'];
             }
@@ -425,9 +420,10 @@ if (isset($_POST['mode'])) {
     transition: color 0.4s ease;
 }
 
+/* Updated Chat Container Flow - Top to Bottom */
 .container_remarks { 
     display: flex; 
-    flex-direction: column-reverse; 
+    flex-direction: column; 
     height: 380px; 
     overflow-y: auto; 
     background-color: #ffffff; 
@@ -438,7 +434,7 @@ if (isset($_POST['mode'])) {
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02); 
 }
 
-#remarks_view { 
+#remarks_view, #remarks_thread_container { 
     display: flex; 
     flex-direction: column; 
     width: 100%; 
@@ -692,7 +688,7 @@ if (isset($_POST['mode'])) {
 
                  <div class="col-md-6 border-top pt-3 pb-2 mt-2" id="col_remarks_thread" style="display: none; background: #fafbfc;">
                      <h6 class="text-uppercase mb-3" style="color:#dc3545; font-weight: 800; font-size: 13px;">Fixed Asset Remarks Thread</h6>
-                     <div class="chat-container mb-2" style="height: 290px; overflow-y: auto; background: #ffffff; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                     <div class="chat-container mb-2 container_remarks" style="height: 290px;">
                          <div id="remarks_thread_container"></div>
                      </div>
                      <div class="chat-input-area mt-3">
@@ -722,6 +718,36 @@ if (isset($_POST['mode'])) {
         }
     });
 
+   // 🔥 AUTOMATIC HTML SANITIZER FOR LEGACY COMMENTS
+   // This function cleans old HTML formatting out of historical tickets
+   function sanitizeLegacyComment(htmlString, senderName) {
+        if (!htmlString) return '';
+        
+        // If it doesn't contain HTML tags, just return the text
+        if (!/<\/?(?:div|span|p|br|img|b|i|strong)[^>]*>/i.test(htmlString)) {
+            return htmlString;
+        }
+
+        // Parse legacy HTML block
+        let tempDiv = document.createElement('div');
+        tempDiv.innerHTML = htmlString;
+        let text = tempDiv.innerText || tempDiv.textContent;
+
+        // Clean up hardcoded text like "Sent: 2026-08-25..." or "Replied: 17 days ago"
+        text = text.replace(/Sent:\s*\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}/gi, '');
+        text = text.replace(/Replied:\s*\d+\s+(days|hours|minutes|months|years)\s+ago/gi, '');
+        text = text.replace(/Replied:\s*just\s+now/gi, '');
+
+        // Remove sender name if it was historically embedded in the text
+        if (senderName) {
+            let nameRegex = new RegExp(senderName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+            text = text.replace(nameRegex, '');
+        }
+
+        // Return clean string
+        return text.replace(/\n\s*\n/g, '\n').trim();
+   }
+
    function loadHzTicketProgress(ticket_no) {
         $('#hz_steps_container').html('<div class="w-100 text-center"><div class="spinner-border spinner-border-sm text-primary"></div></div>');
         
@@ -746,11 +772,9 @@ if (isset($_POST['mode'])) {
     }
 
  function renderHzTimeline(data) {
-    console.log("Server Response:", data); 
     const dbStatus = (data.status || '').toLowerCase().trim();
     const fallbackStatus = $('#ModalStatus').val().toLowerCase().trim();
     const checkStatus = dbStatus || fallbackStatus;
-    console.log("Parsed Status for Timeline:", checkStatus);
 
     let steps = [];
     let currentLevel = 1;
@@ -763,7 +787,6 @@ if (isset($_POST['mode'])) {
     let origDept = data.assigned_dept;
     let origTech = data.assigned_tech;
     
-    // If there are transfers, the original assignment was the source of the VERY FIRST transfer
     if (data.transfers && data.transfers.length > 0) {
         origDept = data.transfers[0].prev_dept_desc || origDept;
         origTech = data.transfers[0].prev_tech_desc || origTech;
@@ -775,21 +798,15 @@ if (isset($_POST['mode'])) {
         level: currentLevel 
     });
 
-    // 3. Dynamic Transfer Steps (Transfer 1, Transfer 2, etc.)
     if (data.transfers && data.transfers.length > 0) {
         data.transfers.forEach((t, index) => {
             currentLevel++;
-            
             let transferSub = '';
-            
-            // Output "From:" ONLY for Transfer 1 (index 0)
             if (index === 0) {
                 let fromDept = t.prev_dept_desc || origDept || '';
                 let fromTech = t.prev_tech_desc || origTech || '';
                 transferSub += `From: <strong>${fromDept}</strong><br>${fromTech}<br>`;
             }
-            
-            // "To:" is output for all transfers
             transferSub += `To: <strong>${t.nw_dept_desc || ''}</strong><br>${t.nw_tech_desc || ''}<br><small>${t.date_rasigned}</small>`;
 
             steps.push({ 
@@ -800,7 +817,6 @@ if (isset($_POST['mode'])) {
         });
     }
 
-    // 4. On Process (Current handler)
     currentLevel++;
     const onProcessLvl = currentLevel; 
     steps.push({ 
@@ -809,14 +825,12 @@ if (isset($_POST['mode'])) {
         level: onProcessLvl 
     });
 
-    // 5. Pending (Optional)
     const isPending = checkStatus.includes('pending');
     if (isPending) {
         currentLevel++;
         steps.push({ label: 'PENDING', sub: '', level: currentLevel, isPendingNode: true });
     }
 
-    // 6. Closing & Closed
     currentLevel++;
     const subClosingLvl = currentLevel;
     steps.push({ label: 'SUBJECT FOR CLOSING', sub: '', level: subClosingLvl });
@@ -824,7 +838,6 @@ if (isset($_POST['mode'])) {
     currentLevel++;
     const closedLvl = currentLevel;
     
-    // NEW LOGIC: Only display closed details if status actually matches a closed state
     let closedSubText = '';
     if (checkStatus.includes('close') || checkStatus === 'completed' || checkStatus.includes('resolve') || checkStatus.includes('done')) {
         let closerName = data.close_by_name ? data.close_by_name : (data.close_by ? data.close_by : '');
@@ -839,9 +852,7 @@ if (isset($_POST['mode'])) {
         level: closedLvl 
     });
 
-    // Determine Active Level indicator
     let activeLevel = 1;
-
     if (checkStatus.includes('sub') || checkStatus.includes('subject') || checkStatus.includes('for closing') || checkStatus.includes('validate')) {
         activeLevel = subClosingLvl; 
     } 
@@ -856,7 +867,7 @@ if (isset($_POST['mode'])) {
         activeLevel = onProcessLvl; 
     } 
     else if (checkStatus.includes('transfer')) {
-        activeLevel = onProcessLvl - 1; // Highlights the most recent transfer step
+        activeLevel = onProcessLvl - 1; 
     }
     else if (checkStatus.includes('assign') || checkStatus.includes('acknowledged') || checkStatus.includes('accept')) {
         activeLevel = 2; 
@@ -868,10 +879,8 @@ if (isset($_POST['mode'])) {
     let html = '';
     let stepCount = steps.length;
     
-    // UI Rendering
     steps.forEach((step) => {
         let statusClass = '';
-        
         if (step.level < activeLevel) {
             statusClass = 'completed'; 
         } else if (step.level === activeLevel) {
@@ -900,7 +909,6 @@ if (isset($_POST['mode'])) {
     }
     $('#hz_progress_fill').css('width', fillWidth + '%');
     
-    // Style active bar colors based on status
     if (isPending) {
         $('#hz_progress_fill').addClass('pending').removeClass('active-fill').css('background', 'var(--hz-pending)'); 
     } else if (activeLevel < closedLvl) {
@@ -1032,6 +1040,9 @@ if (isset($_POST['mode'])) {
                         
                         let bubbleClass = isMe ? 'chat-right' : 'chat-left';
                         let relativeTime = timeAgo(comment.comment_date);
+
+                        // 🚀 USE THE SANITIZER HERE
+                        let cleanMessage = sanitizeLegacyComment(comment.comment_details, sender);
                         
                         html += `
                             <div class="chat-bubble ${bubbleClass}">
@@ -1039,7 +1050,7 @@ if (isset($_POST['mode'])) {
                                     <span class="msg-meta-name">${sender}</span>
                                     <span class="msg-time">${comment.comment_date}</span> 
                                 </div>
-                                <div style="white-space: pre-wrap;">${comment.comment_details}</div>
+                                <div style="white-space: pre-wrap;">${cleanMessage}</div>
                                 <div style="font-size: 0.65rem; text-align: right; margin-top: 4px; font-style: italic; opacity: 0.8;">
                                     ${relativeTime}
                                 </div>
@@ -1052,7 +1063,8 @@ if (isset($_POST['mode'])) {
                 
                 $remarksView.html(html);
                 
-                const $container = $('.container_remarks');
+                // Auto scroll
+                const $container = $('#col_comment_thread .container_remarks');
                 if ($container.length) {
                     $container.scrollTop($container[0].scrollHeight);
                 }
@@ -1094,7 +1106,7 @@ if (isset($_POST['mode'])) {
 
         const statusLevels = {
                 'submitted': 1, 'noted': 2, 'validated': 3, 
-                'verified': 4, 'printed': 5, 'approved': 6,  'rejected': 6, 'purchased': 7, 'completed': 8
+                'verified': 4, 'printed': 5, 'approved': 6,  'rejected': 6, 'completed': 7
             };
 
         let dbStatus = (response.status || "").toLowerCase().trim();
@@ -1134,9 +1146,7 @@ if (isset($_POST['mode'])) {
                 trackSteps.push(
                     { desc: "Approved by General Manager", date: response.date_approved, reqLevel: isTechnical === 1 ? 6 : 6 },
                     { desc:  "Transferred to PD for Procurement", date: null, reqLevel: isTechnical === 1 ? 6 : 6 }, 
-                    { desc:  "Asset Purchased", date: response.date_purchased,  reqLevel: isTechnical === 1 ? 7 : 7 }, 
-                    { desc: "Asset Ready for Release", date: null, reqLevel: isTechnical === 1 ? 7 : 7 }, 
-                    { desc: "Asset replaced / Completed", date: response.date_completed, reqLevel: isTechnical === 1 ? 8 : 8 }
+                    { desc: "Asset replaced / Completed", date: response.date_completed, reqLevel: isTechnical === 1 ? 7 : 7 }
                 );
             }
 
@@ -1180,21 +1190,43 @@ if (isset($_POST['mode'])) {
             success: function(response) {
                 let html = '';
                 if (Array.isArray(response) && response.length > 0) {
+                    
+                    var currentUserIdStr = "<?= $_SESSION['tech_id'] ?? $_SESSION['user_id'] ?? '' ?>";
+                    var currentUserNameStr = "<?= $_SESSION['fname'] ?? '' ?>";
+
                     response.forEach(function(rmk) {
+                        let senderName = rmk.user_fullname || 'System';
+                        let isMe = false;
+                        
+                        if(currentUserIdStr !== "" && rmk.remarks_by === currentUserIdStr) isMe = true;
+                        if(currentUserNameStr !== "" && senderName.includes(currentUserNameStr)) isMe = true;
+
+                        let bubbleClass = isMe ? 'chat-right' : 'chat-left';
+                        let relativeTime = timeAgo(rmk.date_remarks);
+
                         html += `
-                            <div style="margin-bottom: 15px; display: flex; flex-direction: column; align-items: flex-start;">
-                               <span style="font-size: 11px; color: #64748b; margin-bottom: 4px;"><strong>${rmk.user_fullname || 'System'}</strong> • ${rmk.date_remarks}</span>
-                                <div style="background: #f1f5f9; color: #334155; padding: 10px 14px; border-radius: 12px; border-top-left-radius: 2px; font-size: 13px; max-width: 95%; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">${rmk.remarks_note}</div>
+                            <div class="chat-bubble ${bubbleClass}">
+                                <div class="msg-meta">
+                                    <span class="msg-meta-name">${senderName}</span>
+                                    <span class="msg-time">${rmk.date_remarks}</span> 
+                                </div>
+                                <div style="white-space: pre-wrap;">${rmk.remarks_note}</div>
+                                <div style="font-size: 0.65rem; text-align: right; margin-top: 4px; font-style: italic; opacity: 0.8;">
+                                    ${relativeTime}
+                                </div>
                             </div>
                         `;
                     });
                 } else {
-                    html = `<div class="text-center mt-4 text-muted" style="font-size: 12px; font-style: italic;">No remarks found.</div>`;
+                    html = `<div class="text-center mt-4 text-muted" style="font-size: 13px;"><i class="fas fa-comments mb-2" style="font-size:24px; opacity:0.5;"></i><br>No remarks yet.</div>`;
                 }
+                
                 $('#remarks_thread_container').html(html);
                 
-                var chatDiv = document.getElementById("remarks_thread_container").parentElement;
-                if(chatDiv) chatDiv.scrollTop = chatDiv.scrollHeight;
+                const $container = $('#col_remarks_thread .container_remarks');
+                if ($container.length) {
+                    $container.scrollTop($container[0].scrollHeight);
+                }
             },
             error: function(xhr, status, error) {
                 console.error("AJAX Error:", xhr.responseText);
@@ -1205,7 +1237,7 @@ if (isset($_POST['mode'])) {
 
     function loadAttachments(ticketNo) {
         if (!ticketNo) {
-          $('#attached_files').html('<div class="text-muted">No attachments available.</div>');
+        $('#attached_files').html('<div class="text-muted">No attachments available.</div>');
           return;
         }
 

@@ -446,7 +446,7 @@ NEW SUPPLIES REQUEST
             </a>
             <div class="dropdown-menu" aria-labelledby="genReportDrop">
               <a class="dropdown-item" href="adminreports.php#admin_report">
-                <i class="fa fa-calendar-day"></i> Department Tickets Report
+                <i class="fas fa-chart-bar"></i> Department Tickets Report
               </a>
               <a class="dropdown-item" href="adminreports.php#admin_report_escalated">
                 <i class="fa-solid fa-arrow-trend-up"></i> Escalated Tickets Report

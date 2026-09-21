@@ -446,6 +446,9 @@ $(row).find('td:eq(6)').css({"font-weight": "bold", "color": "red"});
 $(row).find('td:eq(7)').css({"font-weight": "bold", "color": "red"});
 $(row).find('td:eq(8)').css({"font-weight": "bold", "color": "red"});
 }
+else if (data['Status'].toUpperCase() == 'CLOSED' ){
+        $(row).find('td').css({"font-weight": "bold", "color": "#2A7C13"});
+    }
 
 else if (data['Status'].toUpperCase() == 'SCHEDULE FOR PULL OUT' ){
 $(row).find('td:eq(0)').css({"font-weight": "bold", "color": "#1597BB"});
@@ -592,7 +595,9 @@ $('#reports_table').on('click', '.follow-up-btn', function(e) {
     // Hidden fields for submission logic
     $('#nticknum').val(ticketNo);
     $('#statOps').val(rowData['Status']);
-    getinfo(ticketNo, 'remarks', uid); 
+    
+    // Replace old getinfo with loadCommentThread
+    loadCommentThread(ticketNo); 
 
     if (typeof checkAssetRequestProgress === 'function') {
         checkAssetRequestProgress(ticketNo);
@@ -944,7 +949,10 @@ let frmmodal =$(this).serialize();
 
 $.post('fetch.php', frmmodal,function(data){
 $("#remarks_view").empty();
-getinfo($('#ModalTicket_no').val(), 'remarks',uid);
+
+// Replaced getinfo with loadCommentThread
+loadCommentThread($('#ModalTicket_no').val());
+
 $("#Modal_reply").val("");
 getdata()
 noslctd('#alrtmsg');

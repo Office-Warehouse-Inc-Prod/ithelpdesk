@@ -940,7 +940,7 @@ textarea.form-control:focus {
 
               <div class="col-12 col-lg-6 mb-3">
                 <div class="card card2 h-100">
-                  <h5 class="card-header text-black" style="background: linear-gradient(135deg, #213456, #334c7a); color:black;">Admin Support Logs
+                  <h5 class="card-header text-black" style="background: linear-gradient(135deg, #213456, #334c7a); color:black;">Purchasing Department Support Logs
                   </h5>
                   <div class="card-body">
                     <div id="chartdiv8"></div>

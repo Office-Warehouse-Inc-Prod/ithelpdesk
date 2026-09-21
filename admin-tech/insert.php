@@ -356,12 +356,34 @@ if(!empty($result))
         exit();
     }
 
+    if (empty(trim($_POST['remarks_adtech'] ?? ''))) {
+        echo json_encode(["status" => "error", "message" => "Remarks are required before approving the request."]);
+        exit();
+    }
+
     try {
         $connection->beginTransaction();
 
-        $ticketNo = $_POST['ticket_no'];
+      $ticketNo = $_POST['ticket_no'];
         $currentDate = date('Y-m-d H:i:s');
         $techId = $_POST['tech_id'] ?? $_SESSION['tech_id'] ?? '';
+        
+        $userId = $_SESSION['user_id'] ?? ''; 
+
+        $remarksNote = trim($_POST['remarks_adtech']);
+        $stmtRemarksThread = $connection->prepare("
+            INSERT INTO fixed_asset_remarks (
+                ticket_no, remarks_note, remarks_by, date_remarks
+            ) VALUES (
+                :ticket_no, :remarks_note, :remarks_by, :date_remarks
+            )
+        ");
+        $stmtRemarksThread->execute([
+            ':ticket_no'    => $ticketNo,
+            ':remarks_note' => $remarksNote,
+            ':remarks_by'   => $userId, 
+            ':date_remarks' => $currentDate
+        ]);
 
         
         $fileNameToSave = '';
@@ -424,14 +446,16 @@ if(!empty($result))
         ]);
 
         $stmtReassigned = $connection->prepare("
-            INSERT INTO tbl_reassigned (ticket_no, date_created, itsup, r_remarks, deptsel, f_deptsel) 
-            VALUES (:ticket_no, :date_created, :itsup, :r_remarks, 1, 2)
+            INSERT INTO tbl_reassigned (ticket_no, date_created, itsup, nw_sup, r_remarks,date_rasigned, deptsel, f_deptsel) 
+            VALUES (:ticket_no, :date_created, :itsup, :nw_sup, :r_remarks, :date_rasigned, 1, 2)
         ");
         $stmtReassigned->execute([
             ':ticket_no' => $ticketNo,
             ':date_created' => $currentDate,
             ':itsup' => $itemReceivedBy,
-            ':r_remarks' => $standardRemark
+            ':nw_sup' => '78',
+            ':r_remarks' => $standardRemark,
+            ':date_rasigned' => $currentDate
         ]);
 
         $stmtLogs = $connection->prepare("

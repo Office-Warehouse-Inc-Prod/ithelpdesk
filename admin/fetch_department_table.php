@@ -126,45 +126,58 @@ if (isset($_POST['yr']) && isset($_POST['mo'])) {
               AND MONTH(user_login.login_date) IN ($month_placeholders)
               AND tbl_dept.dept_id IN ($dept_placeholders)
             ORDER BY user_login.login_date DESC";
-$query6 = "SELECT 
-            res.ticket_no, 
-            COALESCE(store_info.str_name, 'Unknown Branch') AS store_name, 
-            dept_from.dept_desc AS from_department, 
-            dept_to.dept_desc AS to_department, 
-            orig_tech.it_desc AS original_support, 
-            new_tech.it_desc AS new_support, 
-            MAX(req.STATUS) AS request_status, 
-            MAX(res.r_remarks) AS admin_remarks, 
-            MAX(req.created_by) AS requested_by, 
-            MIN(req.created_at) AS request_date, 
-            MAX(res.date_rasigned) AS approval_date, 
-            CONCAT(TIMESTAMPDIFF(HOUR, MIN(req.created_at), MAX(res.date_rasigned)), 'h ', MOD(TIMESTAMPDIFF(MINUTE, MIN(req.created_at), MAX(res.date_rasigned)), 60), 'm ', MOD(TIMESTAMPDIFF(SECOND, MIN(req.created_at), MAX(res.date_rasigned)), 60), 's') AS turnaround_time 
-        FROM tbl_reassigned res 
-        LEFT JOIN tbl_reports_transfer_logs req 
-            ON res.ticket_no = req.ticket_no 
-            AND res.itsup = req.itsup 
-            AND res.deptsel = req.deptsel 
-        LEFT JOIN tbl_dept dept_from ON res.f_deptsel = dept_from.dept_id 
-        LEFT JOIN tbl_dept dept_to ON res.deptsel = dept_to.dept_id 
-        LEFT JOIN it_tech orig_tech ON res.itsup = orig_tech.itsup 
-        LEFT JOIN it_tech new_tech ON res.nw_sup = new_tech.itsup 
-        LEFT JOIN tbl_branch store_info ON req.store = store_info.str_num 
-        WHERE YEAR(req.created_at) IN ($year_placeholders) 
-          AND MONTH(req.created_at) IN ($month_placeholders) 
-          AND res.f_deptsel IS NOT NULL 
-          AND res.f_deptsel != ''
-          AND res.deptsel IS NOT NULL 
-          AND res.deptsel != ''
-        GROUP BY 
-            res.ticket_no, 
-            res.itsup, 
-            res.nw_sup, 
-            store_info.str_name, 
-            dept_from.dept_desc, 
-            dept_to.dept_desc, 
-            orig_tech.it_desc, 
-            new_tech.it_desc 
-        ORDER BY MAX(res.date_rasigned) DESC";
+$query6 = "SELECT
+  res.ticket_no,
+  COALESCE(store_info.str_name, 'Unknown Branch') AS store_name,
+  dept_from.dept_desc AS from_department,
+  dept_to.dept_desc AS to_department,
+  orig_tech.it_desc AS original_support,
+  new_tech.it_desc AS new_support,
+  MAX(req.STATUS) AS request_status,
+  MAX(res.r_remarks) AS admin_remarks,
+  MAX(req.created_by) AS requested_by,
+  MIN(req.created_at) AS request_date,
+  MAX(res.date_rasigned) AS approval_date,
+  CONCAT(
+    TIMESTAMPDIFF(HOUR, MIN(req.created_at), MAX(res.date_rasigned)),
+    'h ',
+    MOD(TIMESTAMPDIFF(MINUTE, MIN(req.created_at), MAX(res.date_rasigned)), 60),
+    'm ',
+    MOD(TIMESTAMPDIFF(SECOND, MIN(req.created_at), MAX(res.date_rasigned)), 60),
+    's'
+  ) AS turnaround_time
+FROM
+  tbl_reassigned res
+  LEFT JOIN tbl_reports_transfer_logs req ON res.ticket_no = req.ticket_no
+  AND res.itsup = req.itsup
+  LEFT JOIN tbl_dept dept_from ON res.f_deptsel = dept_from.dept_id
+  LEFT JOIN tbl_dept dept_to ON res.deptsel = dept_to.dept_id
+  LEFT JOIN it_tech orig_tech ON res.itsup = orig_tech.itsup
+  LEFT JOIN it_tech new_tech ON res.nw_sup = new_tech.itsup
+  LEFT JOIN tbl_branch store_info ON req.store = store_info.str_num
+WHERE
+  YEAR(req.created_at) IN ($year_placeholders)
+  AND MONTH(req.created_at) IN ($month_placeholders)
+  AND res.f_deptsel IS NOT NULL
+  AND res.f_deptsel != ''
+  AND res.deptsel IS NOT NULL
+  AND res.deptsel != ''
+  AND res.f_deptsel != res.deptsel
+  AND dept_from.dept_desc IS NOT NULL
+  AND dept_from.dept_desc != ''
+  AND dept_to.dept_desc IS NOT NULL
+  AND dept_to.dept_desc != ''
+GROUP BY
+  res.ticket_no,
+  res.itsup,
+  res.nw_sup,
+  store_info.str_name,
+  dept_from.dept_desc,
+  dept_to.dept_desc,
+  orig_tech.it_desc,
+  new_tech.it_desc
+ORDER BY
+  MAX(res.date_rasigned) DESC";
 
         $query_totals = "SELECT 
                SUM(LOWER(status) = 'assigned') AS TOTAL_ASSIGNED,

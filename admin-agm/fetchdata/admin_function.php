@@ -1022,7 +1022,6 @@ FROM
 	}	
 
 	$data = array_filter($fetchdata);
-		// echo json_encode($data);
 		return $data;
 
 }
@@ -1050,29 +1049,27 @@ public function changepass(){
 		return $data;
 		
 }
- public function fareportsthist() {
+
+public function fareportsthist() {
     $month = $_POST['month'] ?? '';
     $year = $_POST['year'] ?? '';
     $status = $_POST['status'] ?? ''; 
 
     $where = " WHERE 1=1 ";
     $params = [];
-
     if (!empty($month)) {
-        $where .= " AND MONTH(...) = :month "; 
+        $where .= " AND MONTH(COALESCE(NULLIF(ar.created_at, ''), ar.ticket_created)) = :month "; 
         $params[':month'] = $month;
     }
     if (!empty($year)) {
-        $where .= " AND YEAR(...) = :year "; 
+        $where .= " AND YEAR(COALESCE(NULLIF(ar.created_at, ''), ar.ticket_created)) = :year "; 
         $params[':year'] = $year;
     }
-    // ADD STATUS FILTER
     if (!empty($status)) {
         $where .= " AND ar.status = :status ";
         $params[':status'] = $status;
     }
 
-    // Get counts for Metric Cards
     $metricQuery = "SELECT status, COUNT(*) as count 
                     FROM asset_requests ar 
                     $where 
@@ -1080,8 +1077,6 @@ public function changepass(){
     $mStmt = $this->connection->prepare($metricQuery);
     $mStmt->execute($params); 
     $metrics = $mStmt->fetchAll(PDO::FETCH_ASSOC);
-
-    // Primary data selection query
     $query = "SELECT 
                 ar.ticket_no, 
                 b.str_name, 
@@ -1092,14 +1087,14 @@ public function changepass(){
                 ar.serial_number, 
                 ar.asset_tag_number, 
                 ar.purpose_of_request, 
-				ar.revised_request,
-				ar.is_technical,
-				ar.technical_workoutput,
-				fat.problem_reported,
-				fat.verification_findings,
-				fat.work_done,
-				fat.status_workoutput,
-				fat.recommendation,       
+                ar.revised_request,
+                ar.is_technical,
+                ar.technical_workoutput,
+                fat.problem_reported,
+                fat.verification_findings,
+                fat.work_done,
+                fat.status_workoutput,
+                fat.recommendation,       
                 it.it_desc,
                 it.itsup,           
                 ar.date_received, 
@@ -1107,7 +1102,7 @@ public function changepass(){
                 itt.it_desc AS noted_by_desc,        
                 ar.status           
             FROM asset_requests ar
-			LEFT JOIN fixed_asset_techoutput fat ON ar.ticket_no = fat.ticket_no
+            LEFT JOIN fixed_asset_techoutput fat ON ar.ticket_no = fat.ticket_no
             LEFT JOIN it_tech it ON ar.item_received_by = it.itsup
             LEFT JOIN reports r ON ar.ticket_no = r.ticket_no
             LEFT JOIN users u ON r.userId = u.id
@@ -1131,14 +1126,15 @@ public function changepass(){
             'description'        => $row["description"],
             'serial_number'      => $row["serial_number"],
             'asset_tag_number'   => $row["asset_tag_number"],
+            'is_technical'   => $row["is_technical"],
             'purpose_of_request' => $row["purpose_of_request"],
-			 'revised_request' => $row["revised_request"],
-			   'technical_workoutput' => $row["technical_workoutput"],
-			  'problem_reported' => $row["problem_reported"],
-				'verification_findings' => $row["verification_findings"],
-				'work_done' => $row["work_done"],
-				'status_workoutput' => $row["status_workoutput"],
-				'recommendation' => $row["recommendation"],
+            'technical_workoutput' => $row["technical_workoutput"],
+            'problem_reported' => $row["problem_reported"],
+            'verification_findings' => $row["verification_findings"],
+            'work_done' => $row["work_done"],
+            'status_workoutput' => $row["status_workoutput"],
+            'recommendation' => $row["recommendation"],
+            'revised_request' => $row["revised_request"],
             'it_desc'            => $row["it_desc"],
             'date_received'      => $row["date_received"],    
             'noted_by_desc'      => $row["noted_by_desc"],  
@@ -1151,6 +1147,7 @@ public function changepass(){
         'metrics'    => $metrics
     ];
 }
+
 /**
  * Notif techsupp.
  */

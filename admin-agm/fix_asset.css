@@ -335,11 +335,7 @@ body {
     transition: all 0.3s ease;
   }
 
-  #msgbtn:hover {
-    background-color: #213456;
-    color: #E1AD01;
-    transform: translateY(-2px);
-  }
+
 
   .dataTables_wrapper .pull-left {
     flex-direction: row;      
@@ -597,7 +593,6 @@ textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
     border-color: rgba(239,68,68,.28) !important;
     color: #991b1b !important;
   }
-  .btn-danger:hover { background: rgba(239,68,68,.18) !important; }
 
   #msg_thread .card.card-body {
     background: #213456 !important;
@@ -677,11 +672,6 @@ textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
     color: #213456;
   }
 
-  .btn:hover {
-    background-color: #16243d !important;
-    border-color: var(--gold-accent);
-    color: white;
-  }
 
   .btn-success {  
     background-color: #7a5200 !important;
@@ -690,11 +680,6 @@ textarea.form-control.custom-select-placeholder:not(:placeholder-shown) {
     color: white;
   }
 
-  .btn-success:hover {
-    background-color: #16243d !important;
-    border-color: yellow;
-    color: white;
-  }
 
   ::-webkit-scrollbar {
     width: 8px;
@@ -1231,14 +1216,12 @@ textarea[readonly]{ opacity: .95; }
   border-color: rgba(22,163,74,.28) !important;
   color: #166534 !important;
 }
-.btn-success:hover{ background: rgba(22,163,74,.18) !important; }
 
 .btn-danger{
   background: rgba(239,68,68,.14) !important;
   border-color: rgba(239,68,68,.28) !important;
   color: #991b1b !important;
 }
-.btn-danger:hover{ background: rgba(239,68,68,.18) !important; }
 
 #msg_thread .card.card-body{
   background: #213456 !important;
@@ -1331,11 +1314,6 @@ hr{ border-top: 1px solid var(--line) !important; }
     color: #213456;
 }
 
-.btn-success:hover {
-    background-color: #16243d !important;
-    border-color: var(--gold-accent);
-    color:white;
-}
 
 ::-webkit-scrollbar {
   width: 8px;

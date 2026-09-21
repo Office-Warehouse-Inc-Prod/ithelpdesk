@@ -433,7 +433,7 @@ NEW SUPPLIES REQUEST
             </a>
             <div class="dropdown-menu" aria-labelledby="genReportDrop">
               <a class="dropdown-item" href="adminreports.php#admin_report">
-                <i class="fa fa-calendar-day"></i> Department Tickets Report
+                <i class="fa-solid fa-file-chart-column"></i> Department Tickets Report
               </a>
               <a class="dropdown-item" href="adminreports.php#admin_report_escalated">
                 <i class="fa-solid fa-arrow-trend-up"></i> Escalated Tickets Report
@@ -452,6 +452,13 @@ NEW SUPPLIES REQUEST
               <i class="fas fa-headset" style="color: var(--primary-color);"></i> REPORT BUG
             </a>
           </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="fix_asset_reports.php" id="fixasset">
+              <i class="fas fa-boxes-stacked" style="color: var(--primary-color);"></i> FIXED ASSET
+            </a>
+          </li>
+
 
            <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="genReportDrop" role="button" data-toggle="dropdown">

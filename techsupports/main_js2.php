@@ -850,8 +850,7 @@ concern.addEventListener('input', function() {
         if (Array.isArray(response) && response.length > 0) {
           var currentUserIdStr = "<?= $_SESSION['user_id'] ?? '' ?>";
           var currentUserNameStr = "<?= $_SESSION['fname'] ?? '' ?>";
-
-          response.forEach(function (comment, index) {
+          response.reverse().forEach(function (comment, index) {
             let sender = comment.userId || 'Unknown';
             let isMe = false;
             if (currentUserIdStr !== "" && sender === currentUserIdStr) isMe = true;
@@ -879,7 +878,7 @@ concern.addEventListener('input', function() {
 
         setTimeout(() => {
           const $container = $('.container_remarks');
-          if ($container.length) $container.animate({ scrollTop: $container.prop("scrollHeight") }, 600, 'swing');
+          if ($container.length) $container.animate({ scrollTop: 0 }, 600, 'swing');
         }, 200);
       },
       error: function () {
@@ -896,7 +895,7 @@ concern.addEventListener('input', function() {
       $('#msg_thread, .container_remarks').slideDown(400);
       setTimeout(() => {
         const $container = $('.container_remarks');
-        $container.animate({ scrollTop: $container.prop("scrollHeight") }, 400);
+        $container.animate({ scrollTop: 0 }, 400);
       }, 450);
     } else if ($('#msgbtn').val() == 'hide') {
       $('#action').val("Save");

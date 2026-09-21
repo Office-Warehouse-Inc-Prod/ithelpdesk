@@ -301,7 +301,7 @@ $con1 = new dbconfig();
     <div class="modal-dialog" style="max-width: 85%; width: 85%;">
         <form method="post" id="newrpt_form" enctype="multipart/form-data">
             <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-header" style="background: #213456; border-bottom: 3px solid #E1AD01; color: white;">
                     <h4 class="modal-title" id="tick_title"></h4>
                 </div>
                 <div class="modal-body p-0">
@@ -351,7 +351,7 @@ $con1 = new dbconfig();
                                     <select class="form-control form-control-sm custom-select-placeholder placeholder-active" name="f_deptsel" id="f_deptsel" required onchange="handleDropdownChange(this)">
                                         <option value="">Assign department...</option>
                                         <?php
-                                            $query="SELECT * FROM tbl_dept WHERE dept_id NOT IN ('4','5','7','8','9','10','12','14','17','18')";
+                                            $query="SELECT * FROM tbl_dept WHERE dept_id NOT IN ('4','5','7','8','10','12','14','17','18')";
                                             $run=$con1->prepare($query);
                                             $run->execute();
                                             $rs=$run->get_result();
@@ -365,7 +365,7 @@ $con1 = new dbconfig();
                                 <div class="form-group col-md-6">
                                     <label>PRIORITY LEVEL</label>
                                     <select class="form-control form-control-sm custom-select-placeholder placeholder-active" name="priority_level" id="priority_level" required onchange="handleDropdownChange(this)">
-                                        <option value=""> &larr; PRIORITY &rarr;</option>
+                                        <option value="">Priority</option>
                                         <option value="4" style="color:black;">LOW</option>
                                         <option value="3" style="color:black;">NORMAL</option>
                                         <option value="2" style="color:black;">HIGH</option>
@@ -403,9 +403,10 @@ $con1 = new dbconfig();
                                 <div class="container_remarks mb-3">
                                     <div id="remarks_view"></div>
                                 </div>
-                                <div class="mt-auto">
-                                    <label style="font-weight: bold; color: #213456;">Add Message:</label>
-                                    <textarea name="admsg" class="form-control" rows="3" placeholder="Reply to their message or give an update regarding this ticket..."></textarea>
+                                   <label style="font-weight: bold; color: #213456;">Add Message:</label>
+                                <div class="mt-auto" style="background: white;">
+                                 
+                                    <textarea name="admsg" style="background: white;" class="form-control" rows="3" placeholder="Reply to their message or give an update regarding this ticket..."></textarea>
                                 </div>
                             </div>
                         </div>
@@ -457,8 +458,8 @@ $(document).ready(function(){
             "order": [[ 4, "desc" ]], 
             "columns": [
                 {title:"TicketNo", data:"ticket_no", defaultContent: ""},
-                {title:"Selected Department", data:"dept_desc", defaultContent: ""},
-                {title:"Department/Store", data:"str_code", defaultContent: ""},
+                {title:"Department", data:"dept_desc", defaultContent: ""},
+                {title:"Dept/Store", data:"str_code", defaultContent: ""},
                 {title:"Created By", data:"full_name", defaultContent: ""},
                 {
                     title:"Date Created", 
@@ -515,7 +516,11 @@ $(document).ready(function(){
             
             let currentDept = data['itsup'] || data['f_deptsel'] || '0';
             $('#old_dept').val(currentDept); 
-            $('#f_deptsel').val(currentDept !== '0' ? currentDept : '').trigger('change');
+            if (currentDept !== '0' && $('#f_deptsel option[value="' + currentDept + '"]').length > 0) {
+                $('#f_deptsel').val(currentDept).trigger('change');
+            } else {
+                $('#f_deptsel').val('').trigger('change');
+            }
 
             $('#newrpt_Modal').modal('show');
             $('#action').val("Update");

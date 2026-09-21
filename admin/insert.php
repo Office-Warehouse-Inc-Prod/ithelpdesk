@@ -313,10 +313,10 @@ else{
   );
 
   $result = $statement->execute($data);
-$old_dept = trim($_POST['old_dept'] ?? '');
+  $old_dept = trim($_POST['old_dept'] ?? '');
   $new_dept = trim($_POST['f_deptsel'] ?? '');
   $deptsel1 = trim($_POST['deptsel'] ?? '0');
-    $deptsel2 = is_numeric($deptsel1) ? $deptsel1 : '0';
+  $deptsel2 = is_numeric($deptsel1) ? $deptsel1 : '0';
 
     if ($old_dept !== '' && $old_dept !== $dept && $is_transfer === '1') {
         
@@ -397,6 +397,103 @@ $old_dept = trim($_POST['old_dept'] ?? '');
 }
 
 
+if ($_POST["operation"] == "Reopen_Report") { 
+    header('Content-Type: application/json');
+    
+    $ticket_no = trim($_POST["ticket_no"] ?? '');
+    
+    if ($ticket_no === '') {
+        echo json_encode(['status' => 'error', 'message' => 'Ticket number is required.']);
+        exit;
+    }
+
+    $reason      = trim($_POST["remarks"] ?? '');
+    $status      = $_POST["status"] ?? '';
+    $dept        = $_POST["f_deptsel"] ?? $_POST["old_dept"] ?? '0';
+    $store       = $_POST["store"] ?? '0';
+    $reopened_by = $_POST["u_id"] ?? $_SESSION["user_id"] ?? '0'; 
+
+    try {
+        $sqlReopen = "INSERT INTO reopen_tickets (ticket_no, reopened_by, reason, reopened_date) 
+                      VALUES (:ticket_no, :reopened_by, :reason, NOW())";
+        $stmtReopen = $connection->prepare($sqlReopen);
+        $result = $stmtReopen->execute([
+            ':ticket_no'   => $ticket_no,
+            ':reopened_by' => $reopened_by,
+            ':reason'      => $reason
+        ]);
+
+        if ($result) {
+        
+            if ($status !== '') {
+                $updateMain = $connection->prepare("UPDATE reports SET status = :status WHERE ticket_no = :ticket_no");
+                $updateMain->execute([
+                    ':status'    => $status,
+                    ':ticket_no' => $ticket_no
+                ]);
+            }
+
+            if (!empty($reason)) {
+                $restat = $connection->prepare("
+                    INSERT INTO reports_remarks (ticket_no, remarks_detail, remarks_date, f_deptsel)
+                    VALUES (:ticket_no, :remarks, NOW(), :dept)
+                ");
+                $restat->execute([
+                    ':ticket_no' => $ticket_no,
+                    ':remarks'   => "REOPEN REASON: " . $reason,
+                    ':dept'      => $dept
+                ]);
+            }
+
+            $msgcntres = $connection->prepare("UPDATE reports_msgcnt SET msg_cnt = 0 WHERE ticket_no = :ticket_no");
+            $msgcntres->execute([':ticket_no' => $ticket_no]);
+
+            $notif = $connection->prepare("
+                INSERT INTO tbl_notif (ticket_no, store, f_deptsel, notif_data, notif_val, notif_date, assigned_by)
+                VALUES (:ticket_no, :store, :dept, :msg, '1', NOW(), :assigned_by)
+            ");
+            $notif->execute([
+                ':ticket_no'   => $ticket_no,
+                ':store'       => $store,
+                ':dept'        => $dept,
+                ':msg'         => "Ticket $ticket_no has been re-opened.",
+                ':assigned_by' => $reopened_by
+            ]);
+
+            if (!empty($_POST["admsg"])) {
+                $makecom = $connection->prepare("
+                    INSERT INTO reports_comments (ticket_no, comment_details, comment_date, userId)
+                    VALUES (:ticket_no, :comment, NOW(), :uid)
+                ");
+                $makecom->execute([
+                    ':ticket_no' => $ticket_no,
+                    ':comment'   => $_POST["admsg"],
+                    ':uid'       => $reopened_by
+                ]);
+
+                $connection->prepare("UPDATE reports_newmsg SET nmsg_stat = '2' WHERE ticket_no = :ticket_no")
+                           ->execute([':ticket_no' => $ticket_no]);
+            }
+            
+            $connection->prepare("
+                INSERT INTO tbl_tickethist (ticket_no, date_updated, status, userID)
+                VALUES (:ticket_no, NOW(), :status, :uid)
+            ")->execute([
+                ':ticket_no' => $ticket_no,
+                ':status'    => $status !== '' ? $status : 'Re-Opened',
+                ':uid'       => $reopened_by
+            ]);
+
+            echo json_encode(['status' => 'success', 'message' => 'Ticket successfully re-opened!']);
+            
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Failed to record ticket reopening.']);
+        }
+
+    } catch (PDOException $e) {
+        echo json_encode(['status' => 'error', 'message' => 'Database Error: ' . $e->getMessage()]);
+    }
+}
 
 // if ($_POST["operation"] == "New_Report") {
 

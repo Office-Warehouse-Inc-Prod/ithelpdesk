@@ -7,13 +7,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mode'])) {
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
-    $inactive = 180;
-    if (isset($_SESSION['start']) && (time() - $_SESSION['start'] > $inactive)){
-        session_unset();
-        session_destroy();
-        echo json_encode(["status" => "error", "message" => "Session expired. Please log in again."]);
-        exit();
-    }
+  
     $_SESSION['start'] = time();
     if ($_POST['mode'] === 'fa_tbl') {
         try {
@@ -130,14 +124,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mode'])) {
 }
 
 include 'tech_header.php';
-$inactive = 180;
-if (isset($_SESSION['start']) && (time() - $_SESSION['start'] > $inactive)){
-  session_unset();
-  // removed session_destroy() to avoid "headers already sent" warnings
-  echo '<script>setTimeout(function(){ window.location.href = "techdashboard.php"; }, 180000);</script>';
-  exit();
-}
-$_SESSION['start'] = time();
+
 ?>
   <head>
       <link rel="stylesheet" href="../css/bootstrap-datetimepicker.min.css"/>
@@ -438,11 +425,10 @@ $.ajax({
             'noted': 2, 
             'validated': 3, 
             'verified': 4, 
-            'printed': 5, 
-            'approved': 6, 
-            'rejected': 6, 
-            'purchased': 7, 
-            'completed': 8
+            'approved': 5, 
+            'rejected': 5, 
+            'printed': 6, 
+            'completed': 7
         };
 
         response = response || {};
@@ -467,22 +453,22 @@ $.ajax({
             { desc: "Validated by admin support", date: response.date_validated, reqLevel: 3 },
             { desc: "For administrative verification", date: null, reqLevel: 3 }, 
             { desc: "Verified by the administrator", date: response.date_verified, reqLevel: 4 },
-            { desc: "For printing request form", date: null, reqLevel: 4 }, 
-            { desc: "Printed", date: response.date_printed, reqLevel: 5 },
-            { desc: "For General Manager Approval", date: null, reqLevel: 5 }
+        
+            { desc: "For General Manager Approval", date: null, reqLevel: 4 }
         );
 
         if (dbStatus === 'rejected') {
             trackSteps.push(
-                { desc: "Rejected by General Manager", date: response.date_rejected || response.date_updated, reqLevel: 6, isRejected: true }
+                { desc: "Rejected by General Manager", date: response.date_rejected || response.date_updated, reqLevel: 5, isRejected: true }
             );
         } else {
             trackSteps.push(
-                { desc: "Approved by General Manager", date: response.date_approved, reqLevel: 6 },
+             
+                { desc: "Approved by General Manager", date: response.date_approved, reqLevel: 5 },
+                { desc: "For printing request form", date: null, reqLevel: 5 }, 
+                { desc: "Printed", date: response.date_printed, reqLevel: 6 },
                 { desc: "Transferred to PD for Procurement", date: null, reqLevel: 6 }, 
-                { desc: "Asset Purchased", date: response.date_approved, reqLevel: 7 },
-                { desc: "Asset Ready for Release", date: null, reqLevel: 7 }, 
-                { desc: "Asset replaced / Completed", date: response.date_approved, reqLevel: 8 }
+                { desc: "Asset replaced / Completed", date: response.date_approved, reqLevel: 7 }
             );
         }
 
@@ -660,24 +646,6 @@ $.ajax({
 
   }); 
 
-  let inactivityTime = function(){
-    let time;
-
-    window.onload = resetTimer;
-    document.onmousemove = resetTimer;
-    document.onkeypress = resetTimer;
-    document.onscroll = resetTimer;
-    document.onclick = resetTimer;
-
-    function logout(){ window.location.href = 'techdashboard.php'; }
-
-    function resetTimer(){
-      clearTimeout(time);
-      time = setTimeout(logout, 180000)
-    }
-  };
-
-  inactivityTime();
 
   function handleDropdownChange(selectElement) {
     if (selectElement.value === "") {

@@ -83,8 +83,8 @@
       "order": [[4, "Desc"]],
       columns: [
       {title:"TicketNo", data:"ticket_no","defaultContent": ""},
-      {title:"Selected Department", data:"dept_desc","defaultContent": ""},
-      {title:"Department/Store", data:"str_code","defaultContent": ""},
+      {title:"Department", data:"dept_desc","defaultContent": ""},
+      {title:"Dept/Store", data:"str_code","defaultContent": ""},
       {title:"Created By", data:"full_name","defaultContent": ""},
     //   {title:"Date Created", data:"date_created","defaultContent": ""},
     {

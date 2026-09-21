@@ -18,7 +18,6 @@ switch ($mode) {
         break;
     case 'dblinegrph':
       $records= $fn->linegraph();   
-
         break;
     case 'dashpie':
         $records= $fn->pie();
@@ -111,7 +110,10 @@ switch ($mode) {
     case 'trans_tbl':
         $records['transdata']= $fn->trans_tbl();
     break;
-      case 'reopen_tbl':
+    case 'fa_reports_tbl':
+        $records = $fn->fareportsthist();
+        break;
+    case 'reopen_tbl':
         $records['reopendata']= $fn->reopen_tbl();
     break;
 
@@ -121,7 +123,7 @@ switch ($mode) {
     case 'dept_ticket_datatable':
         $records = $fn->dept_ticket_datatable($_POST['dept_id']);
     break;
-case 'category_status_grph':
+    case 'category_status_grph':
     $records = $fn->category_status_grph();
     break;
 // case 'category_all_grph':

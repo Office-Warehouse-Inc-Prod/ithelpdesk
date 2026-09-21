@@ -323,7 +323,7 @@ $( document ).ready(function() {
                         const s = (data || "").toUpperCase();
                         let cls = "badge bg-secondary";
 
-                        if (s === "CRITICAL") cls = "badge bg-danger";
+                        if (s === "CRITICAL") cls = "badge bg-danger text-white";
                         else if (s === "HIGH") cls = "badge bg-warning text-dark";
                         else if (s === "MEDIUM") cls = "badge bg-warning text-dark";
                         else if (s === "LOW") cls = "badge bg-info text-dark";
@@ -360,9 +360,10 @@ $( document ).ready(function() {
                         if (s === "ASSIGNED") cls = "badge bg-warning text-dark";
                         else if (s === "CLOSED") cls = "badge bg-success text-white";
                         else if (s === "SUBJECT FOR CLOSING") cls = "badge bg-primary text-white";
-                        else if (s === "ON PROCESS") cls = "badge bg-info";
+                        else if (s === "ON PROCESS") cls = "badge bg-info text-white";
                         else if (s === "ATTENDED WITH FIX ASSET") cls = "badge bg-info text-dark";
                         else if (s === "PENDING") cls = "badge bg-danger text-white";
+                        else if (s === "ESCALATED") cls = "badge bg-dark text-white";
 
                         return `<span class="${cls} px-2 py-1">${data}</span>`;
                     }
@@ -474,15 +475,16 @@ $( document ).ready(function() {
                 $('#store, #via, #status, #itsup, #cat, #sub, #isp').prop("disabled", false);
             }
 
-            var option = document.createElement("option");
+         var option = document.createElement("option");
             option.value = 0;
             option.id = 'tmpsubid';
             option.selected = 'selected';
             option.text = $(this).find('td:eq(10)').html();
 
-            getinfo(tid, 'remarks', user_id);
-
             $('.modal-title').text("Ticket Number: " + tid);
+            
+          
+            loadCommentThread(data['ticket_no']);
             $('#action').val("Save and Reply");
             $('#operation').val("Save and Reply"); 
             $('#userModal').modal({ "show": true, "backdrop": 'static' });
@@ -837,10 +839,8 @@ $( document ).ready(function() {
             $('#store, #via, #status, #itsup, #cat, #sub, #isp, #is_transfer').prop("disabled", false);
         }
 
-        if (typeof getinfo === "function") getinfo(tid, 'remarks', user_id);
-        if (typeof gtsub_id === "function") gtsub_id();
-
-        $('.modal-title').text("Ticket Number: " + tid);
+      if (typeof gtsub_id === "function") gtsub_id();
+     
         $('#action').val("Save and Reply");
         $('#operation').val("Save and Reply");
         $('#userModal').modal({ "show": true, "backdrop": 'static' });

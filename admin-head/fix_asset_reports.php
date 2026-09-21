@@ -795,52 +795,59 @@ table.dataTable tbody tr:hover {
     color: #666666;
     cursor: not-allowed;
 }
+
+.filter-label {
+        font-size: 11px;
+        font-weight: 800;
+        text-transform: uppercase;
+        color: #213456;
+        margin-bottom: 4px;
+    }
     </style>
 
-<div class="container" style="max-width:1800px;">
-    <div class="row mb-12 align-items-end">
-        <div class="row mb-3">
-    <div class="col-md-3">
-        <label>Year</label>
-        <select id="filter_year" class="form-control filter-trigger">
-            <option value="">All Years</option>
-            <option value="2026">2026</option>
+<div class="container" style="max-width:1800px; padding-top: 20px;">
+    <!-- Replaced standard col-md-3 with more compact col-md-2 col-sm-4 structure -->
+    <div class="row mb-3">
+        <div class="col-md-2 col-sm-4">
+            <label class="filter-label">Year</label>
+            <select id="filter_year" class="form-control form-control-sm filter-trigger">
+                <option value="">All Years</option>
+                <option value="2026">2026</option>
             </select>
-    </div>
-    <div class="col-md-3">
-        <label>Month</label>
-        <select id="filter_month" class="form-control filter-trigger">
-            <option value="">All Months</option>
-            <option value="01">January</option>
-            <option value="02">February</option>
-            <option value="03">March</option>
-            <option value="04">April</option>
-            <option value="05">May</option>
-            <option value="06">June</option>
-            <option value="07">July</option>
-            <option value="08">August</option>
-            <option value="09">September</option>
-            <option value="10">October</option>
-            <option value="11">November</option>
-            <option value="12">December</option>
+        </div>
+        <div class="col-md-2 col-sm-4">
+            <label class="filter-label">Month</label>
+            <select id="filter_month" class="form-control form-control-sm filter-trigger">
+                <option value="">All Months</option>
+                <option value="01">January</option>
+                <option value="02">February</option>
+                <option value="03">March</option>
+                <option value="04">April</option>
+                <option value="05">May</option>
+                <option value="06">June</option>
+                <option value="07">July</option>
+                <option value="08">August</option>
+                <option value="09">September</option>
+                <option value="10">October</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
             </select>
-    </div>
-    <div class="col-md-3">
-        <label>Status</label>
-        <select id="filter_status" class="form-control filter-trigger">
-            <option value="">All Statuses</option>
-            <option value="SUBMITTED">SUBMITTED</option>
-            <option value="NOTED">NOTED</option>
-            <option value="VALIDATED">VALIDATED</option>
-            <option value="PRINTED">PRINTED</option>
-            <option value="RECORDED">RECORDED</option>
-            <option value="VERIFIED">VERIFIED</option>
-            <option value="APPROVED">APPROVED</option>
-            <option value="COMPLETED">COMPLETED</option>
-            <option value="REJECTED">REJECTED</option>
-        </select>
-    </div>
-</div>
+        </div>
+        <div class="col-md-2 col-sm-4">
+            <label class="filter-label">Status</label>
+            <select id="filter_status" class="form-control form-control-sm filter-trigger">
+                <option value="">All Statuses</option>
+                <option value="SUBMITTED">SUBMITTED</option>
+                <option value="NOTED">NOTED</option>
+                <option value="VALIDATED">VALIDATED</option>
+                <option value="PRINTED">PRINTED</option>
+                <option value="RECORDED">RECORDED</option>
+                <option value="VERIFIED">VERIFIED</option>
+                <option value="APPROVED">APPROVED</option>
+                <option value="COMPLETED">COMPLETED</option>
+                <option value="REJECTED">REJECTED</option>
+            </select>
+        </div>
     </div>
   
     <div id="metrics_summary_div" class="mb-3" style="margin-top:30px;"></div>
@@ -902,7 +909,7 @@ table.dataTable tbody tr:hover {
                     <input type="text" class="form-control" name="asset_tag_number" id="asset_tag_number" >
                   </div>
 
-               
+                
 
 
                   <div class="form-group col-md-12">
@@ -1025,7 +1032,7 @@ table.dataTable tbody tr:hover {
           <div class="modal-footer">
             <input type="hidden" name="operation" id="operation" value="save_request">
             <input type="hidden" name="u_id" value="<?php echo $_SESSION['user_id'] ?? ''; ?>">
-              <button type="submit" class="btn"><strong>SAVE FIXED ASSET</strong></button>
+              <!-- <button type="submit" class="btn"><strong>SAVE FIXED ASSET</strong></button> -->
           </div>
         </div>
       </form>
@@ -1043,8 +1050,6 @@ table.dataTable tbody tr:hover {
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-
-           
 
                 <div class="modal-body text-center py-4">
                     <div class="confirmation-text mb-4">
@@ -1179,10 +1184,10 @@ $(document).ready(function() {
       $('#metrics_summary_div').html(html);
   }
 
-  function applyStatusFilter() {
+   function applyStatusFilter() {
       if (reptable) {
           let statusVal = $('#filter_status').val();
-          reptable.column(10).search(statusVal ? '^' + statusVal + '$' : '', true, false).draw();
+          reptable.column(9).search(statusVal ? '^' + statusVal + '$' : '', true, false).draw();
       }
   }
 
@@ -1223,9 +1228,9 @@ $(document).ready(function() {
             let currentStatus = (data.status || '').toUpperCase();
             let allowedPrintStatuses = ['VERIFIED', 'APPROVED', 'COMPLETED', 'PRINTED'];
             
-            if (allowedPrintStatuses.includes(currentStatus)) {
-                buttons += `<button type='button' class='btn btn-success print-btn' data-id='${data.ticket_no}'><i class='fas fa-file-pdf'></i> Print</button>`;
-            }
+            // if (allowedPrintStatuses.includes(currentStatus)) {
+            //     buttons += `<button type='button' class='btn btn-success print-btn' data-id='${data.ticket_no}'><i class='fas fa-file-pdf'></i> Print</button>`;
+            // }
 
             return `<div style="display: flex; gap: 5px;">${buttons}</div>`;
           }
@@ -1493,7 +1498,7 @@ function loadTimeline(ticket_no, rowData) {
         success: function(response) {
                 const statusLevels = {
                 'submitted': 1, 'noted': 2, 'validated': 3, 
-                'verified': 4, 'printed': 5, 'approved': 6,  'rejected': 6, 'purchased': 7, 'completed': 8
+                'verified': 4,  'approved': 5,  'rejected': 5, 'printed': 6, 'completed': 7
             };
 
             let dbStatus = (response.status || "").toLowerCase().trim();
@@ -1516,22 +1521,21 @@ function loadTimeline(ticket_no, rowData) {
                 { desc: "Validated by admin support", date: response.date_validated, reqLevel: isTechnical === 1 ? 3 : 3 },
                 { desc: "For administrative verification", date: null, reqLevel: isTechnical === 1 ? 3 : 3 }, 
                 { desc: "Verified by the administrator", date: response.date_verified, reqLevel: isTechnical === 1 ? 4 : 4 },
-                { desc: "For printing request form", date: null, reqLevel: isTechnical === 1 ? 4 : 4 }, 
-                { desc: "Printed", date: response.date_printed, reqLevel: isTechnical === 1 ? 5 : 5 },
-                { desc: "For General Manager Approval", date: null, reqLevel: isTechnical === 1 ? 5 : 5 }
+              
+                { desc: "For General Manager Approval", date: null, reqLevel: isTechnical === 1 ? 4 : 4 }
             );
 
             if (dbStatus === 'rejected') {
                 trackSteps.push(
-                    { desc: "Rejected by General Manager", date: response.date_rejected || response.date_updated, reqLevel: isTechnical === 1 ? 6 : 6, isRejected: true }
+                    { desc: "Rejected by General Manager", date: response.date_rejected || response.date_updated, reqLevel: isTechnical === 1 ? 5 : 5, isRejected: true }
                 );
             } else {
                 trackSteps.push(
-                    { desc: "Approved by General Manager", date: response.date_approved, reqLevel: isTechnical === 1 ? 6 : 6 },
+                    { desc: "Approved by General Manager", date: response.date_approved, reqLevel: isTechnical === 1 ? 5 : 5 },
+                    { desc: "For printing request form", date: null, reqLevel: isTechnical === 1 ? 5 : 5 }, 
+                    { desc: "Printed", date: response.date_printed, reqLevel: isTechnical === 1 ? 6 : 6 },
                     { desc:  "Transferred to PD for Procurement", date: null, reqLevel: isTechnical === 1 ? 6 : 6 }, 
-                    { desc:  "Asset Purchased", date: response.date_purchased,  reqLevel: isTechnical === 1 ? 7 : 7 }, 
-                    { desc: "Asset Ready for Release", date: null, reqLevel: isTechnical === 1 ? 7 : 7 }, 
-                    { desc: "Asset replaced / Completed", date: response.date_completed, reqLevel: isTechnical === 1 ? 8 : 8 }
+                    { desc: "Asset replaced / Completed", date: response.date_completed, reqLevel: isTechnical === 1 ? 7 : 7 }
                 );
             }
 
@@ -1626,5 +1630,3 @@ $(document).on('click', '.print-btn', function() {
     $('#dataModal').modal('show');
 });
 </script>
-
-

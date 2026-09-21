@@ -40,14 +40,21 @@ try {
 
   body {
     font-family: var(--font-sans);
-     background: linear-gradient(to bottom, #ffffff, #99aac8);
+    background: linear-gradient(to bottom, #ffffff, #99aac8);
     background-attachment: fixed;
     margin: 0;
     color: var(--text-main);
     min-height: 100vh;
   }
 
+  /* Print Settings */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
 
+  /* Cards & Inputs */
   .modern-card {
     background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(12px);
@@ -118,41 +125,71 @@ try {
     background: #94a3b8;
   }
 
-  .table-responsive-xl {
+  /* =========================================
+     TABLE STYLES (Horizontal Borders Only)
+  ========================================= */
+  .table-responsive-xl, .table-responsive {
     border-radius: 12px;
-    overflow: hidden;
-  }
-
-  table.dataTable {
-    border-collapse: collapse !important;
-    margin: 0 !important;
+    overflow-x: auto !important;
     width: 100% !important;
   }
 
-  table.dataTable thead th {
-     background: linear-gradient(135deg, #213456, #334c7a);
+  table.dataTable, .admin-table, .table {
+    border-collapse: collapse !important;
+    border: none !important;
+    margin: 0 !important;
+    width: 100% !important;
+    table-layout: auto !important;
+  }
+
+  /* Table Headers */
+  table.dataTable thead th, .admin-table th, .table thead th {
+    background: #213456;
+    color: white !important;
     font-weight: 600 !important;
     font-size: 0.8rem !important;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     padding: 14px 16px !important;
-    border: none !important;
+    
+    /* Strict Horizontal Borders */
+    border-top: none !important;
+    border-left: none !important;
+    border-right: none !important;
+    border-bottom: 2px solid #e2e8f0 !important;
   }
 
-  table.dataTable tbody tr {
+  /* Specific Admin Table Header Overrides */
+  #admin_report.admin-table th.active.text-center { background-color: #2b9827 !important; }
+  #admin_report.admin-table th.compliance.text-center { background-color: #a29341 !important; }
+
+  /* Table Rows */
+  table.dataTable tbody tr, .table tbody tr {
     background: #ffffff !important;
     transition: background 0.2s ease;
   }
 
-  table.dataTable tbody tr:hover {
-    background: #aab0ba !important;
+  table.dataTable tbody tr:hover, .table tbody tr:hover {
+    background: #e0e6f1 !important;
+    color: #1e293b;
   }
 
-  table.dataTable tbody td {
+  /* Table Cells (The specific fix for horizontal lines) */
+  table.dataTable tbody td, .admin-table td, .table tbody td {
     padding: 14px 16px !important;
     font-size: 0.85rem !important;
     color: var(--text-main) !important;
+    
+    /* Strict Horizontal Borders */
+    border-top: none !important;
+    border-left: none !important;
+    border-right: none !important;
     border-bottom: 1px solid var(--border-color) !important;
+  }
+
+  /* Remove bottom border from the very last row for a cleaner UI */
+  table.dataTable tbody tr:last-child td, .admin-table tr:last-child td, .table tbody tr:last-child td {
+    border-bottom: none !important;
   }
 
   .dataTables_wrapper .dataTables_filter input {
@@ -166,6 +203,12 @@ try {
     border-color: var(--primary);
   }
 
+  #dept-table-footer {
+    border: 2px solid #2d3c59;
+    background-color: #f4e9d7 !important;
+  }
+
+  /* Modal Enhancements */
   .modal-overlay {
     display: none;
     position: fixed;
@@ -187,7 +230,76 @@ try {
     border: none;
   }
 
-.container_remarks {
+  #userModal .modal-dialog {
+    max-width: 1100px; 
+    margin: 1.25rem auto;
+  }
+
+  #userModal .modal-content {
+    border-radius: 16px;
+    border: none;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+  }
+
+  #userModal .modal-header {
+    background-color: #213456;
+    color: #fff;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    border-bottom: 4px solid #E1AD01; 
+  }
+
+  #userModal_header {
+    font-weight: 700;
+    font-size: 18px;
+    margin: 0;
+  }
+
+  #userModal .modal-body {
+    padding: 16px 18px;
+  }
+
+  #userModal .modal-title {
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+  }
+
+  #userModal .input-group-text {
+    background-color: white;
+    border-right: none;
+    color: #213456;
+  }
+
+  #userModal .form-control {
+    border-left: none;
+    height: 45px;
+    border-radius: 0 8px 8px 0;
+  }
+
+  #userModal .form-control:focus {
+    border-color: #213456;
+    box-shadow: none;
+  }
+
+  #userModal .input-group:focus-within {
+    box-shadow: 0 0 0 0.2rem rgba(225, 173, 1, 0.25);
+    border-radius: 8px;
+  }
+
+  #userModal .modal-footer {
+    border-top: 1px solid rgba(0,0,0,0.08);
+    background: rgba(255,255,255,0.92);
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
+    padding: 12px 14px;
+  }
+
+  /* Chat UI & Forms */
+  .container_remarks {
     display: flex;
     flex-direction: column;
     max-height: 480px;
@@ -197,84 +309,22 @@ try {
     border-radius: 12px;
     padding: 15px;
     margin-top: 10px;
-}
+  }
 
-.dv_msg {
-    display: block;
-}
-
-#remarks_view {
+  .dv_msg { display: block; }
+  #remarks_view {
     display: flex;
     flex-direction: column;
     width: 100%;
-}
+  }
 
-#userModal .modal-dialog{
-  max-width: 1100px; 
-  margin: 1.25rem auto;
-}
-
-#userModal .modal-content{
-  border-radius: 16px;
-  border: none;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-  overflow: hidden;
-}
-
-#userModal .modal-header{
-    background-color: #213456;
-    color: #fff;
-    border-top-left-radius: 15px;
-    border-top-right-radius: 15px;
-    border-bottom: 4px solid #E1AD01; 
-}
-
-#userModal_header{
-  font-weight: 700;
-  font-size: 18px;
-  margin: 0;
-}
-
-#userModal .modal-body{
-  padding: 16px 18px;
-}
-
-#userModal .modal-title {
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    display: flex;
-    align-items: center;
-}
-
-#userModal .input-group-text {
-    background-color: white;
-    border-right: none;
-    color: #213456;
-}
-
-#userModal .form-control {
-    border-left: none;
-    height: 45px;
-    border-radius: 0 8px 8px 0;
-}
-
-#userModal .form-control:focus {
-    border-color: #213456;
-    box-shadow: none;
-}
-
-#userModal .input-group:focus-within {
-    box-shadow: 0 0 0 0.2rem rgba(225, 173, 1, 0.25);
-    border-radius: 8px;
-}
-
-.m_col {
+  .m_col {
     background: #ffffff;
     padding: 2rem !important;
     border-right: 1px solid #edf2f7;
-}
+  }
 
-.m_col label {
+  .m_col label {
     font-size: 0.75rem;
     font-weight: 700;
     color: #718096;
@@ -282,42 +332,40 @@ try {
     letter-spacing: 0.05em;
     margin-bottom: 0.5rem;
     display: block;
-}
+  }
 
-.m_col .form-control {
+  .m_col .form-control {
     border: 1px solid #e2e8f0;
     border-radius: 8px;
     padding: 0.6rem 0.75rem;
     transition: all 0.2s ease;
     background-color: #f8fafc;
-}
+  }
 
-.m_col .form-control:focus {
+  .m_col .form-control:focus {
     background-color: #fff;
     border-color: #1C0770;
     box-shadow: 0 0 0 3px rgba(28, 7, 112, 0.1);
     outline: none;
-}
+  }
 
-.m_col textarea {
-    min-height: 80px;
-}
+  .m_col textarea { min-height: 80px; }
 
-#msg_thread {
+  #msg_thread {
     padding: 1rem 1.5rem;
     background: linear-gradient(to bottom, #ffffff, #99aac8);
     height: 100%;
-}
+  }
 
-#addmsg {
+  #addmsg {
     border: 1.5px solid #e2e8f0;
     border-radius: 10px;
     padding: 1rem;
     background: #ffffff;
     box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-}
+  }
 
-.chat-bubble {
+  .chat-bubble {
     max-width: 85%;
     padding: 10px 14px;
     border-radius: 18px;
@@ -327,107 +375,64 @@ try {
     margin-bottom: 12px;
     box-shadow: 0 1px 2px rgba(0,0,0,0.1);
     word-wrap: break-word;
-}
+  }
 
-.chat-left {
+  .chat-left {
     align-self: flex-start;
     background: #ffffff;
     color: #1e293b;
     border-bottom-left-radius: 4px;
     border: 1px solid #e5e7eb;
-}
+  }
 
-.chat-right {
+  .chat-right {
     align-self: flex-end;
     background: #1C0770;
     color: #ffffff;
     border-bottom-right-radius: 4px;
-}
+  }
 
-.msg-meta {
+  .msg-meta {
     display: flex;
     justify-content: space-between;
     gap: 15px;
     font-size: 0.7rem;
     margin-bottom: 4px;
-}
+  }
+  .chat-left .msg-meta { color: #64748b; }
+  .chat-right .msg-meta { color: rgba(255, 255, 255, 0.85); }
+  .chat-left .msg-meta-name { color: #213456; font-weight: bold; }
+  .chat-right .msg-meta-name { color: #ffffff; font-weight: bold; }
 
-.chat-left .msg-meta {
-    color: #64748b;
-}
-
-.chat-right .msg-meta {
-    color: rgba(255, 255, 255, 0.85);
-}
-
-.chat-left .msg-meta-name {
-    color: #213456;
-    font-weight: bold;
-}
-
-.chat-right .msg-meta-name {
-    color: #ffffff;
-    font-weight: bold;
-}
-
-.btn-success {
+  /* Buttons & Utilities */
+  .btn-success {
     background-color: #1C0770 !important;
     border: none;
     padding: 0.6rem 2rem;
     font-weight: 600;
     border-radius: 8px;
     transition: transform 0.2s ease;
-}
-
-.btn-success:hover {
+  }
+  .btn-success:hover {
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(28, 7, 112, 0.2);
-}
+  }
 
-.btn-danger {
+  .btn-danger {
     background-color: #fff;
     border: 1px solid #e2e8f0;
     color: #e53e3e;
     padding: 0.6rem 1.5rem;
     font-weight: 600;
     border-radius: 8px;
-}
-
-.btn-danger:hover {
+  }
+  .btn-danger:hover {
     background-color: #fff5f5;
     color: #c53030;
-}
-
-#userModal .modal-footer{
-  border-top: 1px solid rgba(0,0,0,0.08);
-  background: rgba(255,255,255,0.92);
-  position: sticky;
-  bottom: 0;
-  z-index: 5;
-  padding: 12px 14px;
-}
-
-@media (max-width: 991px){
-  #userModal .modal-dialog{
-    max-width: 96%;
-    margin: .75rem auto;
   }
 
-  .container_remarks{
-    max-height: 350px;
-  }
-
-  #action, #btnClose{
-    width: 100%;
-  }
-}
-
-
-.year-picker-group {
-    flex: 1;
-    min-width: 300px; 
-}
-#showCalendarBtn {
+  .year-picker-group { flex: 1; min-width: 300px; }
+  #showCalendarBtn {
     background-color: #213456;
     color: white;
     border-radius: 8px;
@@ -435,316 +440,22 @@ try {
     font-weight: 600;
     transition: all 0.3s ease;
     white-space: nowrap;
-}
-
-#showCalendarBtn:hover {
-    background-color: var(--owi-gold, #E1AD01);
+  }
+  #showCalendarBtn:hover {
+    background-color: var(--primary);
     color: #213456;
-}
-
-.table-responsive {
-    overflow: visible !important;
-    width: 100% !important;
-}
-
-  .admin-table {
-    width: 100% !important;
-    table-layout: auto !important;
-    page-break-inside: avoid;
   }
-
-  .admin-table th {
-    background-color: #213456 !important;
-    color: #fff !important;
-    padding: 6px 4px !important;
-    font-size: 11px !important;
-  }
-
-  #admin_report.admin-table th.active.text-center {
-    background-color: #2b9827 !important;
-    color: #fff !important;
-    padding: 6px 4px !important;
-    font-size: 11px !important;
-  }
-
-  #admin_report.admin-table th.compliance.text-center {
-    background-color: #a29341 !important;
-    color: #fff !important;
-    padding: 6px 4px !important;
-    font-size: 11px !important;
-  }
-
-  .admin-table td {
-    padding: 6px 4px !important;
-    font-size: 11px !important;
-    border-bottom: 1px solid #0e0e0ea1 !important;
-  }
-
   .progress {
     border: 1px solid #999 !important;
     background-color: #ddd !important;
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
   }
 
-  #dept-table-footer {
-    border: 2px solid #2d3c59;
-    background-color: #f4e9d7 !important;
+  /* Responsiveness */
+  @media (max-width: 991px) {
+    #userModal .modal-dialog { max-width: 96%; margin: .75rem auto; }
+    .container_remarks { max-height: 350px; }
+    #action, #btnClose { width: 100%; }
   }
-
-  * {
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-    color-adjust: exact !important;
-  }
-
-  :root {
-    --primary: #E1AD01;
-    --primary-hover: #c99a00;
-    --dark-blue: #1e2d4a;
-    --light-bg: #f8fafc;
-    --border-color: #e2e8f0;
-    --text-main: #1e293b;
-    --text-muted: #64748b;
-    --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
-    --font-sans: 'Inter', sans-serif;
-  }
-
-  body {
-    font-family: var(--font-sans);
-    background: linear-gradient(to bottom, #ffffff, #99aac8);
-    background-attachment: fixed;
-    margin: 0;
-    color: var(--text-main);
-    min-height: 100vh;
-  }
-
-  .modern-card {
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.6);
-    border-radius: 16px;
-    box-shadow: var(--card-shadow);
-    padding: 24px;
-    transition: all 0.3s ease;
-  }
-
-  .section-title {
-    font-size: 0.85rem;
-    font-weight: 700;
-    letter-spacing: 1.2px;
-    text-transform: uppercase;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 20px;
-  }
-
-  .form-group label {
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: #213456;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 6px;
-    display: block;
-  }
-
-  .modern-input {
-    width: 100%;
-    height: 44px;
-    padding: 10px 14px;
-    background: #ffffff !important;
-    border: 1px solid var(--border-color) !important;
-    border-radius: 8px !important;
-    color: var(--text-main) !important;
-    font-size: 0.9rem;
-    transition: all 0.2s ease;
-  }
-
-  .modern-input:focus {
-    outline: none !important;
-    border-color: var(--primary) !important;
-    box-shadow: 0 0 0 3px rgba(225, 173, 1, 0.15) !important;
-  }
-
-  textarea.modern-input {
-    height: 120px !important;
-    resize: none !important;
-  }
-
-  ::-webkit-scrollbar { 
-    width: 6px; 
-    height: 6px; 
-  }
-  ::-webkit-scrollbar-track { 
-    background: transparent; 
-  }
-  ::-webkit-scrollbar-thumb { 
-    background: #cbd5e1; 
-    border-radius: 10px; 
-  }
-  ::-webkit-scrollbar-thumb:hover { 
-    background: #94a3b8; 
-  }
-
-  .table-responsive-xl, .table-responsive {
-    border-radius: 12px;
-    overflow-x: auto !important; 
-    width: 100% !important;
-  }
-
-  table.dataTable {
-    border-collapse: collapse !important;
-    margin: 0 !important;
-    width: 100% !important;
-  }
-
-  table.dataTable thead th {
-    background: linear-gradient(135deg, #213456, #334c7a);
-    color: white !important;
-    font-weight: 600 !important;
-    font-size: 0.8rem !important;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    padding: 14px 16px !important;
-    border: none !important;
-  }
-
-  table.dataTable tbody tr {
-    background: #ffffff !important;
-    transition: background 0.2s ease;
-  }
-
-  table.dataTable tbody tr:hover {
-    background: #e0e6f1 !important;
-    color: white;
-  }
-
-  table.dataTable tbody td {
-    padding: 14px 16px !important;
-    font-size: 0.85rem !important;
-    border-bottom: 1px solid var(--border-color) !important;
-  }
-
-  .dataTables_wrapper .dataTables_filter input {
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    padding: 5px 10px;
-    margin-left: 8px;
-    outline: none;
-  }
-
-  .dataTables_wrapper .dataTables_filter input:focus {
-    border-color: var(--primary);
-  }
-
-  /* Modal Enhancements */
-  .modal-overlay {
-    display: none; 
-    position: fixed; 
-    top: 0; left: 0; 
-    width: 100%; 
-    height: 100%;
-    background: rgba(15, 23, 42, 0.6); 
-    backdrop-filter: blur(4px);
-    justify-content: center; 
-    align-items: center; 
-    z-index: 1050;
-  }
-
-  .modal-overlay .modal-content {
-    background: #ffffff; 
-    padding: 30px; 
-    border-radius: 16px; 
-    width: 90%;
-    max-width: 700px; 
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); 
-    border: none;
-  }
-
-  .container_remarks {
-    display: flex; 
-    flex-direction: column; 
-    max-height: 480px; 
-    overflow-y: auto;
-    background-color: #f0f2f5 !important;
-    border: 1px solid #dee2e6;
-    border-radius: 12px; 
-    padding: 15px; 
-    margin-top: 10px;
-  }
-
-  #userModal .modal-dialog { 
-    max-width: 1100px; 
-    margin: 1.25rem auto; 
-  }
-  #userModal .modal-content { 
-    border-radius: 16px; 
-    border: none; 
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2); 
-    overflow: hidden; 
-  }
-  #userModal .modal-header { 
-    background-color: #213456; 
-    color: #fff;
-    border-bottom: 4px solid #E1AD01; 
-  }
-  
-  /* Chat UI */
-  .chat-bubble {
-    max-width: 85%; 
-    padding: 10px 14px; 
-    border-radius: 18px; 
-    font-size: 0.9rem;
-    line-height: 1.4; 
-    position: relative; 
-    margin-bottom: 12px; 
-    box-shadow: 0 1px 2px rgba(0,0,0,0.1); 
-    word-wrap: break-word;
-  }
-  .chat-left { 
-    align-self: flex-start; 
-    background: #ffffff; 
-    border: 1px solid #e5e7eb; 
-    border-bottom-left-radius: 4px; 
-  }
-  .chat-right { 
-    align-self: flex-end; 
-    background: #1C0770; 
-    color: #ffffff; 
-    border-bottom-right-radius: 4px; 
-  }
-
-  .btn-success { 
-    background-color: #1C0770 !important; 
-    border: none; 
-    padding: 0.6rem 2rem; 
-    font-weight: 600; 
-    border-radius: 8px;
-  }
-  .btn-danger { 
-    background-color: #fff; 
-    border: 1px solid #e2e8f0; 
-    color: #e53e3e; 
-    padding: 0.6rem 1.5rem; 
-    font-weight: 600; 
-    border-radius: 8px;
-   }
-  
-  .admin-table { 
-    width: 100% !important; 
-    table-layout: auto !important; 
-  }
-  .admin-table th {
-     background-color: #213456 !important; 
-     color: #fff !important;
-      font-size: 11px !important;
-     }
-  .admin-table td { 
-    font-size: 11px !important; 
-  }
-  
 </style>
 
 <div class="container-fluid py-4">

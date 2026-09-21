@@ -79,7 +79,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mode'])) {
     if ($_POST['mode'] === 'ticket_progress') {
         $ticket_no = trim($_POST['ticket_no'] ?? ''); 
         try {
-            // Added LEFT JOIN for it_tech as 'tc' to fetch close_by_name
             $stmt = $connection->prepare("SELECT r.status,
                                            r.deptsel, d.dept_desc AS assigned_dept, 
                                            r.itsup, t.it_desc AS assigned_tech, 
@@ -548,6 +547,7 @@ body {
     padding: 30px;
 }
 
+/* FIXED CONTAINER STYLE: NO COLUMN REVERSE */
 .container_remarks {
     display: flex !important;
     flex-direction: column;
@@ -815,9 +815,6 @@ body {
                       <option value="15">TREASURY</option>
                       <option value="16">ACCOUNT RECEIVABLE</option>
                 </select>
-
-
-                    
 
                 <label><i class="fas fa-envelope"></i> Subject</label>
                 <select class="form-control" id="subject" name="subject" required>
@@ -1186,7 +1183,7 @@ body {
                  <div class="col-md-8 border-right pt-2 pb-2" id="col_comment_thread" style="background: #fafbfc;">
                      <h6 class="text-uppercase mb-3" style="color:#213456; font-weight: 800; font-size: 13px;">Comment Thread</h6>
                      
-                     <div class="container_remarks" style="display: flex; flex-direction: column-reverse; height: 380px; overflow-y: auto; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; margin-top: 10px;">
+                     <div class="container_remarks" style="display: flex; flex-direction: column; height: 380px; overflow-y: auto; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; margin-top: 10px;">
                          <div id="remarks_view" style="display: flex; flex-direction: column; width: 100%; gap: 10px;"></div>
                      </div>
 
@@ -1217,6 +1214,104 @@ body {
 </div>
 
 <script type="text/javascript">
+    function sanitizeLegacyComment(htmlString, senderName) {
+        if (!htmlString) return '';
+        if (!/<\/?(?:div|span|p|br|img|b|i|strong)[^>]*>/i.test(htmlString)) {
+            return htmlString;
+        }
+        let tempDiv = document.createElement('div');
+        tempDiv.innerHTML = htmlString;
+        let text = tempDiv.innerText || tempDiv.textContent;
+        text = text.replace(/Sent:\s*\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}/gi, '');
+        text = text.replace(/Replied:\s*\d+\s+(days|hours|minutes|months|years)\s+ago/gi, '');
+        text = text.replace(/Replied:\s*just\s+now/gi, '');
+        if (senderName) {
+            let nameRegex = new RegExp(senderName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+            text = text.replace(nameRegex, '');
+        }
+        return text.replace(/\n\s*\n/g, '\n').trim();
+    }
+
+    // Dynamic Time Ago function
+    function timeAgo(dateParam) {
+        if (!dateParam) return "";
+        let date = new Date(dateParam.replace(/-/g, "/"));
+        let now = new Date();
+        let seconds = Math.floor((now - date) / 1000);
+        let interval = Math.floor(seconds / 86400);
+        if (interval >= 1) return interval + " day" + (interval === 1 ? "" : "s") + " ago";
+        interval = Math.floor(seconds / 3600);
+        if (interval >= 1) return interval + " hour" + (interval === 1 ? "" : "s") + " ago";
+        interval = Math.floor(seconds / 60);
+        if (interval >= 1) return interval + " minute" + (interval === 1 ? "" : "s") + " ago";
+        return "just now";
+    }
+
+    function loadCommentThread(ticket_no) {
+        const $remarksView = $('#remarks_view');
+        const ticketValue = (ticket_no || '').toString().trim();
+        if (!ticketValue) return;
+        
+        $remarksView.html('<div class="text-center text-muted mt-4 mb-4"><div class="spinner-border spinner-border-sm me-2 text-primary"></div>Loading conversation...</div>');
+
+        $.ajax({
+            url: 'get_comments.php',
+            type: 'POST',
+            dataType: 'json',
+            data: { ticket_no: ticketValue },
+            success: function(response) {
+                let html = '';
+                if (Array.isArray(response) && response.length > 0) {
+                    var currentUserIdStr = "<?= $_SESSION['user_id'] ?? '' ?>";
+                    var currentUserNameStr = "<?= $_SESSION['fname'] ?? '' ?>";
+                    
+                    response.forEach(function(comment) {
+                        let sender = comment.userId || 'Unknown';
+                        let isMe = false;
+                        
+                        if(currentUserIdStr !== "" && sender === currentUserIdStr) isMe = true;
+                        if(currentUserNameStr !== "" && sender.includes(currentUserNameStr)) isMe = true;
+                        
+                        let bubbleClass = isMe ? 'chat-right' : 'chat-left';
+                        let relativeTime = timeAgo(comment.comment_date);
+                        let cleanMessage = sanitizeLegacyComment(comment.comment_details, sender);
+                        
+                        html += `
+                            <div class="chat-bubble ${bubbleClass}">
+                                <div class="msg-meta">
+                                    <span class="msg-meta-name">${sender}</span>
+                                    <span class="msg-time">${comment.comment_date}</span> 
+                                </div>
+                                <div style="white-space: pre-wrap;">${cleanMessage}</div>
+                                <div style="font-size: 0.65rem; text-align: right; margin-top: 4px; font-style: italic; opacity: 0.8;">
+                                    ${relativeTime}
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    html = '<div class="text-center text-muted mt-4" style="font-size:13px;"><i class="fas fa-comments mb-2" style="font-size:24px; opacity:0.5;"></i><br>No comments yet. Start the conversation!</div>';
+                }
+                
+                $remarksView.html(html);
+                const $container = $('.container_remarks');
+                if ($container.length) {
+                    $container.scrollTop($container[0].scrollHeight);
+                }
+            },
+            error: function() {
+                $remarksView.html('<div class="text-danger text-center mt-3">Error loading comments. Ensure get_comments.php is accessible.</div>');
+            }
+        });
+    }
+
+    window.getinfo = function(ticket_no, type, uid) {
+        if (type === 'remarks') {
+            loadCommentThread(ticket_no);
+        }
+    };
+
+
     function validateSubmitButton() {
         var isFixAsset = $('#is_fix_asset').val() == '1';
         var concernLength = $('#concern').val().trim().length;
@@ -1365,7 +1460,6 @@ body {
              validateSubmitButton();
         });
 
-        // Added click event for View Attachments to redirect properly
         $('#vwfile').click(function(e) {
             e.preventDefault();
             var val = $('#ModalTicket_no').val();
@@ -1374,24 +1468,6 @@ body {
             }
         });
     });
-
-    function timeAgo(dateParam) {
-        if (!dateParam) return "";
-        let date = new Date(dateParam.replace(/-/g, "/"));
-        let now = new Date();
-        let seconds = Math.floor((now - date) / 1000);
-        
-        let interval = Math.floor(seconds / 86400);
-        if (interval >= 1) return interval + " day" + (interval === 1 ? "" : "s") + " ago";
-        
-        interval = Math.floor(seconds / 3600);
-        if (interval >= 1) return interval + " hour" + (interval === 1 ? "" : "s") + " ago";
-        
-        interval = Math.floor(seconds / 60);
-        if (interval >= 1) return interval + " minute" + (interval === 1 ? "" : "s") + " ago";
-        
-        return "just now";
-    }
 
 function valtxt(){
     if($('#subject').val() == null || $('#subject').val().trim()==""){

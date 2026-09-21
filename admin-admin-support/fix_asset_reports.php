@@ -350,8 +350,8 @@ include 'admin.php';
                 
                 </div>
                 
-                <div class="chat-input-area mt-3">
-                    <textarea class="form-control" id="new_remark_input" rows="2" placeholder="Type a new remark..."></textarea>
+               <div class="chat-input-area mt-3">
+                    <textarea class="form-control" name="remarks_adtech" id="new_remark_input" rows="2" placeholder="Type a new remark..."></textarea>
                     <button type="button" class="btn btn-sm w-100 mt-2" id="btn_send_remark" style="background-color: #E1AD01; color: #213456; font-weight: 700;">
                         <i class="fas fa-paper-plane"></i> Send Remark
                     </button>
@@ -517,10 +517,10 @@ $(document).ready(function() {
       $('#metrics_summary_div').html(html);
   }
 
-  function applyStatusFilter() {
+   function applyStatusFilter() {
       if (reptable) {
           let statusVal = $('#filter_status').val();
-          reptable.column(10).search(statusVal ? '^' + statusVal + '$' : '', true, false).draw();
+          reptable.column(9).search(statusVal ? '^' + statusVal + '$' : '', true, false).draw();
       }
   }
 
@@ -831,7 +831,7 @@ function loadTimeline(ticket_no, rowData) {
         success: function(response) {
                const statusLevels = {
                 'submitted': 1, 'noted': 2, 'validated': 3, 
-                'verified': 4, 'printed': 5, 'approved': 6,  'rejected': 6, 'purchased': 7, 'completed': 8
+                'verified': 4,  'approved': 5,  'rejected': 5, 'printed': 6, 'completed': 7
             };
 
             let dbStatus = (response.status || "").toLowerCase().trim();
@@ -854,22 +854,21 @@ function loadTimeline(ticket_no, rowData) {
                 { desc: "Validated by admin support", date: response.date_validated, reqLevel: isTechnical === 1 ? 3 : 3 },
                 { desc: "For administrative verification", date: null, reqLevel: isTechnical === 1 ? 3 : 3 }, 
                 { desc: "Verified by the administrator", date: response.date_verified, reqLevel: isTechnical === 1 ? 4 : 4 },
-                { desc: "For printing request form", date: null, reqLevel: isTechnical === 1 ? 4 : 4 }, 
-                { desc: "Printed", date: response.date_printed, reqLevel: isTechnical === 1 ? 5 : 5 },
-                { desc: "For General Manager Approval", date: null, reqLevel: isTechnical === 1 ? 5 : 5 }
+               
+                { desc: "For General Manager Approval", date: null, reqLevel: isTechnical === 1 ? 4 : 4 }
             );
 
             if (dbStatus === 'rejected') {
                 trackSteps.push(
-                    { desc: "Rejected by General Manager", date: response.date_rejected || response.date_updated, reqLevel: isTechnical === 1 ? 6 : 6, isRejected: true }
+                    { desc: "Rejected by General Manager", date: response.date_rejected || response.date_updated, reqLevel: isTechnical === 1 ? 5 : 5, isRejected: true }
                 );
             } else {
                 trackSteps.push(
-                    { desc: "Approved by General Manager", date: response.date_approved, reqLevel: isTechnical === 1 ? 6 : 6 },
+                    { desc: "Approved by General Manager", date: response.date_approved, reqLevel: isTechnical === 1 ? 5 : 5 },
+                    { desc: "For printing request form", date: null, reqLevel: isTechnical === 1 ? 5 : 5 }, 
+                    { desc: "Printed", date: response.date_printed, reqLevel: isTechnical === 1 ? 6 : 6 },
                     { desc:  "Transferred to PD for Procurement", date: null, reqLevel: isTechnical === 1 ? 6 : 6 }, 
-                    { desc:  "Asset Purchased", date: response.date_purchased,  reqLevel: isTechnical === 1 ? 7 : 7 }, 
-                    { desc: "Asset Ready for Release", date: null, reqLevel: isTechnical === 1 ? 7 : 7 }, 
-                    { desc: "Asset replaced / Completed", date: response.date_completed, reqLevel: isTechnical === 1 ? 8 : 8 }
+                    { desc: "Asset replaced / Completed", date: response.date_completed, reqLevel: isTechnical === 1 ? 7 : 7 }
                 );
             }
 
@@ -901,6 +900,14 @@ function loadTimeline(ticket_no, rowData) {
 
 document.getElementById('status').addEventListener('change', function() {
     const status = this.value;
+    if (status === 'REJECTED') {
+        $('#btn_send_remark').hide();
+        $('#new_remark_input').attr('placeholder', 'Type a remark (Required when rejecting)...');
+    } else {
+        $('#btn_send_remark').show();
+        $('#new_remark_input').attr('placeholder', 'Type a new remark...');
+    }
+    
     
     document.querySelectorAll('.date-input-container').forEach(el => el.style.display = 'none');
     document.querySelectorAll('.status-date-input').forEach(el => {

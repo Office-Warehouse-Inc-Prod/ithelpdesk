@@ -356,12 +356,82 @@ select.form-control:focus, .form-control:focus{
     box-shadow: 0 0 0 0.2rem rgba(225, 173, 1, 0.25);
     border-radius: 8px;
 }
-
-/* --- Right Side: Message Thread Panel --- */
+/* --- Right Side: Message Thread Panel (Viber Style) --- */
 #msg_thread {
     padding: 1rem 1.5rem;
-    background-color: #f8fafc;
+    background: linear-gradient(to bottom, #ffffff, #99aac8);
     height: 100%;
+}
+
+/* Container for Remarks (The Thread) */
+.container_remarks {
+    display: flex !important;
+    flex-direction: column;
+    background: #f4f7f9 !important; /* Clean chat background */
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    max-height: 480px;
+    overflow-y: auto;
+    padding: 1.5rem;
+    gap: 1rem;
+    margin-top: 10px;
+}
+
+/* Individual Message Bubbles */
+.chat-bubble {
+    max-width: 85%;
+    padding: 10px 14px;
+    border-radius: 18px;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    position: relative;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    word-wrap: break-word;
+}
+
+/* System/Received messages (Left) */
+.chat-left {
+    align-self: flex-start;
+    background: #ffffff;
+    color: #1e293b;
+    border-bottom-left-radius: 4px;
+    border: 1px solid #e5e7eb;
+}
+
+/* User/Sent messages (Right - Viber Style Navy/Purple) */
+.chat-right {
+    align-self: flex-end;
+    background: #1C0770;
+    color: #ffffff;
+    border-bottom-right-radius: 4px;
+}
+
+/* Meta Data (Name and Time) */
+.msg-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    font-size: 0.7rem;
+    margin-bottom: 4px;
+}
+
+.chat-left .msg-meta, .chat-left .msg-time {
+    color: #64748b !important;
+}
+
+.chat-right .msg-meta, .chat-right .msg-time {
+    color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.chat-left .msg-meta-name {
+    color: #213456;
+    font-weight: bold;
+}
+
+.chat-right .msg-meta-name {
+    color: #ffffff;
+    font-weight: bold;
 }
 
 /* Comment Input Area */
@@ -373,50 +443,14 @@ select.form-control:focus, .form-control:focus{
     box-shadow: 0 2px 4px rgba(0,0,0,0.02);
 }
 
-/* Container for Remarks (The Thread) */
-.container_remarks {
-    background: #ffffff;
-    border-radius: 12px;
-    border: 1px solid #e2e8f0;
-    height: 450px;
-    overflow-y: auto;
-    padding: 1.5rem;
+.dv_msg {
+    display: block !important;
+}
+
+#remarks_view {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-}
-
-/* Individual Message Bubbles (to be used in your JS output) */
-.chat-bubble {
-    max-width: 85%;
-    padding: 0.8rem 1rem;
-    border-radius: 15px;
-    font-size: 0.9rem;
-    line-height: 1.5;
-    position: relative;
-}
-
-/* System/Received messages */
-.chat-left {
-    align-self: flex-start;
-    background: #f1f5f9;
-    color: #334155;
-    border-bottom-left-radius: 2px;
-}
-
-/* User/Sent messages */
-.chat-right {
-    align-self: flex-end;
-    background: #1C0770;
-    color: #ffffff;
-    border-bottom-right-radius: 2px;
-}
-
-.msg-meta {
-    font-size: 0.7rem;
-    color: #94a3b8;
-    margin-bottom: 4px;
-    display: block;
+    width: 100%;
 }
 
 /* --- Action Buttons --- */
@@ -683,99 +717,6 @@ background: linear-gradient(135deg, #837031, #E1AD01);
     min-height: 80px;
 }
 
-#msg_thread {
-    padding: 1rem 1.5rem;
-    background: linear-gradient(to bottom, #ffffff, #99aac8);
-    height: 100%;
-}
-
-#addmsg {
-    border: 1.5px solid #e2e8f0;
-    border-radius: 10px;
-    padding: 1rem;
-    background: #ffffff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-}
-
-.chat-bubble {
-    max-width: 85%;
-    padding: 10px 14px;
-    border-radius: 18px;
-    font-size: 0.9rem;
-    line-height: 1.4;
-    position: relative;
-    margin-bottom: 12px;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-    word-wrap: break-word;
-}
-
-.chat-left {
-    align-self: flex-start;
-    background: #ffffff;
-    color: #1e293b;
-    border-bottom-left-radius: 4px;
-    border: 1px solid #e5e7eb;
-}
-
-.chat-right {
-    align-self: flex-end;
-    background: #1C0770;
-    color: #ffffff;
-    border-bottom-right-radius: 4px;
-}
-
-.msg-meta {
-    display: flex;
-    justify-content: space-between;
-    gap: 15px;
-    font-size: 0.7rem;
-    margin-bottom: 4px;
-}
-
-.chat-left .msg-meta {
-    color: #64748b;
-}
-
-.chat-right .msg-meta {
-    color: #ffffff; 
-}
-
-.chat-left .msg-meta-name {
-    color: #213456;
-    font-weight: bold;
-}
-
-.chat-right .msg-meta-name {
-    color: #ffffff;
-    font-weight: bold;
-}
-
-
-.chat-right .msg-time {
-    color: #ffffff !important; 
-}
-
-.chat-left .msg-time {
-    color: #64748b !important;
-}
-.chat-left .msg-meta {
-    color: #64748b;
-}
-
-.chat-right .msg-meta {
-    color: rgba(255, 255, 255, 0.85);
-}
-
-.chat-left .msg-meta-name {
-    color: linear-gradient(135deg, #213456, #334c7a);
-    font-weight: bold;
-}
-
-.chat-right .msg-meta-name {
-    color: #ffffff;
-    font-weight: bold;
-}
-
 
 #transferred_data {
   width: 100%;
@@ -977,7 +918,7 @@ background: linear-gradient(135deg, #837031, #E1AD01);
             <div class="overall-filter">
                 <label for="dept_id" class="dept-label">Department</label>
                 <select name="dept_id" id="dept_id" class="form-control dept-select">
-                    <option value="1,2,3,6,11,13,15,16" selected>All</option>
+                    <option value="1,2,3,6,9,11,13,15,16,19" selected>All</option>
                     <option value="1">I.T DEPT</option>
                     <option value="2">ADMIN DEPARTMENT</option>
                     <option value="3">MARKETING DEPARTMENT</option>
@@ -986,7 +927,7 @@ background: linear-gradient(135deg, #837031, #E1AD01);
                     <option value="6">VISUAL</option>
                     <!-- <option value="7">HUMAN RESOURCES</option> -->
                     <!-- <option value="8">VISUAL</option> -->
-                    <!-- <option value="9">LOGISTIC DEPARTMENT</option> -->
+                    <option value="9">LOGISTIC DEPARTMENT</option> 
                     <!-- <option value="10">STORE OPERATION</option> -->
                     <option value="11">HUMAN RESOURCES</option>
                     <!-- <option value="12">INVENTORY CONTROL GROUP</option> -->

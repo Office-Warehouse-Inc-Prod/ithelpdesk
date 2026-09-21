@@ -46,7 +46,9 @@ switch ($mode) {
         $records['deptdata'] = $fn->deptthist();
         break;
 
- 
+    case 'fa_reports_tbl':
+        $records = $fn->fareportsthist();
+        break;
 
     case 'usermtc_dtable':
          $records['usermtc_data']= $fn->usermtc_table();

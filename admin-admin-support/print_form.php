@@ -170,7 +170,7 @@ if (!empty($ticket['approve_method_head'])) {
 }
 
 if (!empty($ticket['approve_method_agm'])) {
-    $agmImagePath = '../admin-agm/' . ltrim(trim($ticket['approve_method_agm']), '/');
+    $agmImagePath = '../admin-admin-support/' . ltrim(trim($ticket['approve_method_agm']), '/');
     if (file_exists($agmImagePath)) {
         $pdf->Image($agmImagePath, 98, 148.5, 19, 5); 
     }
@@ -397,7 +397,7 @@ if ($is_technical === 1) {
         if (file_exists($dynamicImagePath)) {
            
             $maxWidth = 150;
-            $maxHeight = 80;
+            $maxHeight = 120;
             
             $imgInfo = @getimagesize($dynamicImagePath);
             $finalWidth = $maxWidth;

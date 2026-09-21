@@ -269,10 +269,10 @@ include 'admin.php';
                 </div>
                 
                 <div class="chat-input-area mt-3">
-                    <textarea class="form-control" id="new_remark_input" rows="2" placeholder="Type a new remark..."></textarea>
-                    <button type="button" class="btn btn-sm w-100 mt-2" id="btn_send_remark" style="background-color: #E1AD01; color: #213456; font-weight: 700;">
+                    <textarea class="form-control" name="remarks_adtech" id="new_remark_input" rows="2" placeholder="Type a new remark..." required></textarea>
+                    <!-- <button type="button" class="btn btn-sm w-100 mt-2" id="btn_send_remark" style="background-color: #E1AD01; color: #213456; font-weight: 700;">
                         <i class="fas fa-paper-plane"></i> Send Remark
-                    </button>
+                    </button> -->
                 </div>
             </div>
               </div>
@@ -404,16 +404,15 @@ include 'admin.php';
         $('#item_code').val(data['item_code']);
         $('#description').val(data['description']);
         $('#serial_number').val(data['serial_number']);
-        
         $('#purpose_of_request').val(data['purpose_of_request']);
         $('#problem_reported').val(data['problem_reported']);
-          $('#verification_findings').val(data['verification_findings']);
-            $('#work_done').val(data['work_done']);
-              $('#status_workoutput').val(data['status_workoutput']);
-                $('#recommendation').val(data['recommendation']);
+        $('#verification_findings').val(data['verification_findings']);
+        $('#work_done').val(data['work_done']);
+        $('#status_workoutput').val(data['status_workoutput']);
+        $('#recommendation').val(data['recommendation']);
         $('#it_desc').val(data['it_desc']);
         $('#date_received').val(data['date_received']);
-      $('#status').val(data['status']);
+        $('#status').val(data['status']);
 
         $('#action').val("Update");
         $('#operation').val("update_request"); 
@@ -442,11 +441,10 @@ include 'admin.php';
                 'noted': 2, 
                 'validated': 3, 
                 'verified': 4, 
-                'printed': 5, 
-                'approved': 6, 
-                'rejected': 6, 
-                 'purchased': 7, 
-                'completed': 8
+                'approved': 5, 
+                'rejected': 5, 
+                'printed': 6, 
+                'completed': 7
             };
 
             let dbStatus = (response.status || "").toLowerCase().trim();
@@ -469,22 +467,20 @@ include 'admin.php';
                 { desc: "Validated by admin support", date: response.date_validated, reqLevel: 3 },
                 { desc: "For administrative verification", date: null, reqLevel: 3 }, 
                 { desc: "Verified by the administrator", date: response.date_verified, reqLevel: 4 },
-                { desc: "For printing request form", date: null, reqLevel: 4 }, 
-                { desc: "Printed", date: response.date_printed, reqLevel: 5 },
-                { desc: "For General Manager Approval", date: null, reqLevel: 5 }
+                { desc: "For General Manager Approval", date: null, reqLevel: 4 }
             );
 
             if (dbStatus === 'rejected') {
                 trackSteps.push(
-                    { desc: "Rejected by General Manager", date: response.date_rejected || response.date_updated, reqLevel: 6, isRejected: true }
+                    { desc: "Rejected by General Manager", date: response.date_rejected || response.date_updated, reqLevel: 5, isRejected: true }
                 );
             } else {
                 trackSteps.push(
-                    { desc: "Approved by General Manager", date: response.date_approved, reqLevel: 6 },
-                    { desc: "Transferred to PD for Procurement", date: null, reqLevel: 6 }, 
-                    { desc: "Asset Purchased", date: response.date_approved, reqLevel: 7 },
-                    { desc: "Asset Ready for Release", date: null, reqLevel: 7 }, 
-                    { desc: "Asset replaced / Completed", date: response.date_approved, reqLevel: 8 }
+                    { desc: "Approved by General Manager", date: response.date_approved, reqLevel: 5 },
+                    { desc: "For printing request form", date: null, reqLevel: 5 }, 
+                    { desc: "Printed", date: response.date_printed, reqLevel: 6 },
+                    { desc: "Transferred to PD for Procurement", date: null, reqLevel: 6 },
+                    { desc: "Asset replaced / Completed", date: response.date_approved, reqLevel: 7 }
                 );
             }
 
@@ -547,39 +543,40 @@ include 'admin.php';
                 $('#remarks_thread_container').html('<div class="text-danger text-center mt-3" style="font-size: 12px;">Failed to fetch remarks.</div>');
             }
         });
-    }$('#btn_send_remark').off('click').on('click', function() {
-      var remarks = $('#new_remark_input').val();
-      var ticket_no = $('#ticket_no').val();
+    }
+  //   $('#btn_send_remark').off('click').on('click', function() {
+  //     var remarks = $('#new_remark_input').val();
+  //     var ticket_no = $('#ticket_no').val();
 
-      if (!remarks.trim()) {
-          Swal.fire('Warning', 'Please type a remark first.', 'warning');
-          return;
-      }
+  //     if (!remarks.trim()) {
+  //         Swal.fire('Warning', 'Please type a remark first.', 'warning');
+  //         return;
+  //     }
 
-      $.ajax({
-          url: window.location.href,
-          type: 'POST',
-          data: { 
-              mode: 'add_remarks_only',
-              ticket_no: ticket_no, 
-              remarks_adtech: remarks 
-          },
-          dataType: 'json',
-          success: function(response) {
-              if (response.status === 'success') {
-                  $('#new_remark_input').val('');
-                  loadRemarks(ticket_no); 
-                  Swal.fire({ icon: 'success', title: 'Saved!', timer: 1000, showConfirmButton: false });
-              } else {
-                  Swal.fire('Error', response.message, 'error');
-              }
-          },
-          error: function(xhr) {
-              Swal.fire('Error', 'Communication failed.', 'error');
-              console.error(xhr.responseText);
-          }
-      });
-  });
+  //     $.ajax({
+  //         url: window.location.href,
+  //         type: 'POST',
+  //         data: { 
+  //             mode: 'add_remarks_only',
+  //             ticket_no: ticket_no, 
+  //             remarks_adtech: remarks 
+  //         },
+  //         dataType: 'json',
+  //         success: function(response) {
+  //             if (response.status === 'success') {
+  //                 $('#new_remark_input').val('');
+  //                 loadRemarks(ticket_no); 
+  //                 Swal.fire({ icon: 'success', title: 'Saved!', timer: 1000, showConfirmButton: false });
+  //             } else {
+  //                 Swal.fire('Error', response.message, 'error');
+  //             }
+  //         },
+  //         error: function(xhr) {
+  //             Swal.fire('Error', 'Communication failed.', 'error');
+  //             console.error(xhr.responseText);
+  //         }
+  //     });
+  // });
 
     $(document).on('submit', '#fa_form', function(event) {
       event.preventDefault();

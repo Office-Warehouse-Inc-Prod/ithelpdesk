@@ -378,42 +378,34 @@ body {
       </button>
 
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item active">
-            <a class="nav-link" href="dashboard.php">
-              <i class="fa fa-home"></i> HOME
-            </a>
-          </li>
-
-
-          <!--<li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="genReportDrop" role="button" data-toggle="dropdown">
-              <i class="fa fa-chart-line"></i> REPORTS
-            </a>
-            <div class="dropdown-menu" aria-labelledby="genReportDrop">
-              <a class="dropdown-item" href="genrep_bycat.php">
-                <i class="fa fa-calendar-day"></i> By Categories
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          
+          <?php $current_page = basename($_SERVER['PHP_SELF']); ?>
+          
+          <ul class="navbar-nav mr-auto">
+            
+            <li class="nav-item <?= ($current_page == 'dashboard.php' || $current_page == 'index.php') ? 'active' : ''; ?>">
+              <a class="nav-link" href="dashboard.php">
+                <i class="fa fa-home"></i> HOME
               </a>
-              <a class="dropdown-item" href="performance.php">
-                <i class="fa-solid fa-arrow-trend-up"></i> IT Performance
+            </li>
+
+            <li class="nav-item <?= ($current_page == 'admincreateticket.php') ? 'active' : ''; ?>">
+              <a class="nav-link" href="admincreateticket.php">
+                <i class="fa fa-plus-circle" style="color: var(--primary-color);"></i> CREATE TICKET
               </a>
-            </div>
-          </li>-->
-          <!--<li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="maintDrop" role="button" data-toggle="dropdown">
-              <i class="fa fa-sliders-h"></i> MAINTENANCE
-            </a>
-            <div class="dropdown-menu" aria-labelledby="maintDrop">
-              <a class="dropdown-item" href="user_maintenance.php"><i class="fas fa-user-cog"></i> User Maintenance</a>
-              <a class="dropdown-item" href="store_maintenance.php"><i class="fas fa-store"></i> Store Maintenance</a>
-            </div>
-          </li>-->
-         <li class="nav-item">
-            <a class="nav-link" href="admincreateticket.php">
-              <i class="fa fa-plus-circle" style="color: var(--primary-color);"></i> CREATE TICKET
-            </a>
-          </li>
-        </ul>
+            </li>
+            
+            <li class="nav-item <?= ($current_page == 'fix_asset_reports.php') ? 'active' : ''; ?>">
+              <a class="nav-link" href="fix_asset_reports.php">
+                <i class="fas fa-boxes-stacked">
+                  <span class="badge badge-danger" id="fix_asset"></span>
+                </i>
+                FIXED ASSET
+              </a>
+            </li>
+
+          </ul>
 
         <ul class="navbar-nav ml-auto">
          

@@ -1049,6 +1049,8 @@ public function changepass(){
 		return $data;
 		
 }
+
+
  public function fareportsthist() {
     $month = $_POST['month'] ?? '';
     $year = $_POST['year'] ?? '';
@@ -1093,8 +1095,8 @@ public function changepass(){
                 ar.purpose_of_request, 
 				ar.revised_request,
 				ar.is_technical,
-					ar.technical_workoutput,
-						fat.problem_reported,
+				ar.technical_workoutput,
+				fat.problem_reported,
 				fat.verification_findings,
 				fat.work_done,
 				fat.status_workoutput,
@@ -1106,7 +1108,7 @@ public function changepass(){
                 itt.it_desc AS noted_by_desc,        
                 ar.status           
             FROM asset_requests ar
-				LEFT JOIN fixed_asset_techoutput fat ON ar.ticket_no = fat.ticket_no
+			LEFT JOIN fixed_asset_techoutput fat ON ar.ticket_no = fat.ticket_no
             LEFT JOIN it_tech it ON ar.item_received_by = it.itsup
             LEFT JOIN reports r ON ar.ticket_no = r.ticket_no
             LEFT JOIN users u ON r.userId = u.id

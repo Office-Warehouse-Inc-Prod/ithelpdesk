@@ -523,7 +523,7 @@ $(document).ready(function() {
   function applyStatusFilter() {
       if (reptable) {
           let statusVal = $('#filter_status').val();
-          reptable.column(10).search(statusVal ? '^' + statusVal + '$' : '', true, false).draw();
+          reptable.column(9).search(statusVal ? '^' + statusVal + '$' : '', true, false).draw();
       }
   }
 
@@ -838,11 +838,10 @@ function loadRemarks(ticket_no) {
                 'noted': 2, 
                 'validated': 3, 
                 'verified': 4, 
-                'printed': 5, 
-                'approved': 6, 
-                'rejected': 6, 
-                 'purchased': 7, 
-                'completed': 8
+                'approved': 5, 
+                'rejected': 5, 
+                'printed': 6, 
+                'completed': 7
             };
 
             let dbStatus = (response.status || "").toLowerCase().trim();
@@ -865,22 +864,21 @@ function loadRemarks(ticket_no) {
                 { desc: "Validated by admin support", date: response.date_validated, reqLevel: 3 },
                 { desc: "For administrative verification", date: null, reqLevel: 3 }, 
                 { desc: "Verified by the administrator", date: response.date_verified, reqLevel: 4 },
-                { desc: "For printing request form", date: null, reqLevel: 4 }, 
-                { desc: "Printed", date: response.date_printed, reqLevel: 5 },
-                { desc: "For General Manager Approval", date: null, reqLevel: 5 }
+               
+                { desc: "For General Manager Approval", date: null, reqLevel: 4 }
             );
 
             if (dbStatus === 'rejected') {
                 trackSteps.push(
-                    { desc: "Rejected by General Manager", date: response.date_rejected || response.date_updated, reqLevel: 6, isRejected: true }
+                    { desc: "Rejected by General Manager", date: response.date_rejected || response.date_updated, reqLevel: 5, isRejected: true }
                 );
             } else {
                 trackSteps.push(
-                    { desc: "Approved by General Manager", date: response.date_approved, reqLevel: 6 },
+                    { desc: "Approved by General Manager", date: response.date_approved, reqLevel: 5 },
+                    { desc: "For printing request form", date: null, reqLevel: 5 }, 
+                    { desc: "Printed", date: response.date_printed, reqLevel: 6 },
                     { desc: "Transferred to PD for Procurement", date: null, reqLevel: 6 }, 
-                    { desc: "Asset Purchased", date: response.date_approved, reqLevel: 7 },
-                    { desc: "Asset Ready for Release", date: null, reqLevel: 7 }, 
-                    { desc: "Asset replaced / Completed", date: response.date_approved, reqLevel: 8 }
+                    { desc: "Asset replaced / Completed", date: response.date_approved, reqLevel: 7 }
                 );
             }
 
