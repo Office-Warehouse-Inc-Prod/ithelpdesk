@@ -494,21 +494,33 @@ body {
 
   <script type="text/javascript">
     $(document).ready(function () {
-      countnewrep();
-      countNwMsg();
+      let notificationListRequest = null;
+      let notificationListTimer = null;
 
       // Initial Fetch
       getdata();
-      setInterval(getdata, 1000);
+      function startNotificationListPolling() {
+        clearInterval(notificationListTimer);
+        if (document.visibilityState === 'visible') notificationListTimer = setInterval(getdata, 15000);
+      }
 
       /**
        * Getdata.
        */
       function getdata() {
-        $.post('fetchdata/fetch_data.php', { mode: 'notif_support' }, function (data) {
+        if (notificationListRequest) return;
+        notificationListRequest = $.post('fetchdata/fetch_data.php', { mode: 'notif_support' }, function (data) {
           notifdatas(data);
-        }, 'json');
+        }, 'json').always(function () { notificationListRequest = null; });
       }
+      // Active tab: badges = 5 sec; notification list = 15 sec. Background: badges = 30 sec; notification list paused.
+      startNotificationListPolling();
+      startBadgePolling();
+      document.addEventListener('visibilitychange', function () {
+        if (document.visibilityState === 'visible') { refreshBadges(); getdata(); }
+        startBadgePolling();
+        startNotificationListPolling();
+      });
 
      
    var table;
@@ -700,28 +712,30 @@ body {
       }
     });
 
-    document.addEventListener("DOMContentLoaded", function () {
-      setInterval(getNewReportCount, 5000);
-    });
+    const badgePollers = [getNewReportCount, getNewMsgCount];
+    let badgePollingTimer = null;
+    function refreshBadges() { badgePollers.forEach(function (poll) { poll(); }); }
+    function startBadgePolling() {
+      clearInterval(badgePollingTimer);
+      badgePollingTimer = setInterval(refreshBadges, document.visibilityState === 'visible' ? 5000 : 30000);
+    }
+    refreshBadges();
+    startBadgePolling();
 
     async function getNewReportCount() {
+      if (getNewReportCount.inFlight) return;
+      getNewReportCount.inFlight = true;
       try {
         const response = await fetch("fetchdata/notif_newrep.php?_=" + Date.now());
+        if (!response.ok) throw new Error("HTTP " + response.status);
         const count = (await response.text()).trim();
         const badge = document.getElementById("notif_newrep");
         if (!badge) return;
-
-        if (count === "0" || count === "") {
-          badge.style.display = "none";
-        } else {
-          badge.style.display = "inline-block";
-          badge.innerHTML = count;
-        }
-      } catch (error) {
-        console.error("Notification count dev error:", error);
-      }
+        if (count === "0" || count === "") badge.style.display = "none";
+        else { badge.style.display = "inline-block"; badge.innerHTML = count; }
+      } catch (error) { console.error("Notification count dev error:", error); }
+      finally { getNewReportCount.inFlight = false; }
     }
-
     async function getTransferCount() {
       try {
         const xcall = await fetch("fetchdata/notif_transfer.php?_=" + Date.now());
@@ -740,38 +754,16 @@ body {
       }
     }
 
-    /**
-     * Countnewrep.
-     */
-    function countnewrep() {
-      setInterval(function () {
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function () {
-          if (this.readyState == 4 && this.status == 200) {
-            var badge = document.getElementById("notif_newrep");
-            if (badge) badge.innerHTML = this.responseText;
-          }
-        };
-        xhttp.open("GET", "fetchdata/notif_newrep.php", true);
-        xhttp.send();
-      }, 1000);
-    }
-
-    /**
-     * Count nw msg.
-     */
-    function countNwMsg() {
-      setInterval(function () {
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function () {
-          if (this.readyState == 4 && this.status == 200) {
-            var badge = document.getElementById("notif_newmsg");
-            if (badge) badge.innerHTML = this.responseText;
-          }
-        };
-        xhttp.open("GET", "fetchdata/fetch_newmsg.php", true);
-        xhttp.send();
-      }, 1000);
+    async function getNewMsgCount() {
+      if (getNewMsgCount.inFlight) return;
+      getNewMsgCount.inFlight = true;
+      try {
+        const response = await fetch("fetchdata/fetch_newmsg.php?_=" + Date.now());
+        if (!response.ok) throw new Error("HTTP " + response.status);
+        const badge = document.getElementById("notif_newmsg");
+        if (badge) badge.innerHTML = (await response.text()).trim();
+      } catch (error) { console.error("New message count error:", error); }
+      finally { getNewMsgCount.inFlight = false; }
     }
 
     var currentUrl = window.location.pathname.split("/").pop();

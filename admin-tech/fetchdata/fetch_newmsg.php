@@ -13,26 +13,13 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 } 
 
-$sql = "SELECT
-tbl_notif.ticket_no, 
-tbl_notif.store, 
-tbl_notif.itsup, 
-tbl_notif.notif_data, 
-tbl_notif.notif_date, 
-tbl_notif.notif_val, 
-tbl_notif.assigned_by
-FROM
-tbl_notif
-LEFT JOIN
-reports
-ON 
-    tbl_notif.ticket_no = reports.ticket_no
-WHERE
-notif_val IN ('1','2','5') AND 
-reports.f_deptsel = 1 ";
+$sql = "SELECT COUNT(*) AS total
+FROM tbl_notif
+LEFT JOIN reports ON tbl_notif.ticket_no = reports.ticket_no
+WHERE notif_val IN ('1','2','5') AND reports.f_deptsel = 1";
 $result = $conn->query($sql);
 
-echo $result->num_rows;
+echo $result->fetch_assoc()['total'];
 /*
 if ($result->num_rows > 0) {
     // output data of each row

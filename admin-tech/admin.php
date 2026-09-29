@@ -504,21 +504,45 @@ body {
 
   <script type="text/javascript">
     $(document).ready(function () {
-      countnewrep();
-      countNwMsg();
+      let notificationListRequest = null;
+      let notificationListTimer = null;
 
       // Initial Fetch
       getdata();
-      setInterval(getdata, 1000);
 
       /**
        * Getdata.
        */
       function getdata() {
-        $.post('fetchdata/fetch_data.php', { mode: 'notif_support' }, function (data) {
+        if (notificationListRequest) return;
+        notificationListRequest = $.post('fetchdata/fetch_data.php', { mode: 'notif_support' }, function (data) {
           notifdatas(data);
-        }, 'json');
+        }, 'json')
+          .fail(function (xhr) {
+            console.error('Notification list refresh failed:', xhr.responseText);
+          })
+          .always(function () {
+            notificationListRequest = null;
+          });
       }
+
+      // Active tab: notification list every 15 sec. Background: paused.
+      function startNotificationListPolling() {
+        clearInterval(notificationListTimer);
+        if (document.visibilityState === 'visible') {
+          notificationListTimer = setInterval(getdata, 15000);
+        }
+      }
+      startNotificationListPolling();
+
+      document.addEventListener("visibilitychange", function () {
+        if (document.visibilityState === 'visible') {
+          refreshBadges();
+          getdata();
+        }
+        startBadgePolling();
+        startNotificationListPolling();
+      });
  var table;
       /**
        * Notifdatas.
@@ -696,15 +720,29 @@ body {
       }
     });
 
-    document.addEventListener("DOMContentLoaded", function () {
-      setInterval(getNewReportCount, 5000);
-        setInterval(getFixAssetCount, 5000);
-         setInterval(getForApprovalCount, 5000);
-    });
+    // Active tab: badges = 5 sec; background: badges = 30 sec.
+    // Badge requests use per-request guards to prevent overlapping polls.
+    const badgePollers = [getNewReportCount, getNewMsgCount, getFixAssetCount, getForApprovalCount];
+    let badgePollingTimer = null;
+
+    async function refreshBadges() {
+      await Promise.all(badgePollers.map(function (poll) { return poll(); }));
+    }
+
+    function startBadgePolling() {
+      clearInterval(badgePollingTimer);
+      badgePollingTimer = setInterval(refreshBadges, document.visibilityState === 'visible' ? 5000 : 30000);
+    }
+
+    refreshBadges();
+    startBadgePolling();
 
     async function getNewReportCount() {
+      if (getNewReportCount.inFlight) return;
+      getNewReportCount.inFlight = true;
       try {
         const response = await fetch("fetchdata/notif_newrep.php?_=" + Date.now());
+        if (!response.ok) throw new Error("HTTP " + response.status);
         const count = (await response.text()).trim();
         const badge = document.getElementById("notif_newrep");
         if (!badge) return;
@@ -717,12 +755,17 @@ body {
         }
       } catch (error) {
         console.error("Notification count dev error:", error);
+      } finally {
+        getNewReportCount.inFlight = false;
       }
     }
 
       async function getForApprovalCount() {
+      if (getForApprovalCount.inFlight) return;
+      getForApprovalCount.inFlight = true;
       try {
         const response = await fetch("fetchdata/notif_approval.php?_=" + Date.now());
+        if (!response.ok) throw new Error("HTTP " + response.status);
         const count = (await response.text()).trim();
         const badge = document.getElementById("notif_approval");
         if (!badge) return;
@@ -735,13 +778,18 @@ body {
         }
       } catch (error) {
         console.error("Notification count dev error:", error);
+      } finally {
+        getForApprovalCount.inFlight = false;
       }
     }
 
 
     async function getFixAssetCount() {
+      if (getFixAssetCount.inFlight) return;
+      getFixAssetCount.inFlight = true;
       try {
         const response = await fetch("fetchdata/notif_fa.php?_=" + Date.now());
+        if (!response.ok) throw new Error("HTTP " + response.status);
         const count = (await response.text()).trim();
         const badge = document.getElementById("notif_fa");
         if (!badge) return;
@@ -754,6 +802,8 @@ body {
         }
       } catch (error) {
         console.error("Notification count dev error:", error);
+      } finally {
+        getFixAssetCount.inFlight = false;
       }
     }
 
@@ -776,38 +826,21 @@ body {
       }
     }
 
-    /**
-     * Countnewrep.
-     */
-    function countnewrep() {
-      setInterval(function () {
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function () {
-          if (this.readyState == 4 && this.status == 200) {
-            var badge = document.getElementById("notif_newrep");
-            if (badge) badge.innerHTML = this.responseText;
-          }
-        };
-        xhttp.open("GET", "fetchdata/notif_newrep.php", true);
-        xhttp.send();
-      }, 1000);
-    }
-
-    /**
-     * Count nw msg.
-     */
-    function countNwMsg() {
-      setInterval(function () {
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function () {
-          if (this.readyState == 4 && this.status == 200) {
-            var badge = document.getElementById("notif_newmsg");
-            if (badge) badge.innerHTML = this.responseText;
-          }
-        };
-        xhttp.open("GET", "fetchdata/fetch_newmsg.php", true);
-        xhttp.send();
-      }, 1000);
+    async function getNewMsgCount() {
+      if (getNewMsgCount.inFlight) return;
+      getNewMsgCount.inFlight = true;
+      try {
+        const response = await fetch("fetchdata/fetch_newmsg.php?_=" + Date.now());
+        if (!response.ok) throw new Error("HTTP " + response.status);
+        const count = (await response.text()).trim();
+        const badge = document.getElementById("notif_newmsg");
+        if (!badge) return;
+        badge.innerHTML = count;
+      } catch (error) {
+        console.error("New message count error:", error);
+      } finally {
+        getNewMsgCount.inFlight = false;
+      }
     }
 
     var currentUrl = window.location.pathname.split("/").pop();
