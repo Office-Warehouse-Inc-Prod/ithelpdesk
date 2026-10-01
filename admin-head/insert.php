@@ -1,6 +1,7 @@
 <?php
 
-session_start();
+require_once __DIR__ . '/../includes/upload_validation.php';
+if (session_status() === PHP_SESSION_NONE) { session_start(); }
 $tchnum = $_SESSION['tech_id'] ?? '';
 $userid = $_SESSION['user_id'] ?? '';
 date_default_timezone_set("Asia/Manila");
@@ -873,22 +874,23 @@ if (isset($_POST["operation"]) && $_POST["operation"] === "update_request") {
         $storeNum = $_SESSION["str_num"] ?? '';
 
         $fileNameToSave = '';
-        if (isset($_FILES['files']['name'][0]) && !empty($_FILES['files']['name'][0]) && $_FILES['files']['error'][0] === UPLOAD_ERR_OK) {
+        if (isset($_FILES['files']) && owi_upload_field_has_file($_FILES['files'])) {
+            if (!owi_upload_session_ok()) { owi_upload_fail(401); }
+            if (!isset($_SERVER['REQUEST_METHOD']) || strtoupper($_SERVER['REQUEST_METHOD']) !== 'POST') { owi_upload_fail(405); }
+            $validatedUpload = owi_upload_validate_first($_FILES['files']);
+            if ($validatedUpload === false) { owi_upload_fail(400); }
             $uploadDir = __DIR__ . '/image/';
             
-            if (!is_dir($uploadDir)) {
-                mkdir($uploadDir, 0755, true);
-            }
+            if (!is_dir($uploadDir) && !@mkdir($uploadDir, 0755, true)) { owi_upload_fail(500); }
             
             $tmpName = $_FILES['files']['tmp_name'][0];
             if (is_uploaded_file($tmpName)) {
-                $originalName = basename($_FILES['files']['name'][0]);
+                $originalName = $validatedUpload['name'];
                 $uniqueName = time() . '_' . preg_replace('/[^A-Za-z0-9._-]/', '_', $originalName);
                 $dest = $uploadDir . $uniqueName;
                 
-                if (move_uploaded_file($tmpName, $dest)) {
-                    $fileNameToSave = 'image/' . $uniqueName;
-                }
+                if (file_exists($dest) || !move_uploaded_file($tmpName, $dest)) { owi_upload_fail(500); }
+                $fileNameToSave = 'image/' . $uniqueName;
             }
         }
 

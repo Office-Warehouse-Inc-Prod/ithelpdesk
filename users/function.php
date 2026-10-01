@@ -2,6 +2,7 @@
 // session_start();
 // require('../fpdf/fpdf.php');
 include('../connection/db.php');
+require_once __DIR__ . '/../includes/upload_validation.php';
 date_default_timezone_set("Asia/Manila");
 
 class dbconfig extends dbconn
@@ -69,6 +70,17 @@ class dbconfig extends dbconn
      */
     public function inserdata()
     {
+        $validatedUploads = array();
+        if (isset($_FILES['files']) && owi_upload_field_has_file($_FILES['files'])) {
+            if (!owi_upload_session_ok() || !isset($_SERVER['REQUEST_METHOD']) || strtoupper($_SERVER['REQUEST_METHOD']) !== 'POST') {
+                return array('Response' => false, 'm' => 'Unable to upload attachment.');
+            }
+            $validatedUploads = owi_upload_validate_collection($_FILES['files']);
+            if ($validatedUploads === false) {
+                return array('Response' => false, 'm' => 'Unable to upload attachment.');
+            }
+        }
+
         $deptselectvalue = isset($_POST['deptsel']) ? $_POST['deptsel'] : '';
         $counter = 'counter';
         $deptabr = '';
@@ -275,22 +287,25 @@ class dbconfig extends dbconn
 
         }
 
-        if (!empty($_FILES['files']) && isset($ticknum)) {
+        if (!empty($validatedUploads) && isset($ticknum)) {
             $uploadDir = __DIR__ . '/image/';
-            if (!is_dir($uploadDir)) {
-                mkdir($uploadDir, 0755, true);
+            if (!is_dir($uploadDir) && !@mkdir($uploadDir, 0755, true)) {
+                return array('Response' => false, 'm' => 'Unable to upload attachment.');
             }
-            $files = $_FILES['files'];
-            for ($i = 0; $i < count($files['name']); $i++) {
-                if (is_uploaded_file($files['tmp_name'][$i])) {
-                    $originalName = basename($files['name'][$i]);
-                    $uniqueName = time() . '_' . preg_replace('/[^A-Za-z0-9._-]/', '_', $originalName);
-                    $dest = $uploadDir . $uniqueName;
-                    if (move_uploaded_file($files['tmp_name'][$i], $dest)) {
-                        $storedPath = 'image/' . $uniqueName;
-                        $ins = $this->connection->prepare("INSERT INTO images (files_tmp, files_name, uploaded_on, ticket_no) VALUES (:files_tmp, :files_name, NOW(), :ticket_no)");
-                        $ins->execute(array(':files_tmp' => $storedPath, ':files_name' => $originalName, ':ticket_no' => $deptabr . '' . $ticknum));
-                    }
+            foreach ($validatedUploads as $upload) {
+                $originalName = $upload['name'];
+                $uniqueName = time() . '_' . preg_replace('/[^A-Za-z0-9._-]/', '_', $originalName);
+                $dest = $uploadDir . $uniqueName;
+                if (file_exists($dest) || !move_uploaded_file($upload['tmp_name'], $dest)) {
+                    return array('Response' => false, 'm' => 'Unable to upload attachment.');
+                }
+                try {
+                    $storedPath = 'image/' . $uniqueName;
+                    $ins = $this->connection->prepare("INSERT INTO images (files_tmp, files_name, uploaded_on, ticket_no) VALUES (:files_tmp, :files_name, NOW(), :ticket_no)");
+                    $ins->execute(array(':files_tmp' => $storedPath, ':files_name' => $originalName, ':ticket_no' => $deptabr . '' . $ticknum));
+                } catch (Throwable $e) {
+                    @unlink($dest);
+                    return array('Response' => false, 'm' => 'Unable to upload attachment.');
                 }
             }
         }

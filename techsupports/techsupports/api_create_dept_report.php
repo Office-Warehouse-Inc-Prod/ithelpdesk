@@ -1,14 +1,40 @@
 <?php
-session_start();
-include('db.php');
+require_once __DIR__ . '/../../includes/upload_validation.php';
 
 header('Content-Type: application/json');
+ini_set('display_errors', '0');
 
-if (!isset($_SESSION['user_id'])) {
+if (!owi_upload_session_ok()) {
+    http_response_code(401);
     echo json_encode(['Response' => false, 'm' => '<div class="alert alert-danger">Error: Unauthorized access. Please log in.</div>']);
     exit;
 }
+if (!isset($_SERVER['REQUEST_METHOD']) || strtoupper($_SERVER['REQUEST_METHOD']) !== 'POST') {
+    http_response_code(405);
+    echo json_encode(['Response' => false, 'm' => '<div class="alert alert-danger">Unable to process request.</div>']);
+    exit;
+}
 
+$validatedUploads = array();
+if (isset($_FILES['file']) && owi_upload_field_has_file($_FILES['file'])) {
+    $validatedUploads = owi_upload_validate_collection($_FILES['file']);
+    if ($validatedUploads === false) {
+        http_response_code(400);
+        echo json_encode(['Response' => false, 'm' => '<div class="alert alert-danger">Unable to upload attachment.</div>']);
+        exit;
+    }
+}
+
+try {
+    include('db.php');
+} catch (Throwable $e) {
+    error_log('Helpdesk report/upload database initialization failed.');
+    http_response_code(500);
+    echo json_encode(['Response' => false, 'm' => '<div class="alert alert-danger">Unable to create the report or upload its attachments.</div>']);
+    exit;
+}
+
+$movedUploadPaths = array();
 try {
     $ticket_no = trim($_POST['ticket_no'] ?? '');
     $store = trim($_POST['store'] ?? '');
@@ -55,36 +81,34 @@ try {
 
     $upload_dir = '../images/'; 
 
-    if (!empty($_FILES['file']['name'][0])) {
+    if (!empty($validatedUploads)) {
         if (!is_dir($upload_dir)) {
             mkdir($upload_dir, 0777, true);
         }
         $stmtImage = $connection->prepare("INSERT INTO images (files_tmp, files_name, uploaded_on, ticket_no) 
                                            VALUES (:files_tmp, :files_name, :uploaded_on, :ticket_no)");
 
-        foreach ($_FILES['file']['name'] as $key => $filename) {
-            $tmp_name = $_FILES['file']['tmp_name'][$key];
-            $error = $_FILES['file']['error'][$key];
-            $size = $_FILES['file']['size'][$key];
+        foreach ($validatedUploads as $upload) {
+            $filename = $upload['name'];
+            $tmp_name = $upload['tmp_name'];
+            $ext = $upload['extension'];
+            $generated_name = uniqid('tkt_' . $ticket_no . '_') . '.' . $ext;
+            $target_file = $upload_dir . $generated_name;
 
-            if ($error === UPLOAD_ERR_OK) {
-                $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
-                $allowed_exts = ['jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx', 'xls', 'xlsx', 'gif'];
+            if (file_exists($target_file) || !move_uploaded_file($tmp_name, $target_file)) {
+                throw new Exception('Attachment could not be stored.');
+            }
+            $movedUploadPaths[] = $target_file;
 
-                if (in_array($ext, $allowed_exts) && $size <= 2097152) { 
-                    $generated_name = uniqid('tkt_' . $ticket_no . '_') . '.' . $ext;
-                    $target_file = $upload_dir . $generated_name;
-
-                    if (move_uploaded_file($tmp_name, $target_file)) {
-                        
-                        $stmtImage->execute([
-                            ':files_tmp' => $generated_name, 
-                            ':files_name' => $filename,
-                            ':uploaded_on' => date('Y-m-d H:i:s'),
-                            ':ticket_no' => $ticket_no
-                        ]);
-                    }
-                }
+            $stmtImage->execute([
+                ':files_tmp' => $generated_name,
+                ':files_name' => $filename,
+                ':uploaded_on' => date('Y-m-d H:i:s'),
+                ':ticket_no' => $ticket_no
+            ]);
+            if (!$stmtImage->rowCount()) {
+                @unlink($target_file);
+                throw new Exception('Attachment could not be recorded.');
             }
         }
     }
@@ -127,7 +151,12 @@ try {
     if ($connection->inTransaction()) {
         $connection->rollBack();
     }
-    echo json_encode(['Response' => false, 'm' => '<div class="alert alert-danger">Error: ' . htmlspecialchars($e->getMessage()) . '</div>']);
+    foreach ($movedUploadPaths as $movedUploadPath) {
+        if (is_file($movedUploadPath)) {
+            @unlink($movedUploadPath);
+        }
+    }
+    echo json_encode(['Response' => false, 'm' => '<div class="alert alert-danger">Unable to create the report or upload its attachments.</div>']);
     exit;
 }
 ?>
